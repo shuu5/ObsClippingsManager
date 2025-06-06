@@ -433,8 +433,8 @@ def run_integrated(ctx: Dict[str, Any],
     """
     統合ワークフローを実行 (v2.1)
     
-    sync-check、file-organization、citation-fetchingを適切な順序で連続実行します。
-    各操作は独立して実行可能で、柔軟なワークフロー組み合わせが可能です。
+    デフォルトでfile-organization → sync-check → citation-fetchingの順序で実行します。
+    オプションで各操作を独立して実行可能で、柔軟なワークフロー組み合わせが可能です。
     """
     try:
         workflow_manager = ctx['workflow_manager']
@@ -450,10 +450,10 @@ def run_integrated(ctx: Dict[str, Any],
         if fetch_citations:
             workflows_to_run.append('citation_fetching')
         
-        # デフォルト動作: sync + citation
+        # デフォルト動作: organize → sync → citation
         if not any([sync_first, organize_first, fetch_citations]):
-            workflows_to_run = ['sync_check', 'citation_fetching']
-            click.echo("🔄 Default integrated workflow: sync-check → citation-fetching")
+            workflows_to_run = ['file_organization', 'sync_check', 'citation_fetching']
+            click.echo("🔄 Default integrated workflow: file-organization → sync-check → citation-fetching")
         
         # 実行順序の表示
         workflow_names = " → ".join(workflows_to_run)

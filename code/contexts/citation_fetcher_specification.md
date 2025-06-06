@@ -180,8 +180,8 @@ PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --backup-existi
 PYTHONPATH=code/py uv run python code/py/main.py sync-check
 PYTHONPATH=code/py uv run python code/py/main.py fetch-citations
 
-# 統合実行（sync確認 + 引用取得）
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --fetch-citations
+# 統合実行（デフォルト: 整理 → 同期確認 → 引用取得）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated
 ```
 
 ## 出力仕様
@@ -289,11 +289,14 @@ Logs/
 
 ### ワークフロー統合
 ```bash
-# 統合実行（sync確認 → 引用取得 → ファイル整理）
+# デフォルト統合実行（整理 → 同期確認 → 引用取得）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated
+
+# カスタム実行（同期確認 → 引用取得のみ）
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --sync-first --fetch-citations
 
-# ファイル整理後の同期確認と引用取得
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --organize-first --sync-check --fetch-citations
+# 部分実行（整理後の引用取得のみ）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --organize-first --fetch-citations
 ```
 
 ### 設定統合
