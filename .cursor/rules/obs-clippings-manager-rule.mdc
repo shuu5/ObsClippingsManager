@@ -34,7 +34,7 @@ git push -u origin $(git branch --show-current)
 ### テスト実行
 ```bash
 cd /home/user/proj/ObsClippingsManager
-uv run pytest
+uv run code/unittest/run_all_tests.py 
 ```
 
 ### 統合完了後
