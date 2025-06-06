@@ -441,12 +441,6 @@ class FileMatcher:
             True: 更新成功, False: 更新失敗
         """
         try:
-            # バックアップを作成
-            backup_path = f"{file_path}.backup"
-            import shutil
-            shutil.copy2(file_path, backup_path)
-            self.logger.debug(f"Created backup: {backup_path}")
-            
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             
@@ -472,13 +466,6 @@ class FileMatcher:
             
         except Exception as e:
             self.logger.error(f"Error updating YAML frontmatter in {file_path}: {e}")
-            # エラー時はバックアップから復元
-            try:
-                if backup_path and os.path.exists(backup_path):
-                    shutil.copy2(backup_path, file_path)
-                    self.logger.info(f"Restored from backup: {file_path}")
-            except:
-                pass
             return False
     
     def _compare_titles(self, md_title: str, bib_title: str) -> bool:
