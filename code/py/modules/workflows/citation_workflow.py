@@ -1,21 +1,24 @@
 """
-引用文献取得ワークフロー
+引用文献取得ワークフロー v2.1
 
-BibTeX解析からDOI抽出、引用文献取得までの一連のワークフローを管理します。
+sync機能と連携し、論文ごとの個別references.bib保存を行う
+引用文献取得ワークフローを管理します。
 """
 
 import logging
 from typing import Dict, List, Any, Tuple, Optional
 from pathlib import Path
+from datetime import datetime
 
 from ..shared.bibtex_parser import BibTeXParser
 from ..shared.utils import ProgressTracker
 from ..citation_fetcher.fallback_strategy import FallbackStrategy, create_fallback_strategy_from_config
 from ..citation_fetcher.reference_formatter import ReferenceFormatter
+from ..citation_fetcher.sync_integration import SyncIntegration
 
 
 class CitationWorkflow:
-    """引用文献取得ワークフロー"""
+    """引用文献取得ワークフロー v2.1"""
     
     def __init__(self, config_manager, logger):
         """
@@ -23,6 +26,7 @@ class CitationWorkflow:
             config_manager: 設定管理インスタンス
             logger: 統合ロガーインスタンス
         """
+        self.config_manager = config_manager
         self.config = config_manager.get_citation_fetcher_config()
         self.logger = logger.get_logger('CitationWorkflow')
         
@@ -32,58 +36,81 @@ class CitationWorkflow:
         self.reference_formatter = ReferenceFormatter(
             max_authors=self.config.get('max_authors', 3)
         )
+        # v2.1の新機能: sync連携
+        self.sync_integration = SyncIntegration(config_manager, logger)
         
     def execute(self, **options) -> Tuple[bool, Dict[str, Any]]:
         """
-        引用文献取得ワークフローを実行
+        引用文献取得ワークフローを実行 (v2.1: sync連携対応)
         
         Args:
             **options: 実行オプション
+                - use_sync_integration: sync機能との連携を使用 (default: True)
+                - backup_existing: 既存references.bibのバックアップ作成 (default: False)
+                - dry_run: ドライラン実行
+                - verbose: 詳細ログ
             
         Returns:
             (成功フラグ, 実行結果詳細)
         """
-        self.logger.info("Starting citation fetching workflow")
+        self.logger.info("Starting citation fetching workflow v2.1")
         
         results = {
             "stage": "initialization",
             "success": False,
-            "statistics": {}
+            "statistics": {},
+            "sync_integration": {}
         }
         
         try:
-            # Stage 1: BibTeX解析
-            results["stage"] = "bibtex_parsing"
-            bib_entries = self._parse_bibtex_file()
-            results["bib_entries_count"] = len(bib_entries)
-            self.logger.info(f"Parsed {len(bib_entries)} BibTeX entries")
+            # Stage 1: sync連携による対象論文特定
+            use_sync = options.get('use_sync_integration', True)
             
-            if not bib_entries:
-                results["error"] = "No BibTeX entries found"
-                return False, results
+            if use_sync:
+                results["stage"] = "sync_integration"
+                target_papers = self._get_target_papers_from_sync()
+                results["sync_integration"]["target_papers_count"] = len(target_papers)
+                
+                if not target_papers:
+                    results["error"] = "No synchronized papers with valid DOIs found"
+                    return False, results
+                    
+                # sync統計情報を追加
+                sync_stats = self.sync_integration.get_sync_statistics()
+                results["sync_integration"].update(sync_stats)
+                
+            else:
+                # 従来方式: 全BibTeXエントリを対象
+                results["stage"] = "bibtex_parsing"
+                target_papers = self._get_target_papers_legacy()
+                
+            self.logger.info(f"Target papers identified: {len(target_papers)}")
             
-            # Stage 2: DOI抽出
-            results["stage"] = "doi_extraction"
-            dois = self._extract_dois(bib_entries)
-            results["dois_count"] = len(dois)
-            self.logger.info(f"Extracted {len(dois)} DOIs")
-            
-            if not dois:
-                results["error"] = "No DOIs found in BibTeX entries"
-                return False, results
+            # Stage 2: バックアップ処理（オプション）
+            if options.get('backup_existing', False) and use_sync:
+                results["stage"] = "backup_preparation"
+                backup_results = self._prepare_backups(target_papers)
+                results["backup_results"] = backup_results
             
             # Stage 3: 引用文献取得
             results["stage"] = "citation_fetching"
-            citation_results = self._fetch_citations(dois, options)
+            citation_results = self._fetch_citations_for_papers(target_papers, options)
             results.update(citation_results)
             
-            # Stage 4: 結果保存
-            results["stage"] = "saving_results"
-            save_results = self._save_results(citation_results, options)
+            # Stage 4: 個別保存
+            results["stage"] = "individual_saving"
+            if use_sync:
+                save_results = self._save_individual_references(target_papers, citation_results, options)
+            else:
+                save_results = self._save_results_legacy(citation_results, options)
             results.update(save_results)
             
+            # Stage 5: 統計情報の生成
+            results["stage"] = "statistics_generation"
+            self._generate_comprehensive_statistics(results, target_papers)
+            
             results["success"] = True
-            self.logger.info("Citation fetching workflow completed successfully")
+            self.logger.info("Citation fetching workflow v2.1 completed successfully")
             return True, results
             
         except Exception as e:
@@ -261,6 +288,290 @@ class CitationWorkflow:
                 self.logger.error(error_msg)
         
         return save_results
+    
+    # === v2.1 新機能: sync連携メソッド ===
+    
+    def _get_target_papers_from_sync(self) -> List[Dict[str, str]]:
+        """
+        sync連携により対象論文リストを取得
+        
+        Returns:
+            対象論文のリスト
+        """
+        success, target_papers = self.sync_integration.get_target_papers_for_citation_fetching()
+        
+        if not success:
+            raise ValueError("Failed to get target papers from sync integration")
+        
+        self.logger.info(f"Sync integration identified {len(target_papers)} target papers")
+        return target_papers
+    
+    def _get_target_papers_legacy(self) -> List[Dict[str, str]]:
+        """
+        従来方式により対象論文リストを取得（sync非使用）
+        
+        Returns:
+            対象論文のリスト
+        """
+        bib_entries = self._parse_bibtex_file()
+        dois = self._extract_dois(bib_entries)
+        
+        target_papers = []
+        for doi in dois:
+            # citation_keyを逆引きで特定（簡易版）
+            citation_key = None
+            for key, entry in bib_entries.items():
+                if entry.get('doi', '').strip().replace('\n', '').replace('\r', '') == doi:
+                    citation_key = key
+                    break
+            
+            target_papers.append({
+                'citation_key': citation_key or f"unknown_{doi}",
+                'doi': doi,
+                'has_valid_doi': True,
+                'directory_path': None,
+                'references_file_path': None
+            })
+        
+        return target_papers
+    
+    def _prepare_backups(self, target_papers: List[Dict[str, str]]) -> Dict[str, bool]:
+        """
+        既存references.bibファイルのバックアップを準備
+        
+        Args:
+            target_papers: 対象論文リスト
+            
+        Returns:
+            バックアップ結果
+        """
+        self.logger.info("Preparing backups for existing references.bib files")
+        return self.sync_integration.prepare_backup_existing_references(target_papers)
+    
+    def _fetch_citations_for_papers(self, target_papers: List[Dict[str, str]], options: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        論文リストに対して引用文献を取得
+        
+        Args:
+            target_papers: 対象論文リスト
+            options: 実行オプション
+            
+        Returns:
+            取得結果の詳細
+        """
+        # DOIのみを抽出して従来の_fetch_citationsメソッドを使用
+        dois = [paper['doi'] for paper in target_papers if paper.get('doi')]
+        
+        # 元のメソッドを呼び出し
+        citation_results = self._fetch_citations(dois, options)
+        
+        # 結果にcitation_key情報を追加
+        citation_key_mapping = {paper['doi']: paper['citation_key'] for paper in target_papers}
+        citation_results['citation_key_mapping'] = citation_key_mapping
+        
+        return citation_results
+    
+    def _save_individual_references(self, target_papers: List[Dict[str, str]], 
+                                   citation_results: Dict[str, Any], 
+                                   options: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        各論文のディレクトリにreferences.bibを個別保存
+        
+        Args:
+            target_papers: 対象論文リスト
+            citation_results: 引用文献取得結果
+            options: 実行オプション
+            
+        Returns:
+            保存結果の詳細
+        """
+        self.logger.info(f"Saving individual references.bib files for {len(target_papers)} papers")
+        
+        save_results = {
+            "saved_files": [],
+            "save_errors": [],
+            "individual_saves": {}
+        }
+        
+        # ドライランモードのチェック
+        dry_run = options.get('dry_run', self.config.get('dry_run', False))
+        
+        # 論文ごとの処理
+        for paper in target_papers:
+            citation_key = paper['citation_key']
+            doi = paper['doi']
+            references_file_path = paper.get('references_file_path')
+            
+            try:
+                # 引用文献データを取得
+                references = citation_results.get("fetched_references", {}).get(doi)
+                source = citation_results.get("api_sources", {}).get(doi, "unknown")
+                
+                if not references:
+                    self.logger.warning(f"No references found for {citation_key} ({doi})")
+                    save_results["individual_saves"][citation_key] = {
+                        "status": "no_references",
+                        "references_count": 0
+                    }
+                    continue
+                
+                if not references_file_path:
+                    self.logger.error(f"No valid file path for {citation_key}")
+                    save_results["save_errors"].append(f"No valid file path for {citation_key}")
+                    continue
+                
+                if dry_run:
+                    self.logger.info(f"[DRY RUN] Would save {len(references)} references to {references_file_path}")
+                    save_results["saved_files"].append(references_file_path)
+                    save_results["individual_saves"][citation_key] = {
+                        "status": "dry_run",
+                        "references_count": len(references),
+                        "file_path": references_file_path
+                    }
+                    continue
+                
+                # BibTeX形式に変換（個別ヘッダー付き）
+                bibtex_content = self._format_individual_references(
+                    references, source, citation_key, doi
+                )
+                
+                # ファイルに保存
+                references_file = Path(references_file_path)
+                references_file.parent.mkdir(parents=True, exist_ok=True)
+                
+                with open(references_file, 'w', encoding='utf-8') as f:
+                    f.write(bibtex_content)
+                
+                save_results["saved_files"].append(str(references_file))
+                save_results["individual_saves"][citation_key] = {
+                    "status": "success",
+                    "references_count": len(references),
+                    "file_path": str(references_file),
+                    "source": source
+                }
+                
+                self.logger.info(
+                    f"Saved {len(references)} references for {citation_key} to {references_file}"
+                )
+                
+            except Exception as e:
+                error_msg = f"Failed to save references for {citation_key}: {e}"
+                save_results["save_errors"].append(error_msg)
+                save_results["individual_saves"][citation_key] = {
+                    "status": "error",
+                    "error": str(e)
+                }
+                self.logger.error(error_msg)
+        
+        # 保存統計
+        successful_saves = sum(1 for save in save_results["individual_saves"].values() 
+                              if save["status"] in ["success", "dry_run"])
+        total_references_saved = sum(save.get("references_count", 0) 
+                                   for save in save_results["individual_saves"].values())
+        
+        self.logger.info(
+            f"Individual saving completed: {successful_saves}/{len(target_papers)} papers, "
+            f"{total_references_saved} total references"
+        )
+        
+        save_results["successful_individual_saves"] = successful_saves
+        save_results["total_references_saved"] = total_references_saved
+        
+        return save_results
+    
+    def _format_individual_references(self, references: List[Dict[str, Any]], 
+                                     source: str, citation_key: str, doi: str) -> str:
+        """
+        個別論文用のBibTeX形式でフォーマット
+        
+        Args:
+            references: 引用文献リスト
+            source: データソース
+            citation_key: 論文のcitation key
+            doi: 論文のDOI
+            
+        Returns:
+            BibTeX形式の文字列
+        """
+        # ヘッダーコメントを生成
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        header = f"""% References for citation_key: {citation_key}
+% DOI: {doi}
+% Generated on: {current_time}
+% Total references: {len(references)}
+% Data source: {source}
+
+"""
+        
+        # BibTeX変換
+        bibtex_content = self.reference_formatter.format_to_bibtex(references, source, doi)
+        
+        return header + bibtex_content
+    
+    def _save_results_legacy(self, citation_results: Dict[str, Any], options: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        従来方式の結果保存（sync非使用時）
+        
+        Args:
+            citation_results: 引用文献取得結果
+            options: 実行オプション
+            
+        Returns:
+            保存結果の詳細
+        """
+        return self._save_results(citation_results, options)
+    
+    def _generate_comprehensive_statistics(self, results: Dict[str, Any], target_papers: List[Dict[str, str]]) -> None:
+        """
+        包括的な統計情報を生成
+        
+        Args:
+            results: 実行結果辞書（更新される）
+            target_papers: 対象論文リスト
+        """
+        # 基本統計情報
+        basic_stats = {
+            "target_papers_count": len(target_papers),
+            "papers_with_valid_dois": len([p for p in target_papers if p.get('has_valid_doi')]),
+            "execution_timestamp": datetime.now().isoformat()
+        }
+        
+        # API統計情報
+        api_stats = {
+            "crossref_success_rate": 0,
+            "opencitations_success_rate": 0,
+            "overall_success_rate": 0
+        }
+        
+        total_fetches = results.get("total_dois", 0)
+        if total_fetches > 0:
+            crossref_successes = results.get("crossref_successes", 0)
+            opencitations_successes = results.get("opencitations_successes", 0)
+            
+            api_stats.update({
+                "crossref_success_rate": round(crossref_successes / total_fetches * 100, 1),
+                "opencitations_success_rate": round(opencitations_successes / total_fetches * 100, 1),
+                "overall_success_rate": round(results.get("successful_fetches", 0) / total_fetches * 100, 1)
+            })
+        
+        # 保存統計情報
+        save_stats = {
+            "individual_files_saved": results.get("successful_individual_saves", 0),
+            "total_references_saved": results.get("total_references_saved", 0),
+            "average_references_per_paper": 0
+        }
+        
+        if save_stats["individual_files_saved"] > 0:
+            save_stats["average_references_per_paper"] = round(
+                save_stats["total_references_saved"] / save_stats["individual_files_saved"], 1
+            )
+        
+        # 統計情報を結果に追加
+        results["statistics"].update({
+            **basic_stats,
+            **api_stats,
+            **save_stats
+        })
     
     def get_workflow_statistics(self) -> Dict[str, Any]:
         """
