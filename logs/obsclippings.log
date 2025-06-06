@@ -1,0 +1,400 @@
+2025-06-06 02:24:21,076 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'huWY2021IJMS', {'langid': 'english', 'copyright': 'https://creativecommons.org/licenses/by/4.0/', 'urldate': '2025-06-05', 'doi': '10.3390/ijms22158109', 'issn': '1422-0067', 'pages': '8109', 'number': '15', 'volume': '22', 'journal': 'International Journal of Molecular Sciences', 'month': BibDataStringExpression([BibDataString('jul')]), 'year': '2021', 'author': 'Hu, Wen-Yang and Hu, Dan-Ping and Xie, Lishi and Nonn, Larisa and Lu, Ranli and Abern, Michael and Shioda, Toshihiro and Prins, Gail S.', 'title': 'Keratin {{Profiling}} by {{Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy}} and {{Cancer Stem-Like Cells}}'}]
+2025-06-06 02:24:21,077 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:24:21,083 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'liQ2016Oncotarget', {'langid': 'english', 'urldate': '2025-06-05', 'doi': '10.18632/oncotarget.13175', 'issn': '1949-2553', 'pages': '84645--84657', 'number': '51', 'volume': '7', 'journal': 'Oncotarget', 'month': BibDataStringExpression([BibDataString('dec')]), 'year': '2016', 'author': 'Li, Qinlong and Yin, Lijuan and Jones, Lawrence W. and Chu, Gina C-Y and Wu, Jason B-Y. and Huang, Jen-Ming and Li, Quanlin and You, Sungyong and Kim, Jayoung and Lu, Yi-Tsung and Mrdenovic, Stefan and Wang, Ruoxiang and Freeman, Michael R. and Garraway, Isla and Lewis, Michael S. and Chung, Leland W. K. and Zhau, Haiyen E.', 'title': 'Keratin 13 Expression Reprograms Bone and Brain Metastases of Human Prostate Cancer Cells'}]
+2025-06-06 02:24:21,083 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:24:21,086 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'takenakaW2023J.Radiat.Res.Tokyo', {'langid': 'english', 'copyright': 'https://creativecommons.org/licenses/by/4.0/', 'urldate': '2025-06-05', 'doi': '10.1093/jrr/rrac091', 'issn': '0449-3060, 1349-9157', 'pages': '284--293', 'number': '2', 'volume': '64', 'journal': 'Journal of Radiation Research', 'month': BibDataStringExpression([BibDataString('mar')]), 'year': '2023', 'author': 'Takenaka, Wataru and Yokoyama, Yuhki and Ikehata, Katsuya and Kouda, Shihori and Hirose, Haruka and Minami, Kazumasa and Hamada, Yoshinosuke and Mori, Seiji and Koizumi, Masahiko and Yamamoto, Hirofumi', 'title': '{{{\\emph{KRT13}}}} Is Upregulated in Pancreatic Cancer Stem-like Cells and Associated with Radioresistance'}]
+2025-06-06 02:24:21,087 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:24:21,090 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'yinL2022BreastCancerRes', {'langid': 'english', 'urldate': '2025-06-05', 'doi': '10.1186/s13058-022-01502-6', 'issn': '1465-542X', 'pages': '7', 'number': '1', 'volume': '24', 'journal': 'Breast Cancer Research', 'month': BibDataStringExpression([BibDataString('dec')]), 'year': '2022', 'author': 'Yin, Lijuan and Li, Qinlong and Mrdenovic, Stefan and Chu, Gina Chia-Yi and Wu, Boyang Jason and Bu, Hong and Duan, Peng and Kim, Jayoung and You, Sungyong and Lewis, Michael S. and Liang, Gangning and Wang, Ruoxiang and Zhau, Haiyen E. and Chung, Leland W. K.', 'title': '{{KRT13}} Promotes Stemness and Drives Metastasis in Breast Cancer through a Plakoglobin/c-{{Myc}} Signaling Pathway'}]
+2025-06-06 02:24:21,090 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:24:21,092 - modules.bibtex_parser - INFO - Parsed 4 BibTeX entries
+2025-06-06 02:24:21,093 - root - INFO - parse_bibtex_file executed in 0.0354 seconds
+2025-06-06 02:24:21,132 - modules.markdown_manager - INFO - Found 4 markdown files
+2025-06-06 02:24:21,132 - root - INFO - get_markdown_files executed in 0.0373 seconds
+2025-06-06 02:24:21,134 - modules.file_matcher - INFO - Matched 4 files above threshold 0.8
+2025-06-06 02:24:21,135 - root - INFO - match_files_to_citations executed in 0.0018 seconds
+2025-06-06 02:27:01,153 - modules.bibtex_parser - INFO - Parsed 4 BibTeX entries
+2025-06-06 02:27:01,154 - root - INFO - parse_bibtex_file executed in 0.0328 seconds
+2025-06-06 02:27:01,176 - modules.markdown_manager - INFO - Found 4 markdown files
+2025-06-06 02:27:01,176 - root - INFO - get_markdown_files executed in 0.0168 seconds
+2025-06-06 02:27:01,180 - modules.file_matcher - INFO - Matched 4 files above threshold 0.8
+2025-06-06 02:27:01,180 - root - INFO - match_files_to_citations executed in 0.0033 seconds
+2025-06-06 02:27:15,965 - modules.markdown_manager - INFO - Created backup: backups/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance_20250606_022715.md
+2025-06-06 02:27:15,971 - modules.markdown_manager - INFO - Renamed: KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md → takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-06 02:27:15,995 - modules.markdown_manager - INFO - Created backup: backups/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway - Breast Cancer Research_20250606_022715.md
+2025-06-06 02:27:16,000 - modules.markdown_manager - INFO - Renamed: KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway - Breast Cancer Research.md → yinL2022BreastCancerRes.md
+2025-06-06 02:27:16,027 - modules.markdown_manager - INFO - Created backup: backups/Keratin 13 expression reprograms bone and brain metastases of human prostate cancer cells_20250606_022716.md
+2025-06-06 02:27:16,031 - modules.markdown_manager - INFO - Renamed: Keratin 13 expression reprograms bone and brain metastases of human prostate cancer cells.md → liQ2016Oncotarget.md
+2025-06-06 02:27:16,053 - modules.markdown_manager - INFO - Created backup: backups/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells_20250606_022716.md
+2025-06-06 02:27:16,057 - modules.markdown_manager - INFO - Renamed: Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md → huWY2021IJMS.md
+2025-06-06 02:44:50,486 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'huWY2021IJMS', {'langid': 'english', 'copyright': 'https://creativecommons.org/licenses/by/4.0/', 'urldate': '2025-06-05', 'doi': '10.3390/ijms22158109', 'issn': '1422-0067', 'pages': '8109', 'number': '15', 'volume': '22', 'journal': 'International Journal of Molecular Sciences', 'month': BibDataStringExpression([BibDataString('jul')]), 'year': '2021', 'author': 'Hu, Wen-Yang and Hu, Dan-Ping and Xie, Lishi and Nonn, Larisa and Lu, Ranli and Abern, Michael and Shioda, Toshihiro and Prins, Gail S.', 'title': 'Keratin {{Profiling}} by {{Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy}} and {{Cancer Stem-Like Cells}}'}]
+2025-06-06 02:44:50,488 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:44:50,498 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'liQ2016Oncotarget', {'langid': 'english', 'urldate': '2025-06-05', 'doi': '10.18632/oncotarget.13175', 'issn': '1949-2553', 'pages': '84645--84657', 'number': '51', 'volume': '7', 'journal': 'Oncotarget', 'month': BibDataStringExpression([BibDataString('dec')]), 'year': '2016', 'author': 'Li, Qinlong and Yin, Lijuan and Jones, Lawrence W. and Chu, Gina C-Y and Wu, Jason B-Y. and Huang, Jen-Ming and Li, Quanlin and You, Sungyong and Kim, Jayoung and Lu, Yi-Tsung and Mrdenovic, Stefan and Wang, Ruoxiang and Freeman, Michael R. and Garraway, Isla and Lewis, Michael S. and Chung, Leland W. K. and Zhau, Haiyen E.', 'title': 'Keratin 13 Expression Reprograms Bone and Brain Metastases of Human Prostate Cancer Cells'}]
+2025-06-06 02:44:50,499 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:44:50,504 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'takenakaW2023J.Radiat.Res.Tokyo', {'langid': 'english', 'copyright': 'https://creativecommons.org/licenses/by/4.0/', 'urldate': '2025-06-05', 'doi': '10.1093/jrr/rrac091', 'issn': '0449-3060, 1349-9157', 'pages': '284--293', 'number': '2', 'volume': '64', 'journal': 'Journal of Radiation Research', 'month': BibDataStringExpression([BibDataString('mar')]), 'year': '2023', 'author': 'Takenaka, Wataru and Yokoyama, Yuhki and Ikehata, Katsuya and Kouda, Shihori and Hirose, Haruka and Minami, Kazumasa and Hamada, Yoshinosuke and Mori, Seiji and Koizumi, Masahiko and Yamamoto, Hirofumi', 'title': '{{{\\emph{KRT13}}}} Is Upregulated in Pancreatic Cancer Stem-like Cells and Associated with Radioresistance'}]
+2025-06-06 02:44:50,504 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:44:50,507 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'yinL2022BreastCancerRes', {'langid': 'english', 'urldate': '2025-06-05', 'doi': '10.1186/s13058-022-01502-6', 'issn': '1465-542X', 'pages': '7', 'number': '1', 'volume': '24', 'journal': 'Breast Cancer Research', 'month': BibDataStringExpression([BibDataString('dec')]), 'year': '2022', 'author': 'Yin, Lijuan and Li, Qinlong and Mrdenovic, Stefan and Chu, Gina Chia-Yi and Wu, Boyang Jason and Bu, Hong and Duan, Peng and Kim, Jayoung and You, Sungyong and Lewis, Michael S. and Liang, Gangning and Wang, Ruoxiang and Zhau, Haiyen E. and Chung, Leland W. K.', 'title': '{{KRT13}} Promotes Stemness and Drives Metastasis in Breast Cancer through a Plakoglobin/c-{{Myc}} Signaling Pathway'}]
+2025-06-06 02:44:50,508 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:44:50,510 - root - INFO - 4 件のBibTeXエントリを解析しました
+2025-06-06 02:44:50,592 - root - INFO - 4 個のMarkdownファイルを発見しました
+2025-06-06 02:44:50,610 - root - ERROR - 予期しないエラー: 'str' object has no attribute 'stem'
+Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/py/main.py", line 117, in main
+    matches = matcher.match_files_to_citations(md_files, bib_entries)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/proj/ObsClippingsManager/code/py/modules/file_matcher.py", line 35, in match_files_to_citations
+    filename_without_ext = md_file.stem
+                           ^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'stem'
+2025-06-06 02:46:44,268 - root - INFO - 4 件のBibTeXエントリを解析しました
+2025-06-06 02:46:44,329 - root - INFO - 4 個のMarkdownファイルを発見しました
+2025-06-06 02:46:44,357 - root - INFO - マッチング失敗: huWY2021IJMS.md (最高類似度: 0.128)
+2025-06-06 02:46:44,358 - root - INFO - マッチング失敗: liQ2016Oncotarget.md (最高類似度: 0.231)
+2025-06-06 02:46:44,358 - root - INFO - マッチング失敗: takenakaW2023J.Radiat.Res.Tokyo.md (最高類似度: 0.309)
+2025-06-06 02:46:44,359 - root - INFO - マッチング失敗: yinL2022BreastCancerRes.md (最高類似度: 0.322)
+2025-06-06 02:46:44,359 - root - ERROR - 予期しないエラー: too many values to unpack (expected 2)
+Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/py/main.py", line 120, in main
+    valid_matches, warnings = matcher.validate_matches(matches)
+    ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)
+2025-06-06 02:47:42,267 - root - INFO - 4 件のBibTeXエントリを解析しました
+2025-06-06 02:47:42,344 - root - INFO - 4 個のMarkdownファイルを発見しました
+2025-06-06 02:47:42,355 - root - INFO - マッチング失敗: huWY2021IJMS.md (最高類似度: 0.128)
+2025-06-06 02:47:42,357 - root - INFO - マッチング失敗: liQ2016Oncotarget.md (最高類似度: 0.231)
+2025-06-06 02:47:42,357 - root - INFO - マッチング失敗: takenakaW2023J.Radiat.Res.Tokyo.md (最高類似度: 0.309)
+2025-06-06 02:47:42,358 - root - INFO - マッチング失敗: yinL2022BreastCancerRes.md (最高類似度: 0.322)
+2025-06-06 02:47:51,928 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'huWY2021IJMS', {'langid': 'english', 'copyright': 'https://creativecommons.org/licenses/by/4.0/', 'urldate': '2025-06-05', 'doi': '10.3390/ijms22158109', 'issn': '1422-0067', 'pages': '8109', 'number': '15', 'volume': '22', 'journal': 'International Journal of Molecular Sciences', 'month': BibDataStringExpression([BibDataString('jul')]), 'year': '2021', 'author': 'Hu, Wen-Yang and Hu, Dan-Ping and Xie, Lishi and Nonn, Larisa and Lu, Ranli and Abern, Michael and Shioda, Toshihiro and Prins, Gail S.', 'title': 'Keratin {{Profiling}} by {{Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy}} and {{Cancer Stem-Like Cells}}'}]
+2025-06-06 02:47:51,929 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:47:51,933 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'liQ2016Oncotarget', {'langid': 'english', 'urldate': '2025-06-05', 'doi': '10.18632/oncotarget.13175', 'issn': '1949-2553', 'pages': '84645--84657', 'number': '51', 'volume': '7', 'journal': 'Oncotarget', 'month': BibDataStringExpression([BibDataString('dec')]), 'year': '2016', 'author': 'Li, Qinlong and Yin, Lijuan and Jones, Lawrence W. and Chu, Gina C-Y and Wu, Jason B-Y. and Huang, Jen-Ming and Li, Quanlin and You, Sungyong and Kim, Jayoung and Lu, Yi-Tsung and Mrdenovic, Stefan and Wang, Ruoxiang and Freeman, Michael R. and Garraway, Isla and Lewis, Michael S. and Chung, Leland W. K. and Zhau, Haiyen E.', 'title': 'Keratin 13 Expression Reprograms Bone and Brain Metastases of Human Prostate Cancer Cells'}]
+2025-06-06 02:47:51,934 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:47:51,936 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'takenakaW2023J.Radiat.Res.Tokyo', {'langid': 'english', 'copyright': 'https://creativecommons.org/licenses/by/4.0/', 'urldate': '2025-06-05', 'doi': '10.1093/jrr/rrac091', 'issn': '0449-3060, 1349-9157', 'pages': '284--293', 'number': '2', 'volume': '64', 'journal': 'Journal of Radiation Research', 'month': BibDataStringExpression([BibDataString('mar')]), 'year': '2023', 'author': 'Takenaka, Wataru and Yokoyama, Yuhki and Ikehata, Katsuya and Kouda, Shihori and Hirose, Haruka and Minami, Kazumasa and Hamada, Yoshinosuke and Mori, Seiji and Koizumi, Masahiko and Yamamoto, Hirofumi', 'title': '{{{\\emph{KRT13}}}} Is Upregulated in Pancreatic Cancer Stem-like Cells and Associated with Radioresistance'}]
+2025-06-06 02:47:51,937 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:47:51,939 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'yinL2022BreastCancerRes', {'langid': 'english', 'urldate': '2025-06-05', 'doi': '10.1186/s13058-022-01502-6', 'issn': '1465-542X', 'pages': '7', 'number': '1', 'volume': '24', 'journal': 'Breast Cancer Research', 'month': BibDataStringExpression([BibDataString('dec')]), 'year': '2022', 'author': 'Yin, Lijuan and Li, Qinlong and Mrdenovic, Stefan and Chu, Gina Chia-Yi and Wu, Boyang Jason and Bu, Hong and Duan, Peng and Kim, Jayoung and You, Sungyong and Lewis, Michael S. and Liang, Gangning and Wang, Ruoxiang and Zhau, Haiyen E. and Chung, Leland W. K.', 'title': '{{KRT13}} Promotes Stemness and Drives Metastasis in Breast Cancer through a Plakoglobin/c-{{Myc}} Signaling Pathway'}]
+2025-06-06 02:47:51,940 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 02:47:51,942 - root - INFO - 4 件のBibTeXエントリを解析しました
+2025-06-06 02:47:52,004 - root - INFO - 4 個のMarkdownファイルを発見しました
+2025-06-06 02:47:52,016 - root - INFO - マッチング失敗: huWY2021IJMS.md (最高類似度: 0.128)
+2025-06-06 02:47:52,017 - root - INFO - マッチング失敗: liQ2016Oncotarget.md (最高類似度: 0.231)
+2025-06-06 02:47:52,018 - root - INFO - マッチング成功: takenakaW2023J.Radiat.Res.Tokyo.md -> liQ2016Oncotarget (類似度: 0.309)
+2025-06-06 02:47:52,018 - root - INFO - マッチング成功: yinL2022BreastCancerRes.md -> yinL2022BreastCancerRes (類似度: 0.322)
+2025-06-06 02:51:33,907 - root - INFO - 4 件のBibTeXエントリを解析しました
+2025-06-06 02:51:33,954 - root - INFO - 4 個のMarkdownファイルを発見しました
+2025-06-06 02:51:33,962 - root - INFO - マッチング失敗: huWY2021IJMS.md (最高類似度: 0.128)
+2025-06-06 02:51:33,962 - root - INFO - マッチング失敗: liQ2016Oncotarget.md (最高類似度: 0.231)
+2025-06-06 02:51:33,962 - root - INFO - マッチング失敗: takenakaW2023J.Radiat.Res.Tokyo.md (最高類似度: 0.309)
+2025-06-06 02:51:33,963 - root - INFO - マッチング失敗: yinL2022BreastCancerRes.md (最高類似度: 0.322)
+2025-06-06 02:56:43,641 - root - INFO - 4 件のBibTeXエントリを解析しました
+2025-06-06 02:56:43,674 - root - INFO - 2 個のMarkdownファイルを発見しました
+2025-06-06 02:56:43,688 - root - INFO - マッチング成功: Keratin 13 expression reprograms bone and brain metastases of human prostate cancer cells.md -> liQ2016Oncotarget (類似度: 1.000)
+2025-06-06 02:56:43,688 - root - INFO - マッチング成功: Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md -> huWY2021IJMS (類似度: 1.000)
+2025-06-06 02:56:47,463 - root - INFO - ディレクトリを作成しました: /home/user/ManuscriptsManager/Clippings/liQ2016Oncotarget
+2025-06-06 02:56:47,467 - root - INFO - ディレクトリを作成しました: /home/user/ManuscriptsManager/Clippings/liQ2016Oncotarget
+2025-06-06 02:56:47,480 - root - INFO - バックアップを作成しました: backups/Keratin 13 expression reprograms bone and brain metastases of human prostate cancer cells_20250606_025647.md
+2025-06-06 02:56:47,488 - root - INFO - ファイルを移動しました: /home/user/ManuscriptsManager/Clippings/Keratin 13 expression reprograms bone and brain metastases of human prostate cancer cells.md -> /home/user/ManuscriptsManager/Clippings/liQ2016Oncotarget/liQ2016Oncotarget.md
+2025-06-06 02:56:47,497 - root - INFO - ディレクトリを作成しました: /home/user/ManuscriptsManager/Clippings/huWY2021IJMS
+2025-06-06 02:56:47,504 - root - INFO - ディレクトリを作成しました: /home/user/ManuscriptsManager/Clippings/huWY2021IJMS
+2025-06-06 02:56:47,517 - root - INFO - バックアップを作成しました: backups/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells_20250606_025647.md
+2025-06-06 02:56:47,524 - root - INFO - ファイルを移動しました: /home/user/ManuscriptsManager/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md -> /home/user/ManuscriptsManager/Clippings/huWY2021IJMS/huWY2021IJMS.md
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: integrated
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.WorkflowManager - Executing integrated workflow
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.WorkflowManager - Phase 1: Citation fetching
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - Starting citation fetching workflow
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - Parsed 4 BibTeX entries
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - Extracting DOIs from BibTeX entries
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - Extracted 4 DOIs
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - Fetching citations for 4 DOIs
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - [DRY RUN] Would fetch references for 10.3390/ijms22158109
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - [DRY RUN] Would fetch references for 10.18632/oncotarget.13175
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - [DRY RUN] Would fetch references for 10.1093/jrr/rrac091
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - [DRY RUN] Would fetch references for 10.1186/s13058-022-01502-6
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - Citation fetching completed: 4/4 DOIs processed, 0 total references
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.CitationWorkflow - Citation fetching workflow completed successfully
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.WorkflowManager - Phase 2: File organization
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.OrganizationWorkflow - Starting file organization workflow
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsed 4 BibTeX entries
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.OrganizationWorkflow - Discovering Markdown files
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Found 0 Markdown files
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 0 total Markdown files, 0 need organization
+2025-06-06 05:04:12 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 0 Markdown files to process
+2025-06-06 05:04:12 - ERROR - ObsClippingsManager.WorkflowManager - Integrated workflow failed: Organization: No Markdown files found to organize
+2025-06-06 05:04:12 - ERROR - ObsClippingsManager.WorkflowManager - Workflow failed: integrated
+2025-06-06 05:04:24 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: file_organization
+2025-06-06 05:04:24 - INFO - ObsClippingsManager.WorkflowManager - Executing file organization workflow
+2025-06-06 05:04:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Starting file organization workflow
+2025-06-06 05:04:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 05:04:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsed 4 BibTeX entries
+2025-06-06 05:04:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Discovering Markdown files
+2025-06-06 05:04:24 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Found 0 Markdown files
+2025-06-06 05:04:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 0 total Markdown files, 0 need organization
+2025-06-06 05:04:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 0 Markdown files to process
+2025-06-06 05:04:24 - ERROR - ObsClippingsManager.WorkflowManager - Workflow failed: file_organization
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: citation_fetching
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.WorkflowManager - Executing citation fetching workflow
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - Starting citation fetching workflow
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - Parsed 4 BibTeX entries
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - Extracting DOIs from BibTeX entries
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - Extracted 4 DOIs
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - Fetching citations for 4 DOIs
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - [DRY RUN] Would fetch references for 10.3390/ijms22158109
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - [DRY RUN] Would fetch references for 10.18632/oncotarget.13175
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - [DRY RUN] Would fetch references for 10.1093/jrr/rrac091
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - [DRY RUN] Would fetch references for 10.1186/s13058-022-01502-6
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - Citation fetching completed: 4/4 DOIs processed, 0 total references
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.CitationWorkflow - Citation fetching workflow completed successfully
+2025-06-06 05:04:34 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: citation_fetching
+2025-06-06 05:09:09,137 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'huWY2021IJMS', {'langid': 'english', 'copyright': 'https://creativecommons.org/licenses/by/4.0/', 'urldate': '2025-06-05', 'doi': '10.3390/ijms22158109', 'issn': '1422-0067', 'pages': '8109', 'number': '15', 'volume': '22', 'journal': 'International Journal of Molecular Sciences', 'month': BibDataStringExpression([BibDataString('jul')]), 'year': '2021', 'author': 'Hu, Wen-Yang and Hu, Dan-Ping and Xie, Lishi and Nonn, Larisa and Lu, Ranli and Abern, Michael and Shioda, Toshihiro and Prins, Gail S.', 'title': 'Keratin {{Profiling}} by {{Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy}} and {{Cancer Stem-Like Cells}}'}]
+2025-06-06 05:09:09,137 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 05:09:09,142 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'liQ2016Oncotarget', {'langid': 'english', 'urldate': '2025-06-05', 'doi': '10.18632/oncotarget.13175', 'issn': '1949-2553', 'pages': '84645--84657', 'number': '51', 'volume': '7', 'journal': 'Oncotarget', 'month': BibDataStringExpression([BibDataString('dec')]), 'year': '2016', 'author': 'Li, Qinlong and Yin, Lijuan and Jones, Lawrence W. and Chu, Gina C-Y and Wu, Jason B-Y. and Huang, Jen-Ming and Li, Quanlin and You, Sungyong and Kim, Jayoung and Lu, Yi-Tsung and Mrdenovic, Stefan and Wang, Ruoxiang and Freeman, Michael R. and Garraway, Isla and Lewis, Michael S. and Chung, Leland W. K. and Zhau, Haiyen E.', 'title': 'Keratin 13 Expression Reprograms Bone and Brain Metastases of Human Prostate Cancer Cells'}]
+2025-06-06 05:09:09,142 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 05:09:09,145 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'takenakaW2023J.Radiat.Res.Tokyo', {'langid': 'english', 'copyright': 'https://creativecommons.org/licenses/by/4.0/', 'urldate': '2025-06-05', 'doi': '10.1093/jrr/rrac091', 'issn': '0449-3060, 1349-9157', 'pages': '284--293', 'number': '2', 'volume': '64', 'journal': 'Journal of Radiation Research', 'month': BibDataStringExpression([BibDataString('mar')]), 'year': '2023', 'author': 'Takenaka, Wataru and Yokoyama, Yuhki and Ikehata, Katsuya and Kouda, Shihori and Hirose, Haruka and Minami, Kazumasa and Hamada, Yoshinosuke and Mori, Seiji and Koizumi, Masahiko and Yamamoto, Hirofumi', 'title': '{{{\\emph{KRT13}}}} Is Upregulated in Pancreatic Cancer Stem-like Cells and Associated with Radioresistance'}]
+2025-06-06 05:09:09,146 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 05:09:09,149 - bibtexparser.bparser - DEBUG - Found Entry: ['article', 'yinL2022BreastCancerRes', {'langid': 'english', 'urldate': '2025-06-05', 'doi': '10.1186/s13058-022-01502-6', 'issn': '1465-542X', 'pages': '7', 'number': '1', 'volume': '24', 'journal': 'Breast Cancer Research', 'month': BibDataStringExpression([BibDataString('dec')]), 'year': '2022', 'author': 'Yin, Lijuan and Li, Qinlong and Mrdenovic, Stefan and Chu, Gina Chia-Yi and Wu, Boyang Jason and Bu, Hong and Duan, Peng and Kim, Jayoung and You, Sungyong and Lewis, Michael S. and Liang, Gangning and Wang, Ruoxiang and Zhau, Haiyen E. and Chung, Leland W. K.', 'title': '{{KRT13}} Promotes Stemness and Drives Metastasis in Breast Cancer through a Plakoglobin/c-{{Myc}} Signaling Pathway'}]
+2025-06-06 05:09:09,149 - bibtexparser.bparser - DEBUG - Apply customizations and return dict
+2025-06-06 05:09:09,151 - root - INFO - 4 件のBibTeXエントリを解析しました
+2025-06-06 05:09:09,167 - root - INFO - 0 個のMarkdownファイルを発見しました
+2025-06-06 05:09:19 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: file_organization
+2025-06-06 05:09:19 - INFO - ObsClippingsManager.WorkflowManager - Executing file organization workflow
+2025-06-06 05:09:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Starting file organization workflow
+2025-06-06 05:09:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 05:09:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsed 4 BibTeX entries
+2025-06-06 05:09:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Discovering Markdown files
+2025-06-06 05:09:19 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Found 0 Markdown files
+2025-06-06 05:09:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 0 total Markdown files, 0 need organization
+2025-06-06 05:09:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 0 Markdown files to process
+2025-06-06 05:09:19 - ERROR - ObsClippingsManager.WorkflowManager - Workflow failed: file_organization
+2025-06-06 05:13:24 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: file_organization
+2025-06-06 05:13:24 - INFO - ObsClippingsManager.WorkflowManager - Executing file organization workflow
+2025-06-06 05:13:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Starting file organization workflow
+2025-06-06 05:13:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 05:13:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsed 4 BibTeX entries
+2025-06-06 05:13:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Discovering Markdown files
+2025-06-06 05:13:24 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Found 0 Markdown files
+2025-06-06 05:13:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 0 total Markdown files, 0 need organization
+2025-06-06 05:13:24 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 0 Markdown files to process
+2025-06-06 05:13:24 - ERROR - ObsClippingsManager.WorkflowManager - Workflow failed: file_organization
+2025-06-06 05:16:06 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: citation_fetching
+2025-06-06 05:16:06 - INFO - ObsClippingsManager.WorkflowManager - Executing citation fetching workflow
+2025-06-06 05:16:06 - INFO - ObsClippingsManager.CitationWorkflow - Starting citation fetching workflow
+2025-06-06 05:16:06 - INFO - ObsClippingsManager.CitationWorkflow - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 05:16:06 - INFO - ObsClippingsManager.CitationWorkflow - Parsed 4 BibTeX entries
+2025-06-06 05:16:06 - INFO - ObsClippingsManager.CitationWorkflow - Extracting DOIs from BibTeX entries
+2025-06-06 05:16:06 - INFO - ObsClippingsManager.CitationWorkflow - Extracted 4 DOIs
+2025-06-06 05:16:06 - INFO - ObsClippingsManager.CitationWorkflow - Fetching citations for 4 DOIs
+2025-06-06 05:16:06 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.3390/ijms22158109
+2025-06-06 05:16:06 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.3390/ijms22158109
+2025-06-06 05:16:08 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 67 references for 10.3390/ijms22158109
+2025-06-06 05:16:08 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.3390/ijms22158109: 67 references
+2025-06-06 05:16:08 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 67 references for 10.3390/ijms22158109 from CrossRef
+2025-06-06 05:16:08 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.18632/oncotarget.13175
+2025-06-06 05:16:08 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.18632/oncotarget.13175
+2025-06-06 05:16:10 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 51 references for 10.18632/oncotarget.13175
+2025-06-06 05:16:10 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.18632/oncotarget.13175: 51 references
+2025-06-06 05:16:10 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 51 references for 10.18632/oncotarget.13175 from CrossRef
+2025-06-06 05:16:10 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.1093/jrr/rrac091
+2025-06-06 05:16:10 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.1093/jrr/rrac091
+2025-06-06 05:16:11 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 52 references for 10.1093/jrr/rrac091
+2025-06-06 05:16:11 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.1093/jrr/rrac091: 52 references
+2025-06-06 05:16:11 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 52 references for 10.1093/jrr/rrac091 from CrossRef
+2025-06-06 05:16:11 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.1186/s13058-022-01502-6
+2025-06-06 05:16:11 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.1186/s13058-022-01502-6
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 51 references for 10.1186/s13058-022-01502-6
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.1186/s13058-022-01502-6: 51 references
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 51 references for 10.1186/s13058-022-01502-6 from CrossRef
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationWorkflow - Citation fetching completed: 4/4 DOIs processed, 221 total references
+2025-06-06 05:16:12 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 4: 'NoneType' object has no attribute 'strip'
+2025-06-06 05:16:12 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 32: 'NoneType' object has no attribute 'strip'
+2025-06-06 05:16:12 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 36: 'NoneType' object has no attribute 'strip'
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 64/67 references to BibTeX
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationWorkflow - Saved 67 references to /home/user/ManuscriptsManager/References/crossref_references_10.3390_ijms22158109.bib
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 51/51 references to BibTeX
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationWorkflow - Saved 51 references to /home/user/ManuscriptsManager/References/crossref_references_10.18632_oncotarget.13175.bib
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 52/52 references to BibTeX
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationWorkflow - Saved 52 references to /home/user/ManuscriptsManager/References/crossref_references_10.1093_jrr_rrac091.bib
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 51/51 references to BibTeX
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationWorkflow - Saved 51 references to /home/user/ManuscriptsManager/References/crossref_references_10.1186_s13058-022-01502-6.bib
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.CitationWorkflow - Citation fetching workflow completed successfully
+2025-06-06 05:16:12 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: citation_fetching
+2025-06-06 05:22:00 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: file_organization
+2025-06-06 05:22:00 - INFO - ObsClippingsManager.WorkflowManager - Executing file organization workflow
+2025-06-06 05:22:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Starting file organization workflow
+2025-06-06 05:22:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 05:22:01 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsed 4 BibTeX entries
+2025-06-06 05:22:01 - INFO - ObsClippingsManager.OrganizationWorkflow - Discovering Markdown files
+2025-06-06 05:22:01 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Found 2 Markdown files
+2025-06-06 05:22:01 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 2 total Markdown files, 2 need organization
+2025-06-06 05:22:01 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 2 Markdown files to process
+2025-06-06 05:22:01 - INFO - ObsClippingsManager.OrganizationWorkflow - Matching 2 files against 4 BibTeX entries
+2025-06-06 05:22:01 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - Match successful: KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md -> takenakaW2023J.Radiat.Res.Tokyo (similarity: 0.963)
+2025-06-06 05:22:01 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - Match successful: KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway - Breast Cancer Research.md -> yinL2022BreastCancerRes (similarity: 0.934)
+2025-06-06 05:22:01 - INFO - ObsClippingsManager.OrganizationWorkflow - Matching statistics: 2/2 files matched (100.0% success rate)
+2025-06-06 05:22:01 - INFO - ObsClippingsManager.OrganizationWorkflow - Matched 2 files
+2025-06-06 05:22:01 - INFO - ObsClippingsManager.OrganizationWorkflow - Requesting user confirmation for file operations
+2025-06-06 05:22:18 - INFO - ObsClippingsManager.OrganizationWorkflow - Approved 2 file operations
+2025-06-06 05:22:18 - INFO - ObsClippingsManager.OrganizationWorkflow - Organizing 2 files
+2025-06-06 05:22:18 - INFO - ObsClippingsManager.RenameMkDir.DirectoryOrganizer - Created directory: /home/user/ManuscriptsManager/Clippings/yinL2022BreastCancerRes
+2025-06-06 05:22:19 - INFO - ObsClippingsManager.RenameMkDir.DirectoryOrganizer - Created directory: /home/user/ManuscriptsManager/Clippings/takenakaW2023J.Radiat.Res.Tokyo
+2025-06-06 05:22:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Prepared 2/2 directories
+2025-06-06 05:22:19 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Backup created: backups/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance_20250606_052219.backup.md
+2025-06-06 05:22:19 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - File moved: /home/user/ManuscriptsManager/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md -> /home/user/ManuscriptsManager/Clippings/takenakaW2023J.Radiat.Res.Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-06 05:22:19 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Backup created: backups/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway - Breast Cancer Research_20250606_052219.backup.md
+2025-06-06 05:22:19 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - File moved: /home/user/ManuscriptsManager/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway - Breast Cancer Research.md -> /home/user/ManuscriptsManager/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-06 05:22:19 - INFO - ObsClippingsManager.OrganizationWorkflow - File organization completed: 2 successful, 0 failed, 0 skipped
+2025-06-06 05:22:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Cleaning up empty directories
+2025-06-06 05:22:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Cleaned up 0 empty directories
+2025-06-06 05:22:19 - INFO - ObsClippingsManager.OrganizationWorkflow - File organization workflow completed successfully
+2025-06-06 05:22:19 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: file_organization
+2025-06-06 07:21:59 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: sync_check
+2025-06-06 07:21:59 - INFO - ObsClippingsManager.WorkflowManager - Executing sync check workflow
+2025-06-06 07:21:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Starting sync check workflow
+2025-06-06 07:21:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Parsing BibTeX file
+2025-06-06 07:21:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Scanning Clippings directory
+2025-06-06 07:21:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking papers missing in Clippings
+2025-06-06 07:21:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 papers in bib but missing in clippings
+2025-06-06 07:21:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking directories missing in BibTeX
+2025-06-06 07:21:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 orphaned directories in clippings
+2025-06-06 07:21:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - no issues found
+2025-06-06 07:21:59 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
+2025-06-06 07:22:26 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: sync_check
+2025-06-06 07:22:26 - INFO - ObsClippingsManager.WorkflowManager - Executing sync check workflow
+2025-06-06 07:22:26 - INFO - ObsClippingsManager.Workflows.SyncCheck - Starting sync check workflow
+2025-06-06 07:22:26 - INFO - ObsClippingsManager.Workflows.SyncCheck - Parsing BibTeX file
+2025-06-06 07:22:26 - INFO - ObsClippingsManager.Workflows.SyncCheck - Scanning Clippings directory
+2025-06-06 07:22:26 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking papers missing in Clippings
+2025-06-06 07:22:26 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 papers in bib but missing in clippings
+2025-06-06 07:22:26 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking directories missing in BibTeX
+2025-06-06 07:22:26 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 orphaned directories in clippings
+2025-06-06 07:22:26 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - no issues found
+2025-06-06 07:22:26 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
+2025-06-06 07:54:59 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: sync_check
+2025-06-06 07:54:59 - INFO - ObsClippingsManager.WorkflowManager - Executing sync check workflow
+2025-06-06 07:54:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Starting sync check workflow
+2025-06-06 07:54:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Parsing BibTeX file
+2025-06-06 07:54:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Scanning Clippings directory
+2025-06-06 07:54:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking papers missing in Clippings
+2025-06-06 07:54:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 4 papers in bib but missing in clippings
+2025-06-06 07:54:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking directories missing in BibTeX
+2025-06-06 07:54:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 1 orphaned directories in clippings
+2025-06-06 07:54:59 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - 5 issues found
+2025-06-06 07:54:59 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
+2025-06-06 07:55:15 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: sync_check
+2025-06-06 07:55:15 - INFO - ObsClippingsManager.WorkflowManager - Executing sync check workflow
+2025-06-06 07:55:15 - INFO - ObsClippingsManager.Workflows.SyncCheck - Starting sync check workflow
+2025-06-06 07:55:15 - INFO - ObsClippingsManager.Workflows.SyncCheck - Parsing BibTeX file
+2025-06-06 07:55:15 - INFO - ObsClippingsManager.Workflows.SyncCheck - Scanning Clippings directory
+2025-06-06 07:55:15 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking papers missing in Clippings
+2025-06-06 07:55:15 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 4 papers in bib but missing in clippings
+2025-06-06 07:55:15 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking directories missing in BibTeX
+2025-06-06 07:55:15 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 1 orphaned directories in clippings
+2025-06-06 07:55:15 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - 5 issues found
+2025-06-06 07:55:15 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
+2025-06-06 07:55:22 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: sync_check
+2025-06-06 07:55:22 - INFO - ObsClippingsManager.WorkflowManager - Executing sync check workflow
+2025-06-06 07:55:22 - INFO - ObsClippingsManager.Workflows.SyncCheck - Starting sync check workflow
+2025-06-06 07:55:22 - INFO - ObsClippingsManager.Workflows.SyncCheck - Parsing BibTeX file
+2025-06-06 07:55:22 - INFO - ObsClippingsManager.Workflows.SyncCheck - Scanning Clippings directory
+2025-06-06 07:55:22 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking papers missing in Clippings
+2025-06-06 07:55:22 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 4 papers in bib but missing in clippings
+2025-06-06 07:55:22 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking directories missing in BibTeX
+2025-06-06 07:55:22 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 1 orphaned directories in clippings
+2025-06-06 07:55:22 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - 5 issues found
+2025-06-06 07:55:22 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
+2025-06-06 08:00:20 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: file_organization
+2025-06-06 08:00:20 - INFO - ObsClippingsManager.WorkflowManager - Executing file organization workflow
+2025-06-06 08:00:20 - INFO - ObsClippingsManager.OrganizationWorkflow - Starting file organization workflow
+2025-06-06 08:00:20 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 08:00:21 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsed 5 BibTeX entries
+2025-06-06 08:00:21 - INFO - ObsClippingsManager.OrganizationWorkflow - Discovering Markdown files
+2025-06-06 08:00:21 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Found 0 Markdown files
+2025-06-06 08:00:21 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 0 total Markdown files, 0 need organization
+2025-06-06 08:00:21 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 0 Markdown files to process
+2025-06-06 08:00:21 - ERROR - ObsClippingsManager.WorkflowManager - Workflow failed: file_organization
+2025-06-06 08:01:41 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: sync_check
+2025-06-06 08:01:41 - INFO - ObsClippingsManager.WorkflowManager - Executing sync check workflow
+2025-06-06 08:01:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Starting sync check workflow
+2025-06-06 08:01:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Parsing BibTeX file
+2025-06-06 08:01:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Scanning Clippings directory
+2025-06-06 08:01:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking papers missing in Clippings
+2025-06-06 08:01:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 1 papers in bib but missing in clippings
+2025-06-06 08:01:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking directories missing in BibTeX
+2025-06-06 08:01:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 orphaned directories in clippings
+2025-06-06 08:01:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - 1 issues found
+2025-06-06 08:01:41 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
+2025-06-06 08:20:18 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: sync_check
+2025-06-06 08:20:18 - INFO - ObsClippingsManager.WorkflowManager - Executing sync check workflow
+2025-06-06 08:20:18 - INFO - ObsClippingsManager.Workflows.SyncCheck - Starting sync check workflow
+2025-06-06 08:20:18 - INFO - ObsClippingsManager.Workflows.SyncCheck - Parsing BibTeX file
+2025-06-06 08:20:18 - INFO - ObsClippingsManager.Workflows.SyncCheck - Scanning Clippings directory
+2025-06-06 08:20:18 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking papers missing in Clippings
+2025-06-06 08:20:18 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 1 papers in bib but missing in clippings
+2025-06-06 08:20:18 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking directories missing in BibTeX
+2025-06-06 08:20:18 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 orphaned directories in clippings
+2025-06-06 08:20:18 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - 1 issues found
+2025-06-06 08:20:18 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: file_organization
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.WorkflowManager - Executing file organization workflow
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.OrganizationWorkflow - Starting file organization workflow
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsed 5 BibTeX entries
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.OrganizationWorkflow - Discovering Markdown files
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Found 1 Markdown files
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 1 total Markdown files, 1 need organization
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 1 Markdown files to process
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.OrganizationWorkflow - Matching 1 files against 5 BibTeX entries
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - No match found: APMIS  Medical Research Journal.md (best similarity: 0.322 < threshold: 0.8)
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.OrganizationWorkflow - Matching statistics: 0/1 files matched (0.0% success rate)
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.OrganizationWorkflow - 1 files did not meet similarity threshold
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.OrganizationWorkflow - Matched 0 files
+2025-06-06 08:20:46 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: file_organization
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: file_organization
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.WorkflowManager - Executing file organization workflow
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Starting file organization workflow
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsing BibTeX file: /tmp/test_bibtex.bib
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsed 2 BibTeX entries
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Discovering Markdown files
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Found 1 Markdown files
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 1 total Markdown files, 1 need organization
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 1 Markdown files to process
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Matching 1 files against 2 BibTeX entries
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - DOI match successful: test_paper.md -> Smith2023
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Processing title synchronization for matched files
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Synchronized titles for 1/1 files
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Matching statistics: 1/1 files matched (100.0% success rate)
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Matched 1 files
+2025-06-06 11:44:00 - INFO - ObsClippingsManager.OrganizationWorkflow - Requesting user confirmation for file operations
+2025-06-06 11:44:14 - INFO - ObsClippingsManager.OrganizationWorkflow - Approved 1 file operations
+2025-06-06 11:44:14 - INFO - ObsClippingsManager.OrganizationWorkflow - Organizing 1 files
+2025-06-06 11:44:14 - INFO - ObsClippingsManager.OrganizationWorkflow - [DRY RUN] Would create 1 directories
+2025-06-06 11:44:14 - INFO - ObsClippingsManager.OrganizationWorkflow - File organization completed: 1 successful, 0 failed, 0 skipped
+2025-06-06 11:44:14 - INFO - ObsClippingsManager.OrganizationWorkflow - File organization workflow completed successfully
+2025-06-06 11:44:14 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: file_organization
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: file_organization
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.WorkflowManager - Executing file organization workflow
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - Starting file organization workflow
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsing BibTeX file: /tmp/test_bibtex.bib
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsed 2 BibTeX entries
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - Discovering Markdown files
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Found 1 Markdown files
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 1 total Markdown files, 1 need organization
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 1 Markdown files to process
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - Matching 1 files against 2 BibTeX entries
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - No match found: test_paper.md (best similarity: 0.464 < threshold: 0.8)
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - Processing title synchronization for matched files
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - Synchronized titles for 0/0 files
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - Matching statistics: 0/1 files matched (0.0% success rate)
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - 1 files did not meet similarity threshold
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.OrganizationWorkflow - Matched 0 files
+2025-06-06 11:44:29 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: file_organization
+2025-06-06 11:48:10 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: sync_check
+2025-06-06 11:48:10 - INFO - ObsClippingsManager.WorkflowManager - Executing sync check workflow
+2025-06-06 11:48:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Starting sync check workflow
+2025-06-06 11:48:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Parsing BibTeX file
+2025-06-06 11:48:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Scanning Clippings directory
+2025-06-06 11:48:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking papers missing in Clippings
+2025-06-06 11:48:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 5 papers in bib but missing in clippings
+2025-06-06 11:48:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking directories missing in BibTeX
+2025-06-06 11:48:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 orphaned directories in clippings
+2025-06-06 11:48:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - 5 issues found
+2025-06-06 11:48:10 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check

@@ -1,0 +1,17 @@
+# ObsClippingsManager Dependencies
+
+# Core packages
+click>=8.0.0              # Command line interface
+bibtexparser>=1.4.0       # BibTeX parsing
+fuzzywuzzy>=0.18.0        # String similarity matching
+python-levenshtein>=0.12.0 # Fast string comparison
+PyYAML>=6.0               # YAML parsing for frontmatter
+
+# HTTP and API clients
+requests>=2.25.0          # HTTP requests for APIs
+
+# Data validation (optional but recommended)
+pydantic>=1.8.0           # Configuration validation
+
+# Path handling (for older Python versions)
+pathlib2>=2.3.7; python_version < "3.4" 
