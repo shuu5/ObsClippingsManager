@@ -11,6 +11,7 @@
 ## Git開発ワークフロー
 
 ### 開発開始時
+- 必ずmainブランチにチェックアウトし、pullしてからブランチを作成して。
 ```bash
 git checkout main
 git pull origin main
