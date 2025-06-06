@@ -6,7 +6,7 @@ CrossRef APIをメインとし、失敗時にOpenCitations APIをフォールバ
 """
 
 # Version information
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 __author__ = "ObsClippingsManager Team"
 
 # Import main classes
@@ -14,6 +14,7 @@ from .crossref_client import CrossRefClient
 from .opencitations_client import OpenCitationsClient
 from .reference_formatter import ReferenceFormatter
 from .fallback_strategy import FallbackStrategy
+from .sync_integration import SyncIntegration
 
 # Import exceptions
 from .exceptions import (
@@ -29,6 +30,7 @@ __all__ = [
     'OpenCitationsClient',
     'ReferenceFormatter',
     'FallbackStrategy',
+    'SyncIntegration',
     
     # Exceptions
     'CitationFetcherError',

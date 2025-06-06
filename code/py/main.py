@@ -90,11 +90,23 @@ def cli(ctx: Dict[str, Any], config: str, log_level: str, dry_run: bool, verbose
               help='BibTeX file to process',
               type=click.Path(exists=True))
 @click.option('--output-dir', '-o',
-              help='Output directory for results',
+              help='Output directory for results (legacy mode)',
               type=click.Path())
 @click.option('--max-retries', '-r',
               type=int,
               help='Maximum API retry attempts')
+@click.option('--use-sync-integration/--no-sync-integration',
+              default=True,
+              help='Use sync integration for target paper identification')
+@click.option('--backup-existing',
+              is_flag=True,
+              help='Create backup of existing references.bib files')
+@click.option('--request-delay',
+              type=float,
+              help='Delay between API requests (seconds)')
+@click.option('--timeout',
+              type=int,
+              help='API request timeout (seconds)')
 @click.option('--auto-approve', '-y',
               is_flag=True,
               help='Automatically approve all operations')
@@ -103,11 +115,17 @@ def fetch_citations(ctx: Dict[str, Any],
                    bibtex_file: Optional[str],
                    output_dir: Optional[str],
                    max_retries: Optional[int],
+                   use_sync_integration: bool,
+                   backup_existing: bool,
+                   request_delay: Optional[float],
+                   timeout: Optional[int],
                    auto_approve: bool):
     """
-    引用文献取得ワークフローを実行
+    引用文献取得ワークフローを実行 (v2.1)
     
-    BibTeXファイルからDOIを抽出し、学術API経由で引用文献を取得します。
+    sync機能と連携し、論文ごとの個別references.bib保存を行います。
+    デフォルトでは同期済み論文のみを対象とし、各citation_keyディレクトリに
+    references.bibファイルを個別保存します。
     """
     try:
         workflow_manager = ctx['workflow_manager']
@@ -116,7 +134,9 @@ def fetch_citations(ctx: Dict[str, Any],
         # 実行オプションの構築
         options = {
             'dry_run': ctx['dry_run'],
-            'auto_approve': auto_approve
+            'auto_approve': auto_approve,
+            'use_sync_integration': use_sync_integration,
+            'backup_existing': backup_existing
         }
         
         # コマンドライン引数で設定を上書き
@@ -126,8 +146,23 @@ def fetch_citations(ctx: Dict[str, Any],
             options['output_dir'] = output_dir
         if max_retries is not None:
             options['max_retries'] = max_retries
+        if request_delay is not None:
+            options['request_delay'] = request_delay
+        if timeout is not None:
+            options['timeout'] = timeout
         
-        click.echo("🔍 Starting citation fetching workflow...")
+        # sync連携モードの表示
+        if use_sync_integration:
+            click.echo("🔗 Starting citation fetching workflow with sync integration...")
+            click.echo("   → Target: synchronized papers only")
+            click.echo("   → Output: individual references.bib files")
+        else:
+            click.echo("🔍 Starting citation fetching workflow (legacy mode)...")
+            click.echo("   → Target: all papers in BibTeX")
+            click.echo("   → Output: centralized files")
+        
+        if backup_existing:
+            click.echo("💾 Backup mode enabled for existing references.bib files")
         
         # ワークフロー実行
         success, results = workflow_manager.execute_workflow(
@@ -137,7 +172,21 @@ def fetch_citations(ctx: Dict[str, Any],
         
         # 結果表示
         if success:
-            click.echo("✅ Citation fetching completed successfully!")
+            click.echo("✅ Citation fetching v2.1 completed successfully!")
+            
+            # sync連携統計の表示
+            if use_sync_integration and 'sync_integration' in results:
+                sync_info = results['sync_integration']
+                click.echo(f"🔗 Sync integration results:")
+                click.echo(f"   • Synced papers: {sync_info.get('synced_papers', 0)}")
+                click.echo(f"   • Sync rate: {sync_info.get('sync_rate', 0):.1f}%")
+                click.echo(f"   • Papers with DOI: {sync_info.get('papers_with_valid_dois', 0)}")
+            
+            # 保存結果の表示
+            individual_saves = results.get('successful_individual_saves', 0)
+            total_refs = results.get('total_references_saved', 0)
+            if individual_saves > 0:
+                click.echo(f"📁 Individual saves: {individual_saves} papers, {total_refs} references")
             
             # 詳細統計の表示
             if ctx['verbose']:
@@ -145,9 +194,10 @@ def fetch_citations(ctx: Dict[str, Any],
                 click.echo("\n" + summary)
             else:
                 # 簡潔な統計
-                dois_processed = results.get('successful_fetches', 0)
-                total_refs = results.get('total_references', 0)
-                click.echo(f"📊 Processed {dois_processed} DOIs, found {total_refs} references")
+                if not use_sync_integration:
+                    dois_processed = results.get('successful_fetches', 0)
+                    total_refs_legacy = results.get('total_references', 0)
+                    click.echo(f"📊 Processed {dois_processed} DOIs, found {total_refs_legacy} references")
         else:
             error = results.get('error', 'Unknown error')
             click.echo(f"❌ Citation fetching failed: {error}", err=True)
@@ -354,69 +404,164 @@ def sync_check(ctx: Dict[str, Any],
 
 
 @cli.command()
+@click.option('--sync-first',
+              is_flag=True,
+              help='Run sync-check first before other operations')
+@click.option('--fetch-citations',
+              is_flag=True,
+              help='Include citation fetching in the integrated workflow')
+@click.option('--organize-first',
+              is_flag=True,
+              help='Run file organization first before other operations')
+@click.option('--backup-existing',
+              is_flag=True,
+              help='Create backup of existing references.bib files')
 @click.option('--continue-on-failure',
               is_flag=True,
-              help='Continue organization even if citation fetching fails')
+              help='Continue subsequent operations even if one fails')
 @click.option('--auto-approve', '-y',
               is_flag=True,
               help='Automatically approve all operations')
 @pass_context
 def run_integrated(ctx: Dict[str, Any],
+                  sync_first: bool,
+                  fetch_citations: bool,
+                  organize_first: bool,
+                  backup_existing: bool,
                   continue_on_failure: bool,
                   auto_approve: bool):
     """
-    統合ワークフローを実行
+    統合ワークフローを実行 (v2.1)
     
-    引用文献取得とファイル整理を順次実行します。
+    sync-check、file-organization、citation-fetchingを適切な順序で連続実行します。
+    各操作は独立して実行可能で、柔軟なワークフロー組み合わせが可能です。
     """
     try:
         workflow_manager = ctx['workflow_manager']
         logger = ctx['logger'].get_logger('CLI')
         
-        # 実行オプションの構築
-        options = {
-            'dry_run': ctx['dry_run'],
-            'auto_approve': auto_approve,
-            'continue_on_citation_failure': continue_on_failure
+        # 実行するワークフローの決定
+        workflows_to_run = []
+        
+        if sync_first:
+            workflows_to_run.append('sync_check')
+        if organize_first:
+            workflows_to_run.append('file_organization')
+        if fetch_citations:
+            workflows_to_run.append('citation_fetching')
+        
+        # デフォルト動作: sync + citation
+        if not any([sync_first, organize_first, fetch_citations]):
+            workflows_to_run = ['sync_check', 'citation_fetching']
+            click.echo("🔄 Default integrated workflow: sync-check → citation-fetching")
+        
+        # 実行順序の表示
+        workflow_names = " → ".join(workflows_to_run)
+        click.echo(f"🚀 Starting integrated workflow: {workflow_names}")
+        if backup_existing:
+            click.echo("💾 Backup mode enabled")
+        
+        # 実行結果の収集
+        overall_success = True
+        all_results = {}
+        execution_summary = []
+        
+        # 各ワークフローを順次実行
+        for i, workflow_name in enumerate(workflows_to_run, 1):
+            try:
+                click.echo(f"\n📋 Step {i}/{len(workflows_to_run)}: {workflow_name}")
+                
+                # ワークフロー固有のオプション構築
+                options = {
+                    'dry_run': ctx['dry_run'],
+                    'auto_approve': auto_approve
+                }
+                
+                # citation_fetchingの場合は追加オプション
+                if workflow_name == 'citation_fetching':
+                    options.update({
+                        'use_sync_integration': True,  # 統合ワークフローでは常にsync連携
+                        'backup_existing': backup_existing
+                    })
+                
+                # ワークフロー実行
+                success, results = workflow_manager.execute_workflow(
+                    WorkflowType(workflow_name),
+                    **options
+                )
+                
+                all_results[workflow_name] = results
+                execution_summary.append({
+                    'workflow': workflow_name,
+                    'success': success,
+                    'results': results
+                })
+                
+                if success:
+                    click.echo(f"✅ {workflow_name} completed successfully")
+                    
+                    # 簡潔な結果表示
+                    if workflow_name == 'sync_check':
+                        missing_in_clippings = len(results.get('missing_in_clippings', []))
+                        missing_in_bib = len(results.get('missing_in_bib', []))
+                        total_issues = missing_in_clippings + missing_in_bib
+                        click.echo(f"   🔍 Sync status: {total_issues} issues found")
+                    
+                    elif workflow_name == 'file_organization':
+                        organized = results.get('organized_files', 0)
+                        click.echo(f"   📁 Organized: {organized} files")
+                    
+                    elif workflow_name == 'citation_fetching':
+                        individual_saves = results.get('successful_individual_saves', 0)
+                        total_refs = results.get('total_references_saved', 0)
+                        click.echo(f"   📖 Citations: {individual_saves} papers, {total_refs} references")
+                
+                else:
+                    error = results.get('error', 'Unknown error')
+                    click.echo(f"❌ {workflow_name} failed: {error}")
+                    overall_success = False
+                    
+                    if not continue_on_failure:
+                        break
+                
+            except Exception as e:
+                click.echo(f"❌ {workflow_name} error: {e}")
+                overall_success = False
+                
+                if not continue_on_failure:
+                    break
+        
+        # 最終結果の表示
+        click.echo(f"\n{'='*50}")
+        if overall_success:
+            click.echo("🎉 Integrated workflow completed successfully!")
+        else:
+            click.echo("⚠️ Integrated workflow completed with some failures")
+        
+        # 詳細統計の表示
+        if ctx['verbose']:
+            click.echo(f"\n📊 Detailed Results:")
+            for summary in execution_summary:
+                workflow = summary['workflow']
+                success = summary['success']
+                status_icon = "✅" if success else "❌"
+                click.echo(f"  {status_icon} {workflow}")
+                
+                if success and 'statistics' in summary['results']:
+                    stats = summary['results']['statistics']
+                    for key, value in stats.items():
+                        if isinstance(value, (int, float)) and value > 0:
+                            click.echo(f"     {key}: {value}")
+        
+        # 統合結果の構築
+        integrated_results = {
+            'overall_success': overall_success,
+            'workflows_executed': workflows_to_run,
+            'individual_results': all_results,
+            'execution_summary': execution_summary
         }
         
-        click.echo("🚀 Starting integrated workflow...")
-        
-        # ワークフロー実行
-        success, results = workflow_manager.execute_workflow(
-            WorkflowType.INTEGRATED,
-            **options
-        )
-        
-        # 結果表示
-        if success:
-            click.echo("✅ Integrated workflow completed successfully!")
-            
-            # 統計の表示
-            if ctx['verbose']:
-                summary = create_workflow_execution_summary(results)
-                click.echo("\n" + summary)
-            else:
-                # 簡潔な統計
-                citation_results = results.get('citation_results', {})
-                org_results = results.get('organization_results', {})
-                
-                citation_success = citation_results.get('success', False)
-                org_success = org_results.get('success', False)
-                
-                click.echo(f"📊 Citation phase: {'✓' if citation_success else '✗'}")
-                click.echo(f"📊 Organization phase: {'✓' if org_success else '✗'}")
-                
-                if citation_success:
-                    total_refs = citation_results.get('total_references', 0)
-                    click.echo(f"   📖 Found {total_refs} references")
-                
-                if org_success:
-                    organized = org_results.get('organized_files', 0)
-                    click.echo(f"   📁 Organized {organized} files")
-        else:
-            error = results.get('error', 'Unknown error')
-            click.echo(f"❌ Integrated workflow failed: {error}", err=True)
+        if not overall_success:
             sys.exit(1)
             
     except Exception as e:
