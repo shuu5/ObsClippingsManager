@@ -1,8 +1,7 @@
----
-description: 
-globs: 
-alwaysApply: true
----
+# ObsClippingsManager
+
+## ルール
+
 このルールを読み込んだら「manuscripts-manegerを読み込みました！」と発言して。
 
 - このPython環境はuvで管理されているのでuvを使用してパッケージ管理を行って。
