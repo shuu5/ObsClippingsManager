@@ -358,9 +358,10 @@ class TestWorkflowIntegration(unittest.TestCase):
         import shutil
         shutil.rmtree(self.temp_dir)
     
+    @patch('modules.workflows.citation_workflow.SyncIntegration')
     @patch('modules.workflows.citation_workflow.BibTeXParser')
     @patch('modules.workflows.citation_workflow.FallbackStrategy')
-    def test_citation_workflow_execution_flow(self, mock_fallback, mock_parser):
+    def test_citation_workflow_execution_flow(self, mock_fallback, mock_parser, mock_sync):
         """Citation Workflowの実行フローテスト"""
         # モック設定管理
         mock_config_manager = Mock()
@@ -390,6 +391,25 @@ class TestWorkflowIntegration(unittest.TestCase):
         )
         mock_fallback.return_value = mock_fallback_instance
         
+        # モックSyncIntegration
+        mock_sync_instance = Mock()
+        mock_sync_instance.get_target_papers_for_citation_fetching.return_value = (
+            True,
+            [{
+                'citation_key': 'test_entry',
+                'doi': '10.1000/test.doi',
+                'has_valid_doi': True,
+                'directory_path': str(Path(self.temp_dir) / 'test_entry'),
+                'references_file_path': str(Path(self.temp_dir) / 'test_entry' / 'references.bib')
+            }]
+        )
+        mock_sync_instance.get_sync_statistics.return_value = {
+            'total_papers_in_bib': 1,
+            'synced_papers_count': 1,
+            'papers_with_valid_dois': 1
+        }
+        mock_sync.return_value = mock_sync_instance
+        
         # テスト用BibTeXファイルを作成
         bibtex_file = Path(self.temp_dir) / 'test.bib'
         with open(bibtex_file, 'w') as f:
@@ -404,7 +424,7 @@ class TestWorkflowIntegration(unittest.TestCase):
         self.assertTrue(success)
         # 実際の実装に合わせてstageを確認
         self.assertIn('stage', results)
-        self.assertIn(results['stage'], ['completed', 'saving_results'])
+        self.assertIn(results['stage'], ['completed', 'saving_results', 'statistics_generation'])
         self.assertGreater(results['successful_fetches'], 0)
     
     def test_workflow_error_scenarios(self):
