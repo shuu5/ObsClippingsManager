@@ -21,7 +21,7 @@ DEFAULT_INTEGRATED_CONFIG = {
         "log_level": "INFO",
         "log_file": "obsclippings.log",
         "backup_enabled": True,
-        "backup_dir": "./backups/",
+        "backup_dir": "/home/user/ManuscriptsManager/backups/",
         "dry_run": False
     },
     
