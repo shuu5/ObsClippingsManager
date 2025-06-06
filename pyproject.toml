@@ -5,6 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12.3"
 dependencies = [
+    "beautifulsoup4>=4.13.4",
+    "bibtexparser>=1.4.3",
+    "lxml>=5.4.0",
+    "markdownify>=1.1.0",
+    "markitdown>=0.1.2",
     "pyyaml>=6.0.2",
     "requests>=2.32.3",
+    "selenium>=4.33.0",
+    "webdriver-manager>=4.0.2",
 ]
