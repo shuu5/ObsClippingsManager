@@ -433,3 +433,197 @@ ValueError: too many values to unpack (expected 2)
 2025-06-06 12:35:58 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Identified 0 target papers for citation fetching
 2025-06-06 12:35:58 - INFO - ObsClippingsManager.CitationWorkflow - Sync integration identified 0 target papers
 2025-06-06 12:35:58 - ERROR - ObsClippingsManager.WorkflowManager - Workflow failed: citation_fetching
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: file_organization
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.WorkflowManager - Executing file organization workflow
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Starting file organization workflow
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Parsed 5 BibTeX entries
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Discovering Markdown files
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Found 5 Markdown files
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 5 total Markdown files, 5 need organization
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Found 5 Markdown files to process
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Matching 5 files against 5 BibTeX entries
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - DOI match successful: Cytokeratin 13 (CK13) expression in cancer a tissue microarray study on 10,439 tumors.md -> lennartzM2023APMIS
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - DOI match successful: KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md -> takenakaW2023J.Radiat.Res.Tokyo
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - DOI match successful: KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway - Breast Cancer Research.md -> yinL2022BreastCancerRes
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - DOI match successful: Keratin 13 expression reprograms bone and brain metastases of human prostate cancer cells.md -> liQ2016Oncotarget
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - DOI match successful: Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md -> huWY2021IJMS
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Processing title synchronization for matched files
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - Updated YAML frontmatter: /home/user/ManuscriptsManager/Clippings/Cytokeratin 13 (CK13) expression in cancer a tissue microarray study on 10,439 tumors.md
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - Updated YAML frontmatter: /home/user/ManuscriptsManager/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - Updated YAML frontmatter: /home/user/ManuscriptsManager/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway - Breast Cancer Research.md
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.RenameMkDir.FileMatcher - Updated YAML frontmatter: /home/user/ManuscriptsManager/Clippings/Keratin 13 expression reprograms bone and brain metastases of human prostate cancer cells.md
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Synchronized titles for 5/5 files
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Matching statistics: 5/5 files matched (100.0% success rate)
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Matched 5 files
+2025-06-06 13:00:19 - INFO - ObsClippingsManager.OrganizationWorkflow - Requesting user confirmation for file operations
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.OrganizationWorkflow - Approved 5 file operations
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.OrganizationWorkflow - Organizing 5 files
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.DirectoryOrganizer - Created directory: /home/user/ManuscriptsManager/Clippings/lennartzM2023APMIS
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.DirectoryOrganizer - Created directory: /home/user/ManuscriptsManager/Clippings/yinL2022BreastCancerRes
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.DirectoryOrganizer - Created directory: /home/user/ManuscriptsManager/Clippings/huWY2021IJMS
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.DirectoryOrganizer - Created directory: /home/user/ManuscriptsManager/Clippings/takenakaW2023J.Radiat.Res.Tokyo
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.DirectoryOrganizer - Created directory: /home/user/ManuscriptsManager/Clippings/liQ2016Oncotarget
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.OrganizationWorkflow - Prepared 5/5 directories
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Backup created: backups/Cytokeratin 13 (CK13) expression in cancer a tissue microarray study on 10,439 tumors_20250606_130041.backup.md
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - File moved: /home/user/ManuscriptsManager/Clippings/Cytokeratin 13 (CK13) expression in cancer a tissue microarray study on 10,439 tumors.md -> /home/user/ManuscriptsManager/Clippings/lennartzM2023APMIS/lennartzM2023APMIS.md
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Backup created: backups/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance_20250606_130041.backup.md
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - File moved: /home/user/ManuscriptsManager/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md -> /home/user/ManuscriptsManager/Clippings/takenakaW2023J.Radiat.Res.Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Backup created: backups/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway - Breast Cancer Research_20250606_130041.backup.md
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - File moved: /home/user/ManuscriptsManager/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway - Breast Cancer Research.md -> /home/user/ManuscriptsManager/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Backup created: backups/Keratin 13 expression reprograms bone and brain metastases of human prostate cancer cells_20250606_130041.backup.md
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - File moved: /home/user/ManuscriptsManager/Clippings/Keratin 13 expression reprograms bone and brain metastases of human prostate cancer cells.md -> /home/user/ManuscriptsManager/Clippings/liQ2016Oncotarget/liQ2016Oncotarget.md
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - Backup created: backups/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells_20250606_130041.backup.md
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.RenameMkDir.MarkdownManager - File moved: /home/user/ManuscriptsManager/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md -> /home/user/ManuscriptsManager/Clippings/huWY2021IJMS/huWY2021IJMS.md
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.OrganizationWorkflow - File organization completed: 5 successful, 0 failed, 0 skipped
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.OrganizationWorkflow - Cleaning up empty directories
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.OrganizationWorkflow - Cleaned up 0 empty directories
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.OrganizationWorkflow - File organization workflow completed successfully
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: file_organization
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: sync_check
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.WorkflowManager - Executing sync check workflow
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Starting sync check workflow
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Parsing BibTeX file
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Scanning Clippings directory
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking papers missing in Clippings
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 papers in bib but missing in clippings
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking directories missing in BibTeX
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 orphaned directories in clippings
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - no issues found
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: citation_fetching
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.WorkflowManager - Executing citation fetching workflow
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationWorkflow - Starting citation fetching workflow v2.1
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Starting sync integration analysis
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Found 5 directories in Clippings
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Identified 5 synced papers
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Found 5/5 papers with valid DOIs
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Validated 5 paper directories
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Sync analysis completed: 5/5 papers synced
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Identified 5 target papers for citation fetching
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationWorkflow - Sync integration identified 5 target papers
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Starting sync integration analysis
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Found 5 directories in Clippings
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Identified 5 synced papers
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Found 5/5 papers with valid DOIs
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Validated 5 paper directories
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Sync analysis completed: 5/5 papers synced
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationWorkflow - Target papers identified: 5
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationWorkflow - Fetching citations for 5 DOIs
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.1111/apm.13280
+2025-06-06 13:00:41 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.1111/apm.13280
+2025-06-06 13:00:43 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 67 references for 10.1111/apm.13280
+2025-06-06 13:00:43 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.1111/apm.13280: 67 references
+2025-06-06 13:00:43 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 67 references for 10.1111/apm.13280 from CrossRef
+2025-06-06 13:00:43 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.1186/s13058-022-01502-6
+2025-06-06 13:00:43 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.1186/s13058-022-01502-6
+2025-06-06 13:00:44 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 51 references for 10.1186/s13058-022-01502-6
+2025-06-06 13:00:44 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.1186/s13058-022-01502-6: 51 references
+2025-06-06 13:00:44 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 51 references for 10.1186/s13058-022-01502-6 from CrossRef
+2025-06-06 13:00:44 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.3390/ijms22158109
+2025-06-06 13:00:44 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.3390/ijms22158109
+2025-06-06 13:00:45 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 67 references for 10.3390/ijms22158109
+2025-06-06 13:00:45 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.3390/ijms22158109: 67 references
+2025-06-06 13:00:45 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 67 references for 10.3390/ijms22158109 from CrossRef
+2025-06-06 13:00:45 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.1093/jrr/rrac091
+2025-06-06 13:00:45 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.1093/jrr/rrac091
+2025-06-06 13:00:46 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 52 references for 10.1093/jrr/rrac091
+2025-06-06 13:00:46 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.1093/jrr/rrac091: 52 references
+2025-06-06 13:00:46 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 52 references for 10.1093/jrr/rrac091 from CrossRef
+2025-06-06 13:00:46 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.18632/oncotarget.13175
+2025-06-06 13:00:46 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.18632/oncotarget.13175
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 51 references for 10.18632/oncotarget.13175
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.18632/oncotarget.13175: 51 references
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 51 references for 10.18632/oncotarget.13175 from CrossRef
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationWorkflow - Citation fetching completed: 5/5 DOIs processed, 288 total references
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationWorkflow - Saving individual references.bib files for 5 papers
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 0: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 1: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 2: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 3: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 4: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 5: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 6: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 7: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 9: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 10: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 11: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 12: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 13: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 14: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 15: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 16: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 17: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 18: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 19: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 20: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 21: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 22: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 24: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 25: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 26: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 27: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 28: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 29: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 30: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 31: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 32: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 33: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 34: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 35: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 36: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 38: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 39: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 40: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 41: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 42: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 43: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 44: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 45: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 46: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 47: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 48: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 51: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 52: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 53: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 54: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 55: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 56: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 57: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 59: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 60: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 61: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 62: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 63: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 64: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 65: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 66: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 6/67 references to BibTeX
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationWorkflow - Saved 67 references for lennartzM2023APMIS to /home/user/ManuscriptsManager/Clippings/lennartzM2023APMIS/references.bib
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 51/51 references to BibTeX
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationWorkflow - Saved 51 references for yinL2022BreastCancerRes to /home/user/ManuscriptsManager/Clippings/yinL2022BreastCancerRes/references.bib
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 4: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 32: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - WARNING - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Failed to convert reference 36: 'NoneType' object has no attribute 'strip'
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 64/67 references to BibTeX
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationWorkflow - Saved 67 references for huWY2021IJMS to /home/user/ManuscriptsManager/Clippings/huWY2021IJMS/references.bib
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 52/52 references to BibTeX
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationWorkflow - Saved 52 references for takenakaW2023J.Radiat.Res.Tokyo to /home/user/ManuscriptsManager/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 51/51 references to BibTeX
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationWorkflow - Saved 51 references for liQ2016Oncotarget to /home/user/ManuscriptsManager/Clippings/liQ2016Oncotarget/references.bib
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationWorkflow - Individual saving completed: 5/5 papers, 288 total references
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.CitationWorkflow - Citation fetching workflow v2.1 completed successfully
+2025-06-06 13:00:48 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: citation_fetching
+2025-06-06 13:07:41 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: sync_check
+2025-06-06 13:07:41 - INFO - ObsClippingsManager.WorkflowManager - Executing sync check workflow
+2025-06-06 13:07:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Starting sync check workflow
+2025-06-06 13:07:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Parsing BibTeX file
+2025-06-06 13:07:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Scanning Clippings directory
+2025-06-06 13:07:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking papers missing in Clippings
+2025-06-06 13:07:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 papers in bib but missing in clippings
+2025-06-06 13:07:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking directories missing in BibTeX
+2025-06-06 13:07:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 orphaned directories in clippings
+2025-06-06 13:07:41 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - no issues found
+2025-06-06 13:07:41 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
