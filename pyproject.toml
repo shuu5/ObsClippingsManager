@@ -11,6 +11,7 @@ dependencies = [
     "lxml>=5.4.0",
     "markdownify>=1.1.0",
     "markitdown>=0.1.2",
+    "metapub>=0.5.12",
     "pyyaml>=6.0.2",
     "requests>=2.32.3",
     "selenium>=4.33.0",
