@@ -12,11 +12,13 @@ __author__ = "ObsClippingsManager Team"
 from .citation_workflow import CitationWorkflow
 from .organization_workflow import OrganizationWorkflow
 from .sync_check_workflow import SyncCheckWorkflow
+from .citation_parser_workflow import CitationParserWorkflow
 from .workflow_manager import WorkflowManager
 
 __all__ = [
     'CitationWorkflow',
     'OrganizationWorkflow',
     'SyncCheckWorkflow',
+    'CitationParserWorkflow',
     'WorkflowManager',
 ] 

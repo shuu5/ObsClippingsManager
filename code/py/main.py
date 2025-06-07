@@ -450,6 +450,120 @@ def sync_check(ctx: Dict[str, Any],
 
 
 @cli.command()
+@click.option('--input-file', '-i',
+              required=True,
+              help='Input Markdown file to parse',
+              type=click.Path(exists=True))
+@click.option('--output-file', '-o',
+              help='Output file path (defaults to stdout)',
+              type=click.Path())
+@click.option('--pattern-type', '-p',
+              type=click.Choice(['basic', 'advanced', 'all'], case_sensitive=False),
+              default='all',
+              help='Citation patterns to detect')
+@click.option('--output-format', '-f',
+              type=click.Choice(['unified', 'table', 'json'], case_sensitive=False),
+              default='unified',
+              help='Output format')
+@click.option('--enable-link-extraction',
+              is_flag=True,
+              help='Extract and generate link table from linked citations')
+@click.option('--expand-ranges',
+              is_flag=True,
+              default=True,
+              help='Expand range citations (e.g., [1-3] → [1,2,3])')
+@click.option('--auto-approve', '-y',
+              is_flag=True,
+              help='Automatically approve all operations')
+@pass_context
+def parse_citations(ctx: Dict[str, Any],
+                   input_file: str,
+                   output_file: Optional[str],
+                   pattern_type: str,
+                   output_format: str,
+                   enable_link_extraction: bool,
+                   expand_ranges: bool,
+                   auto_approve: bool):
+    """
+    引用文献パースワークフローを実行
+    
+    様々な形式の引用文献を統一フォーマットに変換し、
+    リンク付き引用からの対応表を生成します。
+    """
+    try:
+        workflow_manager = ctx['workflow_manager']
+        logger = ctx['logger'].get_logger('CLI')
+        
+        # 実行オプションの構築
+        options = {
+            'dry_run': ctx['dry_run'],
+            'verbose': ctx['verbose'],
+            'pattern_type': pattern_type,
+            'output_format': output_format,
+            'enable_link_extraction': enable_link_extraction,
+            'expand_ranges': expand_ranges,
+            'auto_approve': auto_approve
+        }
+        
+        if output_file:
+            options['output_file'] = output_file
+        
+        click.echo(f"📝 Starting citation parser workflow...")
+        click.echo(f"   • Input: {input_file}")
+        click.echo(f"   • Pattern type: {pattern_type}")
+        click.echo(f"   • Output format: {output_format}")
+        if output_file:
+            click.echo(f"   • Output: {output_file}")
+        else:
+            click.echo(f"   • Output: stdout")
+        
+        if enable_link_extraction:
+            click.echo("🔗 Link extraction enabled")
+        
+        # CitationParserWorkflowを直接実行
+        from modules.workflows.citation_parser_workflow import CitationParserWorkflow
+        
+        workflow = CitationParserWorkflow(ctx['config_manager'], ctx['logger'])
+        success, results = workflow.execute(input_file, **options)
+        
+        # 結果表示
+        if success:
+            stats = results.get('statistics', {})
+            total_citations = stats.get('total_citations', 0)
+            converted_citations = stats.get('converted_citations', 0)
+            error_count = stats.get('error_count', 0)
+            processing_time = stats.get('processing_time', 0)
+            
+            click.echo(f"\n✅ Citation parsing completed successfully!")
+            click.echo(f"   📊 Citations: {converted_citations}/{total_citations} converted")
+            if error_count > 0:
+                click.echo(f"   ⚠️  Errors: {error_count}")
+            click.echo(f"   ⏱️  Time: {processing_time:.2f} seconds")
+            
+            # 詳細結果の表示
+            if ctx['verbose']:
+                report = workflow.generate_report(results)
+                click.echo("\n" + report)
+            
+            # リンクテーブルの表示
+            link_table = results.get('link_table', [])
+            if link_table and ctx['verbose']:
+                click.echo(f"\n🔗 Found {len(link_table)} linked citations:")
+                for link in link_table[:5]:  # 最初の5個を表示
+                    click.echo(f"   • [{link.citation_number}]: {link.url}")
+                if len(link_table) > 5:
+                    click.echo(f"   ... and {len(link_table) - 5} more")
+        else:
+            error = results.get('error', 'Unknown error')
+            click.echo(f"❌ Citation parsing failed: {error}", err=True)
+            sys.exit(1)
+            
+    except Exception as e:
+        click.echo(f"❌ Unexpected error: {e}", err=True)
+        sys.exit(1)
+
+
+@cli.command()
 @click.option('--sync-first',
               is_flag=True,
               help='Run sync-check first before other operations')
@@ -459,6 +573,12 @@ def sync_check(ctx: Dict[str, Any],
 @click.option('--organize-first',
               is_flag=True,
               help='Run file organization first before other operations')
+@click.option('--include-citation-parser',
+              is_flag=True,
+              help='Include citation parser workflow (requires input file)')
+@click.option('--citation-parser-input',
+              help='Input file for citation parser',
+              type=click.Path(exists=True))
 @click.option('--backup-existing',
               is_flag=True,
               help='Create backup of existing references.bib files')
@@ -473,6 +593,8 @@ def run_integrated(ctx: Dict[str, Any],
                   sync_first: bool,
                   fetch_citations: bool,
                   organize_first: bool,
+                  include_citation_parser: bool,
+                  citation_parser_input: Optional[str],
                   backup_existing: bool,
                   continue_on_failure: bool,
                   auto_approve: bool):
@@ -495,9 +617,14 @@ def run_integrated(ctx: Dict[str, Any],
             workflows_to_run.append('file_organization')
         if fetch_citations:
             workflows_to_run.append('citation_fetching')
+        if include_citation_parser:
+            if not citation_parser_input:
+                click.echo("❌ Citation parser requires --citation-parser-input option", err=True)
+                sys.exit(1)
+            workflows_to_run.append('citation_parser')
         
         # デフォルト動作: organize → sync → citation
-        if not any([sync_first, organize_first, fetch_citations]):
+        if not any([sync_first, organize_first, fetch_citations, include_citation_parser]):
             workflows_to_run = ['file_organization', 'sync_check', 'citation_fetching']
             click.echo("🔄 Default integrated workflow: file-organization → sync-check → citation-fetching")
         
@@ -530,11 +657,18 @@ def run_integrated(ctx: Dict[str, Any],
                         'backup_existing': backup_existing
                     })
                 
-                # ワークフロー実行
-                success, results = workflow_manager.execute_workflow(
-                    WorkflowType(workflow_name),
-                    **options
-                )
+                # citation_parserの場合は直接実行
+                if workflow_name == 'citation_parser':
+                    from modules.workflows.citation_parser_workflow import CitationParserWorkflow
+                    
+                    parser_workflow = CitationParserWorkflow(ctx['config_manager'], ctx['logger'])
+                    success, results = parser_workflow.execute(citation_parser_input, **options)
+                else:
+                    # ワークフロー実行
+                    success, results = workflow_manager.execute_workflow(
+                        WorkflowType(workflow_name),
+                        **options
+                    )
                 
                 all_results[workflow_name] = results
                 execution_summary.append({
@@ -561,6 +695,12 @@ def run_integrated(ctx: Dict[str, Any],
                         individual_saves = results.get('successful_individual_saves', 0)
                         total_refs = results.get('total_references_saved', 0)
                         click.echo(f"   📖 Citations: {individual_saves} papers, {total_refs} references")
+                    
+                    elif workflow_name == 'citation_parser':
+                        stats = results.get('statistics', {})
+                        total_citations = stats.get('total_citations', 0)
+                        converted_citations = stats.get('converted_citations', 0)
+                        click.echo(f"   📝 Citations parsed: {converted_citations}/{total_citations}")
                 
                 else:
                     error = results.get('error', 'Unknown error')
@@ -617,7 +757,7 @@ def run_integrated(ctx: Dict[str, Any],
 
 @cli.command()
 @click.option('--workflow-type', '-w',
-              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'integrated'], case_sensitive=False),
+              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'citation_parser', 'integrated'], case_sensitive=False),
               help='Validate specific workflow configuration')
 @pass_context
 def validate_config(ctx: Dict[str, Any], workflow_type: Optional[str]):
@@ -671,7 +811,7 @@ def validate_config(ctx: Dict[str, Any], workflow_type: Optional[str]):
               default=10,
               help='Number of recent executions to show')
 @click.option('--workflow-type', '-w',
-              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'integrated'], case_sensitive=False),
+              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'citation_parser', 'integrated'], case_sensitive=False),
               help='Filter by workflow type')
 @pass_context
 def show_history(ctx: Dict[str, Any], limit: int, workflow_type: Optional[str]):

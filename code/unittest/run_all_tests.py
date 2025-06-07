@@ -21,6 +21,7 @@ import test_shared_config_manager
 import test_shared_bibtex_parser
 import test_citation_fetcher
 import test_citation_parser
+import test_citation_parser_workflow
 import test_workflow_manager
 
 
@@ -39,6 +40,7 @@ def run_all_tests():
         test_shared_bibtex_parser,
         test_citation_fetcher,
         test_citation_parser,
+        test_citation_parser_workflow,
         test_workflow_manager
     ]
     
@@ -103,6 +105,7 @@ def run_specific_module_tests(module_name: str):
         'bibtex': test_shared_bibtex_parser,
         'citation': test_citation_fetcher,
         'citation_parser': test_citation_parser,
+        'citation_parser_workflow': test_citation_parser_workflow,
         'workflow': test_workflow_manager
     }
     
