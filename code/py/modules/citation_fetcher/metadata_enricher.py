@@ -58,7 +58,7 @@ class EnrichmentResult:
     
     def get_complete_fields(self) -> List[str]:
         """完全に取得できたフィールドのリスト"""
-        required_fields = ['title', 'authors', 'journal', 'year']
+        required_fields = ['title', 'author', 'journal', 'year']
         return [field for field in required_fields if self.merged_metadata.get(field)]
 
 
@@ -196,7 +196,7 @@ class MetadataEnricher:
     
     def _is_complete_metadata(self, metadata: Dict) -> bool:
         """メタデータが完全かチェック"""
-        required_fields = ['title', 'authors', 'journal', 'year']
+        required_fields = ['title', 'author', 'journal', 'year']
         return all(
             field in metadata and metadata[field] and str(metadata[field]).strip()
             for field in required_fields
@@ -232,12 +232,16 @@ class MetadataEnricher:
         if normalized.get('title'):
             result['title'] = normalized['title']
         
-        # 著者（リスト形式に統一）
+        # 著者（筆頭著者のみをauthorフィールドに統一）
         if normalized.get('authors'):
-            if isinstance(normalized['authors'], list):
-                result['authors'] = normalized['authors']
+            if isinstance(normalized['authors'], list) and normalized['authors']:
+                # リストの場合は筆頭著者（最初の要素）のみを取得
+                result['author'] = str(normalized['authors'][0])
             else:
-                result['authors'] = [str(normalized['authors'])]
+                result['author'] = str(normalized['authors'])
+        elif normalized.get('author'):
+            # 既にauthorフィールドがある場合はそのまま使用
+            result['author'] = str(normalized['author'])
         
         # ジャーナル
         if normalized.get('journal'):
@@ -276,7 +280,7 @@ class MetadataEnricher:
         # 優先順位に従ってフィールドを補完（実データ分析に基づく最適化）
         field_priorities = {
             'title': self._get_api_priority(field_type),
-            'authors': self._get_api_priority(field_type),
+            'author': self._get_api_priority(field_type),
             'journal': self._get_api_priority(field_type),
             'year': self._get_api_priority(field_type),
             'volume': ['crossref', 'opencitations', 'openalex', 'semantic_scholar', 'pubmed'],
@@ -301,7 +305,7 @@ class MetadataEnricher:
         if not metadata:
             return 0.0
         
-        required_fields = ['title', 'authors', 'journal', 'year']
+        required_fields = ['title', 'author', 'journal', 'year']
         optional_fields = ['volume', 'issue', 'pages', 'doi']
         
         # 必須フィールドのスコア（80%）
