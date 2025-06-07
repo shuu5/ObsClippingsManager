@@ -232,6 +232,72 @@ class CrossRefClient:
             return ' and '.join(formatted_authors)
         else:
             return str(authors)
+    
+    def get_metadata_by_doi(self, doi: str) -> Optional[Dict[str, Any]]:
+        """
+        DOIを使用してメタデータを取得（MetadataEnricher互換）
+        
+        Args:
+            doi: 論文のDOI
+            
+        Returns:
+            正規化されたメタデータ（None if failed）
+        """
+        try:
+            work_data = self.get_work_metadata(doi)
+            if not work_data or 'message' not in work_data:
+                return None
+            
+            message = work_data['message']
+            
+            # 正規化されたフォーマットに変換
+            metadata = {
+                'doi': message.get('DOI'),
+                'title': message.get('title', [''])[0] if message.get('title') else '',
+                'authors': [],
+                'journal': message.get('container-title', [''])[0] if message.get('container-title') else '',
+                'year': None,
+                'volume': message.get('volume'),
+                'issue': message.get('issue'),
+                'pages': message.get('page'),
+                'publisher': message.get('publisher'),
+                'issn': message.get('ISSN', [None])[0] if message.get('ISSN') else None,
+                'isbn': message.get('ISBN', [None])[0] if message.get('ISBN') else None,
+                'source': 'CrossRef'
+            }
+            
+            # 著者情報の処理
+            if 'author' in message:
+                authors = []
+                for author in message['author']:
+                    if isinstance(author, dict):
+                        given = author.get('given', '')
+                        family = author.get('family', '')
+                        if given and family:
+                            authors.append(f"{given} {family}")
+                        elif family:
+                            authors.append(family)
+                metadata['authors'] = authors
+            
+            # 年度の取得
+            if 'published-print' in message:
+                date_parts = message['published-print'].get('date-parts', [[]])[0]
+                if date_parts:
+                    metadata['year'] = date_parts[0]
+            elif 'published-online' in message:
+                date_parts = message['published-online'].get('date-parts', [[]])[0]
+                if date_parts:
+                    metadata['year'] = date_parts[0]
+            elif 'created' in message:
+                date_parts = message['created'].get('date-parts', [[]])[0]
+                if date_parts:
+                    metadata['year'] = date_parts[0]
+            
+            return metadata
+            
+        except Exception as e:
+            self.logger.error(f"Failed to get metadata for DOI {doi}: {e}")
+            return None
 
 
 # 便利関数

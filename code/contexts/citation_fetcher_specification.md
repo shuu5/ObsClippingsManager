@@ -1,9 +1,12 @@
-# Citation Fetcher機能仕様書 v2.1
+# Citation Fetcher機能仕様書 v2.2
 
 ## 概要
-Citation Fetcher機能は、ObsClippingsManager v2.1 において学術論文の引用文献を自動取得し、BibTeX形式で出力する機能です。CrossRef APIをメインとし、失敗時にOpenCitations APIをフォールバックとして使用する戦略を採用します。
+Citation Fetcher機能は、ObsClippingsManager v2.2 において学術論文の引用文献を自動取得し、BibTeX形式で出力する機能です。CrossRef APIをメインとし、複数の無料APIを使った包括的なフォールバック戦略を採用します。
 
-**v2.1 の特徴:**
+**v2.2 の特徴:**
+- **多重APIフォールバック**: CrossRef → PubMed → Semantic Scholar → OpenAlex → OpenCitations
+- **メタデータ補完**: 不完全なCrossRefデータを他のAPIで補完
+- **無料APIのみ使用**: コスト制約なしで高品質なメタデータ取得
 - **sync機能との連携**: CurrentManuscript.bibと{citation_key}/{citation_key}.mdの形で整理されて一致している論文のみを対象
 - **個別保存機能**: 各論文の引用文献を{citation_key}/references.bibに保存
 - 統合ワークフローシステムとの連携
@@ -17,10 +20,14 @@ Citation Fetcher機能は、ObsClippingsManager v2.1 において学術論文の
 modules/citation_fetcher/
 ├── __init__.py
 ├── crossref_client.py        # CrossRef API クライアント
+├── pubmed_client.py          # PubMed API クライアント（新規）
+├── semantic_scholar_client.py # Semantic Scholar API クライアント（新規）
+├── openalex_client.py        # OpenAlex API クライアント（新規）
 ├── opencitations_client.py   # OpenCitations API クライアント
 ├── reference_formatter.py    # BibTeX変換・整形
-├── fallback_strategy.py      # フォールバック戦略
-└── sync_integration.py       # sync機能との連携（新規）
+├── metadata_enricher.py      # メタデータ補完機能（新規）
+├── fallback_strategy.py      # 多重フォールバック戦略（拡張）
+└── sync_integration.py       # sync機能との連携
 ```
 
 ## 機能要件
@@ -122,28 +129,38 @@ modules/citation_fetcher/
 }
 ```
 
-### 4. フォールバック戦略 (`fallback_strategy.py`)
+### 4. 多重フォールバック戦略 (`fallback_strategy.py`)
 
 #### 主要機能
-- **API優先順位管理**: CrossRef → OpenCitations の順序制御
+- **多重API制御**: CrossRef → PubMed → Semantic Scholar → OpenAlex → OpenCitations の順序制御
+- **メタデータ品質判定**: 不完全なデータの検出と補完
 - **自動リトライ**: 一時的エラー時の自動再試行
 - **エラー分類**: 回復可能・不可能エラーの判別
-- **統計追跡**: 各APIの成功率・応答時間追跡
+- **統計追跡**: 各APIの成功率・応答時間・補完率追跡
 
-#### フォールバック シーケンス
+#### 拡張フォールバック シーケンス
 ```
 1. CrossRef API 試行
-   ├── 成功 → BibTeX変換・個別保存
+   ├── 成功・完全なメタデータ → BibTeX変換・個別保存
+   ├── 成功・不完全なメタデータ → メタデータ補完処理へ
    ├── 一時的エラー → リトライ（最大3回）
-   └── 恒久的エラー → OpenCitations API へ
+   └── 恒久的エラー → PubMed API へ
 
-2. OpenCitations API 試行
-   ├── 成功 → メタデータ補完 → BibTeX変換・個別保存
-   ├── 一時的エラー → リトライ（最大3回）
-   └── 恒久的エラー → 取得失敗として記録
+2. メタデータ補完処理（不完全なCrossRefデータ用）
+   ├── PubMed API試行 → 成功 → マージ・BibTeX変換
+   ├── Semantic Scholar API試行 → 成功 → マージ・BibTeX変換
+   ├── OpenAlex API試行 → 成功 → マージ・BibTeX変換
+   └── 全て失敗 → CrossRefデータのみで保存
 
-3. 結果処理
+3. 引用関係取得（CrossRef失敗時）
+   ├── PubMed API 試行
+   ├── Semantic Scholar API 試行
+   ├── OpenAlex API 試行
+   └── OpenCitations API 試行（最終手段）
+
+4. 結果処理
    ├── 成功 → {citation_key}/references.bib 出力
+   ├── 部分成功 → 補完統計記録
    └── 失敗 → エラーログ・統計更新
 ```
 
