@@ -20,6 +20,7 @@ sys.path.insert(0, str(code_py_dir))
 import test_shared_config_manager
 import test_shared_bibtex_parser
 import test_citation_fetcher
+import test_citation_parser
 import test_workflow_manager
 
 
@@ -37,6 +38,7 @@ def run_all_tests():
         test_shared_config_manager,
         test_shared_bibtex_parser,
         test_citation_fetcher,
+        test_citation_parser,
         test_workflow_manager
     ]
     
@@ -100,6 +102,7 @@ def run_specific_module_tests(module_name: str):
         'config': test_shared_config_manager,
         'bibtex': test_shared_bibtex_parser,
         'citation': test_citation_fetcher,
+        'citation_parser': test_citation_parser,
         'workflow': test_workflow_manager
     }
     

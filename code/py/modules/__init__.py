@@ -8,6 +8,7 @@ __author__ = "ObsClippingsManager Team"
 # 新しいモジュラーアーキテクチャ
 from .shared import *
 from .citation_fetcher import *
+from .citation_parser import *
 from .rename_mkdir_citation_key import *
 from .workflows import *
 
@@ -22,6 +23,16 @@ __all__ = [
     'OpenCitationsClient',
     'ReferenceFormatter',
     'FallbackStrategy',
+    
+    # Citation parser
+    'CitationParser',
+    'PatternDetector',
+    'FormatConverter',
+    'LinkExtractor',
+    'CitationMatch',
+    'CitationResult',
+    'LinkEntry',
+    'ProcessingStats',
     
     # File organization
     'FileMatcher',
