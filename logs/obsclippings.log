@@ -902,3 +902,14 @@ ValueError: too many values to unpack (expected 2)
 2025-06-06 14:29:44 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 orphaned directories in clippings
 2025-06-06 14:29:44 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - no issues found
 2025-06-06 14:29:44 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
+2025-06-07 07:39:10 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: sync_check
+2025-06-07 07:39:10 - INFO - ObsClippingsManager.WorkflowManager - Executing sync check workflow
+2025-06-07 07:39:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Starting sync check workflow
+2025-06-07 07:39:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Parsing BibTeX file
+2025-06-07 07:39:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Scanning Clippings directory
+2025-06-07 07:39:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking papers missing in Clippings
+2025-06-07 07:39:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 papers in bib but missing in clippings
+2025-06-07 07:39:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Checking directories missing in BibTeX
+2025-06-07 07:39:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 orphaned directories in clippings
+2025-06-07 07:39:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - no issues found
+2025-06-07 07:39:10 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
