@@ -17,12 +17,13 @@
 - 統合ユーザーインターフェース提供
 - 設定管理・ログの一元化
 - システム管理・デバッグ支援
+- 引用文献パース・統一化処理
 
 ## プログラム構成
 
 ```
 main.py                           # 統合メインエントリーポイント (615行)
-├── CLI Commands (8 commands)     # 専用コマンドシステム
+├── CLI Commands (9 commands)     # 専用コマンドシステム
 │   ├── version                   # バージョン情報
 │   ├── validate-config           # 設定検証
 │   ├── show-stats               # システム統計
@@ -30,6 +31,7 @@ main.py                           # 統合メインエントリーポイント (
 │   ├── organize-files           # ファイル整理
 │   ├── sync-check               # 同期チェック（新機能）
 │   ├── fetch-citations          # 引用取得
+│   ├── parse-citations          # 引用文献パース（新機能）
 │   └── run-integrated           # 統合実行
 ├── IntegratedController         # 統合実行制御
 ├── ConfigManager               # 統合設定管理
@@ -38,10 +40,11 @@ main.py                           # 統合メインエントリーポイント (
     ├── workflow_manager.py     # ワークフロー管理
     ├── citation_workflow.py   # 引用文献取得ワークフロー
     ├── organization_workflow.py # ファイル整理ワークフロー
-    └── sync_check_workflow.py # 同期チェックワークフロー
+    ├── sync_check_workflow.py # 同期チェックワークフロー
+    └── citation_parser_workflow.py # 引用文献パースワークフロー（新機能）
 ```
 
-## 8つの専用コマンド
+## 9つの専用コマンド
 
 ### システム管理コマンド
 
@@ -111,13 +114,26 @@ PYTHONPATH=code/py uv run python code/py/main.py fetch-citations [OPTIONS]
 - `--enrichment-quality-threshold FLOAT`: 品質スコア閾値（0.0-1.0）
 - `--enrichment-max-attempts INT`: 最大API試行回数
 
-#### 8. run-integrated - 統合実行
+#### 8. parse-citations - 引用文献パース（新機能）
+```bash
+PYTHONPATH=code/py uv run python code/py/main.py parse-citations [OPTIONS]
+```
+**主要オプション:**
+- `--input-file PATH`: 入力Markdownファイルパス
+- `--output-file PATH`: 出力ファイルパス（未指定時は標準出力）
+- `--pattern-type [basic|advanced|all]`: パース対象パターン
+- `--output-format [unified|table|json]`: 出力フォーマット
+- `--enable-link-extraction`: リンク抽出・対応表生成
+- `--expand-ranges`: 範囲引用の個別展開
+
+#### 9. run-integrated - 統合実行
 ```bash
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated [OPTIONS]
 ```
 **主要オプション:**
 - `--citation-first`: 引用取得→ファイル整理の順序（デフォルト）
 - `--organize-first`: ファイル整理→引用取得の順序
+- `--include-citation-parser`: 引用文献パース処理を統合実行に含める
 
 ### グローバルオプション（全コマンド共通）
 - `-c, --config PATH`: 設定ファイルパス
@@ -135,6 +151,7 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated [OPTIONS]
 - `execute_citation_workflow()`: 引用取得ワークフロー実行
 - `execute_organization_workflow()`: ファイル整理ワークフロー実行
 - `execute_sync_check_workflow()`: 同期チェックワークフロー実行
+- `execute_citation_parser_workflow()`: 引用文献パースワークフロー実行
 - `get_system_stats()`: システム統計取得
 - `get_execution_history()`: 実行履歴取得
 
@@ -170,6 +187,9 @@ PYTHONPATH=code/py uv run python code/py/main.py sync-check --open-doi-links
 
 # 引用取得のみ
 PYTHONPATH=code/py uv run python code/py/main.py fetch-citations
+
+# 引用文献パースのみ
+PYTHONPATH=code/py uv run python code/py/main.py parse-citations --input-file example.md --enable-link-extraction
 ```
 
 ### トラブルシューティングパターン

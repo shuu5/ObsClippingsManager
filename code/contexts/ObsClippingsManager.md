@@ -11,7 +11,7 @@ ObsClippingsManager v2.0 は、学術研究における文献管理とMarkdown�
 
 ## システム構成
 
-本システムは以下の4つの主要モジュールで構成されています：
+本システムは以下の5つの主要モジュールで構成されています：
 
 ### 1. Citation Fetcher機能
 - 学術論文の引用文献を自動取得
@@ -28,7 +28,12 @@ ObsClippingsManager v2.0 は、学術研究における文献管理とMarkdown�
 - 不足論文の詳細報告（タイトル、DOI、ウェブリンク）
 - ブラウザでのDOIリンク自動開放
 
-### 4. 共通モジュール (Shared)
+### 4. 引用文献パース機能（新機能）
+- 様々な形式の引用文献を統一フォーマットに変換
+- リンク付き引用からの対応表生成
+- 複数の引用パターンの自動検出・変換
+
+### 5. 共通モジュール (Shared)
 - 統合設定管理 (ConfigManager)
 - 統合ログシステム (IntegratedLogger)
 - BibTeX解析エンジン (BibTeXParser)
@@ -38,7 +43,7 @@ ObsClippingsManager v2.0 は、学術研究における文献管理とMarkdown�
 ```
 ObsClippingsManager v2.0 統合システム
 ├── main.py                           # 統合メインプログラム (615行)
-└── modules/                          # モジュラーアーキテクチャ (23 files)
+└── modules/                          # モジュラーアーキテクチャ (26 files)
     ├── __init__.py                   # v2.0 統合エクスポート
     ├── shared/                       # 共有モジュール (6 files)
     │   ├── config_manager.py         # 統合設定管理
@@ -48,10 +53,15 @@ ObsClippingsManager v2.0 統合システム
     │   └── exceptions.py             # 階層的例外管理
     ├── citation_fetcher/             # 引用文献取得 (5 files)
     ├── rename_mkdir_citation_key/    # ファイル整理 (5 files)
-    └── workflows/                    # ワークフロー管理 (5 files)
+    ├── citation_parser/              # 引用文献パース (3 files)
+    │   ├── citation_parser.py        # メインパーサー
+    │   ├── pattern_detector.py       # パターン検出エンジン
+    │   └── format_converter.py       # フォーマット変換エンジン
+    └── workflows/                    # ワークフロー管理 (6 files)
         ├── citation_workflow.py      # 引用文献取得ワークフロー
         ├── organization_workflow.py  # ファイル整理ワークフロー
         ├── sync_check_workflow.py    # 同期チェックワークフロー（新規）
+        ├── citation_parser_workflow.py # 引用文献パースワークフロー（新規）
         └── workflow_manager.py       # 統合ワークフロー管理
 ```
 
@@ -79,7 +89,7 @@ ObsClippingsManager v2.0 統合システム
 PYTHONPATH=code/py uv run python code/py/main.py [COMMAND] [OPTIONS]
 ```
 
-### 利用可能コマンド (8コマンド)
+### 利用可能コマンド (9コマンド)
 
 ```bash
 # システム管理
@@ -92,6 +102,7 @@ show-history             # 実行履歴表示
 organize-files           # ファイル整理ワークフロー
 sync-check              # 同期チェックワークフロー（新機能）
 fetch-citations         # 引用文献取得ワークフロー
+parse-citations         # 引用文献パースワークフロー（新機能）
 run-integrated          # 統合ワークフロー
 ```
 
@@ -115,6 +126,7 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated --dry-run --verb
 PYTHONPATH=code/py uv run python code/py/main.py organize-files --auto-approve
 PYTHONPATH=code/py uv run python code/py/main.py sync-check --open-doi-links
 PYTHONPATH=code/py uv run python code/py/main.py fetch-citations
+PYTHONPATH=code/py uv run python code/py/main.py parse-citations --input-file paper.md
 ```
 
 ### システム管理
@@ -150,8 +162,9 @@ uv sync                   # 依存関係同期
 - **重複コード削除**: 20.7%のファイル削減
 
 ### 機能強化
-- **8つの専用コマンド**: 機能別の最適化実行
+- **9つの専用コマンド**: 機能別の最適化実行
 - **同期チェック機能**: .bibとClippings/の整合性確認、DOIリンク自動開放
+- **引用文献パース機能**: 複数引用形式の統一化・リンク抽出
 - **統合ログシステム**: ファイル出力対応
 - **設定管理強化**: ConfigManager による一元管理
 
@@ -169,5 +182,6 @@ uv sync                   # 依存関係同期
 - [Citation Fetcher仕様書](./citation_fetcher_specification.md) - 引用取得機能
 - [Rename MkDir Citation Key仕様書](./rename_mkdir_citation_key_specification.md) - ファイル整理機能
 - [同期チェックワークフロー仕様書](./sync_check_workflow_specification.md) - 同期チェック機能
+- [引用文献パーサー仕様書](./citation_parser_specification.md) - 引用文献パース機能
 - [共通モジュール仕様書](./shared_modules_specification.md) - 共通モジュール詳細
 

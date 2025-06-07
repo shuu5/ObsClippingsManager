@@ -79,6 +79,18 @@ DEFAULT_INTEGRATED_CONFIG = {
         "continue_on_error": False,
         "report_format": "summary",  # summary | detailed | minimal
         "history_retention_days": 30
+    },
+    
+    # Citation Parser設定
+    "citation_parser": {
+        "default_pattern_type": "all",  # basic | advanced | all
+        "default_output_format": "unified",  # unified | table | json
+        "enable_link_extraction": False,
+        "expand_ranges": True,
+        "max_file_size_mb": 10,
+        "output_encoding": "utf-8",
+        "pattern_config_file": "modules/citation_parser/patterns.yaml",
+        "processing_timeout": 60
     }
 }
 ```
@@ -88,6 +100,7 @@ DEFAULT_INTEGRATED_CONFIG = {
 - `set(key, value)`: ドット記法での設定設定
 - `get_citation_fetcher_config()`: Citation Fetcher用設定取得
 - `get_organization_config()`: ファイル整理用設定取得
+- `get_citation_parser_config()`: Citation Parser用設定取得
 - `validate()`: 設定妥当性チェック
 
 ### 2. 統合ログシステム (`logger.py`)
@@ -178,6 +191,7 @@ parser = BibTeXParser()
 
 # 設定取得と処理
 citation_config = config.get_citation_fetcher_config()
+parser_config = config.get_citation_parser_config()
 entries = parser.parse_file(config.get('common.bibtex_file'))
 dois = parser.extract_dois(entries)
 

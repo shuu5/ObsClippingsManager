@@ -423,4 +423,207 @@ logger.error(f"Failed to process: {error_detail}")
 3. リアルタイム処理
 4. Web API提供
 
-この仕様書に基づいて実装を進めることで、堅牢で拡張性の高い引用文献統一化システムを構築できる。 
+## main.py統合仕様
+
+### 1. 統合アーキテクチャ
+
+#### ワークフローベース統合
+citation_parserはObsClippingsManager v2.0の統合アーキテクチャに従い、専用ワークフローとして統合されます。
+
+```
+modules/workflows/citation_parser_workflow.py
+├── CitationParserWorkflow       # ワークフロー実行クラス
+├── workflow_executor()          # メイン実行関数
+├── validate_inputs()           # 入力検証
+└── generate_report()           # 実行結果レポート
+```
+
+#### 統合ポイント
+1. **main.pyコマンド**: `parse-citations`コマンドとして追加
+2. **IntegratedController**: `execute_citation_parser_workflow()`メソッド追加
+3. **統合実行**: `run-integrated`コマンドでのオプション統合
+
+### 2. CLIコマンド仕様
+
+#### 基本コマンド
+```bash
+PYTHONPATH=code/py uv run python code/py/main.py parse-citations [OPTIONS]
+```
+
+#### 主要オプション
+- `--input-file PATH`: 入力Markdownファイルパス（必須）
+- `--output-file PATH`: 出力ファイルパス（省略時は標準出力）
+- `--pattern-type [basic|advanced|all]`: パース対象パターン（デフォルト: all）
+- `--output-format [unified|table|json]`: 出力フォーマット（デフォルト: unified）
+- `--enable-link-extraction`: リンク抽出・対応表生成（デフォルト: False）
+- `--expand-ranges`: 範囲引用の個別展開（デフォルト: True）
+- `--config-file PATH`: カスタム設定ファイル
+- `--dry-run`: ドライラン実行
+- `--verbose`: 詳細出力
+
+### 3. 設定統合
+
+#### ConfigManager統合
+```python
+# デフォルト設定（ConfigManagerに追加）
+"citation_parser": {
+    "default_pattern_type": "all",
+    "default_output_format": "unified",
+    "enable_link_extraction": False,
+    "expand_ranges": True,
+    "max_file_size_mb": 10,
+    "output_encoding": "utf-8",
+    "pattern_config_file": "modules/citation_parser/patterns.yaml"
+}
+```
+
+#### 設定アクセス
+```python
+parser_config = config.get_citation_parser_config()
+pattern_type = config.get('citation_parser.default_pattern_type')
+```
+
+### 4. ワークフロー統合
+
+#### CitationParserWorkflow実装
+```python
+class CitationParserWorkflow:
+    def __init__(self, config: ConfigManager, logger: IntegratedLogger):
+        self.config = config
+        self.logger = logger
+        self.parser = CitationParser(config.get_citation_parser_config())
+    
+    def execute(self, input_file: str, **options) -> WorkflowResult:
+        """メイン実行メソッド"""
+        
+    def validate_inputs(self, input_file: str) -> bool:
+        """入力ファイル検証"""
+        
+    def generate_report(self, result: CitationResult) -> str:
+        """実行結果レポート生成"""
+```
+
+#### 統合実行での実行順序
+```python
+# run-integrated コマンドでの実行順序
+def execute_integrated_workflow(self, include_citation_parser=False):
+    workflows = []
+    
+    if self.config.get('workflows.integrated_order') == 'citation_first':
+        workflows = ['citation_fetcher', 'organization']
+    else:
+        workflows = ['organization', 'citation_fetcher']
+    
+    if include_citation_parser:
+        workflows.append('citation_parser')
+    
+    # 各ワークフローを順次実行
+    for workflow_name in workflows:
+        self.execute_workflow(workflow_name)
+```
+
+### 5. IntegratedController統合
+
+#### メソッド追加
+```python
+class IntegratedController:
+    def execute_citation_parser_workflow(self, input_file: str, **options) -> bool:
+        """引用文献パースワークフロー実行"""
+        try:
+            workflow = CitationParserWorkflow(self.config, self.logger)
+            result = workflow.execute(input_file, **options)
+            
+            self.logger.log_workflow_end('citation_parser', 
+                                       result.success, 
+                                       result.duration)
+            return result.success
+            
+        except Exception as e:
+            self.logger.error(f"Citation parser workflow failed: {e}")
+            return False
+```
+
+### 6. エラーハンドリング統合
+
+#### 例外クラス追加
+```python
+# modules/shared/exceptions.py に追加
+class CitationParserError(ObsClippingsManagerError):
+    """引用文献パース関連エラー"""
+    pass
+
+class InvalidCitationPatternError(CitationParserError):
+    """無効な引用パターンエラー"""
+    pass
+
+class CitationParseTimeoutError(CitationParserError):
+    """パース処理タイムアウトエラー"""
+    pass
+```
+
+### 7. ログ統合
+
+#### ワークフローログ
+```python
+# 実行開始ログ
+self.logger.log_workflow_start('citation_parser')
+
+# 処理中ログ
+self.logger.info(f"Processing file: {input_file}")
+self.logger.info(f"Found {total_citations} citations")
+self.logger.info(f"Converted {converted_count} citations")
+
+# 実行終了ログ
+self.logger.log_workflow_end('citation_parser', success=True, duration=elapsed_time)
+```
+
+### 8. 統計情報統合
+
+#### システム統計への統合
+```python
+def get_system_stats(self):
+    stats = super().get_system_stats()
+    
+    # citation_parser統計を追加
+    parser_stats = self.get_citation_parser_stats()
+    stats.update({
+        'citation_parser_executions': parser_stats.total_executions,
+        'citation_parser_success_rate': parser_stats.success_rate,
+        'total_citations_processed': parser_stats.total_citations,
+        'average_processing_time': parser_stats.avg_processing_time
+    })
+    
+    return stats
+```
+
+### 9. 実行例
+
+#### 基本実行
+```bash
+# 基本的な引用文献パース
+PYTHONPATH=code/py uv run python code/py/main.py parse-citations --input-file paper.md
+
+# リンク抽出付きパース
+PYTHONPATH=code/py uv run python code/py/main.py parse-citations \
+  --input-file paper.md \
+  --output-file processed.md \
+  --enable-link-extraction
+
+# 統合実行に含める
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+  --include-citation-parser
+```
+
+### 10. 独立性の確保
+
+#### モジュール独立性
+- citation_parserモジュールは他のモジュールに依存しない
+- 共有モジュール（shared）のみに依存
+- main.pyから切り離し可能な設計
+
+#### 設定独立性
+- 専用設定セクションでの分離
+- 他機能の設定に影響しない
+- デフォルト設定での単独動作保証
+
+この統合仕様により、citation_parser機能を既存システムに拡張性と独立性を保ちながら統合できる。 
