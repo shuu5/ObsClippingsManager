@@ -37,7 +37,22 @@ DEFAULT_INTEGRATED_CONFIG = {
         ],
         "user_agent": "ObsClippingsManager/2.0 (mailto:user@example.com)",
         "output_format": "bibtex",
-        "max_references_per_paper": 1000
+        "max_references_per_paper": 1000,
+        "enable_enrichment": True,
+        "enrichment_field_type": "general",
+        "enrichment_quality_threshold": 0.8,
+        "enrichment_max_attempts": 3,
+        "api_priorities": {
+            "life_sciences": ["crossref", "opencitations", "openalex", "semantic_scholar", "pubmed"],
+            "computer_science": ["crossref", "opencitations", "openalex", "semantic_scholar", "pubmed"],
+            "general": ["crossref", "opencitations", "openalex", "semantic_scholar", "pubmed"]
+        },
+        "rate_limits": {
+            "pubmed": 1.0,
+            "semantic_scholar": 1.0,
+            "openalex": 0.1,
+            "opencitations": 0.5
+        }
     },
     
     # Rename & MkDir設定
@@ -93,7 +108,11 @@ VALIDATION_RULES = {
     "citation_fetcher": {
         "request_delay": {"required": False, "type": "float", "min": 0.1, "max": 10.0},
         "max_retries": {"required": False, "type": "int", "min": 1, "max": 10},
-        "timeout": {"required": False, "type": "int", "min": 5, "max": 120}
+        "timeout": {"required": False, "type": "int", "min": 5, "max": 120},
+        "enable_enrichment": {"required": False, "type": "bool"},
+        "enrichment_field_type": {"required": False, "type": "choice", "choices": ["life_sciences", "computer_science", "general"]},
+        "enrichment_quality_threshold": {"required": False, "type": "float", "min": 0.0, "max": 1.0},
+        "enrichment_max_attempts": {"required": False, "type": "int", "min": 1, "max": 5}
     },
     "rename_mkdir": {
         "doi_matching_enabled": {"required": False, "type": "bool"},

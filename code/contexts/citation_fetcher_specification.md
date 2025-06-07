@@ -1,9 +1,9 @@
-# Citation Fetcher機能仕様書 v2.2
+# Citation Fetcher機能仕様書 v2.0
 
 ## 概要
-Citation Fetcher機能は、ObsClippingsManager v2.2 において学術論文の引用文献を自動取得し、BibTeX形式で出力する機能です。CrossRef APIをメインとし、複数の無料APIを使った包括的なフォールバック戦略を採用します。
+Citation Fetcher機能は、ObsClippingsManager v2.0 において学術論文の引用文献を自動取得し、BibTeX形式で出力する機能です。CrossRef APIをメインとし、複数の無料APIを使った包括的なフォールバック戦略を採用します。
 
-**v2.2 の特徴:**
+**v2.0 の特徴:**
 - **多重APIフォールバック**: CrossRef → PubMed → Semantic Scholar → OpenAlex → OpenCitations
 - **メタデータ補完**: 不完全なCrossRefデータを他のAPIで補完
 - **無料APIのみ使用**: コスト制約なしで高品質なメタデータ取得

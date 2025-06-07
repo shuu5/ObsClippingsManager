@@ -127,23 +127,23 @@ class MetadataEnricher:
         
         # 設定の読み込み
         self.enabled = self.config.get_config_value(
-            'citation_fetcher.metadata_enrichment.enabled', 
+            'citation_fetcher.enable_enrichment', 
             True
         )
         
         self.quality_threshold = self.config.get_config_value(
-            'citation_fetcher.metadata_enrichment.quality_threshold', 
+            'citation_fetcher.enrichment_quality_threshold', 
             0.8
         )
         
         self.max_fallback_attempts = self.config.get_config_value(
-            'citation_fetcher.metadata_enrichment.max_fallback_attempts', 
+            'citation_fetcher.enrichment_max_attempts', 
             3
         )
         
         # API優先順位の設定（実データカバレッジ分析に基づく最適化）
         self.api_priorities = self.config.get_config_value(
-            'citation_fetcher.metadata_enrichment.api_priorities',
+            'citation_fetcher.api_priorities',
             {
                 'life_sciences': ['crossref', 'opencitations', 'openalex', 'semantic_scholar', 'pubmed'],
                 'computer_science': ['crossref', 'opencitations', 'openalex', 'semantic_scholar', 'pubmed'],

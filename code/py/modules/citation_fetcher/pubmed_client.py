@@ -89,7 +89,7 @@ class PubMedClient:
         
         # レート制限設定（デフォルト1秒）
         self.rate_limit_delay = self.config.get_config_value(
-            'citation_fetcher.metadata_enrichment.rate_limits.pubmed', 
+            'citation_fetcher.rate_limits.pubmed',
             1.0
         )
         

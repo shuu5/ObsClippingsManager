@@ -6,7 +6,7 @@ ObsClippingsManager v2.0 は、学術研究における文献管理とMarkdown�
 **v2.0 の特徴:**
 - 完全統合されたモジュラーアーキテクチャ
 - 単一エントリーポイント (`main.py`) による簡素化
-- 8つの専用コマンドによる機能分離（同期チェック機能追加）
+- 9つの専用コマンドによる機能分離（同期チェック機能追加）
 - レガシーコード完全削除による保守性向上
 
 ## システム構成
@@ -16,6 +16,7 @@ ObsClippingsManager v2.0 は、学術研究における文献管理とMarkdown�
 ### 1. Citation Fetcher機能
 - 学術論文の引用文献を自動取得
 - CrossRef API + OpenCitations APIのフォールバック戦略
+- メタデータ補完機能（PubMed、Semantic Scholar、OpenAlex API統合）
 - 取得した引用文献のBibTeX形式出力
 
 ### 2. Rename & MkDir Citation Key機能
@@ -42,8 +43,8 @@ ObsClippingsManager v2.0 は、学術研究における文献管理とMarkdown�
 
 ```
 ObsClippingsManager v2.0 統合システム
-├── main.py                           # 統合メインプログラム (615行)
-└── modules/                          # モジュラーアーキテクチャ (26 files)
+├── main.py                           # 統合メインプログラム (946行)
+└── modules/                          # モジュラーアーキテクチャ
     ├── __init__.py                   # v2.0 統合エクスポート
     ├── shared/                       # 共有モジュール (6 files)
     │   ├── config_manager.py         # 統合設定管理
@@ -51,12 +52,22 @@ ObsClippingsManager v2.0 統合システム
     │   ├── bibtex_parser.py          # 高度BibTeX解析
     │   ├── utils.py                  # 共通ユーティリティ
     │   └── exceptions.py             # 階層的例外管理
-    ├── citation_fetcher/             # 引用文献取得 (5 files)
+    ├── citation_fetcher/             # 引用文献取得 (10 files)
+    │   ├── crossref_client.py        # CrossRef APIクライアント
+    │   ├── opencitations_client.py   # OpenCitations APIクライアント
+    │   ├── metadata_enricher.py      # メタデータ補完機能
+    │   ├── pubmed_client.py          # PubMed APIクライアント
+    │   ├── semantic_scholar_client.py # Semantic Scholar APIクライアント
+    │   ├── openalex_client.py        # OpenAlex APIクライアント
+    │   ├── reference_formatter.py    # BibTeX変換
+    │   ├── fallback_strategy.py      # フォールバック戦略
+    │   └── sync_integration.py       # 同期機能統合
     ├── rename_mkdir_citation_key/    # ファイル整理 (5 files)
-    ├── citation_parser/              # 引用文献パース (3 files)
+    ├── citation_parser/              # 引用文献パース (9 files)
     │   ├── citation_parser.py        # メインパーサー
     │   ├── pattern_detector.py       # パターン検出エンジン
-    │   └── format_converter.py       # フォーマット変換エンジン
+    │   ├── format_converter.py       # フォーマット変換エンジン
+    │   └── link_extractor.py         # リンク抽出機能
     └── workflows/                    # ワークフロー管理 (6 files)
         ├── citation_workflow.py      # 引用文献取得ワークフロー
         ├── organization_workflow.py  # ファイル整理ワークフロー
@@ -69,7 +80,7 @@ ObsClippingsManager v2.0 統合システム
 
 ### 1. 引用文献自動取得
 - **入力**: BibTeXファイル内のDOI
-- **処理**: CrossRef → OpenCitations フォールバック戦略
+- **処理**: CrossRef → PubMed → Semantic Scholar → OpenAlex → OpenCitations フォールバック戦略
 - **出力**: 引用文献のBibTeXファイル
 
 ### 2. ファイル自動整理
@@ -147,6 +158,7 @@ fuzzywuzzy>=0.18.0        # 文字列類似度計算
 python-levenshtein>=0.12.0 # 高速文字列比較
 requests>=2.25.0          # HTTP APIクライアント
 pydantic>=1.8.0           # 設定バリデーション
+metapub>=0.5.5            # PubMed API クライアント
 ```
 
 ### 実行環境
@@ -165,6 +177,7 @@ uv sync                   # 依存関係同期
 - **9つの専用コマンド**: 機能別の最適化実行
 - **同期チェック機能**: .bibとClippings/の整合性確認、DOIリンク自動開放
 - **引用文献パース機能**: 複数引用形式の統一化・リンク抽出
+- **メタデータ補完機能**: PubMed、Semantic Scholar、OpenAlex API統合
 - **統合ログシステム**: ファイル出力対応
 - **設定管理強化**: ConfigManager による一元管理
 
@@ -184,4 +197,5 @@ uv sync                   # 依存関係同期
 - [同期チェックワークフロー仕様書](./sync_check_workflow_specification.md) - 同期チェック機能
 - [引用文献パーサー仕様書](./citation_parser_specification.md) - 引用文献パース機能
 - [共通モジュール仕様書](./shared_modules_specification.md) - 共通モジュール詳細
+- [メタデータ補完機能仕様書](./metadata_enrichment_specification.md) - メタデータ補完機能詳細
 

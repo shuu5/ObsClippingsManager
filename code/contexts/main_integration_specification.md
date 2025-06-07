@@ -1,11 +1,11 @@
 # メイン統合プログラム仕様書 v2.0
 
 ## 概要
-メイン統合プログラム（`main.py`）は、ObsClippingsManager v2.0 の単一エントリーポイントとして、Citation Fetcher機能とRename & MkDir Citation Key機能を統合し、8つの専用コマンドを通じて各機能を適切に実行するコントローラーです。
+メイン統合プログラム（`main.py`）は、ObsClippingsManager v2.0 の単一エントリーポイントとして、Citation Fetcher機能とRename & MkDir Citation Key機能を統合し、9つの専用コマンドを通じて各機能を適切に実行するコントローラーです。
 
 **v2.0 の特徴:**
-- 単一ファイル統合システム (615行)
-- 8つの専用コマンドによる機能分離（同期チェック機能追加）
+- 単一ファイル統合システム (946行)
+- 9つの専用コマンドによる機能分離（同期チェック機能追加）
 - Click ベースの高度CLI
 - 統合ログシステム・設定管理
 - ワークフロー実行履歴・統計追跡
@@ -22,7 +22,7 @@
 ## プログラム構成
 
 ```
-main.py                           # 統合メインエントリーポイント (615行)
+main.py                           # 統合メインエントリーポイント (946行)
 ├── CLI Commands (9 commands)     # 専用コマンドシステム
 │   ├── version                   # バージョン情報
 │   ├── validate-config           # 設定検証
@@ -109,7 +109,7 @@ PYTHONPATH=code/py uv run python code/py/main.py fetch-citations [OPTIONS]
 - `--request-delay FLOAT`: APIリクエスト間隔（秒）
 - `--max-retries INT`: 最大リトライ回数
 - `--timeout INT`: リクエストタイムアウト（秒）
-- `--enable-enrichment`: メタデータ補完機能を有効化（v2.2新機能）
+- `--enable-enrichment`: メタデータ補完機能を有効化
 - `--enrichment-field-type [life_sciences|computer_science|general]`: 分野別API優先順位
 - `--enrichment-quality-threshold FLOAT`: 品質スコア閾値（0.0-1.0）
 - `--enrichment-max-attempts INT`: 最大API試行回数
@@ -185,8 +185,8 @@ PYTHONPATH=code/py uv run python code/py/main.py organize-files --auto-approve
 # 同期チェックのみ
 PYTHONPATH=code/py uv run python code/py/main.py sync-check --open-doi-links
 
-# 引用取得のみ
-PYTHONPATH=code/py uv run python code/py/main.py fetch-citations
+# 引用取得のみ（メタデータ補完有効）
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment
 
 # 引用文献パースのみ
 PYTHONPATH=code/py uv run python code/py/main.py parse-citations --input-file example.md --enable-link-extraction
@@ -222,6 +222,7 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated -c custom_config
 ### 処理時間目標
 - **ファイル整理**: 100ファイル/分 （DOI照合時）
 - **引用取得**: 1論文あたり2秒以内（CrossRef成功時）
+- **メタデータ補完**: 1論文あたり3秒以内（複数API使用時）
 - **同期チェック**: 1000項目/秒
 
 ### リソース使用量

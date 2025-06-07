@@ -72,7 +72,7 @@ class SemanticScholarClient:
         
         # レート制限設定（100リクエスト/5分 = 1.2秒間隔）
         self.rate_limit_delay = self.config.get_config_value(
-            'citation_fetcher.metadata_enrichment.rate_limits.semantic_scholar', 
+            'citation_fetcher.rate_limits.semantic_scholar', 
             1.2
         )
         

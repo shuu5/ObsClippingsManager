@@ -1,13 +1,27 @@
-# メタデータ補完機能仕様書 v1.0
+# メタデータ補完機能仕様書 v2.0
 
 ## 概要
-メタデータ補完機能は、ObsClippingsManager v2.2の一部として、CrossRefで不完全なメタデータしか取得できない引用文献に対して、複数の無料APIを使って包括的な書誌情報を補完する機能です。
+メタデータ補完機能は、ObsClippingsManager v2.0のcitation_fetcherモジュール内の機能として、CrossRefで不完全なメタデータしか取得できない引用文献に対して、複数の無料APIを使って包括的な書誌情報を補完する機能です。
 
 ## 背景・課題
 lennartzM2023APMIS論文で発見された問題：
 - 67個の引用文献のうち60個が`@misc`タイプ（DOIとnoteのみ）
 - CrossRefAPIから不完全なメタデータしか取得できない
 - 他の論文と比較して明らかに情報が欠損している
+
+## モジュール構造
+
+```
+modules/citation_fetcher/
+├── metadata_enricher.py         # メタデータ補完メインクラス
+├── pubmed_client.py            # PubMed API クライアント
+├── semantic_scholar_client.py  # Semantic Scholar API クライアント
+├── openalex_client.py          # OpenAlex API クライアント
+├── crossref_client.py          # CrossRef API クライアント（既存）
+├── opencitations_client.py     # OpenCitations API クライアント（既存）
+├── fallback_strategy.py        # 拡張フォールバック戦略
+└── reference_formatter.py      # BibTeX変換（拡張）
+```
 
 ## 設計方針
 
@@ -332,25 +346,24 @@ class EnrichmentStatistics:
 
 ## 設定項目
 
-### config.json追加項目
+### config.json統合設定
 ```json
 {
   "citation_fetcher": {
-    "metadata_enrichment": {
-      "enabled": true,
-      "api_priorities": {
-        "life_sciences": ["pubmed", "crossref", "openalex", "semantic_scholar"],
-        "computer_science": ["semantic_scholar", "crossref", "openalex", "pubmed"],
-        "general": ["crossref", "openalex", "semantic_scholar", "pubmed"]
-      },
-      "quality_threshold": 0.8,
-      "max_fallback_attempts": 3,
-      "rate_limits": {
-        "pubmed": 1.0,
-        "semantic_scholar": 1.0,
-        "openalex": 0.1,
-        "opencitations": 0.5
-      }
+    "enable_enrichment": true,
+    "enrichment_field_type": "general",
+    "enrichment_quality_threshold": 0.8,
+    "enrichment_max_attempts": 3,
+    "api_priorities": {
+      "life_sciences": ["pubmed", "crossref", "openalex", "semantic_scholar"],
+      "computer_science": ["semantic_scholar", "crossref", "openalex", "pubmed"],
+      "general": ["crossref", "openalex", "semantic_scholar", "pubmed"]
+    },
+    "rate_limits": {
+      "pubmed": 1.0,
+      "semantic_scholar": 1.0,
+      "openalex": 0.1,
+      "opencitations": 0.5
     }
   }
 }

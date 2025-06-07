@@ -78,7 +78,7 @@ class OpenAlexClient:
         
         # レート制限設定（制限なしだが、礼儀正しく0.1秒間隔）
         self.rate_limit_delay = self.config.get_config_value(
-            'citation_fetcher.metadata_enrichment.rate_limits.openalex', 
+            'citation_fetcher.rate_limits.openalex',
             0.1
         )
         
