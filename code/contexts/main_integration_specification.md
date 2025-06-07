@@ -98,7 +98,7 @@ PYTHONPATH=code/py uv run python code/py/main.py sync-check [OPTIONS]
 - `--open-doi-links`: DOIリンクを自動でブラウザ開放
 - `--show-doi-stats`: DOI統計情報表示
 
-#### 7. fetch-citations - 引用取得
+#### 7. fetch-citations - 引用取得・メタデータ補完
 ```bash
 PYTHONPATH=code/py uv run python code/py/main.py fetch-citations [OPTIONS]
 ```
@@ -106,6 +106,10 @@ PYTHONPATH=code/py uv run python code/py/main.py fetch-citations [OPTIONS]
 - `--request-delay FLOAT`: APIリクエスト間隔（秒）
 - `--max-retries INT`: 最大リトライ回数
 - `--timeout INT`: リクエストタイムアウト（秒）
+- `--enable-enrichment`: メタデータ補完機能を有効化（v2.2新機能）
+- `--enrichment-field-type [life_sciences|computer_science|general]`: 分野別API優先順位
+- `--enrichment-quality-threshold FLOAT`: 品質スコア閾値（0.0-1.0）
+- `--enrichment-max-attempts INT`: 最大API試行回数
 
 #### 8. run-integrated - 統合実行
 ```bash

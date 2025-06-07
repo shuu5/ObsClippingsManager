@@ -129,40 +129,48 @@ modules/citation_fetcher/
 }
 ```
 
-### 4. 多重フォールバック戦略 (`fallback_strategy.py`)
+### 4. 引用文献取得とメタデータ補完戦略
 
 #### 主要機能
-- **多重API制御**: CrossRef → PubMed → Semantic Scholar → OpenAlex → OpenCitations の順序制御
-- **メタデータ品質判定**: 不完全なデータの検出と補完
+- **引用文献取得**: CrossRef → OpenCitations のフォールバック戦略
+- **メタデータ補完**: 不完全な引用文献情報の段階的補完
+- **効率的処理**: 完全な情報が得られた時点で後続API呼び出しを停止
 - **自動リトライ**: 一時的エラー時の自動再試行
-- **エラー分類**: 回復可能・不可能エラーの判別
 - **統計追跡**: 各APIの成功率・応答時間・補完率追跡
 
-#### 拡張フォールバック シーケンス
+#### 実行フロー
 ```
-1. CrossRef API 試行
-   ├── 成功・完全なメタデータ → BibTeX変換・個別保存
-   ├── 成功・不完全なメタデータ → メタデータ補完処理へ
-   ├── 一時的エラー → リトライ（最大3回）
-   └── 恒久的エラー → PubMed API へ
+1. 引用文献取得フェーズ
+   ├── CrossRef API で引用文献リスト取得
+   │   ├── 成功 → 引用文献リスト獲得
+   │   └── 失敗 → OpenCitations API でフォールバック
+   │
+   └── 引用文献リスト確定
 
-2. メタデータ補完処理（不完全なCrossRefデータ用）
-   ├── PubMed API試行 → 成功 → マージ・BibTeX変換
-   ├── Semantic Scholar API試行 → 成功 → マージ・BibTeX変換
-   ├── OpenAlex API試行 → 成功 → マージ・BibTeX変換
-   └── 全て失敗 → CrossRefデータのみで保存
+2. メタデータ補完フェーズ（enable_enrichment有効時のみ）
+   ├── 各引用文献の情報完全性チェック
+   │   ├── 完全 → 補完スキップ
+   │   └── 不完全 → 補完処理へ
+   │
+   ├── 不完全な引用文献のみ対象として順次API呼び出し
+   │   ├── CrossRef API 試行
+   │   ├── PubMed API 試行
+   │   ├── Semantic Scholar API 試行
+   │   ├── OpenAlex API 試行
+   │   └── OpenCitations API 試行
+   │
+   └── 十分な情報が得られた時点で当該引用文献の処理終了
 
-3. 引用関係取得（CrossRef失敗時）
-   ├── PubMed API 試行
-   ├── Semantic Scholar API 試行
-   ├── OpenAlex API 試行
-   └── OpenCitations API 試行（最終手段）
-
-4. 結果処理
-   ├── 成功 → {citation_key}/references.bib 出力
-   ├── 部分成功 → 補完統計記録
-   └── 失敗 → エラーログ・統計更新
+3. 結果処理
+   ├── 補完された引用文献をBibTeX変換
+   ├── {citation_key}/references.bib 出力
+   └── 補完統計記録
 ```
+
+#### 効率的処理の特徴
+- **完全な引用文献はスキップ**: title, author, year, journal等が既に揃っている場合は補完処理をスキップ
+- **段階的補完**: 各引用文献ごとに必要な情報が揃った時点で後続APIの呼び出しを停止
+- **API使用量最適化**: 無駄なAPI呼び出しを削減し、実行時間を大幅短縮
 
 ### 5. 既存ファイル制御機能
 
@@ -236,6 +244,24 @@ PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --backup-existi
 
 # 既存references.bibを強制上書き
 PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --force-overwrite
+```
+
+### メタデータ補完機能（v2.2新機能）
+```bash
+# メタデータ補完機能を有効化
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment
+
+# 生命科学分野向けAPI優先順位でメタデータ補完
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment --enrichment-field-type life_sciences
+
+# 計算機科学分野向けAPI優先順位でメタデータ補完
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment --enrichment-field-type computer_science
+
+# 品質スコア閾値を指定してメタデータ補完
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment --enrichment-quality-threshold 0.9
+
+# 最大API試行回数を制限
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment --enrichment-max-attempts 5
 ```
 
 ### sync機能併用

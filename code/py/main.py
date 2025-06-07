@@ -113,6 +113,21 @@ def cli(ctx: Dict[str, Any], config: str, log_level: str, dry_run: bool, verbose
 @click.option('--auto-approve', '-y',
               is_flag=True,
               help='Automatically approve all operations')
+@click.option('--enable-enrichment',
+              is_flag=True,
+              help='Enable metadata enrichment using multiple APIs (v2.2)')
+@click.option('--enrichment-field-type',
+              type=click.Choice(['life_sciences', 'computer_science', 'general'], case_sensitive=False),
+              default='general',
+              help='Research field for API prioritization')
+@click.option('--enrichment-quality-threshold',
+              type=float,
+              default=0.8,
+              help='Quality score threshold for enriched metadata (0.0-1.0)')
+@click.option('--enrichment-max-attempts',
+              type=int,
+              default=3,
+              help='Maximum API attempts for metadata enrichment')
 @pass_context
 def fetch_citations(ctx: Dict[str, Any], 
                    bibtex_file: Optional[str],
@@ -123,7 +138,11 @@ def fetch_citations(ctx: Dict[str, Any],
                    force_overwrite: bool,
                    request_delay: Optional[float],
                    timeout: Optional[int],
-                   auto_approve: bool):
+                   auto_approve: bool,
+                   enable_enrichment: bool,
+                   enrichment_field_type: str,
+                   enrichment_quality_threshold: float,
+                   enrichment_max_attempts: int):
     """
     引用文献取得ワークフローを実行 (v2.1)
     
@@ -156,6 +175,13 @@ def fetch_citations(ctx: Dict[str, Any],
         if timeout is not None:
             options['timeout'] = timeout
         
+        # メタデータ補完オプション（v2.2新機能）
+        if enable_enrichment:
+            options['enable_enrichment'] = True
+            options['enrichment_field_type'] = enrichment_field_type
+            options['enrichment_quality_threshold'] = enrichment_quality_threshold
+            options['enrichment_max_attempts'] = enrichment_max_attempts
+        
         # sync連携モードの表示
         if use_sync_integration:
             click.echo("🔗 Starting citation fetching workflow with sync integration...")
@@ -168,6 +194,11 @@ def fetch_citations(ctx: Dict[str, Any],
         
         if backup_existing:
             click.echo("💾 Backup mode enabled for existing references.bib files")
+        
+        if enable_enrichment:
+            click.echo(f"🔧 Metadata enrichment enabled: {enrichment_field_type} field prioritization")
+            click.echo(f"   → Quality threshold: {enrichment_quality_threshold}")
+            click.echo(f"   → Max API attempts: {enrichment_max_attempts}")
         
         # ワークフロー実行
         success, results = workflow_manager.execute_workflow(
@@ -197,6 +228,11 @@ def fetch_citations(ctx: Dict[str, Any],
                     save_msg += f", {skipped_saves} skipped"
                 save_msg += f", {total_refs} references"
                 click.echo(save_msg)
+            
+            # メタデータ補完結果の表示
+            enriched_count = results.get('enriched_successes', 0)
+            if enriched_count > 0:
+                click.echo(f"🔧 Metadata enrichment: {enriched_count} papers enriched successfully")
             
             # 詳細統計の表示
             if ctx['verbose']:

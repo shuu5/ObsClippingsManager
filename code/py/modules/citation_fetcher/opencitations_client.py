@@ -17,21 +17,33 @@ class OpenCitationsClient:
     """OpenCitations API クライアント"""
     
     def __init__(self, 
+                 config=None,
                  endpoints: List[str] = None,
                  request_delay: float = 0.5,
                  timeout: int = 30):
         """
         Args:
+            config: ConfigManagerオブジェクト（他のAPIクライアントとの互換性のため）
             endpoints: OpenCitations APIエンドポイントのリスト
             request_delay: リクエスト間隔（秒）
             timeout: タイムアウト時間（秒）
         """
-        self.endpoints = endpoints or [
-            "https://opencitations.net/index/api/v1",
-            "https://w3id.org/oc/index/coci/api/v1"
-        ]
-        self.request_delay = request_delay
-        self.timeout = timeout
+        # ConfigManagerから設定を取得（可能な場合）
+        if config:
+            self.request_delay = config.get_config_value('citation_fetcher.opencitations.request_delay', 0.5)
+            self.timeout = config.get_config_value('citation_fetcher.opencitations.timeout', 30)
+            self.endpoints = config.get_config_value('citation_fetcher.opencitations.endpoints', [
+                "https://opencitations.net/index/api/v1",
+                "https://w3id.org/oc/index/coci/api/v1"
+            ])
+        else:
+            self.endpoints = endpoints or [
+                "https://opencitations.net/index/api/v1",
+                "https://w3id.org/oc/index/coci/api/v1"
+            ]
+            self.request_delay = request_delay
+            self.timeout = timeout
+            
         self.logger = logging.getLogger("ObsClippingsManager.CitationFetcher.OpenCitations")
         
         # セッションを作成
@@ -100,6 +112,70 @@ class OpenCitationsClient:
             'doi': doi,
             'source': 'OpenCitations',
             'metadata_available': False
+        }
+    
+    def get_metadata_by_doi(self, doi: str) -> Optional[Dict[str, Any]]:
+        """
+        DOIから論文のメタデータを取得（MetadataEnricher用）
+        
+        Args:
+            doi: 論文のDOI
+            
+        Returns:
+            論文のメタデータ（OpenCitationsでは限定的）
+        """
+        self.logger.debug(f"Attempting to get metadata for {doi} from OpenCitations")
+        
+        try:
+            # OpenCitationsではメタデータAPIが限定的なため、
+            # 基本情報のみを提供
+            metadata = {
+                'doi': doi,
+                'title': None,  # OpenCitationsでは通常利用不可
+                'authors': None,  # OpenCitationsでは通常利用不可
+                'journal': None,  # OpenCitationsでは通常利用不可
+                'year': None,  # OpenCitationsでは通常利用不可
+                'volume': None,
+                'issue': None,
+                'pages': None,
+                'source': 'opencitations',
+                'metadata_quality': 'limited'  # OpenCitationsは主に引用関係データ
+            }
+            
+            self.logger.debug(f"OpenCitations metadata (limited) for {doi}")
+            return metadata
+            
+        except Exception as e:
+            self.logger.warning(f"Failed to get metadata from OpenCitations for {doi}: {e}")
+            return None
+    
+    def is_available(self) -> bool:
+        """
+        APIの利用可能性をチェック
+        
+        Returns:
+            利用可能かどうか
+        """
+        try:
+            # 最初のエンドポイントに軽いリクエストを送信
+            test_url = f"{self.endpoints[0]}/references/10.1038/nature12373"
+            response = self.session.head(test_url, timeout=5)
+            return response.status_code in [200, 404]  # 404も正常（データが見つからないだけ）
+        except Exception:
+            return False
+    
+    def get_client_info(self) -> Dict[str, Any]:
+        """
+        クライアント情報を取得
+        
+        Returns:
+            クライアント情報
+        """
+        return {
+            'name': 'OpenCitations',
+            'endpoints': self.endpoints,
+            'available': self.is_available(),
+            'description': 'Citation data and limited metadata from OpenCitations'
         }
     
     def _get_citations_from_endpoint(self, doi: str, endpoint: str) -> List[Dict[str, Any]]:

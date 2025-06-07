@@ -13,6 +13,7 @@ from .pubmed_client import PubMedClient, PubMedMetadata
 from .semantic_scholar_client import SemanticScholarClient, SemanticScholarMetadata
 from .openalex_client import OpenAlexClient, OpenAlexMetadata
 from .crossref_client import CrossRefClient  # 既存
+from .opencitations_client import OpenCitationsClient  # 追加
 # from .opencitations_client import OpenCitationsClient  # 未実装
 
 from ..shared.logger import get_integrated_logger
@@ -144,9 +145,9 @@ class MetadataEnricher:
         self.api_priorities = self.config.get_config_value(
             'citation_fetcher.metadata_enrichment.api_priorities',
             {
-                'life_sciences': ['pubmed', 'crossref', 'openalex', 'semantic_scholar'],
-                'computer_science': ['semantic_scholar', 'crossref', 'openalex', 'pubmed'],
-                'general': ['crossref', 'openalex', 'semantic_scholar', 'pubmed']
+                'life_sciences': ['pubmed', 'crossref', 'openalex', 'semantic_scholar', 'opencitations'],
+                'computer_science': ['semantic_scholar', 'crossref', 'openalex', 'pubmed', 'opencitations'],
+                'general': ['crossref', 'openalex', 'semantic_scholar', 'pubmed', 'opencitations']
             }
         )
         
@@ -187,12 +188,11 @@ class MetadataEnricher:
         except Exception as e:
             self.logger.warning(f"Failed to initialize OpenAlex client: {e}")
         
-        # OpenCitationsClientは未実装のためコメントアウト
-        # try:
-        #     self.clients['opencitations'] = OpenCitationsClient(self.config)
-        #     self.logger.info("OpenCitations client initialized")
-        # except Exception as e:
-        #     self.logger.warning(f"Failed to initialize OpenCitations client: {e}")
+        try:
+            self.clients['opencitations'] = OpenCitationsClient(self.config)
+            self.logger.info("OpenCitations client initialized")
+        except Exception as e:
+            self.logger.warning(f"Failed to initialize OpenCitations client: {e}")
     
     def _is_complete_metadata(self, metadata: Dict) -> bool:
         """メタデータが完全かチェック"""
@@ -279,10 +279,10 @@ class MetadataEnricher:
             'authors': self._get_api_priority(field_type),
             'journal': self._get_api_priority(field_type),
             'year': self._get_api_priority(field_type),
-            'volume': ['pubmed', 'crossref', 'openalex', 'semantic_scholar'],
-            'issue': ['pubmed', 'crossref', 'openalex', 'semantic_scholar'],
-            'pages': ['pubmed', 'crossref', 'openalex', 'semantic_scholar'],
-            'doi': ['crossref', 'pubmed', 'openalex', 'semantic_scholar']
+            'volume': ['pubmed', 'crossref', 'openalex', 'semantic_scholar', 'opencitations'],
+            'issue': ['pubmed', 'crossref', 'openalex', 'semantic_scholar', 'opencitations'],
+            'pages': ['pubmed', 'crossref', 'openalex', 'semantic_scholar', 'opencitations'],
+            'doi': ['crossref', 'pubmed', 'openalex', 'semantic_scholar', 'opencitations']
         }
         
         for field, priority_list in field_priorities.items():
