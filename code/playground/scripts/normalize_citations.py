@@ -123,12 +123,12 @@ class CitationNormalizationScript:
         """
         import re
         
-        # 変更された引用を検出
-        original_citations = set(re.findall(r'\[[0-9\-–—,\s]+\]', original))
-        normalized_citations = set(re.findall(r'\[[0-9,\s]+\]', normalized))
+        # 変更された引用を検出（脚注形式も含む）
+        original_citations = set(re.findall(r'\[[\^0-9\-–—,\s]+\]', original))
+        normalized_citations = set(re.findall(r'\[[\^0-9,\s]+\]', normalized))
         
-        # 範囲表記の変更を表示
-        range_pattern = re.compile(r'\[(\d+)[\-–—](\d+)\]')
+        # 範囲表記の変更を表示（脚注形式も含む）
+        range_pattern = re.compile(r'\[(\^?\d+)[\-–—](\^?\d+)\]')
         range_changes = []
         
         for citation in original_citations:
@@ -136,19 +136,27 @@ class CitationNormalizationScript:
                 # 対応する統一後の引用を探す
                 match = range_pattern.match(citation)
                 if match:
-                    start, end = int(match.group(1)), int(match.group(2))
-                    expected = f"[{','.join(map(str, range(start, end + 1)))}]"
+                    start_str, end_str = match.group(1), match.group(2)
+                    is_footnote = start_str.startswith('^') or end_str.startswith('^')
+                    start_num = int(start_str.lstrip('^'))
+                    end_num = int(end_str.lstrip('^'))
+                    
+                    if is_footnote:
+                        expected = f"[{','.join([f'^{i}' for i in range(start_num, end_num + 1)])}]"
+                    else:
+                        expected = f"[{','.join(map(str, range(start_num, end_num + 1)))}]"
+                    
                     if expected in normalized_citations:
                         range_changes.append((citation, expected))
         
-        # 連続引用の統合を検出
-        consecutive_pattern = re.compile(r'\[\d+\](?:\s*,\s*\[\d+\])+')
+        # 連続引用の統合を検出（脚注形式も含む）
+        consecutive_pattern = re.compile(r'\[\^?\d+\](?:\s*,\s*\[\^?\d+\])+')
         consecutive_changes = []
         
         for match in consecutive_pattern.finditer(original):
             original_consecutive = match.group(0)
-            # 数字を抽出
-            numbers = re.findall(r'\[(\d+)\]', original_consecutive)
+            # 数字を抽出（脚注形式も含む）
+            numbers = re.findall(r'\[(\^?\d+)\]', original_consecutive)
             if len(numbers) > 1:
                 expected = f"[{','.join(numbers)}]"
                 if expected in normalized_citations:

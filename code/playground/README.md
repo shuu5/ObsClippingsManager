@@ -109,3 +109,55 @@ The proteasome activity is a common biologic property [14,15,16,17,18,19,20,21].
 - この機能は実験的なものです
 - バックアップオプションの使用を推奨します
 - 大きなファイルを処理する前は必ずドライランで確認してください 
+
+## 🆕 BibTeX引用番号マッピング機能
+
+論文本文の引用番号（[1], [2], [^1], [^2]等）をreferences.bibファイル内の文献エントリに`citation_number`プロパティとして追加する機能です。
+
+### 特徴
+
+- **引用番号の自動検出**: 論文本文から通常の引用番号（[1], [2]）と脚注形式（[^1], [^2]）の両方を検出
+- **統合後形式への対応**: 引用統一処理後の形式（[1,2,3]）からも個別番号を抽出
+- **自動マッピング**: 検出された引用番号をBibTeXエントリの出現順序に対応付け
+- **citation_numberプロパティ追加**: 各BibTeXエントリに`citation_number = {番号}`を追加
+- **安全な処理**: バックアップ作成とドライラン機能
+
+### 使用方法
+
+```bash
+# 全論文に対してcitation_numberを追加（バックアップ付き）
+uv run scripts/map_citations_to_bib.py --backup
+
+# 特定の論文のみ処理
+uv run scripts/map_citations_to_bib.py --paper-dir Clippings/論文名 --backup
+
+# ドライラン（変更内容の確認のみ）
+uv run scripts/map_citations_to_bib.py --dry-run
+```
+
+### 出力例
+
+BibTeXファイルに以下のようにcitation_numberが追加されます：
+
+```bibtex
+@article{Sung2021CCJ,
+  title = {Global cancer statistics 2020: GLOBOCAN estimates...},
+  author = {Sung},
+  year = {2021},
+  journal = {CA Cancer J Clin},
+  volume = {71},
+  pages = {209},
+  doi = {10.3322/caac.21660},
+  note = {Retrieved from CrossRef}
+  citation_number = {1}
+}
+```
+
+これにより、論文本文の引用[1]がSung2021CCJ論文を指していることが明確になります。
+
+### 対応する引用形式
+
+- 通常の引用番号: `[1]`, `[2]`, `[3]` 
+- 脚注形式: `[^1]`, `[^2]`, `[^3]`
+- 統合後形式: `[1,2,3]`, `[^4,^5,^6]`
+- 範囲展開後: `[4,5,6,7,8]` (元々は`[4-8]`) 

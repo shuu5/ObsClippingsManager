@@ -11,7 +11,6 @@
 
 
 
-
 @article{Kim2006N,
 author = {S Kim},
 year = {2006},
@@ -20,8 +19,8 @@ volume = {441},
 number = {7091},
 pages = {362},
 doi = {10.1038/nature04659},
-note = {Retrieved from CrossRef},
-citation_number = {1}
+note = {Retrieved from CrossRef}
+  citation_number = {1}
 }
 
 @article{Saha2017O,
@@ -32,8 +31,8 @@ volume = {36},
 number = {3},
 pages = {332},
 doi = {10.1038/onc.2016.221},
-note = {Retrieved from CrossRef},
-citation_number = {2}
+note = {Retrieved from CrossRef}
+  citation_number = {2}
 }
 
 @article{Hendrix1996CMR,
@@ -44,8 +43,8 @@ volume = {15},
 number = {4},
 pages = {507},
 doi = {10.1007/BF00054016},
-note = {Retrieved from CrossRef},
-citation_number = {3}
+note = {Retrieved from CrossRef}
+  citation_number = {3}
 }
 
 @article{Malecha1991VAA,
@@ -56,8 +55,8 @@ volume = {418},
 number = {3},
 pages = {249},
 doi = {10.1007/BF01606063},
-note = {Retrieved from CrossRef},
-citation_number = {4}
+note = {Retrieved from CrossRef}
+  citation_number = {4}
 }
 
 @article{Muijen1986ECR,
@@ -68,8 +67,8 @@ volume = {162},
 number = {1},
 pages = {97},
 doi = {10.1016/0014-4827(86)90429-5},
-note = {Retrieved from CrossRef},
-citation_number = {5}
+note = {Retrieved from CrossRef}
+  citation_number = {5}
 }
 
 @article{Liu2016PO,
@@ -80,8 +79,8 @@ volume = {11},
 number = {10},
 pages = {e0163232},
 doi = {10.1371/journal.pone.0163232},
-note = {Retrieved from CrossRef},
-citation_number = {6}
+note = {Retrieved from CrossRef}
+  citation_number = {6}
 }
 
 @article{Moll2008HCB,
@@ -92,8 +91,8 @@ volume = {129},
 number = {6},
 pages = {705},
 doi = {10.1007/s00418-008-0435-6},
-note = {Retrieved from CrossRef},
-citation_number = {7}
+note = {Retrieved from CrossRef}
+  citation_number = {7}
 }
 
 @article{Waseem1998G,
@@ -104,8 +103,8 @@ volume = {215},
 number = {2},
 pages = {269},
 doi = {10.1016/S0378-1119(98)00297-2},
-note = {Retrieved from CrossRef},
-citation_number = {8}
+note = {Retrieved from CrossRef}
+  citation_number = {8}
 }
 
 @article{Sheng2008MCE,
@@ -116,8 +115,8 @@ volume = {296},
 number = {1–2},
 pages = {1},
 doi = {10.1016/j.mce.2008.09.022},
-note = {Retrieved from CrossRef},
-citation_number = {9}
+note = {Retrieved from CrossRef}
+  citation_number = {9}
 }
 
 @article{Richard1995NG,
@@ -128,8 +127,8 @@ volume = {11},
 number = {4},
 pages = {453},
 doi = {10.1038/ng1295-453},
-note = {Retrieved from CrossRef},
-citation_number = {10}
+note = {Retrieved from CrossRef}
+  citation_number = {10}
 }
 
 @article{Yang2019P,
@@ -139,8 +138,8 @@ journal = {PeerJ},
 volume = {7},
 pages = {e6629},
 doi = {10.7717/peerj.6629},
-note = {Retrieved from CrossRef},
-citation_number = {11}
+note = {Retrieved from CrossRef}
+  citation_number = {11}
 }
 
 @article{MadozGurpide2007MCP,
@@ -151,8 +150,8 @@ volume = {6},
 number = {12},
 pages = {2150},
 doi = {10.1074/mcp.M700006-MCP200},
-note = {Retrieved from CrossRef},
-citation_number = {12}
+note = {Retrieved from CrossRef}
+  citation_number = {12}
 }
 
 @article{Acehan2008JID,
@@ -163,8 +162,8 @@ volume = {128},
 number = {11},
 pages = {2665},
 doi = {10.1038/jid.2008.141},
-note = {Retrieved from CrossRef},
-citation_number = {13}
+note = {Retrieved from CrossRef}
+  citation_number = {13}
 }
 
 @article{Holen2012BCR,
@@ -175,8 +174,8 @@ volume = {14},
 number = {3},
 pages = {R86},
 doi = {10.1186/bcr3201},
-note = {Retrieved from CrossRef},
-citation_number = {14}
+note = {Retrieved from CrossRef}
+  citation_number = {14}
 }
 
 @article{Aktary2013JCS,
@@ -186,8 +185,8 @@ journal = {J Cell Sci},
 volume = {126},
 number = {Pt 14},
 pages = {3031},
-note = {Retrieved from CrossRef},
-citation_number = {15}
+note = {Retrieved from CrossRef}
+  citation_number = {15}
 }
 
 @article{Aktary2017O,
@@ -198,8 +197,8 @@ volume = {8},
 number = {19},
 pages = {32270},
 doi = {10.18632/oncotarget.15650},
-note = {Retrieved from CrossRef},
-citation_number = {16}
+note = {Retrieved from CrossRef}
+  citation_number = {16}
 }
 
 @article{Aktary2012IJC,
@@ -209,8 +208,8 @@ journal = {Int J Cell Biol.},
 volume = {2012},
 pages = {189521},
 doi = {10.1155/2012/189521},
-note = {Retrieved from CrossRef},
-citation_number = {17}
+note = {Retrieved from CrossRef}
+  citation_number = {17}
 }
 
 @article{Li2016O,
@@ -221,8 +220,8 @@ volume = {7},
 number = {51},
 pages = {84645},
 doi = {10.18632/oncotarget.13175},
-note = {Retrieved from CrossRef},
-citation_number = {18}
+note = {Retrieved from CrossRef}
+  citation_number = {18}
 }
 
 @article{Chu2014ERC,
@@ -233,8 +232,8 @@ volume = {21},
 number = {2},
 pages = {311},
 doi = {10.1530/ERC-13-0548},
-note = {Retrieved from CrossRef},
-citation_number = {19}
+note = {Retrieved from CrossRef}
+  citation_number = {19}
 }
 
 @article{Zhao2014BC,
@@ -244,8 +243,8 @@ journal = {BMC Cancer},
 volume = {14},
 pages = {211},
 doi = {10.1186/1471-2407-14-211},
-note = {Retrieved from CrossRef},
-citation_number = {20}
+note = {Retrieved from CrossRef}
+  citation_number = {20}
 }
 
 @article{Perou2000N,
@@ -256,8 +255,8 @@ volume = {406},
 number = {6797},
 pages = {747},
 doi = {10.1038/35021093},
-note = {Retrieved from CrossRef},
-citation_number = {21}
+note = {Retrieved from CrossRef}
+  citation_number = {21}
 }
 
 @article{Zhau2008CEM,
@@ -268,8 +267,8 @@ volume = {25},
 number = {6},
 pages = {601},
 doi = {10.1007/s10585-008-9183-1},
-note = {Retrieved from CrossRef},
-citation_number = {22}
+note = {Retrieved from CrossRef}
+  citation_number = {22}
 }
 
 @article{Li2016O,
@@ -280,8 +279,8 @@ volume = {7},
 number = {11},
 pages = {12869},
 doi = {10.18632/oncotarget.7331},
-note = {Retrieved from CrossRef},
-citation_number = {23}
+note = {Retrieved from CrossRef}
+  citation_number = {23}
 }
 
 @article{Hu2011PO,
@@ -292,8 +291,8 @@ volume = {6},
 number = {12},
 pages = {e28670},
 doi = {10.1371/journal.pone.0028670},
-note = {Retrieved from CrossRef},
-citation_number = {24}
+note = {Retrieved from CrossRef}
+  citation_number = {24}
 }
 
 @article{Lo2012O,
@@ -304,8 +303,8 @@ volume = {31},
 number = {21},
 pages = {2614},
 doi = {10.1038/onc.2011.439},
-note = {Retrieved from CrossRef},
-citation_number = {25}
+note = {Retrieved from CrossRef}
+  citation_number = {25}
 }
 
 @article{Provenzano2018PC,
@@ -316,8 +315,8 @@ volume = {13},
 number = {3},
 pages = {325},
 doi = {10.1016/j.cpet.2018.02.004},
-note = {Retrieved from CrossRef},
-citation_number = {26}
+note = {Retrieved from CrossRef}
+  citation_number = {26}
 }
 
 @article{Yang2012C,
@@ -328,8 +327,8 @@ volume = {33},
 number = {10},
 pages = {1863},
 doi = {10.1093/carcin/bgs226},
-note = {Retrieved from CrossRef},
-citation_number = {27}
+note = {Retrieved from CrossRef}
+  citation_number = {27}
 }
 
 @article{Kawai2015CCR,
@@ -340,8 +339,8 @@ volume = {21},
 number = {13},
 pages = {3081},
 doi = {10.1158/1078-0432.CCR-14-1936},
-note = {Retrieved from CrossRef},
-citation_number = {28}
+note = {Retrieved from CrossRef}
+  citation_number = {28}
 }
 
 @article{Govaere2014G,
@@ -352,8 +351,8 @@ volume = {63},
 number = {4},
 pages = {674},
 doi = {10.1136/gutjnl-2012-304351},
-note = {Retrieved from CrossRef},
-citation_number = {29}
+note = {Retrieved from CrossRef}
+  citation_number = {29}
 }
 
 @article{Cheung2016S,
@@ -364,8 +363,8 @@ volume = {352},
 number = {6282},
 pages = {167},
 doi = {10.1126/science.aaf6546},
-note = {Retrieved from CrossRef},
-citation_number = {30}
+note = {Retrieved from CrossRef}
+  citation_number = {30}
 }
 
 @article{Dittmer2018SCB,
@@ -375,8 +374,8 @@ journal = {Semin Cancer Biol},
 volume = {53},
 pages = {59},
 doi = {10.1016/j.semcancer.2018.07.007},
-note = {Retrieved from CrossRef},
-citation_number = {31}
+note = {Retrieved from CrossRef}
+  citation_number = {31}
 }
 
 @article{Baccelli2013NB,
@@ -387,8 +386,8 @@ volume = {31},
 number = {6},
 pages = {539},
 doi = {10.1038/nbt.2576},
-note = {Retrieved from CrossRef},
-citation_number = {32}
+note = {Retrieved from CrossRef}
+  citation_number = {32}
 }
 
 @article{Hu2017SCR,
@@ -398,8 +397,8 @@ journal = {Stem Cell Res},
 volume = {23},
 pages = {1},
 doi = {10.1016/j.scr.2017.06.009},
-note = {Retrieved from CrossRef},
-citation_number = {33}
+note = {Retrieved from CrossRef}
+  citation_number = {33}
 }
 
 @article{Ricardo2011JCP,
@@ -410,8 +409,8 @@ volume = {64},
 number = {11},
 pages = {937},
 doi = {10.1136/jcp.2011.090456},
-note = {Retrieved from CrossRef},
-citation_number = {34}
+note = {Retrieved from CrossRef}
+  citation_number = {34}
 }
 
 @article{Bertucci2007NEJ,
@@ -422,8 +421,8 @@ volume = {356},
 number = {18},
 pages = {1887},
 doi = {10.1056/NEJMc070393},
-note = {Retrieved from CrossRef},
-citation_number = {35}
+note = {Retrieved from CrossRef}
+  citation_number = {35}
 }
 
 @article{Vita2006SCB,
@@ -434,8 +433,8 @@ volume = {16},
 number = {4},
 pages = {318},
 doi = {10.1016/j.semcancer.2006.07.015},
-note = {Retrieved from CrossRef},
-citation_number = {36}
+note = {Retrieved from CrossRef}
+  citation_number = {36}
 }
 
 @article{TodorovicRakovic2012CEM,
@@ -446,8 +445,8 @@ volume = {12},
 number = {4},
 pages = {217},
 doi = {10.1007/s10238-011-0169-y},
-note = {Retrieved from CrossRef},
-citation_number = {37}
+note = {Retrieved from CrossRef}
+  citation_number = {37}
 }
 
 @article{RobanusMaandag2003JP,
@@ -458,8 +457,8 @@ volume = {201},
 number = {1},
 pages = {75},
 doi = {10.1002/path.1385},
-note = {Retrieved from CrossRef},
-citation_number = {38}
+note = {Retrieved from CrossRef}
+  citation_number = {38}
 }
 
 @article{Nair2014O,
@@ -470,8 +469,8 @@ volume = {33},
 number = {30},
 pages = {3992},
 doi = {10.1038/onc.2013.368},
-note = {Retrieved from CrossRef},
-citation_number = {39}
+note = {Retrieved from CrossRef}
+  citation_number = {39}
 }
 
 @article{Pradella2017MC,
@@ -482,8 +481,8 @@ volume = {16},
 number = {1},
 pages = {8},
 doi = {10.1186/s12943-016-0579-2},
-note = {Retrieved from CrossRef},
-citation_number = {40}
+note = {Retrieved from CrossRef}
+  citation_number = {40}
 }
 
 @article{Fabregat2016JCM,
@@ -494,8 +493,8 @@ volume = {5},
 number = {3},
 pages = {37},
 doi = {10.3390/jcm5030037},
-note = {Retrieved from CrossRef},
-citation_number = {41}
+note = {Retrieved from CrossRef}
+  citation_number = {41}
 }
 
 @article{Yin2005PNA,
@@ -506,8 +505,8 @@ volume = {102},
 number = {15},
 pages = {5420},
 doi = {10.1073/pnas.0501676102},
-note = {Retrieved from CrossRef},
-citation_number = {42}
+note = {Retrieved from CrossRef}
+  citation_number = {42}
 }
 
 @article{Todorovic2010JCS,
@@ -518,8 +517,8 @@ volume = {123},
 number = {Pt 20},
 pages = {3576},
 doi = {10.1242/jcs.070391},
-note = {Retrieved from CrossRef},
-citation_number = {43}
+note = {Retrieved from CrossRef}
+  citation_number = {43}
 }
 
 @article{RiegerChrist2005BJC,
@@ -530,8 +529,8 @@ volume = {92},
 number = {12},
 pages = {2153},
 doi = {10.1038/sj.bjc.6602651},
-note = {Retrieved from CrossRef},
-citation_number = {44}
+note = {Retrieved from CrossRef}
+  citation_number = {44}
 }
 
 @article{Alaee2018CS,
@@ -542,8 +541,8 @@ volume = {109},
 number = {6},
 pages = {1876},
 doi = {10.1111/cas.13612},
-note = {Retrieved from CrossRef},
-citation_number = {45}
+note = {Retrieved from CrossRef}
+  citation_number = {45}
 }
 
 @article{Bruin2007ED,
@@ -554,8 +553,8 @@ volume = {16},
 number = {6},
 pages = {468},
 doi = {10.1111/j.1600-0625.2007.00557.x},
-note = {Retrieved from CrossRef},
-citation_number = {46}
+note = {Retrieved from CrossRef}
+  citation_number = {46}
 }
 
 @article{Lai2011BCB,
@@ -565,8 +564,8 @@ journal = {BMC Cell Biol},
 volume = {12},
 pages = {50},
 doi = {10.1186/1471-2121-12-50},
-note = {Retrieved from CrossRef},
-citation_number = {47}
+note = {Retrieved from CrossRef}
+  citation_number = {47}
 }
 
 @article{KoyamaNasu2013PO,
@@ -577,8 +576,8 @@ volume = {8},
 number = {1},
 pages = {e53710},
 doi = {10.1371/journal.pone.0053710},
-note = {Retrieved from CrossRef},
-citation_number = {48}
+note = {Retrieved from CrossRef}
+  citation_number = {48}
 }
 
 @article{Williamson2006EJ,
@@ -589,8 +588,8 @@ volume = {25},
 number = {14},
 pages = {3298},
 doi = {10.1038/sj.emboj.7601224},
-note = {Retrieved from CrossRef},
-citation_number = {49}
+note = {Retrieved from CrossRef}
+  citation_number = {49}
 }
 
 @article{Chen2013PO,
@@ -601,8 +600,8 @@ volume = {8},
 number = {5},
 pages = {e64088},
 doi = {10.1371/journal.pone.0064088},
-note = {Retrieved from CrossRef},
-citation_number = {50}
+note = {Retrieved from CrossRef}
+  citation_number = {50}
 }
 
 @article{Chu2014CMR,
@@ -613,6 +612,6 @@ volume = {33},
 number = {2–3},
 pages = {497},
 doi = {10.1007/s10555-013-9488-7},
-note = {Retrieved from CrossRef},
-citation_number = {51}
+note = {Retrieved from CrossRef}
+  citation_number = {51}
 }

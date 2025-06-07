@@ -7,9 +7,10 @@ class CitationNormalizer:
     
     def __init__(self):
         # 範囲表記のパターン（ハイフン、エンダッシュ、エムダッシュに対応）
-        self.range_pattern = re.compile(r'\[(\d+)[\-–—](\d+)\]')
-        # 個別引用のパターン
-        self.individual_pattern = re.compile(r'\[(\d+)\]')
+        # 通常の数字と脚注形式の両方に対応
+        self.range_pattern = re.compile(r'\[(\^?\d+)[\-–—](\^?\d+)\]')
+        # 個別引用のパターン（[1]、[^1]の両方に対応）
+        self.individual_pattern = re.compile(r'\[(\^?\d+)\]')
         
     def normalize_citations(self, text: str) -> str:
         """
@@ -32,40 +33,66 @@ class CitationNormalizer:
     def _expand_range_citations(self, text: str) -> str:
         """
         範囲表記を個別表記に展開する
-        例：[2-4] → [2,3,4]
+        例：[2-4] → [2,3,4]、[^2-^4] → [^2,^3,^4]
         """
         def replace_range(match):
-            start = int(match.group(1))
-            end = int(match.group(2))
+            start_str = match.group(1)
+            end_str = match.group(2)
             
-            if start > end:
+            # 脚注形式かどうかを判定
+            is_footnote = start_str.startswith('^') or end_str.startswith('^')
+            
+            # 数字部分を抽出
+            start_num = int(start_str.lstrip('^'))
+            end_num = int(end_str.lstrip('^'))
+            
+            if start_num > end_num:
                 # 範囲が逆の場合は元のまま返す
                 return match.group(0)
             
             # 範囲を展開
-            numbers = list(range(start, end + 1))
-            return f"[{','.join(map(str, numbers))}]"
+            numbers = list(range(start_num, end_num + 1))
+            if is_footnote:
+                formatted_numbers = [f"^{num}" for num in numbers]
+            else:
+                formatted_numbers = [str(num) for num in numbers]
+            
+            return f"[{','.join(formatted_numbers)}]"
         
         return self.range_pattern.sub(replace_range, text)
     
     def _merge_consecutive_citations(self, text: str) -> str:
         """
         連続する個別引用を統合する
-        例：[17], [18] → [17,18]
+        例：[17], [18] → [17,18]、[^1], [^2] → [^1,^2]
         """
-        # 連続する引用パターンを検索
-        consecutive_pattern = re.compile(r'(\[\d+\](?:\s*,\s*\[\d+\])+)')
+        # 連続する引用パターンを検索（通常の数字と脚注形式の両方）
+        consecutive_pattern = re.compile(r'(\[\^?\d+\](?:\s*,\s*\[\^?\d+\])+)')
         
         def merge_citations(match):
             citation_text = match.group(1)
             # 各引用から数字を抽出
             numbers = []
+            is_footnote = False
+            
             for num_match in self.individual_pattern.finditer(citation_text):
-                numbers.append(int(num_match.group(1)))
+                num_str = num_match.group(1)
+                if num_str.startswith('^'):
+                    is_footnote = True
+                    numbers.append(int(num_str[1:]))
+                else:
+                    numbers.append(int(num_str))
             
             # 重複を除去してソート
             unique_numbers = sorted(set(numbers))
-            return f"[{','.join(map(str, unique_numbers))}]"
+            
+            # 脚注形式の場合は^を付ける
+            if is_footnote:
+                formatted_numbers = [f"^{num}" for num in unique_numbers]
+            else:
+                formatted_numbers = [str(num) for num in unique_numbers]
+            
+            return f"[{','.join(formatted_numbers)}]"
         
         return consecutive_pattern.sub(merge_citations, text)
     

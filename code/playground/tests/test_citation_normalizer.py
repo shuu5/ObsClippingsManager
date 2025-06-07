@@ -179,6 +179,41 @@ class TestCitationNormalizer(unittest.TestCase):
         result = self.normalizer.normalize_citations(text)
         self.assertEqual(result, expected)
 
+    def test_merge_consecutive_citations_with_spaces(self):
+        """スペースありの連続引用統合のテスト"""
+        text = "[5] , [6] , [7]"
+        expected = "[5,6,7]"
+        result = self.normalizer.normalize_citations(text)
+        self.assertEqual(result, expected)
+
+    def test_footnote_consecutive_citations(self):
+        """脚注形式の連続引用統合のテスト"""
+        text = "[^1], [^2], [^3]"
+        expected = "[^1,^2,^3]"
+        result = self.normalizer.normalize_citations(text)
+        self.assertEqual(result, expected)
+
+    def test_footnote_range_citations(self):
+        """脚注形式の範囲表記展開のテスト"""
+        text = "[^2-^4]"
+        expected = "[^2,^3,^4]"
+        result = self.normalizer.normalize_citations(text)
+        self.assertEqual(result, expected)
+
+    def test_footnote_mixed_pattern(self):
+        """脚注形式の混合パターンのテスト"""
+        text = "[^4], [^5], [^7-^9]"
+        expected = "[^4,^5], [^7,^8,^9]"
+        result = self.normalizer.normalize_citations(text)
+        self.assertEqual(result, expected)
+
+    def test_footnote_with_spaces(self):
+        """脚注形式でスペースありの連続引用統合のテスト"""
+        text = "[^1] , [^2] , [^3]"
+        expected = "[^1,^2,^3]"
+        result = self.normalizer.normalize_citations(text)
+        self.assertEqual(result, expected)
+
 
 if __name__ == '__main__':
     unittest.main() 

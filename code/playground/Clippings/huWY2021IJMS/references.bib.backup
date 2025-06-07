@@ -10,7 +10,6 @@
 % Total references found: 67
 
 
-
 @article{Presnell2002SCD,
 title = {Stem cells in adult tissues},
 author = {Presnell},
@@ -19,8 +18,8 @@ journal = {Semin. Cell Dev. Biol.},
 volume = {13},
 pages = {369},
 doi = {10.1016/S1084952102000939},
-note = {Retrieved from CrossRef},
-citation_number = {1}
+note = {Retrieved from CrossRef}
+  citation_number = {1}
 }
 
 @article{Smith2007S,
@@ -31,8 +30,8 @@ journal = {Science},
 volume = {316},
 pages = {1422},
 doi = {10.1126/science.316.5830.1422b},
-note = {Retrieved from CrossRef},
-citation_number = {2}
+note = {Retrieved from CrossRef}
+  citation_number = {2}
 }
 
 @article{Nelson1998JU,
@@ -43,8 +42,8 @@ journal = {J. Urol.},
 volume = {160},
 pages = {2381},
 doi = {10.1016/S0022-5347(01)62196-7},
-note = {Retrieved from CrossRef},
-citation_number = {3}
+note = {Retrieved from CrossRef}
+  citation_number = {3}
 }
 
 @article{Goldstein2008PNA,
@@ -55,8 +54,8 @@ journal = {Porc. Natl. Acad. Sci. USA},
 volume = {105},
 pages = {20882},
 doi = {10.1073/pnas.0811411106},
-note = {Retrieved from CrossRef},
-citation_number = {4}
+note = {Retrieved from CrossRef}
+  citation_number = {4}
 }
 
 @article{Xin2007SC,
@@ -67,8 +66,8 @@ journal = {Stem Cells},
 volume = {25},
 pages = {2760},
 doi = {10.1634/stemcells.2007-0355},
-note = {Retrieved from CrossRef},
-citation_number = {5}
+note = {Retrieved from CrossRef}
+  citation_number = {5}
 }
 
 @article{Leong2008N,
@@ -79,8 +78,8 @@ journal = {Nature},
 volume = {456},
 pages = {804},
 doi = {10.1038/nature07427},
-note = {Retrieved from CrossRef},
-citation_number = {6}
+note = {Retrieved from CrossRef}
+  citation_number = {6}
 }
 
 @article{Prins1995E,
@@ -91,8 +90,8 @@ journal = {Endocrinology},
 volume = {136},
 pages = {1303},
 doi = {10.1210/endo.136.3.7867585},
-note = {Retrieved from CrossRef},
-citation_number = {7}
+note = {Retrieved from CrossRef}
+  citation_number = {7}
 }
 
 @article{Wang2020NC,
@@ -103,8 +102,8 @@ journal = {Nat. Commun.},
 volume = {11},
 pages = {706},
 doi = {10.1038/s41467-020-14296-y},
-note = {Retrieved from CrossRef},
-citation_number = {8}
+note = {Retrieved from CrossRef}
+  citation_number = {8}
 }
 
 @article{Moad2017CR,
@@ -115,8 +114,8 @@ journal = {Cell Rep.},
 volume = {20},
 pages = {1609},
 doi = {10.1016/j.celrep.2017.07.061},
-note = {Retrieved from CrossRef},
-citation_number = {9}
+note = {Retrieved from CrossRef}
+  citation_number = {9}
 }
 
 @article{Blackwood2011JP,
@@ -127,8 +126,8 @@ journal = {J. Pathol.},
 volume = {225},
 pages = {181},
 doi = {10.1002/path.2965},
-note = {Retrieved from CrossRef},
-citation_number = {10}
+note = {Retrieved from CrossRef}
+  citation_number = {10}
 }
 
 @article{Wang2014NC,
@@ -139,8 +138,8 @@ journal = {Nat. Commun.},
 volume = {5},
 pages = {4758},
 doi = {10.1038/ncomms5758},
-note = {Retrieved from CrossRef},
-citation_number = {11}
+note = {Retrieved from CrossRef}
+  citation_number = {11}
 }
 
 @article{Horton2019BO,
@@ -151,8 +150,8 @@ journal = {Biol. Open},
 volume = {8},
 pages = {bio045724},
 doi = {10.1242/bio.045724},
-note = {Retrieved from CrossRef},
-citation_number = {12}
+note = {Retrieved from CrossRef}
+  citation_number = {12}
 }
 
 @article{Wang2013NCB,
@@ -163,8 +162,8 @@ journal = {Nat. Cell Biol.},
 volume = {15},
 pages = {274},
 doi = {10.1038/ncb2697},
-note = {Retrieved from CrossRef},
-citation_number = {13}
+note = {Retrieved from CrossRef}
+  citation_number = {13}
 }
 
 @article{Crowley2020,
@@ -175,8 +174,8 @@ journal = {eLife},
 volume = {9},
 pages = {e59465},
 doi = {10.7554/eLife.59465},
-note = {Retrieved from CrossRef},
-citation_number = {14}
+note = {Retrieved from CrossRef}
+  citation_number = {14}
 }
 
 @article{Toivanen2016SCR,
@@ -187,8 +186,8 @@ journal = {Stem Cell Rep.},
 volume = {6},
 pages = {660},
 doi = {10.1016/j.stemcr.2016.03.007},
-note = {Retrieved from CrossRef},
-citation_number = {15}
+note = {Retrieved from CrossRef}
+  citation_number = {15}
 }
 
 @article{Karthaus2014C,
@@ -199,8 +198,8 @@ journal = {Cell},
 volume = {159},
 pages = {163},
 doi = {10.1016/j.cell.2014.08.017},
-note = {Retrieved from CrossRef},
-citation_number = {16}
+note = {Retrieved from CrossRef}
+  citation_number = {16}
 }
 
 @article{Karthaus2020S,
@@ -211,8 +210,8 @@ journal = {Science},
 volume = {368},
 pages = {497},
 doi = {10.1126/science.aay0267},
-note = {Retrieved from CrossRef},
-citation_number = {17}
+note = {Retrieved from CrossRef}
+  citation_number = {17}
 }
 
 @article{Hu2011E,
@@ -223,8 +222,8 @@ journal = {Endocrinology},
 volume = {152},
 pages = {2150},
 doi = {10.1210/en.2010-1377},
-note = {Retrieved from CrossRef},
-citation_number = {18}
+note = {Retrieved from CrossRef}
+  citation_number = {18}
 }
 
 @article{Garraway2010P,
@@ -235,8 +234,8 @@ journal = {Prostate},
 volume = {70},
 pages = {491},
 doi = {10.1002/pros.21083},
-note = {Retrieved from CrossRef},
-citation_number = {19}
+note = {Retrieved from CrossRef}
+  citation_number = {19}
 }
 
 @article{Hu2012MCE,
@@ -247,8 +246,8 @@ journal = {Mol. Cell. Endocrinol.},
 volume = {354},
 pages = {63},
 doi = {10.1016/j.mce.2011.08.032},
-note = {Retrieved from CrossRef},
-citation_number = {20}
+note = {Retrieved from CrossRef}
+  citation_number = {20}
 }
 
 @article{Prins2014E,
@@ -259,8 +258,8 @@ journal = {Endocrinology},
 volume = {155},
 pages = {805},
 doi = {10.1210/en.2013-1955},
-note = {Retrieved from CrossRef},
-citation_number = {21}
+note = {Retrieved from CrossRef}
+  citation_number = {21}
 }
 
 @article{Hu2017SCR,
@@ -271,8 +270,8 @@ journal = {Stem Cell Res.},
 volume = {23},
 pages = {1},
 doi = {10.1016/j.scr.2017.06.009},
-note = {Retrieved from CrossRef},
-citation_number = {22}
+note = {Retrieved from CrossRef}
+  citation_number = {22}
 }
 
 @article{Hu2019JVE,
@@ -282,8 +281,8 @@ year = {2019},
 journal = {J. Vis. Exp.},
 volume = {154},
 pages = {e60357},
-note = {Retrieved from CrossRef},
-citation_number = {23}
+note = {Retrieved from CrossRef}
+  citation_number = {23}
 }
 
 @article{Moll2008HCB,
@@ -294,8 +293,8 @@ journal = {Histochem. Cell Biol.},
 volume = {129},
 pages = {705},
 doi = {10.1007/s00418-008-0435-6},
-note = {Retrieved from CrossRef},
-citation_number = {24}
+note = {Retrieved from CrossRef}
+  citation_number = {24}
 }
 
 @article{Bragulla2009JA,
@@ -306,8 +305,8 @@ journal = {J. Anat.},
 volume = {214},
 pages = {516},
 doi = {10.1111/j.1469-7580.2009.01066.x},
-note = {Retrieved from CrossRef},
-citation_number = {25}
+note = {Retrieved from CrossRef}
+  citation_number = {25}
 }
 
 @article{Windoffer2011JCB,
@@ -318,8 +317,8 @@ journal = {J. Cell Biol.},
 volume = {194},
 pages = {669},
 doi = {10.1083/jcb.201008095},
-note = {Retrieved from CrossRef},
-citation_number = {26}
+note = {Retrieved from CrossRef}
+  citation_number = {26}
 }
 
 @article{Karantza2011O,
@@ -330,8 +329,8 @@ journal = {Oncogene},
 volume = {30},
 pages = {127},
 doi = {10.1038/onc.2010.456},
-note = {Retrieved from CrossRef},
-citation_number = {27}
+note = {Retrieved from CrossRef}
+  citation_number = {27}
 }
 
 @article{Trompetter2008AR,
@@ -341,8 +340,8 @@ year = {2008},
 journal = {Anticancer. Res.},
 volume = {28},
 pages = {237},
-note = {Retrieved from CrossRef},
-citation_number = {28}
+note = {Retrieved from CrossRef}
+  citation_number = {28}
 }
 
 @article{Okada1992VAA,
@@ -353,8 +352,8 @@ journal = {Virchows Arch. A Pathol. Anat. Histopathol.},
 volume = {421},
 pages = {157},
 doi = {10.1007/BF01607049},
-note = {Retrieved from CrossRef},
-citation_number = {29}
+note = {Retrieved from CrossRef}
+  citation_number = {29}
 }
 
 @article{Malecha1991VAA,
@@ -365,8 +364,8 @@ journal = {Virchows Arch. A Pathol. Anat. Histopathol.},
 volume = {418},
 pages = {249},
 doi = {10.1007/BF01606063},
-note = {Retrieved from CrossRef},
-citation_number = {30}
+note = {Retrieved from CrossRef}
+  citation_number = {30}
 }
 
 @article{Li2016O,
@@ -377,8 +376,8 @@ journal = {Oncotarget},
 volume = {7},
 pages = {84645},
 doi = {10.18632/oncotarget.13175},
-note = {Retrieved from CrossRef},
-citation_number = {31}
+note = {Retrieved from CrossRef}
+  citation_number = {31}
 }
 
 @article{Trapnell2014NB,
@@ -389,8 +388,8 @@ journal = {Nat. Biotechnol.},
 volume = {32},
 pages = {381},
 doi = {10.1038/nbt.2859},
-note = {Retrieved from CrossRef},
-citation_number = {32}
+note = {Retrieved from CrossRef}
+  citation_number = {32}
 }
 
 @article{Ji2016NAR,
@@ -401,8 +400,8 @@ journal = {Nucleic Acids Res.},
 volume = {44},
 pages = {e117},
 doi = {10.1093/nar/gkw430},
-note = {Retrieved from CrossRef},
-citation_number = {33}
+note = {Retrieved from CrossRef}
+  citation_number = {33}
 }
 
 @article{Lang2010SCD,
@@ -413,8 +412,8 @@ journal = {Stem Cells Dev.},
 volume = {19},
 pages = {537},
 doi = {10.1089/scd.2009.0291},
-note = {Retrieved from CrossRef},
-citation_number = {34}
+note = {Retrieved from CrossRef}
+  citation_number = {34}
 }
 
 @article{Richards2019,
@@ -425,8 +424,8 @@ journal = {iScience},
 volume = {12},
 pages = {304},
 doi = {10.1016/j.isci.2019.01.028},
-note = {Retrieved from CrossRef},
-citation_number = {35}
+note = {Retrieved from CrossRef}
+  citation_number = {35}
 }
 
 @article{Gu2000O,
@@ -437,8 +436,8 @@ journal = {Oncogene},
 volume = {19},
 pages = {1288},
 doi = {10.1038/sj.onc.1203426},
-note = {Retrieved from CrossRef},
-citation_number = {36}
+note = {Retrieved from CrossRef}
+  citation_number = {36}
 }
 
 @article{Tiwari2020NC,
@@ -449,8 +448,8 @@ journal = {Nat. Commun.},
 volume = {11},
 pages = {384},
 doi = {10.1038/s41467-019-14184-0},
-note = {Retrieved from CrossRef},
-citation_number = {37}
+note = {Retrieved from CrossRef}
+  citation_number = {37}
 }
 
 @article{Hale2014SC,
@@ -461,8 +460,8 @@ journal = {Stem Cells},
 volume = {32},
 pages = {1746},
 doi = {10.1002/stem.1716},
-note = {Retrieved from CrossRef},
-citation_number = {38}
+note = {Retrieved from CrossRef}
+  citation_number = {38}
 }
 
 @article{Wu2016NC,
@@ -473,8 +472,8 @@ journal = {Nat. Commun.},
 volume = {7},
 pages = {10533},
 doi = {10.1038/ncomms10533},
-note = {Retrieved from CrossRef},
-citation_number = {39}
+note = {Retrieved from CrossRef}
+  citation_number = {39}
 }
 
 @article{Hu2018II,
@@ -485,8 +484,8 @@ journal = {Int. Immunopharmacol.},
 volume = {64},
 pages = {33},
 doi = {10.1016/j.intimp.2018.08.019},
-note = {Retrieved from CrossRef},
-citation_number = {40}
+note = {Retrieved from CrossRef}
+  citation_number = {40}
 }
 
 @article{Kobayashi2019NC,
@@ -497,8 +496,8 @@ journal = {Nat. Commun.},
 volume = {10},
 pages = {5446},
 doi = {10.1038/s41467-019-13203-4},
-note = {Retrieved from CrossRef},
-citation_number = {41}
+note = {Retrieved from CrossRef}
+  citation_number = {41}
 }
 
 @article{Gaisa2011JP,
@@ -509,8 +508,8 @@ journal = {J. Pathol.},
 volume = {225},
 pages = {172},
 doi = {10.1002/path.2959},
-note = {Retrieved from CrossRef},
-citation_number = {42}
+note = {Retrieved from CrossRef}
+  citation_number = {42}
 }
 
 @article{Manzo2019FCD,
@@ -521,8 +520,8 @@ journal = {Front. Cell Dev. Biol.},
 volume = {7},
 pages = {20},
 doi = {10.3389/fcell.2019.00020},
-note = {Retrieved from CrossRef},
-citation_number = {43}
+note = {Retrieved from CrossRef}
+  citation_number = {43}
 }
 
 @article{Naxerova2008GB,
@@ -533,8 +532,8 @@ journal = {Genome Biol.},
 volume = {9},
 pages = {R108},
 doi = {10.1186/gb-2008-9-7-r108},
-note = {Retrieved from CrossRef},
-citation_number = {44}
+note = {Retrieved from CrossRef}
+  citation_number = {44}
 }
 
 @article{Miyamoto2015S,
@@ -545,8 +544,8 @@ journal = {Science},
 volume = {349},
 pages = {1351},
 doi = {10.1126/science.aab0917},
-note = {Retrieved from CrossRef},
-citation_number = {45}
+note = {Retrieved from CrossRef}
+  citation_number = {45}
 }
 
 @article{Xie2020EHP,
@@ -557,8 +556,8 @@ journal = {Environ. Health Perspect.},
 volume = {128},
 pages = {67008},
 doi = {10.1289/EHP6471},
-note = {Retrieved from CrossRef},
-citation_number = {46}
+note = {Retrieved from CrossRef}
+  citation_number = {46}
 }
 
 @article{Chua2014NCB,
@@ -569,8 +568,8 @@ journal = {Nat. Cell Biol.},
 volume = {16},
 pages = {951},
 doi = {10.1038/ncb3047},
-note = {Retrieved from CrossRef},
-citation_number = {47}
+note = {Retrieved from CrossRef}
+  citation_number = {47}
 }
 
 @article{Kasper2008SCR,
@@ -581,8 +580,8 @@ journal = {Stem Cell Rev.},
 volume = {4},
 pages = {193},
 doi = {10.1007/s12015-008-9033-1},
-note = {Retrieved from CrossRef},
-citation_number = {48}
+note = {Retrieved from CrossRef}
+  citation_number = {48}
 }
 
 @article{Yang1997AJP,
@@ -592,8 +591,8 @@ year = {1997},
 journal = {Am. J. Pathol.},
 volume = {150},
 pages = {693},
-note = {Retrieved from CrossRef},
-citation_number = {49}
+note = {Retrieved from CrossRef}
+  citation_number = {49}
 }
 
 @article{Xue1997AJP,
@@ -603,8 +602,8 @@ year = {1997},
 journal = {Am. J. Pathol.},
 volume = {151},
 pages = {1759},
-note = {Retrieved from CrossRef},
-citation_number = {50}
+note = {Retrieved from CrossRef}
+  citation_number = {50}
 }
 
 @article{Aalders2001JP,
@@ -615,8 +614,8 @@ journal = {J. Pathol.},
 volume = {195},
 pages = {563},
 doi = {10.1002/path.993},
-note = {Retrieved from CrossRef},
-citation_number = {51}
+note = {Retrieved from CrossRef}
+  citation_number = {51}
 }
 
 @article{Ferronika2012APJ,
@@ -627,8 +626,8 @@ journal = {Asian Pac. J. Cancer Prev.},
 volume = {13},
 pages = {1943},
 doi = {10.7314/APJCP.2012.13.5.1943},
-note = {Retrieved from CrossRef},
-citation_number = {52}
+note = {Retrieved from CrossRef}
+  citation_number = {52}
 }
 
 @article{Dhillon2009CEB,
@@ -639,8 +638,8 @@ journal = {Cancer Epidemiol. Biomark. Prev.},
 volume = {18},
 pages = {595},
 doi = {10.1158/1055-9965.EPI-08-0785},
-note = {Retrieved from CrossRef},
-citation_number = {53}
+note = {Retrieved from CrossRef}
+  citation_number = {53}
 }
 
 @article{Maitland2011HC,
@@ -651,8 +650,8 @@ journal = {Horm. Cancer},
 volume = {2},
 pages = {47},
 doi = {10.1007/s12672-010-0058-y},
-note = {Retrieved from CrossRef},
-citation_number = {54}
+note = {Retrieved from CrossRef}
+  citation_number = {54}
 }
 
 @article{Gu2007CR,
@@ -663,8 +662,8 @@ journal = {Cancer Res.},
 volume = {67},
 pages = {4807},
 doi = {10.1158/0008-5472.CAN-06-4608},
-note = {Retrieved from CrossRef},
-citation_number = {55}
+note = {Retrieved from CrossRef}
+  citation_number = {55}
 }
 
 @article{Collins2005CR,
@@ -675,8 +674,8 @@ journal = {Cancer Res.},
 volume = {65},
 pages = {10946},
 doi = {10.1158/0008-5472.CAN-05-2018},
-note = {Retrieved from CrossRef},
-citation_number = {56}
+note = {Retrieved from CrossRef}
+  citation_number = {56}
 }
 
 @article{Skvortsov2018SC,
@@ -687,8 +686,8 @@ journal = {Stem Cells.},
 volume = {36},
 pages = {1457},
 doi = {10.1002/stem.2859},
-note = {Retrieved from CrossRef},
-citation_number = {57}
+note = {Retrieved from CrossRef}
+  citation_number = {57}
 }
 
 @article{Hudson2004PCP,
@@ -699,8 +698,8 @@ journal = {Prostate Cancer Prostatic Dis.},
 volume = {7},
 pages = {188},
 doi = {10.1038/sj.pcan.4500745},
-note = {Retrieved from CrossRef},
-citation_number = {58}
+note = {Retrieved from CrossRef}
+  citation_number = {58}
 }
 
 @article{Karthaus2008CR,
@@ -711,8 +710,8 @@ journal = {Cancer Res.},
 volume = {68},
 pages = {9703},
 doi = {10.1158/0008-5472.CAN-08-3084},
-note = {Retrieved from CrossRef},
-citation_number = {59}
+note = {Retrieved from CrossRef}
+  citation_number = {59}
 }
 
 @article{Chen2016CCR,
@@ -723,8 +722,8 @@ journal = {Clin. Cancer Res.},
 volume = {22},
 pages = {4505},
 doi = {10.1158/1078-0432.CCR-15-2956},
-note = {Retrieved from CrossRef},
-citation_number = {60}
+note = {Retrieved from CrossRef}
+  citation_number = {60}
 }
 
 @article{Smith2015PNA,
@@ -734,8 +733,8 @@ year = {2015},
 journal = {Porc. Natl. Acad. Sci. USA},
 volume = {112},
 pages = {E6544},
-note = {Retrieved from CrossRef},
-citation_number = {61}
+note = {Retrieved from CrossRef}
+  citation_number = {61}
 }
 
 @article{Subramanian2005PNA,
@@ -746,8 +745,8 @@ journal = {Porc. Natl. Acad. Sci. USA},
 volume = {102},
 pages = {15545},
 doi = {10.1073/pnas.0506580102},
-note = {Retrieved from CrossRef},
-citation_number = {62}
+note = {Retrieved from CrossRef}
+  citation_number = {62}
 }
 
 @article{Macosko2015C,
@@ -758,8 +757,8 @@ journal = {Cell},
 volume = {161},
 pages = {1202},
 doi = {10.1016/j.cell.2015.05.002},
-note = {Retrieved from CrossRef},
-citation_number = {63}
+note = {Retrieved from CrossRef}
+  citation_number = {63}
 }
 
 @article{Stuart2019C,
@@ -770,6 +769,6 @@ journal = {Cell},
 volume = {177},
 pages = {1888},
 doi = {10.1016/j.cell.2019.05.031},
-note = {Retrieved from CrossRef},
-citation_number = {64}
+note = {Retrieved from CrossRef}
+  citation_number = {64}
 }
