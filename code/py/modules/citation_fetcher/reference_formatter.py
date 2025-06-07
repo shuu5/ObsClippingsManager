@@ -202,10 +202,10 @@ class ReferenceFormatter:
         """
         fields = {}
         
-        # タイトル
-        title = reference.get('title', '').strip()
-        if title:
-            fields['title'] = title
+        # タイトル - Noneチェックを追加
+        title = reference.get('title')
+        if title is not None and title.strip():
+            fields['title'] = title.strip()
         
         # 著者
         author = self._format_authors_for_bibtex(reference)
@@ -217,10 +217,10 @@ class ReferenceFormatter:
         if year:
             fields['year'] = str(year)
         
-        # ジャーナル
-        journal = reference.get('journal', '').strip()
-        if journal:
-            fields['journal'] = journal
+        # ジャーナル - Noneチェックを追加
+        journal = reference.get('journal')
+        if journal is not None and journal.strip():
+            fields['journal'] = journal.strip()
         
         # 巻・号・ページ
         volume = reference.get('volume')
@@ -237,32 +237,32 @@ class ReferenceFormatter:
         
         # DOI
         doi = reference.get('doi')
-        if doi:
-            fields['doi'] = doi
+        if doi and str(doi).strip():
+            fields['doi'] = str(doi).strip()
         
         # 出版社
         publisher = reference.get('publisher')
-        if publisher:
-            fields['publisher'] = publisher
+        if publisher and str(publisher).strip():
+            fields['publisher'] = str(publisher).strip()
         
         # 書籍タイトル
         book_title = reference.get('book_title') or reference.get('volume-title')
-        if book_title:
-            fields['booktitle'] = book_title
+        if book_title and str(book_title).strip():
+            fields['booktitle'] = str(book_title).strip()
         
         # ISBN/ISSN
         isbn = reference.get('isbn')
-        if isbn:
-            fields['isbn'] = isbn
+        if isbn and str(isbn).strip():
+            fields['isbn'] = str(isbn).strip()
         
         issn = reference.get('issn')
-        if issn:
-            fields['issn'] = issn
+        if issn and str(issn).strip():
+            fields['issn'] = str(issn).strip()
         
         # ソース情報をnoteに追加
         source = reference.get('source')
-        if source:
-            note = f"Retrieved from {source}"
+        if source and str(source).strip():
+            note = f"Retrieved from {str(source).strip()}"
             if 'note' in fields:
                 fields['note'] = f"{fields['note']}. {note}"
             else:
