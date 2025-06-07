@@ -232,12 +232,9 @@ def show_progress_bar(current: int, total: int, width: int = 50) -> str:
 # バリデーション関数
 def validate_doi(doi: str) -> bool:
     """DOI形式の妥当性チェック"""
-    if not doi:
-        return False
-    
-    # 基本的なDOIパターン（10.xxxx/yyyy形式）
-    doi_pattern = r'^10\.\d{4,}(?:\.\d+)*/.+$'
-    return bool(re.match(doi_pattern, doi.strip()))
+    # bibtex_parserのvalidate_doi関数を使用してコード重複を避ける
+    from .bibtex_parser import validate_doi as bibtex_validate_doi
+    return bibtex_validate_doi(doi)
 
 
 def validate_citation_key(citation_key: str) -> bool:

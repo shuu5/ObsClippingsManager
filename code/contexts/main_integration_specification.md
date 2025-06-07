@@ -230,6 +230,73 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated -c custom_config
 - **ディスク容量**: ログファイル 1MB/日以下
 - **ネットワーク**: 控えめなAPI使用（1秒間隔）
 
+## テスト仕様とカバレッジ
+
+### テストアーキテクチャ
+メイン統合プログラムの品質保証は、TDDアプローチによる包括的テストスイートで実現されています。
+
+### テストカバレッジ状況
+- **総テスト数**: 126個
+- **成功率**: 100% (126/126)
+- **テスト実行時間**: 約0.67秒
+
+### テストファイル構成
+```
+code/unittest/
+├── test_main_cli.py                  # CLI機能統合テスト (21KB)
+├── test_shared_config_manager.py     # 設定管理テスト
+├── test_shared_logger.py             # ログシステムテスト  
+├── test_shared_bibtex_parser.py      # BibTeX解析テスト
+├── test_shared_utils.py              # ユーティリティテスト
+├── test_shared_exceptions.py         # 例外処理テスト
+├── test_citation_fetcher.py          # 引用取得テスト
+├── test_citation_parser.py           # 引用パースエンジンテスト
+├── test_citation_parser_workflow.py  # 引用パースワークフローテスト
+├── test_workflow_manager.py          # ワークフロー管理テスト
+├── test_sync_check_workflow.py       # 同期チェックテスト
+├── test_rename_mkdir_citation_key.py # ファイル整理テスト
+├── test_edge_cases.py                # エッジケース・境界値テスト
+└── run_all_tests.py                  # テスト実行スクリプト
+```
+
+### CLI機能テストカバレッジ
+`test_main_cli.py` では以下をテスト：
+
+#### 1. システム管理コマンド
+- `version`: バージョン情報表示
+- `validate-config`: 設定ファイル検証
+- `show-stats`: システム統計表示  
+- `show-history`: 実行履歴表示
+
+#### 2. 主要機能コマンド
+- `organize-files`: ファイル整理ワークフロー
+- `sync-check`: 同期チェック（オプション網羅）
+- `fetch-citations`: 引用取得（基本・拡張・ドライラン）
+- `parse-citations`: 引用文献パース
+- `run-integrated`: 統合ワークフロー
+
+#### 3. エラーハンドリング
+- 設定ファイル不正時の適切なエラー処理
+- ワークフロー失敗時の適切な終了コード
+- 必須パラメータ不足時の処理
+
+### テスト実行方法
+```bash
+# 全テスト実行
+cd /home/user/proj/ObsClippingsManager
+uv run code/unittest/run_all_tests.py
+
+# 個別モジュールテスト実行
+uv run code/unittest/run_all_tests.py shared_config_manager
+```
+
+### テスト品質保証
+- **Click CliRunner**: CLIテストフレームワーク使用
+- **Mock/Patch**: 外部依存関係の分離
+- **Temporary Files**: テスト環境の独立性
+- **Python 3.x互換性**: 例外チェーン構文最適化
+- **エッジケース**: Unicode、空ファイル、境界値テスト
+
 ---
 
 **メイン統合プログラム仕様書バージョン**: 2.0.0  

@@ -191,7 +191,7 @@ class FormatConverter:
             
             # 隣接判定（間にテキストがほとんどない場合）
             gap = current.start_pos - last_in_group.end_pos
-            gap_text = ""  # TODO: 実際のテキストから取得
+            gap_text = self._extract_gap_text(last_in_group.end_pos, current.start_pos)
             
             if gap <= 10 and self._is_mergeable_gap(gap_text):
                 current_group.append(current)
@@ -214,6 +214,38 @@ class FormatConverter:
         
         return merged
     
+    def _extract_gap_text(self, start_pos: int, end_pos: int) -> str:
+        """
+        指定された位置間のテキストを抽出
+        
+        Args:
+            start_pos: 開始位置
+            end_pos: 終了位置
+            
+        Returns:
+            ギャップテキスト
+        """
+        # 現在処理中のテキストが保存されていない場合は空文字を返す
+        if not hasattr(self, '_current_text'):
+            return ""
+        
+        try:
+            if 0 <= start_pos < end_pos <= len(self._current_text):
+                return self._current_text[start_pos:end_pos]
+        except (IndexError, TypeError):
+            pass
+        
+        return ""
+
+    def set_current_text(self, text: str) -> None:
+        """
+        現在処理中のテキストを設定
+        
+        Args:
+            text: 処理中のテキスト
+        """
+        self._current_text = text
+
     def _is_mergeable_gap(self, gap_text: str) -> bool:
         """
         ギャップテキストがマージ可能かを判定

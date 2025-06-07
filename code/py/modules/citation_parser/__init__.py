@@ -25,7 +25,7 @@ from .format_converter import FormatConverter
 from .link_extractor import LinkExtractor
 from .config_manager import ConfigManager
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __author__ = "ObsClippingsManager"
 
 __all__ = [

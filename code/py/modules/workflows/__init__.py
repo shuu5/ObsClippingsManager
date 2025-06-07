@@ -5,7 +5,7 @@ Citation Fetcher機能とRename & MkDir Citation Key機能のワークフロー�
 """
 
 # Version information
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __author__ = "ObsClippingsManager Team"
 
 # Import workflow classes

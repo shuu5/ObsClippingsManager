@@ -5,7 +5,7 @@ ObsClippingsManager統合システムで使用される共通機能を提供し�
 """
 
 # Version information
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 __author__ = "ObsClippingsManager Team"
 
 # Import main classes and functions

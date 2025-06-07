@@ -20,6 +20,7 @@ sys.path.insert(0, str(project_root))
 from modules.shared.config_manager import ConfigManager
 from modules.shared.logger import IntegratedLogger
 from modules.workflows.workflow_manager import WorkflowManager, WorkflowType, create_workflow_execution_summary
+from modules.workflows.citation_parser_workflow import CitationParserWorkflow
 from modules.shared.exceptions import ObsClippingsError, ConfigError
 
 
@@ -521,8 +522,6 @@ def parse_citations(ctx: Dict[str, Any],
             click.echo("🔗 Link extraction enabled")
         
         # CitationParserWorkflowを直接実行
-        from modules.workflows.citation_parser_workflow import CitationParserWorkflow
-        
         workflow = CitationParserWorkflow(ctx['config_manager'], ctx['logger'])
         success, results = workflow.execute(input_file, **options)
         
@@ -659,10 +658,8 @@ def run_integrated(ctx: Dict[str, Any],
                 
                 # citation_parserの場合は直接実行
                 if workflow_name == 'citation_parser':
-                    from modules.workflows.citation_parser_workflow import CitationParserWorkflow
-                    
-                    parser_workflow = CitationParserWorkflow(ctx['config_manager'], ctx['logger'])
-                    success, results = parser_workflow.execute(citation_parser_input, **options)
+                    workflow = CitationParserWorkflow(ctx['config_manager'], ctx['logger'])
+                    success, results = workflow.execute(citation_parser_input, **options)
                 else:
                     # ワークフロー実行
                     success, results = workflow_manager.execute_workflow(
