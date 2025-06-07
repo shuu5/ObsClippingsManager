@@ -141,13 +141,13 @@ class MetadataEnricher:
             3
         )
         
-        # API優先順位の設定
+        # API優先順位の設定（実データカバレッジ分析に基づく最適化）
         self.api_priorities = self.config.get_config_value(
             'citation_fetcher.metadata_enrichment.api_priorities',
             {
-                'life_sciences': ['pubmed', 'crossref', 'openalex', 'semantic_scholar', 'opencitations'],
-                'computer_science': ['semantic_scholar', 'crossref', 'openalex', 'pubmed', 'opencitations'],
-                'general': ['crossref', 'openalex', 'semantic_scholar', 'pubmed', 'opencitations']
+                'life_sciences': ['crossref', 'opencitations', 'openalex', 'pubmed', 'semantic_scholar'],
+                'computer_science': ['crossref', 'opencitations', 'semantic_scholar', 'openalex', 'pubmed'],
+                'general': ['crossref', 'opencitations', 'openalex', 'semantic_scholar', 'pubmed']
             }
         )
         
@@ -273,16 +273,16 @@ class MetadataEnricher:
         # 分野判定（仮実装：PubMedが成功した場合は生命科学分野と判定）
         field_type = 'life_sciences' if 'pubmed' in source_data else 'general'
         
-        # 優先順位に従ってフィールドを補完
+        # 優先順位に従ってフィールドを補完（実データ分析に基づく最適化）
         field_priorities = {
             'title': self._get_api_priority(field_type),
             'authors': self._get_api_priority(field_type),
             'journal': self._get_api_priority(field_type),
             'year': self._get_api_priority(field_type),
-            'volume': ['pubmed', 'crossref', 'openalex', 'semantic_scholar', 'opencitations'],
-            'issue': ['pubmed', 'crossref', 'openalex', 'semantic_scholar', 'opencitations'],
-            'pages': ['pubmed', 'crossref', 'openalex', 'semantic_scholar', 'opencitations'],
-            'doi': ['crossref', 'pubmed', 'openalex', 'semantic_scholar', 'opencitations']
+            'volume': ['crossref', 'opencitations', 'openalex', 'pubmed', 'semantic_scholar'],
+            'issue': ['crossref', 'opencitations', 'openalex', 'pubmed', 'semantic_scholar'],
+            'pages': ['crossref', 'opencitations', 'openalex', 'pubmed', 'semantic_scholar'],
+            'doi': ['crossref', 'opencitations', 'openalex', 'pubmed', 'semantic_scholar']
         }
         
         for field, priority_list in field_priorities.items():

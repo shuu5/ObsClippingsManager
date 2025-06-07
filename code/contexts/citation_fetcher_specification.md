@@ -172,6 +172,23 @@ modules/citation_fetcher/
 - **段階的補完**: 各引用文献ごとに必要な情報が揃った時点で後続APIの呼び出しを停止
 - **API使用量最適化**: 無駄なAPI呼び出しを削減し、実行時間を大幅短縮
 
+#### APIカバレッジ最適化
+実データ分析（288引用文献）に基づく最適化された API優先順位：
+
+**カバレッジ統計:**
+- CrossRef: 61.1% (176件) - 最も高いカバレッジ
+- OpenCitations: 21.5% (62件) - 補完効果が高い
+- OpenAlex: 17.4% (50件) - 学術データベースとして信頼性が高い
+- PubMed: 生命科学分野で強い
+- Semantic Scholar: コンピュータサイエンス分野で強い
+
+**最適化された優先順位:**
+```
+生命科学分野: CrossRef → OpenCitations → OpenAlex → PubMed → Semantic Scholar
+コンピュータサイエンス: CrossRef → OpenCitations → Semantic Scholar → OpenAlex → PubMed  
+一般分野: CrossRef → OpenCitations → OpenAlex → Semantic Scholar → PubMed
+```
+
 ### 5. 既存ファイル制御機能
 
 #### 主要機能
