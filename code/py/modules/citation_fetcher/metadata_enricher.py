@@ -145,8 +145,8 @@ class MetadataEnricher:
         self.api_priorities = self.config.get_config_value(
             'citation_fetcher.metadata_enrichment.api_priorities',
             {
-                'life_sciences': ['crossref', 'opencitations', 'openalex', 'pubmed', 'semantic_scholar'],
-                'computer_science': ['crossref', 'opencitations', 'semantic_scholar', 'openalex', 'pubmed'],
+                'life_sciences': ['crossref', 'opencitations', 'openalex', 'semantic_scholar', 'pubmed'],
+                'computer_science': ['crossref', 'opencitations', 'openalex', 'semantic_scholar', 'pubmed'],
                 'general': ['crossref', 'opencitations', 'openalex', 'semantic_scholar', 'pubmed']
             }
         )
@@ -279,10 +279,10 @@ class MetadataEnricher:
             'authors': self._get_api_priority(field_type),
             'journal': self._get_api_priority(field_type),
             'year': self._get_api_priority(field_type),
-            'volume': ['crossref', 'opencitations', 'openalex', 'pubmed', 'semantic_scholar'],
-            'issue': ['crossref', 'opencitations', 'openalex', 'pubmed', 'semantic_scholar'],
-            'pages': ['crossref', 'opencitations', 'openalex', 'pubmed', 'semantic_scholar'],
-            'doi': ['crossref', 'opencitations', 'openalex', 'pubmed', 'semantic_scholar']
+            'volume': ['crossref', 'opencitations', 'openalex', 'semantic_scholar', 'pubmed'],
+            'issue': ['crossref', 'opencitations', 'openalex', 'semantic_scholar', 'pubmed'],
+            'pages': ['crossref', 'opencitations', 'openalex', 'semantic_scholar', 'pubmed'],
+            'doi': ['crossref', 'opencitations', 'openalex', 'semantic_scholar', 'pubmed']
         }
         
         for field, priority_list in field_priorities.items():

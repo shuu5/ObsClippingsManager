@@ -184,10 +184,15 @@ modules/citation_fetcher/
 
 **最適化された優先順位:**
 ```
-生命科学分野: CrossRef → OpenCitations → OpenAlex → PubMed → Semantic Scholar
-コンピュータサイエンス: CrossRef → OpenCitations → Semantic Scholar → OpenAlex → PubMed  
+生命科学分野: CrossRef → OpenCitations → OpenAlex → Semantic Scholar → PubMed
+コンピュータサイエンス: CrossRef → OpenCitations → OpenAlex → Semantic Scholar → PubMed
 一般分野: CrossRef → OpenCitations → OpenAlex → Semantic Scholar → PubMed
 ```
+
+**段階的補完の特徴:**
+- 各引用文献ごとに十分な情報が得られた時点で後続API呼び出しを停止
+- Semantic Scholar・PubMedは最終補完手段として機能（実際にはほとんど呼び出されない）
+- 専門分野での追加情報取得機会を維持しつつ、パフォーマンスを最適化
 
 ### 5. 既存ファイル制御機能
 
