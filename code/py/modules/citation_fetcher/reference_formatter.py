@@ -285,8 +285,8 @@ class ReferenceFormatter:
         if formatted_author:
             return self._truncate_authors(formatted_author)
         
-        # 生の著者データを処理
-        author_data = reference.get('author')
+        # 生の著者データを処理（authors/authorの両方をチェック）
+        author_data = reference.get('authors') or reference.get('author')
         if not author_data:
             return ""
         
@@ -358,7 +358,7 @@ class ReferenceFormatter:
         Returns:
             第一著者の姓
         """
-        author_data = reference.get('author') or reference.get('formatted_author', '')
+        author_data = reference.get('authors') or reference.get('author') or reference.get('formatted_author', '')
         
         if not author_data:
             return ""
