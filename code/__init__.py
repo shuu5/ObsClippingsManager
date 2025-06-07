@@ -1,0 +1,3 @@
+"""
+ObsClippingsManager - コードパッケージ
+""" 
