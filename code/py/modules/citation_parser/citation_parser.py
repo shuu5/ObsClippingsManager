@@ -9,6 +9,7 @@ import time
 import logging
 from typing import Optional, List, Dict, Any
 from pathlib import Path
+import re
 
 from .data_structures import (
     CitationResult, ProcessingStats, ProcessingError, 
@@ -84,8 +85,11 @@ class CitationParser:
             # Step 2: リンク抽出
             clean_text, link_entries = self.link_extractor.extract_links(text, matches)
             
+            # Step 2.5: リンク抽出後の位置情報を更新
+            updated_matches = self._update_matches_after_link_extraction(clean_text, matches, link_entries)
+            
             # Step 3: フォーマット変換
-            converted_text = self.format_converter.convert_to_unified(clean_text, matches)
+            converted_text = self.format_converter.convert_to_unified(clean_text, updated_matches)
             
             # Step 4: 統計情報の生成
             statistics = self._generate_statistics(matches, errors, start_time)
@@ -160,4 +164,77 @@ class CitationParser:
             errors=error_count,
             pattern_breakdown=pattern_breakdown,
             processing_time=time.time() - start_time
-        ) 
+        )
+    
+    def _update_matches_after_link_extraction(self, clean_text: str, 
+                                            original_matches: List[CitationMatch], 
+                                            link_entries: List[LinkEntry]) -> List[CitationMatch]:
+        """
+        リンク抽出後にマッチの位置情報を更新
+        
+        Args:
+            clean_text: リンク抽出後のクリーンなテキスト
+            original_matches: 元のマッチリスト  
+            link_entries: 抽出されたリンクエントリ
+            
+        Returns:
+            位置情報が更新されたマッチリスト
+        """
+        # よりシンプルなアプローチ：クリーンなテキストで全ての引用を再検出
+        # ただし、リンク情報は保持しない（既に抽出済み）
+        
+        updated_matches = []
+        
+        # 基本的な引用パターンでクリーンなテキストを再スキャン
+        citation_patterns = [
+            r'\[(\d+(?:,\s*\d+)*)\]',  # [1] [1,2] [1, 2, 3]
+            r'\[(\d+)[-–](\d+)\]',     # [1-3] [1–3]
+        ]
+        
+        for pattern in citation_patterns:
+            for match in re.finditer(pattern, clean_text):
+                start_pos = match.start()
+                end_pos = match.end()
+                original_text = match.group(0)
+                
+                # 引用番号を解析
+                if '-' in original_text or '–' in original_text:
+                    # 範囲引用
+                    start_num = int(match.group(1))
+                    end_num = int(match.group(2))
+                    citation_numbers = list(range(start_num, end_num + 1))
+                    pattern_type = 'range'
+                else:
+                    # 単一または複数引用
+                    numbers_str = match.group(1)
+                    citation_numbers = [int(n.strip()) for n in numbers_str.split(',')]
+                    pattern_type = 'multiple' if len(citation_numbers) > 1 else 'single'
+                
+                # 新しいマッチオブジェクトを作成
+                updated_match = CitationMatch(
+                    original_text=original_text,
+                    citation_numbers=citation_numbers,
+                    has_link=False,  # リンクは既に抽出済み
+                    link_url=None,
+                    pattern_type=pattern_type,
+                    start_pos=start_pos,
+                    end_pos=end_pos
+                )
+                updated_matches.append(updated_match)
+        
+        # 位置順にソート
+        updated_matches.sort(key=lambda x: x.start_pos)
+        
+        # 重複する位置のマッチを除去
+        filtered_matches = []
+        used_positions = set()
+        
+        for match in updated_matches:
+            # 位置の重複チェック
+            position_range = set(range(match.start_pos, match.end_pos))
+            if not position_range.intersection(used_positions):
+                filtered_matches.append(match)
+                used_positions.update(position_range)
+        
+        self.logger.debug(f"Updated {len(filtered_matches)} citation positions after link extraction")
+        return filtered_matches 
