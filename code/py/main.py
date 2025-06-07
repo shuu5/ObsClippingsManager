@@ -101,6 +101,9 @@ def cli(ctx: Dict[str, Any], config: str, log_level: str, dry_run: bool, verbose
 @click.option('--backup-existing',
               is_flag=True,
               help='Create backup of existing references.bib files')
+@click.option('--force-overwrite',
+              is_flag=True,
+              help='Force overwrite existing references.bib files')
 @click.option('--request-delay',
               type=float,
               help='Delay between API requests (seconds)')
@@ -117,6 +120,7 @@ def fetch_citations(ctx: Dict[str, Any],
                    max_retries: Optional[int],
                    use_sync_integration: bool,
                    backup_existing: bool,
+                   force_overwrite: bool,
                    request_delay: Optional[float],
                    timeout: Optional[int],
                    auto_approve: bool):
@@ -136,7 +140,8 @@ def fetch_citations(ctx: Dict[str, Any],
             'dry_run': ctx['dry_run'],
             'auto_approve': auto_approve,
             'use_sync_integration': use_sync_integration,
-            'backup_existing': backup_existing
+            'backup_existing': backup_existing,
+            'force_overwrite': force_overwrite
         }
         
         # コマンドライン引数で設定を上書き
@@ -184,9 +189,14 @@ def fetch_citations(ctx: Dict[str, Any],
             
             # 保存結果の表示
             individual_saves = results.get('successful_individual_saves', 0)
+            skipped_saves = results.get('skipped_individual_saves', 0)
             total_refs = results.get('total_references_saved', 0)
-            if individual_saves > 0:
-                click.echo(f"📁 Individual saves: {individual_saves} papers, {total_refs} references")
+            if individual_saves > 0 or skipped_saves > 0:
+                save_msg = f"📁 Individual saves: {individual_saves} papers"
+                if skipped_saves > 0:
+                    save_msg += f", {skipped_saves} skipped"
+                save_msg += f", {total_refs} references"
+                click.echo(save_msg)
             
             # 詳細統計の表示
             if ctx['verbose']:

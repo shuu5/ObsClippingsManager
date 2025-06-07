@@ -913,3 +913,64 @@ ValueError: too many values to unpack (expected 2)
 2025-06-07 07:39:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Found 0 orphaned directories in clippings
 2025-06-07 07:39:10 - INFO - ObsClippingsManager.Workflows.SyncCheck - Sync check completed - no issues found
 2025-06-07 07:39:10 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: sync_check
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.WorkflowManager - Starting workflow execution: citation_fetching
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.WorkflowManager - Executing citation fetching workflow
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationWorkflow - Starting citation fetching workflow v2.1
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Starting sync integration analysis
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Found 5 directories in Clippings
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Identified 5 synced papers
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Found 5/5 papers with valid DOIs
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Validated 5 paper directories
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Sync analysis completed: 5/5 papers synced
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Identified 5 target papers for citation fetching
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationWorkflow - Sync integration identified 5 target papers
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Starting sync integration analysis
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Parsing BibTeX file: /home/user/ManuscriptsManager/CurrentManuscript.bib
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Found 5 directories in Clippings
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Identified 5 synced papers
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Found 5/5 papers with valid DOIs
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Validated 5 paper directories
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.SyncIntegration - Sync analysis completed: 5/5 papers synced
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationWorkflow - Target papers identified: 5
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationWorkflow - Fetching citations for 5 DOIs
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.1093/jrr/rrac091
+2025-06-07 08:11:19 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.1093/jrr/rrac091
+2025-06-07 08:11:21 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 52 references for 10.1093/jrr/rrac091
+2025-06-07 08:11:21 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.1093/jrr/rrac091: 52 references
+2025-06-07 08:11:21 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 52 references for 10.1093/jrr/rrac091 from CrossRef
+2025-06-07 08:11:21 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.1111/apm.13280
+2025-06-07 08:11:21 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.1111/apm.13280
+2025-06-07 08:11:22 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 67 references for 10.1111/apm.13280
+2025-06-07 08:11:22 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.1111/apm.13280: 67 references
+2025-06-07 08:11:22 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 67 references for 10.1111/apm.13280 from CrossRef
+2025-06-07 08:11:22 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.18632/oncotarget.13175
+2025-06-07 08:11:22 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.18632/oncotarget.13175
+2025-06-07 08:11:23 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 51 references for 10.18632/oncotarget.13175
+2025-06-07 08:11:23 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.18632/oncotarget.13175: 51 references
+2025-06-07 08:11:23 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 51 references for 10.18632/oncotarget.13175 from CrossRef
+2025-06-07 08:11:23 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.3390/ijms22158109
+2025-06-07 08:11:23 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.3390/ijms22158109
+2025-06-07 08:11:24 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 67 references for 10.3390/ijms22158109
+2025-06-07 08:11:24 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.3390/ijms22158109: 67 references
+2025-06-07 08:11:24 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 67 references for 10.3390/ijms22158109 from CrossRef
+2025-06-07 08:11:24 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - Starting fallback strategy for DOI: 10.1186/s13058-022-01502-6
+2025-06-07 08:11:24 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Fetching references for DOI: 10.1186/s13058-022-01502-6
+2025-06-07 08:11:25 - INFO - ObsClippingsManager.CitationFetcher.CrossRef - Successfully retrieved 51 references for 10.1186/s13058-022-01502-6
+2025-06-07 08:11:25 - INFO - ObsClippingsManager.CitationFetcher.FallbackStrategy - CrossRef successful for 10.1186/s13058-022-01502-6: 51 references
+2025-06-07 08:11:25 - INFO - ObsClippingsManager.CitationWorkflow - Successfully fetched 51 references for 10.1186/s13058-022-01502-6 from CrossRef
+2025-06-07 08:11:25 - INFO - ObsClippingsManager.CitationWorkflow - Citation fetching completed: 5/5 DOIs processed, 288 total references
+2025-06-07 08:11:25 - INFO - ObsClippingsManager.CitationWorkflow - Saving individual references.bib files for 5 papers
+2025-06-07 08:11:25 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 52/52 references to BibTeX
+2025-06-07 08:11:25 - INFO - ObsClippingsManager.CitationWorkflow - Saved 52 references for takenakaW2023J.Radiat.Res.Tokyo to /home/user/ManuscriptsManager/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib
+2025-06-07 08:11:25 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 67/67 references to BibTeX
+2025-06-07 08:11:25 - INFO - ObsClippingsManager.CitationWorkflow - Saved 67 references for lennartzM2023APMIS to /home/user/ManuscriptsManager/Clippings/lennartzM2023APMIS/references.bib
+2025-06-07 08:11:25 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 51/51 references to BibTeX
+2025-06-07 08:11:26 - INFO - ObsClippingsManager.CitationWorkflow - Saved 51 references for liQ2016Oncotarget to /home/user/ManuscriptsManager/Clippings/liQ2016Oncotarget/references.bib
+2025-06-07 08:11:26 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 67/67 references to BibTeX
+2025-06-07 08:11:26 - INFO - ObsClippingsManager.CitationWorkflow - Saved 67 references for huWY2021IJMS to /home/user/ManuscriptsManager/Clippings/huWY2021IJMS/references.bib
+2025-06-07 08:11:26 - INFO - ObsClippingsManager.CitationFetcher.ReferenceFormatter - Successfully converted 51/51 references to BibTeX
+2025-06-07 08:11:26 - INFO - ObsClippingsManager.CitationWorkflow - Saved 51 references for yinL2022BreastCancerRes to /home/user/ManuscriptsManager/Clippings/yinL2022BreastCancerRes/references.bib
+2025-06-07 08:11:26 - INFO - ObsClippingsManager.CitationWorkflow - Individual saving completed: 5/5 papers, 288 total references
+2025-06-07 08:11:26 - INFO - ObsClippingsManager.CitationWorkflow - Citation fetching workflow v2.1 completed successfully
+2025-06-07 08:11:26 - INFO - ObsClippingsManager.WorkflowManager - Workflow completed successfully: citation_fetching

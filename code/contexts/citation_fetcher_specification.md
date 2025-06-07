@@ -38,6 +38,7 @@ modules/citation_fetcher/
 - **拡張性**: 追加APIソースへの対応が容易
 - **保守性**: ログ出力とエラー追跡が可能
 - **ファイル管理**: 論文ごとの個別ファイル管理
+- **既存ファイル制御**: スキップ機能と強制上書き機能
 
 ## 詳細機能仕様
 
@@ -64,6 +65,7 @@ modules/citation_fetcher/
 3. 処理準備
    ├── 各citation_keyのClippingsディレクトリパス確認
    ├── references.bib保存先ディレクトリの確認
+   ├── 既存references.bibファイルのスキップ・上書き制御
    └── 既存references.bibファイルのバックアップ（オプション）
 ```
 
@@ -145,6 +147,48 @@ modules/citation_fetcher/
    └── 失敗 → エラーログ・統計更新
 ```
 
+### 5. 既存ファイル制御機能
+
+#### 主要機能
+- **スキップ機能**: 既存references.bibファイルがある場合の自動スキップ
+- **強制上書き**: `--force-overwrite`オプションによる強制上書き
+- **スキップ統計**: スキップされたファイル数の統計情報
+- **動作ログ**: スキップ・上書き判定の詳細ログ
+
+#### 動作フロー
+```
+1. ファイル存在チェック
+   ├── references.bibファイルの存在確認
+   ├── force_overwriteオプションの確認
+   └── 処理方針の決定
+
+2. 処理判定
+   ├── ファイル存在 + force_overwrite=False → スキップ
+   ├── ファイル存在 + force_overwrite=True → 上書き
+   └── ファイル未存在 → 新規作成
+
+3. 統計・ログ更新
+   ├── スキップ数カウント
+   ├── 処理結果ログ出力
+   └── ユーザーへの結果表示
+```
+
+#### CLIオプション
+- `--force-overwrite`: 既存ファイルを強制的に上書き
+- デフォルト動作: 既存ファイルはスキップ
+
+#### 修復された問題
+この機能は、**lennartzM2023APMIS論文のreferences.bib問題**の修復に直接使用されました：
+
+**修復前**: 
+- 6個のBibTeXエントリ（91%が欠損）
+- `'NoneType' object has no attribute 'strip'`エラーによる変換失敗
+
+**修復後**:
+- 67個すべてのBibTeXエントリが正常生成
+- ReferenceFormatterのNoneチェック機能追加
+- `--force-overwrite`による問題ファイルの強制再生成
+
 ## 実行方法
 
 ### 基本実行
@@ -172,6 +216,9 @@ PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --timeout 60
 
 # 既存references.bibのバックアップ作成
 PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --backup-existing
+
+# 既存references.bibを強制上書き
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --force-overwrite
 ```
 
 ### sync機能併用

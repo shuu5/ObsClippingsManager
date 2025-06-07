@@ -420,8 +420,23 @@ class CitationWorkflow:
                     save_results["save_errors"].append(f"No valid file path for {citation_key}")
                     continue
                 
+                # 既存ファイルチェック（force_overwriteが無効の場合）
+                references_file = Path(references_file_path)
+                force_overwrite = options.get('force_overwrite', False)
+                
+                if references_file.exists() and not force_overwrite:
+                    self.logger.info(f"Skipping {citation_key}: references.bib already exists (use --force-overwrite to override)")
+                    save_results["individual_saves"][citation_key] = {
+                        "status": "skipped",
+                        "references_count": 0,
+                        "file_path": references_file_path,
+                        "reason": "File already exists"
+                    }
+                    continue
+                
                 if dry_run:
-                    self.logger.info(f"[DRY RUN] Would save {len(references)} references to {references_file_path}")
+                    action = "overwrite" if references_file.exists() else "create"
+                    self.logger.info(f"[DRY RUN] Would {action} {len(references)} references to {references_file_path}")
                     save_results["saved_files"].append(references_file_path)
                     save_results["individual_saves"][citation_key] = {
                         "status": "dry_run",
@@ -436,7 +451,6 @@ class CitationWorkflow:
                 )
                 
                 # ファイルに保存
-                references_file = Path(references_file_path)
                 references_file.parent.mkdir(parents=True, exist_ok=True)
                 
                 with open(references_file, 'w', encoding='utf-8') as f:
@@ -466,15 +480,20 @@ class CitationWorkflow:
         # 保存統計
         successful_saves = sum(1 for save in save_results["individual_saves"].values() 
                               if save["status"] in ["success", "dry_run"])
+        skipped_saves = sum(1 for save in save_results["individual_saves"].values() 
+                           if save["status"] == "skipped")
         total_references_saved = sum(save.get("references_count", 0) 
                                    for save in save_results["individual_saves"].values())
         
-        self.logger.info(
-            f"Individual saving completed: {successful_saves}/{len(target_papers)} papers, "
-            f"{total_references_saved} total references"
-        )
+        status_msg = f"Individual saving completed: {successful_saves}/{len(target_papers)} papers"
+        if skipped_saves > 0:
+            status_msg += f", {skipped_saves} skipped"
+        status_msg += f", {total_references_saved} total references"
+        
+        self.logger.info(status_msg)
         
         save_results["successful_individual_saves"] = successful_saves
+        save_results["skipped_individual_saves"] = skipped_saves
         save_results["total_references_saved"] = total_references_saved
         
         return save_results
