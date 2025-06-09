@@ -270,20 +270,23 @@ PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --force-overwri
 
 ### メタデータ補完機能（v2.2新機能）
 ```bash
-# メタデータ補完機能を有効化
-PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment
+# 標準実行（デフォルトでメタデータ補完有効）
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations
+
+# メタデータ補完を明示的に無効化
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --no-enable-enrichment
 
 # 生命科学分野向けAPI優先順位でメタデータ補完
-PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment --enrichment-field-type life_sciences
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enrichment-field-type life_sciences
 
 # 計算機科学分野向けAPI優先順位でメタデータ補完
-PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment --enrichment-field-type computer_science
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enrichment-field-type computer_science
 
 # 品質スコア閾値を指定してメタデータ補完
-PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment --enrichment-quality-threshold 0.9
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enrichment-quality-threshold 0.9
 
 # 最大API試行回数を制限
-PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment --enrichment-max-attempts 5
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enrichment-max-attempts 5
 ```
 
 ### sync機能併用

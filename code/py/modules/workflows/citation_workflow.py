@@ -640,82 +640,12 @@ class CitationWorkflow:
         Returns:
             補完された引用文献のリスト
         """
-        enriched_references = []
-        incomplete_count = 0
-        skipped_count = 0
-        
-        # API優先順位を取得
-        api_priority = self.metadata_enricher._get_api_priority(field_type)
-        
-        for reference in references:
-            try:
-                # 引用文献の情報が既に完全かチェック
-                if self._is_reference_complete(reference):
-                    # 完全な情報がある場合はenrichmentをスキップ
-                    enriched_references.append(reference)
-                    skipped_count += 1
-                    self.logger.debug(f"Skipping enrichment for complete reference: {reference.get('title', 'Unknown')[:50]}...")
-                    continue
-                
-                # 引用文献にDOIがある場合のみ補完を試行
-                ref_doi = reference.get('doi')
-                if not ref_doi:
-                    # DOIがない場合は元の情報をそのまま使用
-                    enriched_references.append(reference)
-                    continue
-                
-                incomplete_count += 1
-                enriched_ref = reference.copy()
-                enrichment_successful = False
-                
-                # API優先順位に従って順次試行
-                for api_name in api_priority:
-                    if api_name not in self.metadata_enricher.clients:
-                        continue
-                    
-                    try:
-                        self.logger.debug(f"Trying {api_name} for reference {ref_doi}")
-                        
-                        client = self.metadata_enricher.clients[api_name]
-                        raw_metadata = client.get_metadata_by_doi(ref_doi)
-                        
-                        if raw_metadata:
-                            # メタデータを正規化
-                            normalized_metadata = self.metadata_enricher._normalize_metadata(raw_metadata, api_name)
-                            
-                            if normalized_metadata:
-                                # 既存の参照情報を補完されたメタデータで更新
-                                enriched_ref.update(normalized_metadata)
-                                enriched_ref['enrichment_source'] = api_name
-                                enriched_ref['enrichment_quality'] = self.metadata_enricher._calculate_quality_score(normalized_metadata)
-                                
-                                # 補完後の情報が完全かチェック
-                                if self._is_reference_complete(enriched_ref):
-                                    enrichment_successful = True
-                                    self.logger.debug(f"Reference {ref_doi} successfully enriched by {api_name}")
-                                    break  # 十分な情報が得られたので他のAPIは試行しない
-                                
-                    except Exception as e:
-                        self.logger.debug(f"Failed to enrich reference {ref_doi} with {api_name}: {e}")
-                        continue
-                
-                # 補完結果を追加
-                enriched_references.append(enriched_ref)
-                
-                if enrichment_successful:
-                    self.logger.debug(f"Successfully enriched reference {ref_doi}")
-                else:
-                    self.logger.debug(f"Could not fully enrich reference {ref_doi}, using partially completed data")
-                    
-            except Exception as e:
-                # エラーが発生した場合は元の情報をそのまま使用
-                self.logger.warning(f"Error enriching reference metadata: {e}")
-                enriched_references.append(reference)
-        
-        success_count = sum(1 for ref in enriched_references if ref.get('enrichment_source'))
-        self.logger.info(f"Metadata enrichment completed: {success_count}/{incomplete_count} incomplete references enriched, {skipped_count} complete references skipped")
-        
-        return enriched_references
+        try:
+            # MetadataEnricherの統合メソッドを使用
+            return self.metadata_enricher.enrich_references(references, field_type)
+        except Exception as e:
+            self.logger.error(f"Failed to enrich references metadata: {e}")
+            return references  # エラー時は元の引用文献をそのまま返す
     
     def _is_reference_complete(self, reference: Dict[str, Any]) -> bool:
         """

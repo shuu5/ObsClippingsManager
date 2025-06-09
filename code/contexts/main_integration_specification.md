@@ -1,11 +1,14 @@
-# メイン統合プログラム仕様書 v2.0
+# メイン統合プログラム仕様書 v2.2
 
 ## 概要
-メイン統合プログラム（`main.py`）は、ObsClippingsManager v2.0 の単一エントリーポイントとして、Citation Fetcher機能とRename & MkDir Citation Key機能を統合し、9つの専用コマンドを通じて各機能を適切に実行するコントローラーです。
+メイン統合プログラム（`main.py`）は、ObsClippingsManager v2.2 の単一エントリーポイントとして、Citation Fetcher機能とRename & MkDir Citation Key機能を統合し、9つの専用コマンドを通じて各機能を適切に実行するコントローラーです。
 
-**v2.0 の特徴:**
-- 単一ファイル統合システム (946行)
+**v2.2 の特徴:**
+- 単一ファイル統合システム (1127行)
 - 9つの専用コマンドによる機能分離（同期チェック機能追加）
+- **Enhanced Integrated Workflow**: 状態管理ベースの効率的な処理システム
+- **Smart Skip Logic**: 処理済みステップの自動スキップ機能
+- **Status Management**: BibTeX内での処理状態追跡
 - Click ベースの高度CLI
 - 統合ログシステム・設定管理
 - ワークフロー実行履歴・統計追跡
@@ -22,7 +25,7 @@
 ## プログラム構成
 
 ```
-main.py                           # 統合メインエントリーポイント (946行)
+main.py                           # 統合メインエントリーポイント (1127行)
 ├── CLI Commands (9 commands)     # 専用コマンドシステム
 │   ├── version                   # バージョン情報
 │   ├── validate-config           # 設定検証
@@ -32,7 +35,7 @@ main.py                           # 統合メインエントリーポイント (
 │   ├── sync-check               # 同期チェック（新機能）
 │   ├── fetch-citations          # 引用取得
 │   ├── parse-citations          # 引用文献パース（新機能）
-│   └── run-integrated           # 統合実行
+│   └── run-integrated           # 統合実行（Enhanced Mode対応）
 ├── IntegratedController         # 統合実行制御
 ├── ConfigManager               # 統合設定管理
 ├── IntegratedLogger            # 統合ログシステム
@@ -41,7 +44,8 @@ main.py                           # 統合メインエントリーポイント (
     ├── citation_workflow.py   # 引用文献取得ワークフロー
     ├── organization_workflow.py # ファイル整理ワークフロー
     ├── sync_check_workflow.py # 同期チェックワークフロー
-    └── citation_parser_workflow.py # 引用文献パースワークフロー（新機能）
+    ├── citation_parser_workflow.py # 引用文献パースワークフロー（新機能）
+    └── enhanced_integrated_workflow.py # Enhanced統合ワークフロー（v2.2新機能）
 ```
 
 ## 9つの専用コマンド
@@ -109,7 +113,7 @@ PYTHONPATH=code/py uv run python code/py/main.py fetch-citations [OPTIONS]
 - `--request-delay FLOAT`: APIリクエスト間隔（秒）
 - `--max-retries INT`: 最大リトライ回数
 - `--timeout INT`: リクエストタイムアウト（秒）
-- `--enable-enrichment`: メタデータ補完機能を有効化
+- `--enable-enrichment/--no-enable-enrichment`: メタデータ補完機能の有効化（デフォルト: 有効）
 - `--enrichment-field-type [life_sciences|computer_science|general]`: 分野別API優先順位
 - `--enrichment-quality-threshold FLOAT`: 品質スコア閾値（0.0-1.0）
 - `--enrichment-max-attempts INT`: 最大API試行回数
@@ -126,14 +130,60 @@ PYTHONPATH=code/py uv run python code/py/main.py parse-citations [OPTIONS]
 - `--enable-link-extraction`: リンク抽出・対応表生成
 - `--expand-ranges`: 範囲引用の個別展開
 
-#### 9. run-integrated - 統合実行
+#### 9. run-integrated - 統合実行（Enhanced Mode対応）
 ```bash
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated [OPTIONS]
 ```
+
+##### 従来モード（デフォルト）
 **主要オプション:**
 - `--citation-first`: 引用取得→ファイル整理の順序（デフォルト）
 - `--organize-first`: ファイル整理→引用取得の順序
 - `--include-citation-parser`: 引用文献パース処理を統合実行に含める
+- `--disable-enrichment`: citation-fetchingでのメタデータ補完を無効化
+- `--enrichment-field-type [life_sciences|computer_science|general]`: 分野別API優先順位（デフォルト: general）
+
+##### Enhanced Mode（v2.2新機能）
+**状態管理ベースの効率的統合ワークフロー**
+
+**基本使用法:**
+```bash
+# Enhanced Modeで実行計画を表示
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enhanced-mode --show-execution-plan -b CurrentManuscript.bib -d Clippings
+
+# Enhanced Modeで実際に実行
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enhanced-mode -b CurrentManuscript.bib -d Clippings
+
+# 強制再生成モード（全ステータスリセット）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enhanced-mode --force-regenerate -b CurrentManuscript.bib -d Clippings
+
+# 特定論文のみ処理
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enhanced-mode --papers "smith2023,jones2024" -b CurrentManuscript.bib -d Clippings
+
+# 整合性チェック
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enhanced-mode --check-consistency -b CurrentManuscript.bib -d Clippings
+```
+
+**Enhanced Modeオプション:**
+- `--enhanced-mode`: Enhanced統合ワークフローを有効化
+- `--force-regenerate`: 全処理状態フラグをリセットして実行
+- `--papers TEXT`: カンマ区切りで特定論文のみ処理（citation key指定）
+- `--show-execution-plan`: 実行計画のみ表示（実際には実行しない）
+- `--check-consistency`: BibTeXファイルとClippingsディレクトリの整合性チェック
+- `-b, --bibtex-file PATH`: BibTeXファイルパス（Enhanced Mode用）
+- `-d, --clippings-dir PATH`: Clippingsディレクトリパス（Enhanced Mode用）
+
+**処理フロー:**
+1. **organize**: ファイル整理（Markdownファイル → citation keyディレクトリ）
+2. **sync**: 同期チェック（BibTeX ↔ Clippingsディレクトリ対応確認）
+3. **fetch**: 引用文献取得（DOI → references.bib生成）
+4. **parse**: 引用文献解析（Markdownファイル内の引用パース）
+
+**Smart Skip Logic:**
+- 各論文の各ステップごとに処理状態を追跡
+- 完了済みステップは自動スキップ
+- 失敗したステップのみ再実行
+- 依存関係に基づく効率的な実行順序
 
 ### グローバルオプション（全コマンド共通）
 - `-c, --config PATH`: 設定ファイルパス
@@ -158,9 +208,57 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated [OPTIONS]
 ### ワークフロー統合管理
 WorkflowManagerを通じて各ワークフローを実行し、実行記録・エラーハンドリングを一元管理します。
 
+### Enhanced Integrated Workflow アーキテクチャ（v2.2新機能）
+
+#### StatusManager - 状態管理システム
+論文の処理状態をBibTeXファイル内で管理し、効率的な処理の再開・スキップを実現します。
+
+**状態フィールド:**
+- `obsclippings_organize_status`: ファイル整理状態（pending/completed/failed）
+- `obsclippings_sync_status`: 同期チェック状態（pending/completed/failed）
+- `obsclippings_fetch_status`: 引用取得状態（pending/completed/failed）
+- `obsclippings_parse_status`: 引用解析状態（pending/completed/failed）
+
+**主要メソッド:**
+- `load_bib_statuses()`: BibTeXから状態情報を読み込み
+- `update_status()`: 処理完了・失敗時に状態を更新
+- `reset_statuses()`: 強制再生成時に全状態をリセット
+- `check_status_consistency()`: BibTeX ↔ Clippingsディレクトリの整合性チェック
+
+#### EnhancedIntegratedWorkflow - 状態ベース実行エンジン
+処理状態に基づいて必要な処理のみを効率的に実行します。
+
+**主要メソッド:**
+- `analyze_paper_status()`: 各論文の処理必要性を解析
+- `get_execution_plan()`: 実行計画を生成
+- `execute_step_by_step()`: ステップ別に統合ワークフローを実行
+- `execute_with_status_tracking()`: 状態追跡付きで実行
+- `execute_force_regenerate()`: 強制再生成モード実行
+- `check_consistency()`: 状態整合性チェック
+
+**Smart Skip Logic:**
+```
+論文A: organize(completed) → sync(pending) → fetch(pending) → parse(pending)
+論文B: organize(pending) → sync(pending) → fetch(pending) → parse(pending)
+
+実行計画:
+1. organize: 論文B のみ実行
+2. sync: 論文A, B を実行
+3. fetch: 論文A, B を実行
+4. parse: 論文A, B を実行
+```
+
+#### 状態管理の仕組み
+1. **初期状態**: 全論文のステータスが未設定（"pending"として扱う）
+2. **実行中**: 各ステップ成功時に"completed"、失敗時に"failed"に更新
+3. **再実行**: "pending"と"failed"の論文のみ処理対象
+4. **強制再生成**: 全ステータスを"pending"にリセットして実行
+
 ## 実行例
 
 ### 基本的な使用パターン
+
+#### 従来モード
 ```bash
 # 1. システム確認
 PYTHONPATH=code/py uv run python code/py/main.py version
@@ -177,6 +275,33 @@ PYTHONPATH=code/py uv run python code/py/main.py show-stats
 PYTHONPATH=code/py uv run python code/py/main.py show-history
 ```
 
+#### Enhanced Mode（v2.2推奨）
+```bash
+# 1. システム確認（共通）
+PYTHONPATH=code/py uv run python code/py/main.py version
+PYTHONPATH=code/py uv run python code/py/main.py validate-config
+
+# 2. 実行計画確認
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enhanced-mode --show-execution-plan \
+  -b /path/to/CurrentManuscript.bib -d /path/to/Clippings
+
+# 3. 整合性チェック
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enhanced-mode --check-consistency \
+  -b /path/to/CurrentManuscript.bib -d /path/to/Clippings
+
+# 4. Enhanced Mode実行
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enhanced-mode \
+  -b /path/to/CurrentManuscript.bib -d /path/to/Clippings
+
+# 5. 特定論文のみ処理
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enhanced-mode \
+  --papers "smith2023,jones2024" -b /path/to/CurrentManuscript.bib -d /path/to/Clippings
+
+# 6. 強制再生成（全ステータスリセット）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enhanced-mode --force-regenerate \
+  -b /path/to/CurrentManuscript.bib -d /path/to/Clippings
+```
+
 ### 個別機能実行パターン
 ```bash
 # ファイル整理のみ
@@ -185,8 +310,11 @@ PYTHONPATH=code/py uv run python code/py/main.py organize-files --auto-approve
 # 同期チェックのみ
 PYTHONPATH=code/py uv run python code/py/main.py sync-check --open-doi-links
 
-# 引用取得のみ（メタデータ補完有効）
-PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --enable-enrichment
+# 引用取得のみ（デフォルトでメタデータ補完有効）
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations
+
+# 引用取得のみ（メタデータ補完無効）
+PYTHONPATH=code/py uv run python code/py/main.py fetch-citations --no-enable-enrichment
 
 # 引用文献パースのみ
 PYTHONPATH=code/py uv run python code/py/main.py parse-citations --input-file example.md --enable-link-extraction
@@ -236,9 +364,10 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated -c custom_config
 メイン統合プログラムの品質保証は、TDDアプローチによる包括的テストスイートで実現されています。
 
 ### テストカバレッジ状況
-- **総テスト数**: 126個
-- **成功率**: 100% (126/126)
-- **テスト実行時間**: 約0.67秒
+- **総テスト数**: 136個
+- **成功率**: 100% (136/136)
+- **テスト実行時間**: 約0.8秒
+- **Enhanced Workflow専用テスト**: 19個（状態管理+統合ワークフロー）
 
 ### テストファイル構成
 ```
@@ -255,6 +384,8 @@ code/unittest/
 ├── test_workflow_manager.py          # ワークフロー管理テスト
 ├── test_sync_check_workflow.py       # 同期チェックテスト
 ├── test_rename_mkdir_citation_key.py # ファイル整理テスト
+├── test_status_management.py         # 状態管理システムテスト（v2.2新規）
+├── test_enhanced_run_integrated.py   # Enhanced統合ワークフローテスト（v2.2新規）
 ├── test_edge_cases.py                # エッジケース・境界値テスト
 └── run_all_tests.py                  # テスト実行スクリプト
 ```
@@ -273,7 +404,7 @@ code/unittest/
 - `sync-check`: 同期チェック（オプション網羅）
 - `fetch-citations`: 引用取得（基本・拡張・ドライラン）
 - `parse-citations`: 引用文献パース
-- `run-integrated`: 統合ワークフロー
+- `run-integrated`: 統合ワークフロー（従来モード・Enhanced Mode両対応）
 
 #### 3. エラーハンドリング
 - 設定ファイル不正時の適切なエラー処理
@@ -299,5 +430,6 @@ uv run code/unittest/run_all_tests.py shared_config_manager
 
 ---
 
-**メイン統合プログラム仕様書バージョン**: 2.0.0  
-**対応システム**: ObsClippingsManager v2.0 
+**メイン統合プログラム仕様書バージョン**: 2.2.0  
+**対応システム**: ObsClippingsManager v2.2  
+**Enhanced Integrated Workflow**: 状態管理ベース効率化システム実装済み 

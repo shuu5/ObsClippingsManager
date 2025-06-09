@@ -245,10 +245,11 @@ class CrossRefClient:
         """
         try:
             work_data = self.get_work_metadata(doi)
-            if not work_data or 'message' not in work_data:
+            if not work_data:
                 return None
             
-            message = work_data['message']
+            # work_dataがすでにmessageの内容である場合の処理
+            message = work_data
             
             # 正規化されたフォーマットに変換
             metadata = {

@@ -132,7 +132,12 @@ class BibTeXParser:
             'volume': 'volume',
             'number': 'number',
             'note': 'note',
-            'abstract': 'abstract'
+            'abstract': 'abstract',
+            # 状態管理フィールド
+            'obsclippings_organize_status': 'obsclippings_organize_status',
+            'obsclippings_sync_status': 'obsclippings_sync_status',
+            'obsclippings_fetch_status': 'obsclippings_fetch_status',
+            'obsclippings_parse_status': 'obsclippings_parse_status'
         }
         
         for bibtex_field, normalized_field in field_mappings.items():

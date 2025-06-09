@@ -413,6 +413,83 @@ class MetadataEnricher:
         
         return result
     
+    def enrich_references(self, references: List[Dict[str, Any]], 
+                         field_type: str = 'general') -> List[Dict[str, Any]]:
+        """
+        引用文献リストのメタデータを補完
+        
+        Args:
+            references: 引用文献のリスト
+            field_type: 分野タイプ
+            
+        Returns:
+            補完された引用文献のリスト
+        """
+        enriched_references = []
+        
+        for ref in references:
+            enriched_ref = dict(ref)  # 元の引用文献データをコピー
+            
+            # DOIがある場合のみ補完を試行
+            doi = ref.get('doi')
+            if doi and str(doi).strip():
+                self.logger.debug(f"Enriching reference with DOI: {doi}")
+                
+                try:
+                    # メタデータ補完を実行
+                    enrichment_result = self.enrich_metadata(doi, field_type)
+                    
+                    if enrichment_result.is_successful():
+                        # 補完されたメタデータを統合
+                        merged_data = enrichment_result.merged_metadata
+                        
+                        # 基本フィールドを更新（既存データを上書き）
+                        if merged_data.get('title'):
+                            enriched_ref['title'] = merged_data['title']
+                        if merged_data.get('author'):
+                            enriched_ref['author'] = merged_data['author']
+                            enriched_ref['formatted_author'] = merged_data['author']
+                        if merged_data.get('journal'):
+                            enriched_ref['journal'] = merged_data['journal']
+                        if merged_data.get('year'):
+                            enriched_ref['year'] = merged_data['year']
+                        if merged_data.get('volume'):
+                            enriched_ref['volume'] = merged_data['volume']
+                        if merged_data.get('issue'):
+                            enriched_ref['issue'] = merged_data['issue']
+                        if merged_data.get('pages'):
+                            enriched_ref['page'] = merged_data['pages']
+                        if merged_data.get('publisher'):
+                            enriched_ref['publisher'] = merged_data['publisher']
+                        
+                        # 補完情報を記録
+                        enriched_ref['enriched'] = True
+                        enriched_ref['enrichment_source'] = enrichment_result.primary_source
+                        enriched_ref['enrichment_quality'] = enrichment_result.quality_score
+                        
+                        self.logger.debug(f"Successfully enriched reference: {doi}")
+                    
+                    else:
+                        # 補完失敗
+                        enriched_ref['enriched'] = False
+                        self.logger.debug(f"Failed to enrich reference: {doi}")
+                
+                except Exception as e:
+                    self.logger.warning(f"Error enriching reference {doi}: {e}")
+                    enriched_ref['enriched'] = False
+            
+            else:
+                # DOIがない場合は補完しない
+                enriched_ref['enriched'] = False
+                self.logger.debug("No DOI found for reference - skipping enrichment")
+            
+            enriched_references.append(enriched_ref)
+        
+        enriched_count = sum(1 for ref in enriched_references if ref.get('enriched', False))
+        self.logger.info(f"Enriched {enriched_count}/{len(references)} references")
+        
+        return enriched_references
+
     def get_statistics(self) -> EnrichmentStatistics:
         """統計情報を取得"""
         return self.statistics

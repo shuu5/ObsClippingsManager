@@ -81,8 +81,10 @@ class OrganizationWorkflow:
             self.logger.info(f"Found {len(md_files)} Markdown files to process")
             
             if not md_files:
-                results["error"] = "No Markdown files found to organize"
-                return False, results
+                results["info"] = "All Markdown files are already organized"
+                results["success"] = True
+                self.logger.info("All files are already organized - workflow completed successfully")
+                return True, results
             
             # Stage 3: ファイル照合
             results["stage"] = "file_matching"
@@ -150,12 +152,12 @@ class OrganizationWorkflow:
         Markdownファイル検索の実行
         
         Returns:
-            Markdownファイルパスのリスト（ルートレベルのみ）
+            Markdownファイルパスのリスト（全体から未整理分を抽出）
         """
         self.logger.info("Discovering Markdown files")
         
-        # ルートレベルのファイルのみを対象（増分処理）
-        all_files = self.markdown_manager.get_markdown_files(root_only=True)
+        # 全ディレクトリを対象として、未整理ファイルのみを抽出
+        all_files = self.markdown_manager.get_markdown_files(root_only=False)
         
         # 既に整理済みのファイルを除外
         unorganized_files = []

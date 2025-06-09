@@ -21,6 +21,7 @@ from modules.shared.config_manager import ConfigManager
 from modules.shared.logger import IntegratedLogger
 from modules.workflows.workflow_manager import WorkflowManager, WorkflowType, create_workflow_execution_summary
 from modules.workflows.citation_parser_workflow import CitationParserWorkflow
+from modules.workflows.enhanced_integrated_workflow import EnhancedIntegratedWorkflow
 from modules.shared.exceptions import ObsClippingsError, ConfigError
 
 
@@ -114,9 +115,9 @@ def cli(ctx: Dict[str, Any], config: str, log_level: str, dry_run: bool, verbose
 @click.option('--auto-approve', '-y',
               is_flag=True,
               help='Automatically approve all operations')
-@click.option('--enable-enrichment',
-              is_flag=True,
-              help='Enable metadata enrichment using multiple APIs (v2.2)')
+@click.option('--enable-enrichment/--no-enable-enrichment',
+              default=True,
+              help='Enable/disable metadata enrichment using multiple APIs (default: enabled) (v2.2)')
 @click.option('--enrichment-field-type',
               type=click.Choice(['life_sciences', 'computer_science', 'general'], case_sensitive=False),
               default='general',
@@ -177,8 +178,8 @@ def fetch_citations(ctx: Dict[str, Any],
             options['timeout'] = timeout
         
         # メタデータ補完オプション（v2.2新機能）
+        options['enable_enrichment'] = enable_enrichment
         if enable_enrichment:
-            options['enable_enrichment'] = True
             options['enrichment_field_type'] = enrichment_field_type
             options['enrichment_quality_threshold'] = enrichment_quality_threshold
             options['enrichment_max_attempts'] = enrichment_max_attempts
@@ -587,6 +588,34 @@ def parse_citations(ctx: Dict[str, Any],
 @click.option('--auto-approve', '-y',
               is_flag=True,
               help='Automatically approve all operations')
+@click.option('--disable-enrichment',
+              is_flag=True,
+              help='Disable automatic metadata enrichment in citation fetching')
+@click.option('--enrichment-field-type',
+              type=click.Choice(['life_sciences', 'computer_science', 'general'], case_sensitive=False),
+              default='general',
+              help='Research field for API prioritization (default: general)')
+@click.option('--enhanced-mode',
+              is_flag=True,
+              help='Use enhanced workflow with status management and smart skip logic')
+@click.option('--force-regenerate',
+              is_flag=True,
+              help='Force regenerate all processing (resets all status flags)')
+@click.option('--papers',
+              help='Comma-separated list of specific papers to process (citation keys)',
+              type=str)
+@click.option('--show-execution-plan',
+              is_flag=True,
+              help='Display execution plan without running the workflow')
+@click.option('--check-consistency',
+              is_flag=True,
+              help='Check status consistency between bib file and clippings directory')
+@click.option('--bibtex-file', '-b',
+              help='BibTeX file to process (for enhanced mode)',
+              type=click.Path(exists=True))
+@click.option('--clippings-dir', '-d',
+              help='Clippings directory path (for enhanced mode)',
+              type=click.Path(exists=True))
 @pass_context
 def run_integrated(ctx: Dict[str, Any],
                   sync_first: bool,
@@ -596,17 +625,167 @@ def run_integrated(ctx: Dict[str, Any],
                   citation_parser_input: Optional[str],
                   backup_existing: bool,
                   continue_on_failure: bool,
-                  auto_approve: bool):
+                  auto_approve: bool,
+                  disable_enrichment: bool,
+                  enrichment_field_type: str,
+                  enhanced_mode: bool,
+                  force_regenerate: bool,
+                  papers: Optional[str],
+                  show_execution_plan: bool,
+                  check_consistency: bool,
+                  bibtex_file: Optional[str],
+                  clippings_dir: Optional[str]):
     """
-    統合ワークフローを実行 (v2.1)
+    統合ワークフローを実行 (v2.2)
     
     デフォルトでfile-organization → sync-check → citation-fetchingの順序で実行します。
+    --enhanced-modeで状態管理ベースの効率的な処理が可能です。
     オプションで各操作を独立して実行可能で、柔軟なワークフロー組み合わせが可能です。
     """
     try:
         workflow_manager = ctx['workflow_manager']
         logger = ctx['logger'].get_logger('CLI')
         
+        # Enhanced modeの処理
+        if enhanced_mode:
+            # 必要な引数チェック
+            config_manager = ctx['config_manager']
+            if not bibtex_file:
+                bibtex_file = config_manager.get_setting('bibtex_file')
+                if not bibtex_file:
+                    click.echo("❌ BibTeX file is required for enhanced mode. Use --bibtex-file or set in config.", err=True)
+                    sys.exit(1)
+            
+            if not clippings_dir:
+                clippings_dir = config_manager.get_setting('clippings_dir')
+                if not clippings_dir:
+                    click.echo("❌ Clippings directory is required for enhanced mode. Use --clippings-dir or set in config.", err=True)
+                    sys.exit(1)
+            
+            # Enhanced Integrated Workflow初期化
+            enhanced_workflow = EnhancedIntegratedWorkflow(config_manager, ctx['logger'])
+            
+            # 対象論文の解析
+            target_papers = None
+            if papers:
+                target_papers = [paper.strip() for paper in papers.split(',')]
+                click.echo(f"🎯 Target papers: {', '.join(target_papers)}")
+            
+            # 整合性チェック
+            if check_consistency:
+                click.echo("🔍 Checking status consistency...")
+                consistency_result = enhanced_workflow.check_consistency(bibtex_file, clippings_dir)
+                
+                missing_dirs = consistency_result.get('missing_directories', [])
+                orphaned_dirs = consistency_result.get('orphaned_directories', [])
+                
+                if missing_dirs:
+                    click.echo(f"⚠️  Missing directories for {len(missing_dirs)} papers:")
+                    for paper in missing_dirs[:5]:  # 最初の5つのみ表示
+                        click.echo(f"   - {paper}")
+                    if len(missing_dirs) > 5:
+                        click.echo(f"   ... and {len(missing_dirs) - 5} more")
+                
+                if orphaned_dirs:
+                    click.echo(f"⚠️  Orphaned directories: {len(orphaned_dirs)}")
+                    for dir_name in orphaned_dirs[:5]:
+                        click.echo(f"   - {dir_name}")
+                    if len(orphaned_dirs) > 5:
+                        click.echo(f"   ... and {len(orphaned_dirs) - 5} more")
+                
+                if not missing_dirs and not orphaned_dirs:
+                    click.echo("✅ No consistency issues found")
+                
+                return
+            
+            # 強制再生成の前処理（実行計画表示の前に実行）
+            if force_regenerate:
+                click.echo("🔄 Force regenerate mode: resetting all status flags...")
+                status_manager = enhanced_workflow.status_manager
+                reset_success = status_manager.reset_statuses(bibtex_file, target_papers)
+                if reset_success:
+                    click.echo("✅ Status flags reset successfully")
+                else:
+                    click.echo("⚠️ Warning: Some status flags may not have been reset")
+            
+            # 実行計画の表示
+            if show_execution_plan:
+                click.echo("📋 Analyzing execution plan...")
+                plan = enhanced_workflow.get_execution_plan(bibtex_file)
+                
+                total_papers = plan['total_papers']
+                execution_steps = plan['execution_steps']
+                total_tasks = sum(step['count'] for step in execution_steps.values())
+                active_steps = sum(1 for step in execution_steps.values() if step['count'] > 0)
+                
+                click.echo(f"📊 Execution Plan: {total_tasks} tasks across {active_steps} steps")
+                click.echo(f"📄 Total papers in BibTeX: {total_papers}")
+                
+                for step_name, step_info in execution_steps.items():
+                    papers_list = step_info['papers']
+                    if step_info['count'] > 0:
+                        click.echo(f"  {step_name}: {step_info['count']} papers")
+                        if target_papers:
+                            # 対象論文がある場合はフィルタリング
+                            filtered = [p for p in papers_list if p in target_papers]
+                            if filtered:
+                                click.echo(f"    → Target papers: {', '.join(filtered)}")
+                        else:
+                            # 最初の5つを表示
+                            shown_papers = papers_list[:5]
+                            click.echo(f"    → {', '.join(shown_papers)}")
+                            if len(papers_list) > 5:
+                                click.echo(f"      ... and {len(papers_list) - 5} more")
+                    else:
+                        click.echo(f"  {step_name}: ✅ all papers completed")
+                
+                return
+            
+            # Enhanced workflowの実行
+            click.echo("🚀 Starting enhanced integrated workflow with status management...")
+            if force_regenerate:
+                click.echo("🔄 Force regenerate mode: resetting all status flags")
+            
+            # 実行オプションの構築
+            options = {
+                'dry_run': ctx['dry_run'],
+                'auto_approve': auto_approve,
+                'backup_existing': backup_existing,
+                'continue_on_failure': continue_on_failure,
+                'enable_enrichment': not disable_enrichment,
+                'enrichment_field_type': enrichment_field_type
+            }
+            
+            # Enhanced workflow実行
+            if force_regenerate:
+                result = enhanced_workflow.execute_force_regenerate(bibtex_file, clippings_dir, **options)
+            else:
+                result = enhanced_workflow.execute_with_status_tracking(
+                    bibtex_file, clippings_dir, target_papers, **options
+                )
+            
+            # 結果の表示
+            if result['success']:
+                results = result['results']
+                steps_executed = results.get('steps_executed', [])
+                total_processed = results.get('total_papers_processed', 0)
+                
+                click.echo(f"✅ Enhanced workflow completed successfully!")
+                click.echo(f"📊 Steps executed: {' → '.join(steps_executed)}")
+                click.echo(f"📄 Papers processed: {total_processed}")
+                
+                if ctx['verbose'] and 'step_results' in results:
+                    click.echo("\n📋 Detailed Results:")
+                    for step, step_result in results['step_results'].items():
+                        click.echo(f"  {step}: {'✅' if step_result.get('success', False) else '❌'}")
+            else:
+                error = result.get('error', 'Unknown error')
+                click.echo(f"❌ Enhanced workflow failed: {error}")
+                sys.exit(1)
+            
+            return
+        
+        # 従来のワークフロー処理
         # 実行するワークフローの決定
         workflows_to_run = []
         
@@ -633,6 +812,12 @@ def run_integrated(ctx: Dict[str, Any],
         if backup_existing:
             click.echo("💾 Backup mode enabled")
         
+        # Enrichment設定の表示
+        if 'citation_fetching' in workflows_to_run and not disable_enrichment:
+            click.echo(f"🔧 Metadata enrichment enabled: {enrichment_field_type} field prioritization")
+        elif 'citation_fetching' in workflows_to_run and disable_enrichment:
+            click.echo("🔧 Metadata enrichment disabled")
+        
         # 実行結果の収集
         overall_success = True
         all_results = {}
@@ -653,7 +838,11 @@ def run_integrated(ctx: Dict[str, Any],
                 if workflow_name == 'citation_fetching':
                     options.update({
                         'use_sync_integration': True,  # 統合ワークフローでは常にsync連携
-                        'backup_existing': backup_existing
+                        'backup_existing': backup_existing,
+                        'enable_enrichment': not disable_enrichment,  # ユーザー設定に基づく
+                        'enrichment_field_type': enrichment_field_type,
+                        'enrichment_quality_threshold': 0.8,  # デフォルト品質閾値
+                        'enrichment_max_attempts': 3  # デフォルト最大試行回数
                     })
                 
                 # citation_parserの場合は直接実行
@@ -748,6 +937,7 @@ def run_integrated(ctx: Dict[str, Any],
             sys.exit(1)
             
     except Exception as e:
+        logger.error(f"Integrated workflow failed: {e}")
         click.echo(f"❌ Unexpected error: {e}", err=True)
         sys.exit(1)
 

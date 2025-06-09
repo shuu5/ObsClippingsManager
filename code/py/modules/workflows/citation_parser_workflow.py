@@ -33,12 +33,13 @@ class CitationParserWorkflow:
         # 設定辞書から一時的な設定ファイルを作成するか、直接初期化する
         self.parser = CitationParser()
         
-    def execute(self, input_file: str, **options) -> Tuple[bool, Dict[str, Any]]:
+    def execute(self, input_file: str = None, clippings_dir: str = None, **options) -> Tuple[bool, Dict[str, Any]]:
         """
         引用文献パーサーワークフローを実行
         
         Args:
-            input_file: 入力Markdownファイルパス（必須）
+            input_file: 入力Markdownファイルパス（単一ファイル処理用）
+            clippings_dir: Clippingsディレクトリパス（ディレクトリ処理用）
             **options: 実行オプション
                 - output_file: 出力ファイルパス（省略時は標準出力）
                 - pattern_type: パース対象パターン（basic|advanced|all）
@@ -54,16 +55,33 @@ class CitationParserWorkflow:
         start_time = time.time()
         
         try:
-            self.logger.info("Starting citation parser workflow")
-            self.logger.info(f"Input file: {input_file}")
-            
-            # 実行オプションのマージ
-            execution_options = {**self.config, **options}
-            
-            # 設定を一時的に更新
-            original_config = self.config.copy()
-            self.config.update(execution_options)
-            
+            # 入力の検証とモード決定
+            if clippings_dir:
+                # ディレクトリ処理モード
+                return self._execute_directory_mode(clippings_dir, options, start_time)
+            elif input_file:
+                # 単一ファイル処理モード
+                return self._execute_single_file_mode(input_file, options, start_time)
+            else:
+                raise ValueError("Either input_file or clippings_dir must be specified")
+                
+        except Exception as e:
+            self.logger.error(f"Citation parser workflow failed: {e}")
+            return False, {"error": str(e), "processing_time": time.time() - start_time}
+    
+    def _execute_single_file_mode(self, input_file: str, options: Dict, start_time: float) -> Tuple[bool, Dict[str, Any]]:
+        """単一ファイル処理モード"""
+        self.logger.info("Starting citation parser workflow")
+        self.logger.info(f"Input file: {input_file}")
+        
+        # 実行オプションのマージ
+        execution_options = {**self.config, **options}
+        
+        # 設定を一時的に更新
+        original_config = self.config.copy()
+        self.config.update(execution_options)
+        
+        try:
             # 結果辞書の初期化
             results = {
                 "input_file": input_file,
@@ -126,12 +144,107 @@ class CitationParserWorkflow:
             
             return True, results
             
-        except Exception as e:
-            self.logger.error(f"Citation parser workflow failed: {e}")
-            return False, {"error": str(e), "processing_time": time.time() - start_time}
         finally:
             # 設定を復元
             self.config = original_config
+    
+    def _execute_directory_mode(self, clippings_dir: str, options: Dict, start_time: float) -> Tuple[bool, Dict[str, Any]]:
+        """ディレクトリ処理モード：Clippingsディレクトリ内の全.mdファイルを処理"""
+        from pathlib import Path
+        import glob
+        
+        self.logger.info(f"Starting citation parser workflow for directory: {clippings_dir}")
+        
+        clippings_path = Path(clippings_dir)
+        if not clippings_path.exists():
+            raise ValueError(f"Clippings directory does not exist: {clippings_dir}")
+        
+        # .mdファイルを検索
+        md_files = glob.glob(str(clippings_path / "*" / "*.md"))
+        
+        if not md_files:
+            self.logger.warning(f"No .md files found in {clippings_dir}")
+            return True, {
+                "success": True,
+                "clippings_dir": clippings_dir,
+                "processed_files": [],
+                "total_files": 0,
+                "processing_time": time.time() - start_time
+            }
+        
+        self.logger.info(f"Found {len(md_files)} .md files to process in {clippings_dir}")
+        
+        # 実行オプションのマージ
+        execution_options = {**self.config, **options}
+        
+        processed_files = []
+        total_citations = 0
+        total_converted = 0
+        total_errors = 0
+        
+        for md_file in md_files:
+            try:
+                self.logger.info(f"Processing: {md_file}")
+                
+                # ドライランモードでない場合のみ実際に処理
+                if not execution_options.get('dry_run', False):
+                    # ファイル読み込み
+                    with open(md_file, 'r', encoding='utf-8') as f:
+                        input_text = f.read()
+                    
+                    # 引用文献パース実行
+                    parse_result = self.parser.parse_document(input_text)
+                    
+                    # インプレース更新（元ファイルを更新）
+                    with open(md_file, 'w', encoding='utf-8') as f:
+                        f.write(parse_result.converted_text)
+                    
+                    # 統計情報を更新
+                    total_citations += parse_result.statistics.total_citations
+                    total_converted += parse_result.statistics.converted_citations
+                    total_errors += len(parse_result.errors)
+                    
+                    processed_files.append({
+                        "file": md_file,
+                        "citations_found": parse_result.statistics.total_citations,
+                        "citations_converted": parse_result.statistics.converted_citations,
+                        "errors": len(parse_result.errors)
+                    })
+                    
+                    self.logger.info(f"Converted {parse_result.statistics.converted_citations}/{parse_result.statistics.total_citations} citations in {md_file}")
+                else:
+                    # ドライランの場合
+                    processed_files.append({
+                        "file": md_file,
+                        "status": "dry_run_detected"
+                    })
+                
+            except Exception as e:
+                self.logger.error(f"Failed to process {md_file}: {e}")
+                processed_files.append({
+                    "file": md_file,
+                    "error": str(e)
+                })
+                total_errors += 1
+        
+        # 結果の構成
+        results = {
+            "success": True,
+            "clippings_dir": clippings_dir,
+            "processed_files": processed_files,
+            "total_files": len(md_files),
+            "statistics": {
+                "total_citations": total_citations,
+                "converted_citations": total_converted,
+                "error_count": total_errors,
+                "processing_time": time.time() - start_time
+            },
+            "processing_time": time.time() - start_time
+        }
+        
+        self.logger.info(f"Directory processing completed: {len(processed_files)} files processed, {total_converted}/{total_citations} citations converted")
+        
+        return True, results
     
     def validate_inputs(self, input_file: str) -> bool:
         """

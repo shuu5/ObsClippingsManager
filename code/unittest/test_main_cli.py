@@ -203,7 +203,72 @@ class TestFetchCitationsCommand(TestMainCLI):
         options = call_args[1]
         self.assertTrue(options.get('dry_run'))
 
+    @patch('main.WorkflowManager')
+    @patch('main.IntegratedLogger')
+    @patch('main.ConfigManager')
+    def test_fetch_citations_enrichment_default_enabled(self, mock_config, mock_logger, mock_workflow):
+        """メタデータ補完がデフォルトで有効になっているかのテスト"""
+        # モックの設定
+        mock_config_instance = Mock()
+        mock_logger_instance = Mock()
+        mock_workflow_instance = Mock()
+        
+        mock_config.return_value = mock_config_instance
+        mock_logger.return_value = mock_logger_instance
+        mock_workflow.return_value = mock_workflow_instance
+        
+        # ワークフロー実行の成功をモック
+        mock_workflow_instance.execute_workflow.return_value = (True, {"enriched_successes": 5})
+        
+        result = self.runner.invoke(main.cli, [
+            '--config', self.config_file,
+            'fetch-citations',
+            '--bibtex-file', self.bibtex_file,
+            '--auto-approve'
+        ])
+        
+        self.assertEqual(result.exit_code, 0)
+        mock_workflow_instance.execute_workflow.assert_called_once()
+        
+        # enable_enrichmentがデフォルトでTrueになっていることを確認
+        call_args = mock_workflow_instance.execute_workflow.call_args
+        options = call_args[1]
+        self.assertTrue(options.get('enable_enrichment', False))
 
+    @patch('main.WorkflowManager')
+    @patch('main.IntegratedLogger')
+    @patch('main.ConfigManager')
+    def test_fetch_citations_enrichment_can_be_disabled(self, mock_config, mock_logger, mock_workflow):
+        """メタデータ補完を明示的に無効化できることのテスト"""
+        # モックの設定
+        mock_config_instance = Mock()
+        mock_logger_instance = Mock()
+        mock_workflow_instance = Mock()
+        
+        mock_config.return_value = mock_config_instance
+        mock_logger.return_value = mock_logger_instance
+        mock_workflow.return_value = mock_workflow_instance
+        
+        # ワークフロー実行の成功をモック
+        mock_workflow_instance.execute_workflow.return_value = (True, {"successful_fetches": 3})
+        
+        result = self.runner.invoke(main.cli, [
+            '--config', self.config_file,
+            'fetch-citations',
+            '--bibtex-file', self.bibtex_file,
+            '--no-enable-enrichment',  # 明示的に無効化
+            '--auto-approve'
+        ])
+        
+        self.assertEqual(result.exit_code, 0)
+        mock_workflow_instance.execute_workflow.assert_called_once()
+        
+        # enable_enrichmentが明示的にFalseになっていることを確認
+        call_args = mock_workflow_instance.execute_workflow.call_args
+        options = call_args[1]
+        self.assertFalse(options.get('enable_enrichment', True))
+        
+     
 class TestSyncCheckCommand(TestMainCLI):
     """sync-checkコマンドのテスト"""
     
@@ -424,6 +489,95 @@ class TestIntegratedCommand(TestMainCLI):
         
         self.assertEqual(result.exit_code, 0)
         mock_workflow_instance.execute.assert_called_once()
+    
+    @patch('main.WorkflowManager')
+    @patch('main.IntegratedLogger')
+    @patch('main.ConfigManager')
+    def test_run_integrated_enrichment_auto_enabled(self, mock_config, mock_logger, mock_workflow):
+        """run-integratedでfetch-citationsが呼ばれる際に自動でenrichmentが有効になることのテスト"""
+        # モックの設定
+        mock_config_instance = Mock()
+        mock_logger_instance = Mock()
+        mock_workflow_instance = Mock()
+        
+        mock_config.return_value = mock_config_instance
+        mock_logger.return_value = mock_logger_instance
+        mock_workflow.return_value = mock_workflow_instance
+        
+        # ワークフロー実行の成功をモック
+        mock_workflow_instance.execute_workflow.return_value = (True, {
+            "sync_integration": {"synced_papers": 2},
+            "enriched_successes": 2
+        })
+        
+        result = self.runner.invoke(main.cli, [
+            '--config', self.config_file,
+            'run-integrated',
+            '--fetch-citations',
+            '--auto-approve'
+        ])
+        
+        self.assertEqual(result.exit_code, 0)
+        
+        # citation_fetchingワークフローが呼ばれていることを確認
+        workflow_calls = mock_workflow_instance.execute_workflow.call_args_list
+        citation_call = None
+        for call in workflow_calls:
+            if len(call[0]) > 0 and str(call[0][0]) == 'WorkflowType.CITATION_FETCHING':
+                citation_call = call
+                break
+        
+        self.assertIsNotNone(citation_call, "citation_fetching workflow should be called")
+        
+        # enrichmentが自動で有効になっていることを確認
+        options = citation_call[1]
+        self.assertTrue(options.get('enable_enrichment', False), 
+                       "enrichment should be auto-enabled in integrated workflow")
+    
+    @patch('main.WorkflowManager')
+    @patch('main.IntegratedLogger')
+    @patch('main.ConfigManager')
+    def test_run_integrated_enrichment_can_be_disabled(self, mock_config, mock_logger, mock_workflow):
+        """run-integratedでenrichmentを明示的に無効化できることのテスト"""
+        # モックの設定
+        mock_config_instance = Mock()
+        mock_logger_instance = Mock()
+        mock_workflow_instance = Mock()
+        
+        mock_config.return_value = mock_config_instance
+        mock_logger.return_value = mock_logger_instance
+        mock_workflow.return_value = mock_workflow_instance
+        
+        # ワークフロー実行の成功をモック
+        mock_workflow_instance.execute_workflow.return_value = (True, {
+            "sync_integration": {"synced_papers": 2},
+            "successful_fetches": 2
+        })
+        
+        result = self.runner.invoke(main.cli, [
+            '--config', self.config_file,
+            'run-integrated',
+            '--fetch-citations',
+            '--disable-enrichment',
+            '--auto-approve'
+        ])
+        
+        self.assertEqual(result.exit_code, 0)
+        
+        # citation_fetchingワークフローが呼ばれていることを確認
+        workflow_calls = mock_workflow_instance.execute_workflow.call_args_list
+        citation_call = None
+        for call in workflow_calls:
+            if len(call[0]) > 0 and str(call[0][0]) == 'WorkflowType.CITATION_FETCHING':
+                citation_call = call
+                break
+        
+        self.assertIsNotNone(citation_call, "citation_fetching workflow should be called")
+        
+        # enrichmentが無効になっていることを確認
+        options = citation_call[1]
+        self.assertFalse(options.get('enable_enrichment', True), 
+                        "enrichment should be disabled when --disable-enrichment is used")
 
 
 class TestUtilityCommands(TestMainCLI):

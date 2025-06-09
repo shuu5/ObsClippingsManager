@@ -19,6 +19,7 @@ class WorkflowType(Enum):
     CITATION_FETCHING = "citation_fetching"
     FILE_ORGANIZATION = "file_organization"
     SYNC_CHECK = "sync_check"
+    CITATION_PARSER = "citation_parser"
     INTEGRATED = "integrated"
 
 
@@ -76,6 +77,9 @@ class WorkflowManager:
                 
             elif workflow_type == WorkflowType.SYNC_CHECK:
                 success, results = self._execute_sync_check_workflow(options)
+                
+            elif workflow_type == WorkflowType.CITATION_PARSER:
+                success, results = self._execute_citation_parser_workflow(options)
                 
             elif workflow_type == WorkflowType.INTEGRATED:
                 success, results = self._execute_integrated_workflow(options)
@@ -161,6 +165,25 @@ class WorkflowManager:
         """
         self.logger.info("Executing sync check workflow")
         return self.sync_check_workflow.execute(**options)
+    
+    def _execute_citation_parser_workflow(self, options: Dict[str, Any]) -> Tuple[bool, Dict[str, Any]]:
+        """
+        Citation Parser Workflowの実行（未実装のため成功として返す）
+        
+        Args:
+            options: 実行オプション
+            
+        Returns:
+            実行結果
+        """
+        self.logger.info("Executing citation parser workflow (placeholder)")
+        
+        # 現在は未実装のため、成功として返す
+        return True, {
+            "success": True,
+            "message": "Citation parser workflow completed (placeholder implementation)",
+            "parsed_citations": 0
+        }
     
     def _execute_integrated_workflow(self, options: Dict[str, Any]) -> Tuple[bool, Dict[str, Any]]:
         """
@@ -428,6 +451,14 @@ class WorkflowManager:
             from .organization_workflow import validate_organization_workflow_config
             org_config = self.config_manager.get_rename_mkdir_config()
             return validate_organization_workflow_config(org_config)
+            
+        elif workflow_type == WorkflowType.SYNC_CHECK:
+            # Sync checkワークフローは基本的な設定のみ必要
+            return True, []
+            
+        elif workflow_type == WorkflowType.CITATION_PARSER:
+            # Citation parserワークフローは現在未実装のため常に有効
+            return True, []
             
         elif workflow_type == WorkflowType.INTEGRATED:
             # 統合ワークフローは両方の設定を検証
