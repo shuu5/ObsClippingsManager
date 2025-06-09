@@ -11,5 +11,7 @@ wheels/
 
 .env
 
-/TestManuscripts//code/test_data_master_backup_*/
+# Test data directories
+/TestManuscripts/
 /code/test_data_master/
+/code/test_data_master_backup_*/
