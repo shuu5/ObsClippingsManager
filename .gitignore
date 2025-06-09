@@ -12,3 +12,4 @@ wheels/
 .env
 
 /TestManuscripts//code/test_data_master_backup_*/
+/code/test_data_master/
