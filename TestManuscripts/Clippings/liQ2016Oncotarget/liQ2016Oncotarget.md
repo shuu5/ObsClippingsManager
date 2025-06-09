@@ -1,9 +1,13 @@
 ---
-title: "Keratin 13 expression reprograms bone and brain metastases of human prostate cancer cells"
-doi: "10.18632/oncotarget.13175"
-source: "https://www.oncotarget.com/article/13175/text/"
-created: 2025-06-09
-tags:
+obsclippings_metadata:
+  citation_key: liQ2016Oncotarget
+  last_updated: '2025-06-09T11:05:33.428034+00:00'
+  processing_status:
+    fetch: completed
+    organize: completed
+    parse: completed
+    sync: completed
+  workflow_version: '3.0'
 ---
 
 ## Abstract

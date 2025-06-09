@@ -12,6 +12,7 @@ from pathlib import Path
 from ..shared.config_manager import ConfigManager
 from ..shared.logger import IntegratedLogger
 from ..shared.status_manager import StatusManager, ProcessStatus
+from ..shared.bibtex_parser import BibTeXParser
 from ..shared.exceptions import ObsClippingsError
 from .workflow_manager import WorkflowManager, WorkflowType
 
@@ -37,15 +38,17 @@ class EnhancedIntegratedWorkflow:
         self.config_manager = config_manager
         self.logger = logger.get_logger('EnhancedIntegratedWorkflow')
         self.status_manager = StatusManager(config_manager, logger)
+        self.bibtex_parser = BibTeXParser()
         self.workflow_manager = WorkflowManager(config_manager, logger)
         
         self.logger.info("EnhancedIntegratedWorkflow initialized successfully")
     
-    def analyze_paper_status(self, clippings_dir: str) -> Dict[str, List[str]]:
+    def analyze_paper_status(self, bibtex_file: str, clippings_dir: str) -> Dict[str, List[str]]:
         """
         論文の現在の状態を分析し、必要な処理を特定
         
         Args:
+            bibtex_file: BibTeXファイルパス
             clippings_dir: Clippingsディレクトリパス
             
         Returns:
@@ -58,6 +61,10 @@ class EnhancedIntegratedWorkflow:
                 'needs_fetch': [],
                 'needs_parse': []
             }
+            
+            # BibTeXファイルから論文リストを取得
+            entries = self.bibtex_parser.parse_file(bibtex_file)
+            all_papers = list(entries.keys())
             
             # 各処理タイプで必要な論文を取得
             analysis['needs_organize'] = self.status_manager.get_papers_needing_processing(
@@ -73,6 +80,19 @@ class EnhancedIntegratedWorkflow:
                 clippings_dir, 'parse', include_failed=True
             )
             
+            # BibTeXにあるが状態管理に記録されていない論文も追加
+            existing_papers = set()
+            for papers_list in analysis.values():
+                existing_papers.update(papers_list)
+            
+            missing_papers = set(all_papers) - existing_papers
+            if missing_papers:
+                # 新しい論文は全ステップが必要
+                analysis['needs_organize'].extend(missing_papers)
+                analysis['needs_sync'].extend(missing_papers)
+                analysis['needs_fetch'].extend(missing_papers)
+                analysis['needs_parse'].extend(missing_papers)
+            
             total_work = sum(len(papers) for papers in analysis.values())
             self.logger.info(f"Status analysis completed: {total_work} processing tasks identified")
             
@@ -82,22 +102,30 @@ class EnhancedIntegratedWorkflow:
             self.logger.error(f"Failed to analyze paper status: {e}")
             raise ObsClippingsError(f"Failed to analyze paper status: {e}")
     
-    def get_execution_plan(self, clippings_dir: str) -> Dict[str, Any]:
+    def get_execution_plan(self, bibtex_file: str, clippings_dir: Optional[str] = None) -> Dict[str, Any]:
         """
         実行計画を生成
         
         Args:
-            clippings_dir: Clippingsディレクトリパス
+            bibtex_file: BibTeXファイルパス
+            clippings_dir: Clippingsディレクトリパス（Noneの場合はbibtex_fileと同じディレクトリのClippings）
             
         Returns:
             Dict: 実行計画の詳細
         """
         try:
-            analysis = self.analyze_paper_status(clippings_dir)
-            statuses = self.status_manager.load_md_statuses(clippings_dir)
+            # clippings_dirが指定されていない場合は推測
+            if clippings_dir is None:
+                clippings_dir = str(Path(bibtex_file).parent / "Clippings")
+            
+            analysis = self.analyze_paper_status(bibtex_file, clippings_dir)
+            
+            # BibTeX内の総論文数を取得
+            entries = self.bibtex_parser.parse_file(bibtex_file)
+            total_papers = len(entries)
             
             plan = {
-                'total_papers': len(statuses),
+                'total_papers': total_papers,
                 'execution_steps': {}
             }
             
@@ -138,7 +166,7 @@ class EnhancedIntegratedWorkflow:
             Dict: 実行結果
         """
         try:
-            plan = self.get_execution_plan(clippings_dir)
+            plan = self.get_execution_plan(bibtex_file, clippings_dir)
             
             results = {
                 'overall_success': True,
@@ -249,31 +277,30 @@ class EnhancedIntegratedWorkflow:
             
             workflow_type = workflow_type_map[process_type]
             
-            # ステップ固有のオプション設定
+            # ステップ固有のオプション設定（全ワークフローで共通パラメータを設定）
             step_options = dict(options)
+            step_options.update({
+                'bibtex_file': bibtex_file,
+                'clippings_dir': clippings_dir
+            })
             
             if process_type == 'organize':
                 step_options.update({
-                    'clippings_dir': clippings_dir,
-                    'bibtex_file': bibtex_file,
                     'target_papers': papers  # 対象論文を制限
                 })
             elif process_type == 'sync':
-                step_options.update({
-                    'bibtex_file': bibtex_file,
-                    'clippings_dir': clippings_dir
-                })
+                # syncは追加パラメータなし
+                pass
             elif process_type == 'fetch':
                 step_options.update({
-                    'bibtex_file': bibtex_file,
                     'target_papers': papers,
                     'use_sync_integration': True
                 })
             elif process_type == 'parse':
                 # parse処理は論文単位では実行できないため、全体実行
-                step_options.update({
-                    'clippings_dir': clippings_dir
-                })
+                pass
+            
+            self.logger.info(f"Executing {process_type} with bibtex_file={bibtex_file}, clippings_dir={clippings_dir}")
             
             # ワークフロー実行
             success, result = self.workflow_manager.execute_workflow(

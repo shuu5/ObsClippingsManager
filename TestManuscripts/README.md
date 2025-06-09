@@ -51,7 +51,7 @@ uv run code/py/modules/workflows/enhanced_integrated_workflow.py /home/user/proj
 
 ### 論文リスト
 1. **huWY2021IJMS**: Keratin Profiling by Single-Cell RNA-Sequencing...
-2. **lennartzM2023APMIS**: Cytokeratin 13 (CK13) expression in cancer... 
+2. **lennartzM2023APMIS**: Cytokeratin 13 Expression in Cancer... (軽量版、引用8件)
 3. **liQ2016Oncotarget**: Keratin 13 expression reprograms bone and brain...
 4. **takenakaW2023J.Radiat.Res.Tokyo**: KRT13 is upregulated in pancreatic cancer...
 5. **yinL2022BreastCancerRes**: KRT13 Promotes Stemness... (BibTeXのみ、.mdなし)
@@ -60,6 +60,7 @@ uv run code/py/modules/workflows/enhanced_integrated_workflow.py /home/user/proj
 - 4つの論文は.mdファイルが存在（処理対象）
 - 1つの論文は.mdファイルが未ダウンロード（スキップ対象）
 - 様々な引用パターンの変換テスト
+- 各APIでの引用情報取得テスト（CrossRef、PubMed、SemanticScholar等）
 - ディレクトリ作成とファイル移動テスト
 - メタデータ補完テスト
 

@@ -15,14 +15,15 @@ from .exceptions import ConfigError, ValidationError
 DEFAULT_INTEGRATED_CONFIG = {
     # 共通設定
     "common": {
-        "bibtex_file": "/home/user/ManuscriptsManager/CurrentManuscript.bib",
-        "clippings_dir": "/home/user/ManuscriptsManager/Clippings/",
-        "output_dir": "/home/user/ManuscriptsManager/References/",
+        "bibtex_file": "TestManuscripts/CurrentManuscript.bib",
+        "clippings_dir": "TestManuscripts/Clippings",
+        "output_dir": "TestManuscripts/References",
         "log_level": "INFO",
         "log_file": "obsclippings.log",
         "backup_enabled": True,
-        "backup_dir": "/home/user/ManuscriptsManager/backups/",
-        "dry_run": False
+        "backup_dir": "TestManuscripts/backups",
+        "dry_run": False,
+        "verbose": False
     },
     
     # Citation Fetcher設定

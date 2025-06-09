@@ -43,6 +43,33 @@ class CitationWorkflow:
         # v2.2の新機能: メタデータ補完
         self.metadata_enricher = MetadataEnricher(config_manager)
         
+    def _apply_option_overrides(self, options: Dict[str, Any]) -> None:
+        """
+        コマンドライン引数で設定を上書き
+        
+        Args:
+            options: 実行オプション
+        """
+        # 必須パラメータの確認と設定
+        bibtex_file = options.get('bibtex_file')
+        clippings_dir = options.get('clippings_dir')
+        
+        if not bibtex_file:
+            bibtex_file = self.config.get('bibtex_file')
+        if not clippings_dir:
+            clippings_dir = self.config.get('clippings_dir')
+        
+        # パスを内部設定に保存（ワークフロー実行中に一貫使用）
+        self.current_bibtex_file = bibtex_file
+        self.current_clippings_dir = clippings_dir
+        
+        self.logger.info(f"Using BibTeX file: {self.current_bibtex_file}")
+        self.logger.info(f"Using Clippings directory: {self.current_clippings_dir}")
+        
+        # SyncIntegrationの設定も更新
+        if hasattr(self, 'sync_integration'):
+            self.sync_integration.update_paths(bibtex_file, clippings_dir)
+        
     def execute(self, **options) -> Tuple[bool, Dict[str, Any]]:
         """
         引用文献取得ワークフローを実行 (v2.1: sync連携対応)
@@ -58,6 +85,9 @@ class CitationWorkflow:
             (成功フラグ, 実行結果詳細)
         """
         self.logger.info("Starting citation fetching workflow v2.1")
+        
+        # コマンドライン引数で設定を上書き
+        self._apply_option_overrides(options)
         
         results = {
             "stage": "initialization",

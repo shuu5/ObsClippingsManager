@@ -91,6 +91,9 @@ def cli(ctx: Dict[str, Any], config: str, log_level: str, dry_run: bool, verbose
 @click.option('--bibtex-file', '-b',
               help='BibTeX file to process',
               type=click.Path(exists=True))
+@click.option('--clippings-dir', '-d',
+              help='Clippings directory to process',
+              type=click.Path(exists=True))
 @click.option('--output-dir', '-o',
               help='Output directory for results (legacy mode)',
               type=click.Path())
@@ -133,6 +136,7 @@ def cli(ctx: Dict[str, Any], config: str, log_level: str, dry_run: bool, verbose
 @pass_context
 def fetch_citations(ctx: Dict[str, Any], 
                    bibtex_file: Optional[str],
+                   clippings_dir: Optional[str],
                    output_dir: Optional[str],
                    max_retries: Optional[int],
                    use_sync_integration: bool,
@@ -168,6 +172,8 @@ def fetch_citations(ctx: Dict[str, Any],
         # コマンドライン引数で設定を上書き
         if bibtex_file:
             options['bibtex_file'] = bibtex_file
+        if clippings_dir:
+            options['clippings_dir'] = clippings_dir
         if output_dir:
             options['output_dir'] = output_dir
         if max_retries is not None:
@@ -702,7 +708,7 @@ def run_integrated(ctx: Dict[str, Any],
             if force_regenerate:
                 click.echo("🔄 Force regenerate mode: resetting all status flags...")
                 status_manager = enhanced_workflow.status_manager
-                reset_success = status_manager.reset_statuses(bibtex_file, target_papers)
+                reset_success = status_manager.reset_statuses(clippings_dir, target_papers)
                 if reset_success:
                     click.echo("✅ Status flags reset successfully")
                 else:
@@ -711,7 +717,7 @@ def run_integrated(ctx: Dict[str, Any],
             # 実行計画の表示
             if show_execution_plan:
                 click.echo("📋 Analyzing execution plan...")
-                plan = enhanced_workflow.get_execution_plan(bibtex_file)
+                plan = enhanced_workflow.get_execution_plan(bibtex_file, clippings_dir)
                 
                 total_papers = plan['total_papers']
                 execution_steps = plan['execution_steps']

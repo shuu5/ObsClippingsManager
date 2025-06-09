@@ -1,9 +1,13 @@
 ---
-title: "KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance"
-doi: "10.1093/jrr/rrac091"
-source: "https://academic.oup.com/jrr/article/64/2/284/6870995"
-created: 2025-06-09
-tags:
+obsclippings_metadata:
+  citation_key: takenakaW2023J.Radiat.Res.Tokyo
+  last_updated: '2025-06-09T11:05:33.426158+00:00'
+  processing_status:
+    fetch: completed
+    organize: completed
+    parse: completed
+    sync: completed
+  workflow_version: '3.0'
 ---
 
 ## Abstract
@@ -24,7 +28,7 @@ Cancer stem-like cells were identified using multiple markers including CD133, C
 
 KRT13 expression was significantly upregulated in pancreatic cancer stem-like cells compared to non-stem cancer cells (p < 0.001). High KRT13 expression was associated with increased radioresistance in vitro and in vivo [9], [10]. Cells with elevated KRT13 levels showed enhanced DNA repair capacity and reduced apoptosis following radiation exposure.
 
-Gene expression analysis revealed that KRT13 regulates several pathways involved in stemness maintenance and radiation response [11-13]. The protein interacts with key transcription factors involved in stem cell biology (Davis & Lee, 2019; Miller et al., 2020).
+Gene expression analysis revealed that KRT13 regulates several pathways involved in stemness maintenance and radiation response [11,12,13]. The protein interacts with key transcription factors involved in stem cell biology (Davis & Lee, 2019; Miller et al., 2020).
 
 ## Discussion
 

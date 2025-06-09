@@ -37,6 +37,8 @@ class SyncCheckWorkflow:
         
         Args:
             **options: 実行オプション
+                - bibtex_file: BibTeXファイルパス（必須）
+                - clippings_dir: Clippingsディレクトリパス（必須）
                 - show_missing_in_clippings: .bibにあってClippings/にない論文を表示
                 - show_missing_in_bib: Clippings/にあって.bibにない論文を表示
                 - show_clickable_links: DOIリンクをクリック可能な形式で表示
@@ -49,12 +51,29 @@ class SyncCheckWorkflow:
         try:
             self.logger.info("Starting sync check workflow")
             
+            # 必須パラメータの確認と設定
+            bibtex_file = options.get('bibtex_file')
+            clippings_dir = options.get('clippings_dir')
+            
+            if not bibtex_file:
+                bibtex_file = self.config.get('bibtex_file')
+            if not clippings_dir:
+                clippings_dir = self.config.get('clippings_dir')
+            
+            if not bibtex_file or not clippings_dir:
+                raise SyncCheckError("BibTeX file and clippings directory are required")
+            
+            # パスを内部設定に保存（ワークフロー実行中に一貫使用）
+            self.current_bibtex_file = bibtex_file
+            self.current_clippings_dir = clippings_dir
+            
+            self.logger.info(f"Using BibTeX file: {self.current_bibtex_file}")
+            self.logger.info(f"Using Clippings directory: {self.current_clippings_dir}")
+            
             # 実行オプションのマージ
             execution_options = {**self.config, **options}
-            
-            # 設定を一時的に更新
-            original_config = self.config.copy()
-            self.config.update(execution_options)
+            execution_options['bibtex_file'] = self.current_bibtex_file
+            execution_options['clippings_dir'] = self.current_clippings_dir
             
             # 結果辞書の初期化
             results = {
@@ -72,49 +91,36 @@ class SyncCheckWorkflow:
             self.logger.info("Scanning Clippings directory")
             clippings_dirs = self._get_clippings_directories()
             
-            # 双方向チェック実行
+            # 双方向チェック
             if execution_options.get('show_missing_in_clippings', True):
-                self.logger.info("Checking papers missing in Clippings")
-                missing_in_clippings = self.check_bib_to_clippings(bib_entries, clippings_dirs)
-                results["missing_in_clippings"] = missing_in_clippings
-                self.report_missing_in_clippings(missing_in_clippings, execution_options)
-                
+                results["missing_in_clippings"] = self.check_bib_to_clippings(bib_entries, clippings_dirs)
+            
             if execution_options.get('show_missing_in_bib', True):
-                self.logger.info("Checking directories missing in BibTeX")
-                missing_in_bib = self.check_clippings_to_bib(bib_entries, clippings_dirs)
-                results["missing_in_bib"] = missing_in_bib
-                self.report_missing_in_bib(missing_in_bib, execution_options)
-                
-            # DOI統計情報の表示
-            if execution_options.get('show_doi_statistics', True):
-                stats = self.report_doi_statistics(bib_entries, results["missing_in_clippings"])
-                results["statistics"] = stats
-                
-            # 完了通知
-            total_issues = len(results["missing_in_clippings"]) + len(results["missing_in_bib"])
-            if total_issues == 0:
-                click.echo("\n✅ Perfect synchronization achieved!")
-                self.logger.info("Sync check completed - no issues found")
-            else:
-                self.logger.info(f"Sync check completed - {total_issues} issues found")
-                
+                results["missing_in_bib"] = self.check_clippings_to_bib(bib_entries, clippings_dirs)
+            
+            # DOI統計の生成
+            doi_stats = self._generate_doi_statistics(bib_entries)
+            results["statistics"] = doi_stats
+            
+            # 結果表示
+            self.report_missing_in_clippings(results["missing_in_clippings"], execution_options)
+            self.report_missing_in_bib(results["missing_in_bib"], execution_options)
+            self.report_doi_statistics(doi_stats, execution_options)
+            
+            self.logger.info("Sync check workflow completed successfully")
             return True, results
             
         except Exception as e:
             self.logger.error(f"Sync check workflow failed: {e}")
             return False, {"error": str(e)}
-        finally:
-            # 設定を復元
-            self.config = original_config
     
     def _parse_bibtex_file(self) -> Dict[str, Dict[str, Any]]:
         """BibTeXファイルを解析"""
         try:
-            bibtex_file = self.config.get('bibtex_file')
-            if not bibtex_file or not Path(bibtex_file).exists():
-                raise BibTeXParsingError(f"BibTeX file not found: {bibtex_file}")
+            if not self.current_bibtex_file or not Path(self.current_bibtex_file).exists():
+                raise BibTeXParsingError(f"BibTeX file not found: {self.current_bibtex_file}")
                 
-            return self.bibtex_parser.parse_file(bibtex_file)
+            return self.bibtex_parser.parse_file(self.current_bibtex_file)
             
         except Exception as e:
             raise BibTeXParsingError(f"Failed to parse BibTeX file: {e}")
@@ -127,7 +133,7 @@ class SyncCheckWorkflow:
             List[str]: ディレクトリ名のリスト
         """
         try:
-            clippings_path = Path(self.config.get('clippings_dir'))
+            clippings_path = Path(self.current_clippings_dir)
             if not clippings_path.exists():
                 raise ClippingsAccessError(f"Clippings directory not found: {clippings_path}")
                 
@@ -135,6 +141,23 @@ class SyncCheckWorkflow:
             
         except Exception as e:
             raise ClippingsAccessError(f"Failed to access Clippings directory: {e}")
+    
+    def _get_markdown_files_in_directory(self, directory_name: str) -> List[str]:
+        """
+        指定ディレクトリ内のMarkdownファイル一覧を取得
+        
+        Args:
+            directory_name: ディレクトリ名
+        
+        Returns:
+            List[str]: Markdownファイル名のリスト
+        """
+        try:
+            dir_path = Path(self.current_clippings_dir) / directory_name
+            return [f.name for f in dir_path.glob('*.md')] if dir_path.exists() else []
+        except Exception as e:
+            self.logger.warning(f"Failed to get markdown files in {directory_name}: {e}")
+            return []
     
     def check_bib_to_clippings(self, bib_entries: Dict, clippings_dirs: List[str]) -> List[Dict]:
         """
@@ -192,23 +215,6 @@ class SyncCheckWorkflow:
                 
         self.logger.info(f"Found {len(orphaned_papers)} orphaned directories in clippings")
         return orphaned_papers
-    
-    def _get_markdown_files_in_directory(self, directory_name: str) -> List[str]:
-        """
-        指定ディレクトリ内のMarkdownファイル一覧を取得
-        
-        Args:
-            directory_name: ディレクトリ名
-        
-        Returns:
-            List[str]: Markdownファイル名のリスト
-        """
-        try:
-            dir_path = Path(self.config.get('clippings_dir')) / directory_name
-            return [f.name for f in dir_path.glob('*.md')] if dir_path.exists() else []
-        except Exception as e:
-            self.logger.warning(f"Failed to get markdown files in {directory_name}: {e}")
-            return []
     
     def report_missing_in_clippings(self, missing_papers: List[Dict], options: Dict) -> None:
         """
@@ -291,51 +297,29 @@ class SyncCheckWorkflow:
             click.echo(f"\n... and {len(orphaned_papers) - max_displayed} more directories")
             click.echo(f"(Use --max-displayed-files to show more)")
     
-    def report_doi_statistics(self, bib_entries: Dict, missing_in_clippings: List[Dict]) -> Dict[str, Any]:
+    def report_doi_statistics(self, doi_stats: Dict[str, Any], options: Dict) -> None:
         """
         DOI統計情報を報告
         
         Args:
-            bib_entries: BibTeX項目の辞書
-            missing_in_clippings: 不足論文のリスト
-            
-        Returns:
-            Dict[str, Any]: 統計情報
+            doi_stats: DOI統計情報
+            options: 実行オプション
         """
-        total_papers = len(bib_entries)
-        papers_with_doi = sum(1 for entry in bib_entries.values() 
-                             if entry.get('doi', '').strip())
-        papers_without_doi = total_papers - papers_with_doi
-        
-        # 不足論文の中でDOIがない論文数をカウント
-        missing_without_doi = sum(1 for paper in missing_in_clippings 
-                                 if not paper.get('doi', '').strip())
-        
-        statistics = {
-            "total_papers": total_papers,
-            "papers_with_doi": papers_with_doi,
-            "papers_without_doi": papers_without_doi,
-            "missing_without_doi": missing_without_doi,
-            "doi_coverage_percentage": (papers_with_doi / total_papers * 100) if total_papers > 0 else 0
-        }
-        
         click.echo(f"\n📊 DOI Statistics:")
         click.echo("=" * 50)
-        click.echo(f"Total papers in bib: {total_papers}")
-        click.echo(f"Papers with DOI: {papers_with_doi}")
-        click.echo(f"Papers without DOI: {papers_without_doi}")
+        click.echo(f"Total papers in bib: {doi_stats['total_papers']}")
+        click.echo(f"Papers with DOI: {doi_stats['papers_with_doi']}")
+        click.echo(f"Papers without DOI: {doi_stats['papers_without_doi']}")
         
-        if papers_without_doi > 0:
-            percentage = statistics["doi_coverage_percentage"]
-            click.echo(f"DOI coverage: {papers_with_doi}/{total_papers} ({100-percentage:.1f}% missing)")
+        if doi_stats['papers_without_doi'] > 0:
+            percentage = doi_stats["doi_coverage_percentage"]
+            click.echo(f"DOI coverage: {doi_stats['papers_with_doi']}/{doi_stats['total_papers']} ({100-percentage:.1f}% missing)")
             
-            if missing_without_doi > 0:
-                click.echo(f"⚠️  Missing papers without DOI: {missing_without_doi}")
+            if doi_stats['missing_without_doi'] > 0:
+                click.echo(f"⚠️  Missing papers without DOI: {doi_stats['missing_without_doi']}")
                 click.echo("   (These papers cannot be accessed via DOI links)")
         else:
             click.echo("✅ All papers have DOI information")
-            
-        return statistics
     
     def _format_clickable_link(self, url: str, display_text: str = None) -> str:
         """
@@ -353,3 +337,28 @@ class SyncCheckWorkflow:
         
         # ANSI escape sequences for clickable links (OSC 8)
         return f"\033]8;;{url}\033\\{display_text}\033]8;;\033\\"
+    
+    def _generate_doi_statistics(self, bib_entries: Dict) -> Dict[str, Any]:
+        """
+        DOI統計情報を生成
+        
+        Args:
+            bib_entries: BibTeX項目の辞書
+            
+        Returns:
+            Dict[str, Any]: 統計情報
+        """
+        total_papers = len(bib_entries)
+        papers_with_doi = sum(1 for entry in bib_entries.values() 
+                             if entry.get('doi', '').strip())
+        papers_without_doi = total_papers - papers_with_doi
+        
+        statistics = {
+            "total_papers": total_papers,
+            "papers_with_doi": papers_with_doi,
+            "papers_without_doi": papers_without_doi,
+            "missing_without_doi": 0,  # 他の処理結果と組み合わせて計算
+            "doi_coverage_percentage": (papers_with_doi / total_papers * 100) if total_papers > 0 else 0
+        }
+        
+        return statistics

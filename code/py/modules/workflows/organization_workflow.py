@@ -45,6 +45,34 @@ class OrganizationWorkflow:
             base_dir=self.config.get('clippings_dir')
         )
         
+    def _apply_option_overrides(self, options: Dict[str, Any]) -> None:
+        """
+        コマンドライン引数で設定を上書き
+        
+        Args:
+            options: 実行オプション
+        """
+        # 必須パラメータの確認と設定
+        bibtex_file = options.get('bibtex_file')
+        clippings_dir = options.get('clippings_dir')
+        
+        if not bibtex_file:
+            bibtex_file = self.config.get('bibtex_file')
+        if not clippings_dir:
+            clippings_dir = self.config.get('clippings_dir')
+        
+        # パスを内部設定に保存（ワークフロー実行中に一貫使用）
+        self.current_bibtex_file = bibtex_file
+        self.current_clippings_dir = clippings_dir
+        
+        self.logger.info(f"Using BibTeX file: {self.current_bibtex_file}")
+        self.logger.info(f"Using Clippings directory: {self.current_clippings_dir}")
+        
+        # コンポーネントのパス設定も更新
+        if clippings_dir:
+            self.markdown_manager.clippings_dir = Path(clippings_dir)
+            self.directory_organizer.base_dir = Path(clippings_dir)
+        
     def execute(self, **options) -> Tuple[bool, Dict[str, Any]]:
         """
         ファイル整理ワークフローを実行
@@ -64,9 +92,12 @@ class OrganizationWorkflow:
         }
         
         try:
+            # コマンドライン引数での設定上書き
+            self._apply_option_overrides(options)
+            
             # Stage 1: BibTeX解析（共通）
             results["stage"] = "bibtex_parsing"
-            bib_entries = self._parse_bibtex_file()
+            bib_entries = self._parse_bibtex_file(options)
             results["bib_entries_count"] = len(bib_entries)
             self.logger.info(f"Parsed {len(bib_entries)} BibTeX entries")
             
@@ -130,14 +161,21 @@ class OrganizationWorkflow:
             results["error"] = str(e)
             return False, results
     
-    def _parse_bibtex_file(self) -> Dict[str, Dict[str, str]]:
+    def _parse_bibtex_file(self, options: Dict[str, Any] = None) -> Dict[str, Dict[str, str]]:
         """
         BibTeXファイル解析の実行
+        
+        Args:
+            options: 実行オプション（bibtex_fileの上書き可能）
         
         Returns:
             解析されたBibTeXエントリ
         """
-        bibtex_file = self.config.get('bibtex_file')
+        if options is None:
+            options = {}
+            
+        # 内部設定されたパスを優先使用
+        bibtex_file = self.current_bibtex_file
         if not bibtex_file:
             raise ValueError("BibTeX file path not configured")
         

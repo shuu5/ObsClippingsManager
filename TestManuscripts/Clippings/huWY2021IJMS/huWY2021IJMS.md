@@ -1,9 +1,13 @@
 ---
-title: "Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells"
-doi: "10.3390/ijms22158109"
-source: "https://www.mdpi.com/1422-0067/22/15/8109"
-created: 2025-06-09
-tags:
+obsclippings_metadata:
+  citation_key: huWY2021IJMS
+  last_updated: '2025-06-09T11:05:33.419755+00:00'
+  processing_status:
+    fetch: completed
+    organize: completed
+    parse: completed
+    sync: completed
+  workflow_version: '3.0'
 ---
 
 ## Abstract

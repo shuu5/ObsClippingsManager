@@ -30,14 +30,37 @@ class SyncIntegration:
         # BibTeX解析器の初期化
         self.bibtex_parser = BibTeXParser()
         
-    def get_synced_papers_info(self) -> Tuple[bool, Dict[str, Any]]:
+    def update_paths(self, bibtex_file: str = None, clippings_dir: str = None):
+        """
+        パス設定を動的に更新
+        
+        Args:
+            bibtex_file: BibTeXファイルパス
+            clippings_dir: Clippingsディレクトリパス
+        """
+        if bibtex_file:
+            self.config['bibtex_file'] = bibtex_file
+            self.logger.info(f"SyncIntegration: Updated bibtex_file to {bibtex_file}")
+        if clippings_dir:
+            self.config['clippings_dir'] = clippings_dir
+            self.logger.info(f"SyncIntegration: Updated clippings_dir to {clippings_dir}")
+    
+    def get_synced_papers_info(self, bibtex_file: str = None, clippings_dir: str = None) -> Tuple[bool, Dict[str, Any]]:
         """
         同期状態を確認し、一致している論文の情報を取得
+        
+        Args:
+            bibtex_file: BibTeXファイルパス（オプション）
+            clippings_dir: Clippingsディレクトリパス（オプション）
         
         Returns:
             (成功フラグ, 同期情報詳細)
         """
         self.logger.info("Starting sync integration analysis")
+        
+        # パス設定を一時的に更新
+        if bibtex_file or clippings_dir:
+            self.update_paths(bibtex_file, clippings_dir)
         
         try:
             # BibTeXファイルの解析
@@ -74,14 +97,18 @@ class SyncIntegration:
             self.logger.error(f"Sync integration analysis failed: {e}")
             return False, {"error": str(e)}
     
-    def get_target_papers_for_citation_fetching(self) -> Tuple[bool, List[Dict[str, str]]]:
+    def get_target_papers_for_citation_fetching(self, bibtex_file: str = None, clippings_dir: str = None) -> Tuple[bool, List[Dict[str, str]]]:
         """
         引用文献取得の対象論文リストを生成
+        
+        Args:
+            bibtex_file: BibTeXファイルパス（オプション）
+            clippings_dir: Clippingsディレクトリパス（オプション）
         
         Returns:
             (成功フラグ, 対象論文リスト)
         """
-        success, sync_info = self.get_synced_papers_info()
+        success, sync_info = self.get_synced_papers_info(bibtex_file, clippings_dir)
         
         if not success:
             return False, []
@@ -103,10 +130,9 @@ class SyncIntegration:
         try:
             bibtex_file = self.config.get('bibtex_file')
             if not bibtex_file:
-                # デフォルトパスを試行
-                bibtex_file = self.config_manager.get_sync_check_config().get('bibtex_file')
+                raise BibTeXParsingError("BibTeX file path not configured")
             
-            if not bibtex_file or not Path(bibtex_file).exists():
+            if not Path(bibtex_file).exists():
                 raise BibTeXParsingError(f"BibTeX file not found: {bibtex_file}")
                 
             self.logger.info(f"Parsing BibTeX file: {bibtex_file}")
@@ -120,15 +146,14 @@ class SyncIntegration:
         try:
             clippings_dir = self.config.get('clippings_dir')
             if not clippings_dir:
-                # デフォルトパスを試行
-                clippings_dir = self.config_manager.get_sync_check_config().get('clippings_dir')
+                raise ClippingsAccessError("Clippings directory path not configured")
             
             clippings_path = Path(clippings_dir)
             if not clippings_path.exists():
                 raise ClippingsAccessError(f"Clippings directory not found: {clippings_path}")
             
             directories = [d.name for d in clippings_path.iterdir() if d.is_dir()]
-            self.logger.info(f"Found {len(directories)} directories in Clippings")
+            self.logger.info(f"Found {len(directories)} directories in Clippings: {clippings_dir}")
             
             return directories
             
@@ -179,7 +204,7 @@ class SyncIntegration:
         """ディレクトリパスの存在確認と保存先パス生成"""
         clippings_dir = self.config.get('clippings_dir')
         if not clippings_dir:
-            clippings_dir = self.config_manager.get_sync_check_config().get('clippings_dir')
+            raise ClippingsAccessError("Clippings directory path not configured")
         
         clippings_path = Path(clippings_dir)
         validated_papers = []
