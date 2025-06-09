@@ -121,25 +121,24 @@ class StatusManager:
             bool: 書き込み成功時True
         """
         try:
+            # ファイルが存在しない場合は作成せずにFalseを返す
+            if not md_file_path.exists():
+                self.logger.debug(f"Skipping YAML header write: file does not exist - {md_file_path}")
+                return False
+            
             # 既存のファイル内容を読み込み
-            if md_file_path.exists():
-                with open(md_file_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                
-                # 既存のYAMLヘッダーを除去
-                yaml_pattern = r'^---\n.*?\n---\n'
-                content_without_yaml = re.sub(yaml_pattern, '', content, flags=re.DOTALL)
-            else:
-                content_without_yaml = ""
+            with open(md_file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # 既存のYAMLヘッダーを除去
+            yaml_pattern = r'^---\n.*?\n---\n'
+            content_without_yaml = re.sub(yaml_pattern, '', content, flags=re.DOTALL)
             
             # 新しいYAMLヘッダーを生成
             yaml_content = yaml.dump(metadata, default_flow_style=False, allow_unicode=True)
             
             # ファイルに書き込み
             new_content = f"---\n{yaml_content}---\n\n{content_without_yaml.lstrip()}"
-            
-            # ディレクトリが存在しない場合は作成
-            md_file_path.parent.mkdir(parents=True, exist_ok=True)
             
             with open(md_file_path, 'w', encoding='utf-8') as f:
                 f.write(new_content)
@@ -162,6 +161,11 @@ class StatusManager:
             bool: 初期化成功時True
         """
         try:
+            # ファイルが存在しない場合は初期化せずにFalseを返す
+            if not md_file_path.exists():
+                self.logger.debug(f"Skipping YAML header initialization: file does not exist - {md_file_path}")
+                return False
+                
             # 既存のYAMLヘッダーをチェック
             existing_metadata = self.parse_yaml_header(md_file_path)
             
@@ -278,8 +282,13 @@ class StatusManager:
             
             md_file_path = self.get_md_file_path(clippings_dir, citation_key)
             
+            # ファイルが存在しない場合は状態更新をスキップ
+            if not md_file_path.exists():
+                self.logger.debug(f"Skipping status update: markdown file does not exist - {citation_key}")
+                return False
+            
             # YAMLヘッダーが存在しない場合は初期化
-            if not md_file_path.exists() or not self.parse_yaml_header(md_file_path):
+            if not self.parse_yaml_header(md_file_path):
                 self.ensure_yaml_header(md_file_path, citation_key)
             
             # 現在のメタデータを読み込み
@@ -338,6 +347,7 @@ class StatusManager:
             return False
     
     def get_papers_needing_processing(self, clippings_dir: str, process_type: str,
+                                    target_papers: Optional[List[str]] = None,
                                     include_failed: bool = True) -> List[str]:
         """
         指定処理が必要な論文リストを取得
@@ -345,16 +355,32 @@ class StatusManager:
         Args:
             clippings_dir: Clippingsディレクトリパス
             process_type: 処理タイプ
+            target_papers: 対象論文リスト（None時は既存ディレクトリから取得）
             include_failed: 失敗したものも含めるか
             
         Returns:
             List[citation_key]: 処理が必要な論文のリスト
         """
         try:
+            # organizeステップの場合は、既存のMarkdownファイルベースで処理対象を決定
+            if process_type == 'organize':
+                return self._get_papers_for_organize_step(clippings_dir, target_papers)
+            
+            # その他のステップは従来通り状態ベースで処理
             statuses = self.load_md_statuses(clippings_dir)
             needing_papers = []
             
-            for citation_key, paper_statuses in statuses.items():
+            # target_papersが指定されていない場合は、既存の状態管理対象論文のみを使用
+            if target_papers is None:
+                target_papers = list(statuses.keys())
+            
+            for citation_key in target_papers:
+                if citation_key not in statuses:
+                    # 状態情報がない場合は処理対象とする
+                    needing_papers.append(citation_key)
+                    continue
+                
+                paper_statuses = statuses[citation_key]
                 status = paper_statuses.get(process_type, ProcessStatus.PENDING)
                 
                 if status == ProcessStatus.PENDING:
@@ -370,8 +396,52 @@ class StatusManager:
         except Exception as e:
             self.logger.error(f"Failed to get papers needing processing: {e}")
             return []
-    
-    def reset_statuses(self, clippings_dir: str, 
+
+    def _get_papers_for_organize_step(self, clippings_dir: str, 
+                                     target_papers: Optional[List[str]] = None) -> List[str]:
+        """
+        organizeステップ専用の処理対象論文取得
+        
+        既存のMarkdownファイルが存在し、まだ整理されていない論文のみを対象とする
+        
+        Args:
+            clippings_dir: Clippingsディレクトリパス
+            target_papers: 対象論文リスト（None時は空リストを返す）
+            
+        Returns:
+            List[citation_key]: organize処理が必要な論文のリスト
+        """
+        try:
+            clippings_path = Path(clippings_dir)
+            
+            if not clippings_path.exists():
+                self.logger.warning(f"Clippings directory does not exist: {clippings_dir}")
+                return []
+            
+            # ルートレベルのMarkdownファイルを検索（まだ整理されていないファイル）
+            root_md_files = [f for f in clippings_path.glob("*.md") if f.is_file()]
+            
+            if not root_md_files:
+                self.logger.info("No unorganized markdown files found in root directory")
+                return []
+            
+            self.logger.info(f"Found {len(root_md_files)} unorganized markdown files for organize step")
+            
+            # 既存のMarkdownファイルがある場合は、OrganizationWorkflowに処理を委ねる
+            # target_papersが指定されている場合は、OrganizationWorkflowが実際のファイル照合を行う
+            if target_papers:
+                # OrganizationWorkflowが実際にファイル照合とマッチングを行うため、
+                # target_papersをそのまま返す（実際の処理はOrganizationWorkflow内で行われる）
+                return target_papers
+            else:
+                # target_papersが指定されていない場合は空リストを返す
+                return []
+            
+        except Exception as e:
+            self.logger.error(f"Failed to get papers for organize step: {e}")
+            return []
+
+    def reset_statuses(self, clippings_dir: str,
                       target_papers: Optional[Union[str, List[str]]] = None) -> bool:
         """
         状態をリセット

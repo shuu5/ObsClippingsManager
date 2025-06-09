@@ -15,6 +15,7 @@ alwaysApply: true
 - **実行ディレクトリ**: 必ずルートディレクトリ(`/home/user/proj/ObsClippingsManager`)から実行
 - **ブランチ**: 常にmainブランチで開発
 - **開発方針**: TDDアプローチ必須
+- **プロジェクト概要**: [README.md](mdc:README.md) を必ず参照してから開発を進めて
 
 ## 🔄 開発フロー（必須手順）
 
