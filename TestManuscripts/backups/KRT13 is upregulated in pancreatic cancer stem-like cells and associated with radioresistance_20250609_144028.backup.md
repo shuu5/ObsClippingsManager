@@ -1,9 +1,10 @@
 ---
-title: "KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance"
-doi: "10.1093/jrr/rrac091"
-source: "https://academic.oup.com/jrr/article/64/2/284/6968637"
 created: 2025-06-09
-tags:
+doi: 10.1093/jrr/rrac091
+source: https://academic.oup.com/jrr/article/64/2/284/6968637
+tags: null
+title: \emphKRT13 Is Upregulated in Pancreatic Cancer Stem-like Cells and Associated
+  with Radioresistance
 ---
 [Skip to Main Content](https://academic.oup.com/jrr/article/64/2/284/#skipNav)
 

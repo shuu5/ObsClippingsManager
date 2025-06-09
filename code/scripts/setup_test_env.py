@@ -4,6 +4,8 @@ TestManuscripts環境構築スクリプト
 
 本番環境(/home/user/ManuscriptsManager)からテストデータをコピーし、
 テスト用の初期状態を作成・管理します。
+
+**重要**: 本番データのみを使用し、サンプルデータは一切作成しません。
 """
 
 import os
@@ -16,7 +18,7 @@ import argparse
 def setup_test_environment(source_dir: str = "/home/user/ManuscriptsManager", 
                           test_dir: str = "/home/user/proj/ObsClippingsManager/TestManuscripts"):
     """
-    テスト環境をセットアップ
+    テスト環境をセットアップ（本番データのみ使用）
     
     Args:
         source_dir: 本番環境のパス
@@ -29,7 +31,27 @@ def setup_test_environment(source_dir: str = "/home/user/ManuscriptsManager",
     print(f"   Source: {source_path}")
     print(f"   Target: {test_path}")
     
-    # 1. テストディレクトリの作成
+    # 1. 本番ディレクトリの存在確認
+    if not source_path.exists():
+        print(f"❌ ERROR: Source directory not found: {source_path}")
+        print(f"   Test environment requires actual production data.")
+        return False
+    
+    # 2. 必須ファイルの確認
+    source_bib = source_path / "CurrentManuscript.bib"
+    source_clippings = source_path / "Clippings"
+    
+    if not source_bib.exists():
+        print(f"❌ ERROR: BibTeX file not found: {source_bib}")
+        print(f"   Test environment requires actual production BibTeX file.")
+        return False
+        
+    if not source_clippings.exists():
+        print(f"❌ ERROR: Clippings directory not found: {source_clippings}")
+        print(f"   Test environment requires actual production Clippings directory.")
+        return False
+    
+    # 3. テストディレクトリの準備
     if test_path.exists():
         print(f"⚠️  Test directory already exists: {test_path}")
         response = input("   Remove existing directory? (y/N): ")
@@ -42,33 +64,27 @@ def setup_test_environment(source_dir: str = "/home/user/ManuscriptsManager",
     
     test_path.mkdir(parents=True, exist_ok=True)
     
-    # 2. CurrentManuscript.bibのコピー
-    source_bib = source_path / "CurrentManuscript.bib"
+    # 4. 本番データの完全コピー
     target_bib = test_path / "CurrentManuscript.bib"
-    
-    if source_bib.exists():
-        shutil.copy2(source_bib, target_bib)
-        print(f"✅ Copied BibTeX file: {target_bib}")
-    else:
-        print(f"⚠️  Source BibTeX file not found: {source_bib}")
-        # サンプルBibTeXファイルを作成
-        create_sample_bibtex(target_bib)
-        print(f"✅ Created sample BibTeX file: {target_bib}")
-    
-    # 3. Clippingsディレクトリのコピー
-    source_clippings = source_path / "Clippings"
     target_clippings = test_path / "Clippings"
     
-    if source_clippings.exists():
-        shutil.copytree(source_clippings, target_clippings)
-        print(f"✅ Copied Clippings directory: {target_clippings}")
-    else:
-        print(f"⚠️  Source Clippings directory not found: {source_clippings}")
-        # サンプルClippingsディレクトリを作成
-        create_sample_clippings(target_clippings)
-        print(f"✅ Created sample Clippings directory: {target_clippings}")
+    # BibTeXファイルのコピー
+    shutil.copy2(source_bib, target_bib)
+    print(f"✅ Copied BibTeX file: {target_bib}")
     
-    # 4. バックアップ情報ファイルの作成
+    # Clippingsディレクトリのコピー
+    shutil.copytree(source_clippings, target_clippings)
+    print(f"✅ Copied Clippings directory: {target_clippings}")
+    
+    # 5. ファイル数の確認
+    bib_entries = count_bibtex_entries(target_bib)
+    md_files = count_markdown_files(target_clippings)
+    
+    print(f"📊 Test data summary:")
+    print(f"   BibTeX entries: {bib_entries}")
+    print(f"   Markdown files: {md_files}")
+    
+    # 6. テスト環境情報ファイルの作成
     backup_info = test_path / ".test_env_info.txt"
     with open(backup_info, 'w', encoding='utf-8') as f:
         f.write(f"Test Environment Setup Information\n")
@@ -78,174 +94,40 @@ def setup_test_environment(source_dir: str = "/home/user/ManuscriptsManager",
         f.write(f"Test Directory: {test_path}\n")
         f.write(f"BibTeX File: {target_bib}\n")
         f.write(f"Clippings Directory: {target_clippings}\n")
+        f.write(f"BibTeX Entries: {bib_entries}\n")
+        f.write(f"Markdown Files: {md_files}\n")
         f.write(f"\n")
         f.write(f"Reset Command:\n")
         f.write(f"python code/scripts/setup_test_env.py --reset\n")
     
-    print(f"✅ Created backup info: {backup_info}")
+    print(f"✅ Created test environment info: {backup_info}")
     print(f"")
     print(f"🎉 Test environment setup completed!")
     print(f"")
-    print(f"Test with:")
+    print(f"Ready for testing with:")
     print(f"  PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace {test_path}")
     
     return True
 
-def create_sample_bibtex(target_file: Path):
-    """
-    サンプルBibTeXファイルを作成
-    """
-    sample_content = """@article{smith2023test,
-    title = {Example Paper: Advanced Machine Learning Techniques},
-    author = {Smith, John and Jones, Mary and Wilson, Robert},
-    year = {2023},
-    doi = {10.1000/example.2023.001},
-    journal = {Journal of Example Research},
-    volume = {42},
-    number = {1},
-    pages = {123--145},
-    publisher = {Example Publisher}
-}
+def count_bibtex_entries(bib_file: Path) -> int:
+    """BibTeXエントリ数をカウント"""
+    try:
+        with open(bib_file, 'r', encoding='utf-8') as f:
+            content = f.read()
+            return content.count('@article{') + content.count('@book{') + content.count('@inproceedings{')
+    except Exception:
+        return 0
 
-@article{jones2024neural,
-    title = {Neural Networks in Biological Data Analysis: A Comprehensive Review},
-    author = {Jones, Alice and Brown, David},
-    year = {2024},
-    doi = {10.1000/neural.2024.002},
-    journal = {Computational Biology Review},
-    volume = {15},
-    number = {3},
-    pages = {45--78},
-    publisher = {Science Publications}
-}
-
-@article{wilson2023deep,
-    title = {Deep Learning Applications in Medical Imaging},
-    author = {Wilson, Sarah and Davis, Michael and Taylor, Emma},
-    year = {2023},
-    doi = {10.1000/medical.2023.003},
-    journal = {Medical AI Journal},
-    volume = {8},
-    number = {2},
-    pages = {234--267},
-    publisher = {Medical Press}
-}
-
-@article{brown2024quantum,
-    title = {Quantum Computing for Protein Folding Prediction},
-    author = {Brown, Peter and Clark, Lisa},
-    year = {2024},
-    doi = {10.1000/quantum.2024.004},
-    journal = {Quantum Biology},
-    volume = {3},
-    number = {1},
-    pages = {12--34},
-    publisher = {Future Science}
-}
-
-@article{davis2023genomics,
-    title = {Genomics Data Processing with Cloud Computing},
-    author = {Davis, Jennifer and Miller, Thomas},
-    year = {2023},
-    doi = {10.1000/genomics.2023.005},
-    journal = {Genomics & Cloud Computing},
-    volume = {12},
-    number = {4},
-    pages = {89--112},
-    publisher = {Tech Publications}
-}
-"""
-    
-    target_file.parent.mkdir(parents=True, exist_ok=True)
-    with open(target_file, 'w', encoding='utf-8') as f:
-        f.write(sample_content)
-
-def create_sample_clippings(target_dir: Path):
-    """
-    サンプルClippingsディレクトリを作成
-    """
-    target_dir.mkdir(parents=True, exist_ok=True)
-    
-    # サンプル論文ファイルを作成
-    sample_papers = [
-        {
-            "filename": "smith2023test.md",
-            "content": """# Smith et al. (2023) - Example Paper: Advanced Machine Learning Techniques
-
-## Abstract
-This paper presents advanced machine learning techniques for data analysis. The study demonstrates significant improvements in accuracy and efficiency compared to traditional methods.
-
-## Key Points
-- Novel deep learning architecture
-- 95% accuracy improvement
-- Reduced computational complexity
-- Real-world applications validated
-
-## Methodology
-The research employs a hybrid approach combining convolutional neural networks with transformer architectures.
-
-## Results
-Results show significant performance gains across multiple benchmarks.
-
-## References
-[1] Previous work on ML techniques
-[2] Baseline comparison studies
-[3] Related deep learning research
-"""
-        },
-        {
-            "filename": "jones2024neural.md", 
-            "content": """# Jones et al. (2024) - Neural Networks in Biological Data Analysis: A Comprehensive Review
-
-## Abstract
-A comprehensive review of neural network applications in biological data analysis, covering recent advances and future directions.
-
-## Key Topics
-- Sequence analysis
-- Protein structure prediction
-- Gene expression analysis
-- Drug discovery applications
-
-## Current Challenges
-- Data heterogeneity
-- Interpretability issues
-- Computational requirements
-- Validation standards
-
-## Future Directions
-The field is moving towards more interpretable models and standardized evaluation metrics.
-"""
-        },
-        {
-            "filename": "wilson2023deep.md",
-            "content": """# Wilson et al. (2023) - Deep Learning Applications in Medical Imaging
-
-## Abstract
-This study explores deep learning applications in medical imaging, focusing on diagnostic accuracy and clinical implementation.
-
-## Applications
-- X-ray analysis
-- MRI scan interpretation
-- CT scan processing
-- Pathology image analysis
-
-## Clinical Impact
-Improved diagnostic accuracy by 25% compared to traditional methods.
-
-## Implementation
-Successfully deployed in 5 medical centers with positive feedback from radiologists.
-"""
-        }
-    ]
-    
-    for paper in sample_papers:
-        paper_file = target_dir / paper["filename"]
-        with open(paper_file, 'w', encoding='utf-8') as f:
-            f.write(paper["content"])
+def count_markdown_files(clippings_dir: Path) -> int:
+    """Markdownファイル数をカウント"""
+    try:
+        return len(list(clippings_dir.glob("*.md")))
+    except Exception:
+        return 0
 
 def reset_test_environment(test_dir: str = "/home/user/proj/ObsClippingsManager/TestManuscripts"):
     """
-    テスト環境を初期状態にリセット
+    テスト環境を初期状態にリセット（本番データを使用）
     """
     test_path = Path(test_dir)
     
@@ -255,6 +137,8 @@ def reset_test_environment(test_dir: str = "/home/user/proj/ObsClippingsManager/
     
     # バックアップ情報の確認
     backup_info = test_path / ".test_env_info.txt"
+    source_dir = "/home/user/ManuscriptsManager"
+    
     if backup_info.exists():
         print(f"📋 Found test environment info:")
         with open(backup_info, 'r', encoding='utf-8') as f:
@@ -271,15 +155,34 @@ def reset_test_environment(test_dir: str = "/home/user/proj/ObsClippingsManager/
                 print(f"   Removing citation key directory: {item.name}")
                 shutil.rmtree(item)
         
-        # サンプルファイルの復元
-        create_sample_clippings(clippings_dir)
-        print(f"✅ Reset Clippings directory to initial state")
+        # 本番データからの復元
+        source_clippings = Path(source_dir) / "Clippings"
+        if source_clippings.exists():
+            # 既存ファイルを削除
+            for item in clippings_dir.iterdir():
+                if item.is_file():
+                    item.unlink()
+            
+            # 本番データをコピー
+            for item in source_clippings.iterdir():
+                if item.is_file():
+                    shutil.copy2(item, clippings_dir / item.name)
+            
+            print(f"✅ Reset Clippings directory to initial state")
+        else:
+            print(f"❌ ERROR: Source Clippings directory not found: {source_clippings}")
+            return False
     
-    # BibTeXファイルも初期状態に復元
+    # BibTeXファイルも本番データで復元
     bibtex_file = test_path / "CurrentManuscript.bib"
-    if bibtex_file.exists():
-        create_sample_bibtex(bibtex_file)
+    source_bib = Path(source_dir) / "CurrentManuscript.bib"
+    
+    if source_bib.exists():
+        shutil.copy2(source_bib, bibtex_file)
         print(f"✅ Reset BibTeX file to initial state")
+    else:
+        print(f"❌ ERROR: Source BibTeX file not found: {source_bib}")
+        return False
     
     print(f"")
     print(f"🎉 Test environment reset completed!")

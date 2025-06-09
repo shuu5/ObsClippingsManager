@@ -428,7 +428,9 @@ class IntegratedWorkflow:
                     }
                 else:
                     # 実際のステップ実行
-                    step_result = self._execute_step(step, paths, papers_needing_processing, **options)
+                    # optionsからpapersを除去して引数重複を回避
+                    step_options = {k: v for k, v in options.items() if k != 'papers'}
+                    step_result = self._execute_step(step, paths, papers_needing_processing, **step_options)
                 
                 results['step_results'][step] = step_result
                 
