@@ -2,6 +2,15 @@
 
 ObsClippingsManager v3.0は、学術研究における文献管理とMarkdownファイル整理を自動化する統合システムです。**シンプルな設定**と**デフォルト引数なし実行**を重視し、効率的な状態管理により重複処理を自動回避します。
 
+## 🔗 仕様書・設計文書
+
+詳細な技術仕様は以下の文書を参照してください：
+
+- **[ObsClippingsManager.md](code/contexts/ObsClippingsManager.md)** - システム全体の概要と基本仕様
+- **[integrated_workflow_specification.md](code/contexts/integrated_workflow_specification.md)** - 統合ワークフローの詳細仕様
+- **[status_management_yaml_specification.md](code/contexts/status_management_yaml_specification.md)** - 状態管理システムの仕様
+- **[shared_modules_specification.md](code/contexts/shared_modules_specification.md)** - 共有モジュールの仕様
+
 ## 主要機能
 
 ### 統合ワークフロー（run-integrated）
@@ -162,19 +171,57 @@ code/py/
    └── 処理状態をYAMLヘッダーに記録
 ```
 
-## テスト環境
+## テスト環境 v3.0
+
+### 🧪 固定マスターデータシステム
+
+ObsClippingsManager v3.0では、**本番データから独立した固定テストデータ**を使用することで、**一貫性のあるテスト環境**を提供します。
+
+#### 特徴
+- **本番データ独立**: 本番データの変更がテスト結果に影響しない
+- **再現性保証**: 常に同じテストデータで検証可能
+- **エッジケース対応**: 意図的な不整合データでエラーハンドリングをテスト
+- **簡単リセット**: ワンコマンドで初期状態に復元
+
+#### テストデータ構成
+
+```
+code/test_data_master/          # 固定マスターデータ（本番独立）
+├── CurrentManuscript.bib       # 5つのBibTeXエントリ
+└── Clippings/                  # 3つのMarkdownファイル
+    ├── KRT13 is upregulated in pancreatic cancer...md
+    ├── KRT13 promotes stemness and drives...md
+    └── Keratin Profiling by Single-Cell...md
+
+TestManuscripts/                # 実際のテスト実行環境
+├── CurrentManuscript.bib       # マスターからコピー
+├── Clippings/                  # マスターからコピー
+└── .test_env_info.txt          # テスト環境情報
+```
+
+#### エッジケース設計
+```
+BibTeX エントリ（5つ）:
+├── huWY2021IJMS                ✅ 対応Markdownあり
+├── lennartzM2023APMIS          ❌ 対応Markdownなし（エッジケース）
+├── liQ2016Oncotarget           ❌ 対応Markdownなし（エッジケース）
+├── takenakaW2023J.Radiat...    ✅ 対応Markdownあり
+└── yinL2022BreastCancerRes     ✅ 対応Markdownあり
+
+Markdownファイル（3つ）:
+└── 意図的な不整合でマッチングロジックをテスト
+```
 
 ### テスト環境構築
 
-ObsClippingsManager v3.0では、本番環境を模したテスト環境を簡単に構築できます。
-
-#### 1. テスト環境の初期構築
+#### 1. 固定テストデータからテスト環境作成
 ```bash
-# 本番環境からテストデータを作成
+# 固定マスターデータからテスト環境を作成
 python code/scripts/setup_test_env.py
 
 # テスト環境の確認
 ls -la TestManuscripts/
+cat TestManuscripts/.test_env_info.txt
 ```
 
 #### 2. 簡便なテスト実行
@@ -198,6 +245,11 @@ ls -la TestManuscripts/
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
     --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts"
 
+# エッジケースのテスト（強制実行）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts" \
+    --force-reprocess
+
 # 詳細ログでテスト実行
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
     --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts" \
@@ -208,7 +260,7 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
 
 #### テスト環境リセット
 ```bash
-# テスト環境を初期状態に戻す
+# テスト環境を固定マスターデータから復元
 python code/scripts/setup_test_env.py --reset
 
 # 簡便スクリプトでリセット
@@ -219,36 +271,79 @@ python code/scripts/setup_test_env.py --reset
 ```bash
 # テスト環境の状態確認
 cat TestManuscripts/.test_env_info.txt
+
+# 処理前の初期状態
 ls -la TestManuscripts/Clippings/
 
 # 処理後のディレクトリ構造確認
-find TestManuscripts/Clippings -type d
+find TestManuscripts/Clippings -type d | sort
+
+# Citation keyディレクトリ内容確認
+ls -la TestManuscripts/Clippings/*/
 ```
 
 ### 開発時のテストワークフロー
+
+#### TDD (Test-Driven Development) サイクル
+```bash
+# 1. 全ユニットテスト実行（必須）
+uv run code/unittest/run_all_tests.py
+
+# 2. 固定テストデータでの統合テスト
+./code/scripts/test_run.sh --reset --debug
+
+# 3. エッジケースの動作確認
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --workspace TestManuscripts --force-reprocess
+
+# 4. 本番前最終確認（ドライラン）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --dry-run
+```
 
 #### 基本的な開発サイクル
 ```bash
 # 1. コード変更後のテスト
 ./code/scripts/test_run.sh --reset --debug
 
-# 2. 結果確認
-ls -la TestManuscripts/Clippings/
+# 2. 結果確認とデバッグ
+find TestManuscripts/Clippings -name "*.md" -exec head -10 {} \;
 
 # 3. 問題があれば修正してテスト再実行
 ./code/scripts/test_run.sh --reset --run
+
+# 4. エッジケースの確認
+grep -E "(lennartzM2023APMIS|liQ2016Oncotarget)" TestManuscripts/CurrentManuscript.bib
 ```
 
-#### TDD (Test-Driven Development) 対応
+### 固定テストデータの利点
+
+#### 1. **再現性の保証**
 ```bash
-# 1. 全ユニットテスト実行（必須）
-uv run code/unittest/run_all_tests.py
+# 何度実行しても同じ結果
+python code/scripts/setup_test_env.py --reset
+./code/scripts/test_run.sh --run  # 毎回同じ初期条件
+```
 
-# 2. テスト環境での動作確認
-./code/scripts/test_run.sh --reset --debug
+#### 2. **本番環境からの独立**
+```bash
+# 本番データが変更されてもテストは影響を受けない
+ls -la code/test_data_master/     # 固定データは変更されない
+ls -la /home/user/ManuscriptsManager/  # 本番データは自由に変更可能
+```
 
-# 3. 本番前最終確認
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --dry-run
+#### 3. **エッジケースの検証**
+```bash
+# 意図的な不整合データでエラーハンドリングをテスト
+echo "BibTeX entries: $(grep -c '@article' TestManuscripts/CurrentManuscript.bib)"
+echo "Markdown files: $(find TestManuscripts/Clippings -name '*.md' | wc -l)"
+# Output: BibTeX entries: 5, Markdown files: 3 (意図的な不整合)
+```
+
+#### 4. **高速なテストサイクル**
+```bash
+# 軽量な固定データで高速テスト
+time python code/scripts/setup_test_env.py --reset  # < 1秒
+time ./code/scripts/test_run.sh --run               # < 30秒
 ```
 
 ## 使用例
@@ -440,7 +535,8 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated --dry-run
 - **状態管理**: YAMLヘッダーベースの処理状態追跡と自動スキップ
 - **デフォルト実行**: 引数なしでの完全動作サポート
 - **効率的処理**: 重複処理の自動回避で実行時間を大幅短縮
-- **テスト環境**: 本番環境を模したテスト環境の簡単構築・管理
+- **固定テストシステム**: 本番データから独立した一貫性のあるテスト環境
+- **エッジケーステスト**: 意図的な不整合データでエラーハンドリングを検証
 
 ## 移行ガイド（v2.0 → v3.0）
 
@@ -464,6 +560,17 @@ output_dir: "/path/to/output"
 
 # v3.0（統一設定）
 workspace_path: "/path/to/workspace"  # 自動的にすべてのパスを導出
+```
+
+### テスト環境の変更
+```bash
+# v2.0（本番データ依存テスト）
+# 本番データが変更されるとテスト結果も変わる
+
+# v3.0（固定マスターデータシステム）
+python code/scripts/setup_test_env.py    # 固定データから生成
+./code/scripts/test_run.sh --reset       # 常に同じ初期状態
+# エッジケース対応：BibTeX 5エントリ vs Markdown 3ファイル
 ```
 
 ## ライセンス
