@@ -41,12 +41,12 @@ class EnhancedIntegratedWorkflow:
         
         self.logger.info("EnhancedIntegratedWorkflow initialized successfully")
     
-    def analyze_paper_status(self, bibtex_file: str) -> Dict[str, List[str]]:
+    def analyze_paper_status(self, clippings_dir: str) -> Dict[str, List[str]]:
         """
         論文の現在の状態を分析し、必要な処理を特定
         
         Args:
-            bibtex_file: BibTeXファイルパス
+            clippings_dir: Clippingsディレクトリパス
             
         Returns:
             Dict[process_type, List[citation_key]]: 各処理が必要な論文のリスト
@@ -61,16 +61,16 @@ class EnhancedIntegratedWorkflow:
             
             # 各処理タイプで必要な論文を取得
             analysis['needs_organize'] = self.status_manager.get_papers_needing_processing(
-                bibtex_file, 'organize'
+                clippings_dir, 'organize'
             )
             analysis['needs_sync'] = self.status_manager.get_papers_needing_processing(
-                bibtex_file, 'sync'
+                clippings_dir, 'sync'
             )
             analysis['needs_fetch'] = self.status_manager.get_papers_needing_processing(
-                bibtex_file, 'fetch', include_failed=True
+                clippings_dir, 'fetch', include_failed=True
             )
             analysis['needs_parse'] = self.status_manager.get_papers_needing_processing(
-                bibtex_file, 'parse', include_failed=True
+                clippings_dir, 'parse', include_failed=True
             )
             
             total_work = sum(len(papers) for papers in analysis.values())
@@ -82,19 +82,19 @@ class EnhancedIntegratedWorkflow:
             self.logger.error(f"Failed to analyze paper status: {e}")
             raise ObsClippingsError(f"Failed to analyze paper status: {e}")
     
-    def get_execution_plan(self, bibtex_file: str) -> Dict[str, Any]:
+    def get_execution_plan(self, clippings_dir: str) -> Dict[str, Any]:
         """
         実行計画を生成
         
         Args:
-            bibtex_file: BibTeXファイルパス
+            clippings_dir: Clippingsディレクトリパス
             
         Returns:
             Dict: 実行計画の詳細
         """
         try:
-            analysis = self.analyze_paper_status(bibtex_file)
-            statuses = self.status_manager.load_bib_statuses(bibtex_file)
+            analysis = self.analyze_paper_status(clippings_dir)
+            statuses = self.status_manager.load_md_statuses(clippings_dir)
             
             plan = {
                 'total_papers': len(statuses),
@@ -138,7 +138,7 @@ class EnhancedIntegratedWorkflow:
             Dict: 実行結果
         """
         try:
-            plan = self.get_execution_plan(bibtex_file)
+            plan = self.get_execution_plan(clippings_dir)
             
             results = {
                 'overall_success': True,
@@ -188,12 +188,12 @@ class EnhancedIntegratedWorkflow:
                 if step_info['success']:
                     for paper in step_info['papers']:
                         self.status_manager.update_status(
-                            bibtex_file, paper, process_type, ProcessStatus.COMPLETED
+                            clippings_dir, paper, process_type, ProcessStatus.COMPLETED
                         )
                 else:
                     for paper in step_info['papers']:
                         self.status_manager.update_status(
-                            bibtex_file, paper, process_type, ProcessStatus.FAILED
+                            clippings_dir, paper, process_type, ProcessStatus.FAILED
                         )
             
             if results['overall_success']:
@@ -342,7 +342,7 @@ class EnhancedIntegratedWorkflow:
             self.logger.info("Starting force regenerate mode: resetting all statuses")
             
             # 全ての状態をリセット
-            reset_success = self.status_manager.reset_statuses(bibtex_file)
+            reset_success = self.status_manager.reset_statuses(clippings_dir)
             if not reset_success:
                 return {
                     'success': False,
@@ -389,18 +389,18 @@ class EnhancedIntegratedWorkflow:
                 'status_inconsistencies': []
             }
     
-    def get_workflow_summary(self, bibtex_file: str) -> Dict[str, Any]:
+    def get_workflow_summary(self, clippings_dir: str) -> Dict[str, Any]:
         """
         ワークフロー全体のサマリーを取得
         
         Args:
-            bibtex_file: BibTeXファイルパス
+            clippings_dir: Clippingsディレクトリパス
             
         Returns:
             Dict: ワークフローサマリー
         """
         try:
-            return self.status_manager.get_workflow_summary(bibtex_file)
+            return self.status_manager.get_workflow_summary(clippings_dir)
             
         except Exception as e:
             self.logger.error(f"Failed to get workflow summary: {e}")

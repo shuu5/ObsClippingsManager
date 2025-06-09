@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 """
-状態管理機能
+状態管理機能 v3.0 - YAMLヘッダー方式
 
-BibTeXエントリの処理状態を管理し、整合性チェック機能を提供します。
+各論文の.mdファイルのYAMLヘッダーに処理状態を記録し、
+Zoteroによる自動BibTeX再生成の影響を受けない永続的な状態管理を提供します。
 """
 
 import os
+import yaml
 import re
+import glob
 from enum import Enum
 from typing import Dict, List, Set, Optional, Any, Union
 from pathlib import Path
+from datetime import datetime, timezone
 
 from .config_manager import ConfigManager
 from .logger import IntegratedLogger
@@ -34,19 +38,14 @@ class ProcessStatus(Enum):
 
 class StatusManager:
     """
-    BibTeXエントリの処理状態管理クラス
+    YAMLヘッダーベースの状態管理システム v3.0
     
-    各論文の処理状況（organize, sync, fetch, parse）を管理し、
-    CurrentManuscript.bibファイルに状態フラグとして記録します。
+    各論文の処理状況（organize, sync, fetch, parse）を論文の.mdファイルの
+    YAMLヘッダーに記録し、Zoteroの自動再生成に影響されない状態管理を実現します。
     """
     
-    # 状態管理フィールド名
-    STATUS_FIELDS = {
-        'organize': 'obsclippings_organize_status',
-        'sync': 'obsclippings_sync_status',
-        'fetch': 'obsclippings_fetch_status',
-        'parse': 'obsclippings_parse_status'
-    }
+    # 処理タイプ定義
+    PROCESS_TYPES = ['organize', 'sync', 'fetch', 'parse']
     
     def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger):
         """
@@ -60,54 +59,212 @@ class StatusManager:
         self.logger = logger.get_logger('StatusManager')
         self.bibtex_parser = BibTeXParser()
         
-        self.logger.info("StatusManager initialized successfully")
+        self.logger.info("StatusManager v3.0 (YAML) initialized successfully")
     
-    def load_bib_statuses(self, bibtex_file: str) -> Dict[str, Dict[str, ProcessStatus]]:
+    def get_md_file_path(self, clippings_dir: str, citation_key: str) -> Path:
         """
-        BibTeXファイルから全エントリの状態を読み込み
+        citation keyに対応する.mdファイルパスを取得
         
         Args:
-            bibtex_file: BibTeXファイルパス
+            clippings_dir: Clippingsディレクトリパス
+            citation_key: 論文のcitation key
+            
+        Returns:
+            Path: .mdファイルのパス
+        """
+        return Path(clippings_dir) / citation_key / f"{citation_key}.md"
+    
+    def parse_yaml_header(self, md_file_path: Path) -> Dict[str, Any]:
+        """
+        .mdファイルからYAMLヘッダーを解析
+        
+        Args:
+            md_file_path: .mdファイルのパス
+            
+        Returns:
+            Dict: YAMLヘッダーの内容、存在しない場合は空辞書
+        """
+        try:
+            if not md_file_path.exists():
+                return {}
+            
+            with open(md_file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # YAMLヘッダーを抽出（---で囲まれた部分）
+            yaml_match = re.match(r'^---\n(.*?)\n---\n', content, re.DOTALL)
+            if not yaml_match:
+                return {}
+            
+            yaml_content = yaml_match.group(1)
+            
+            # YAML解析
+            parsed_yaml = yaml.safe_load(yaml_content)
+            return parsed_yaml if parsed_yaml else {}
+            
+        except yaml.YAMLError as e:
+            self.logger.warning(f"YAML parsing error in {md_file_path}: {e}")
+            return {}
+        except Exception as e:
+            self.logger.error(f"Error parsing YAML header from {md_file_path}: {e}")
+            return {}
+    
+    def write_yaml_header(self, md_file_path: Path, metadata: Dict[str, Any]) -> bool:
+        """
+        .mdファイルにYAMLヘッダーを書き込み
+        
+        Args:
+            md_file_path: .mdファイルのパス
+            metadata: 書き込むメタデータ
+            
+        Returns:
+            bool: 書き込み成功時True
+        """
+        try:
+            # 既存のファイル内容を読み込み
+            if md_file_path.exists():
+                with open(md_file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                # 既存のYAMLヘッダーを除去
+                yaml_pattern = r'^---\n.*?\n---\n'
+                content_without_yaml = re.sub(yaml_pattern, '', content, flags=re.DOTALL)
+            else:
+                content_without_yaml = ""
+            
+            # 新しいYAMLヘッダーを生成
+            yaml_content = yaml.dump(metadata, default_flow_style=False, allow_unicode=True)
+            
+            # ファイルに書き込み
+            new_content = f"---\n{yaml_content}---\n\n{content_without_yaml.lstrip()}"
+            
+            # ディレクトリが存在しない場合は作成
+            md_file_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            with open(md_file_path, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+            
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Error writing YAML header to {md_file_path}: {e}")
+            return False
+    
+    def ensure_yaml_header(self, md_file_path: Path, citation_key: str) -> bool:
+        """
+        YAMLヘッダーが存在しない場合は初期化
+        
+        Args:
+            md_file_path: .mdファイルのパス
+            citation_key: 論文のcitation key
+            
+        Returns:
+            bool: 初期化成功時True
+        """
+        try:
+            # 既存のYAMLヘッダーをチェック
+            existing_metadata = self.parse_yaml_header(md_file_path)
+            
+            if 'obsclippings_metadata' in existing_metadata:
+                # 既に存在する場合は何もしない
+                return True
+            
+            # 初期メタデータを作成
+            initial_metadata = {
+                'obsclippings_metadata': {
+                    'citation_key': citation_key,
+                    'processing_status': {
+                        'organize': ProcessStatus.PENDING.value,
+                        'sync': ProcessStatus.PENDING.value,
+                        'fetch': ProcessStatus.PENDING.value,
+                        'parse': ProcessStatus.PENDING.value
+                    },
+                    'last_updated': datetime.now(timezone.utc).isoformat(),
+                    'workflow_version': '3.0'
+                }
+            }
+            
+            # YAMLヘッダーを書き込み
+            return self.write_yaml_header(md_file_path, initial_metadata)
+            
+        except Exception as e:
+            self.logger.error(f"Error ensuring YAML header for {citation_key}: {e}")
+            return False
+    
+    def load_md_statuses(self, clippings_dir: str) -> Dict[str, Dict[str, ProcessStatus]]:
+        """
+        Clippingsディレクトリから全論文の状態を読み込み
+        
+        Args:
+            clippings_dir: Clippingsディレクトリパス
             
         Returns:
             Dict[citation_key, Dict[process_type, status]]
         """
         try:
-            entries = self.bibtex_parser.parse_file(bibtex_file)
             statuses = {}
             
-            for citation_key, entry in entries.items():
-                if not citation_key:
+            if not os.path.exists(clippings_dir):
+                self.logger.warning(f"Clippings directory does not exist: {clippings_dir}")
+                return statuses
+            
+            # Clippingsディレクトリ内の各サブディレクトリを確認
+            for item in os.listdir(clippings_dir):
+                item_path = os.path.join(clippings_dir, item)
+                if not os.path.isdir(item_path):
                     continue
                 
-                entry_statuses = {}
-                for process_type, field_name in self.STATUS_FIELDS.items():
-                    status_value = entry.get(field_name, ProcessStatus.PENDING.value)
+                citation_key = item
+                md_file_path = self.get_md_file_path(clippings_dir, citation_key)
+                
+                if not md_file_path.exists():
+                    self.logger.debug(f"No .md file found for {citation_key}")
+                    # .mdファイルがない場合は全てPENDINGとして扱う
+                    statuses[citation_key] = {
+                        process_type: ProcessStatus.PENDING 
+                        for process_type in self.PROCESS_TYPES
+                    }
+                    continue
+                
+                # YAMLヘッダーを解析
+                metadata = self.parse_yaml_header(md_file_path)
+                
+                if 'obsclippings_metadata' not in metadata:
+                    # YAMLヘッダーがない場合は初期化
+                    self.ensure_yaml_header(md_file_path, citation_key)
+                    metadata = self.parse_yaml_header(md_file_path)
+                
+                # 状態を抽出
+                paper_statuses = {}
+                processing_status = metadata.get('obsclippings_metadata', {}).get('processing_status', {})
+                
+                for process_type in self.PROCESS_TYPES:
+                    status_value = processing_status.get(process_type, ProcessStatus.PENDING.value)
                     try:
-                        entry_statuses[process_type] = ProcessStatus.from_string(status_value)
+                        paper_statuses[process_type] = ProcessStatus.from_string(status_value)
                     except ValueError:
                         self.logger.warning(
                             f"Invalid status '{status_value}' for {citation_key}.{process_type}, "
                             f"defaulting to PENDING"
                         )
-                        entry_statuses[process_type] = ProcessStatus.PENDING
+                        paper_statuses[process_type] = ProcessStatus.PENDING
                 
-                statuses[citation_key] = entry_statuses
+                statuses[citation_key] = paper_statuses
             
-            self.logger.info(f"Loaded statuses for {len(statuses)} papers from {bibtex_file}")
+            self.logger.info(f"Loaded statuses for {len(statuses)} papers from {clippings_dir}")
             return statuses
             
         except Exception as e:
-            self.logger.error(f"Failed to load bib statuses: {e}")
-            raise ObsClippingsError(f"Failed to load bib statuses: {e}")
+            self.logger.error(f"Failed to load md statuses: {e}")
+            raise ObsClippingsError(f"Failed to load md statuses: {e}")
     
-    def update_status(self, bibtex_file: str, citation_key: str, 
+    def update_status(self, clippings_dir: str, citation_key: str,
                      process_type: str, status: ProcessStatus) -> bool:
         """
-        特定の論文の特定の処理状態を更新
+        指定論文の状態を更新
         
         Args:
-            bibtex_file: BibTeXファイルパス
+            clippings_dir: Clippingsディレクトリパス
             citation_key: 論文のcitation key
             process_type: 処理タイプ ('organize', 'sync', 'fetch', 'parse')
             status: 新しい状態
@@ -116,71 +273,47 @@ class StatusManager:
             bool: 更新成功時True
         """
         try:
-            if process_type not in self.STATUS_FIELDS:
+            if process_type not in self.PROCESS_TYPES:
                 raise ValueError(f"Invalid process type: {process_type}")
             
-            # BibTeXファイルを読み込み
-            with open(bibtex_file, 'r', encoding='utf-8') as f:
-                content = f.read()
+            md_file_path = self.get_md_file_path(clippings_dir, citation_key)
             
-            field_name = self.STATUS_FIELDS[process_type]
+            # YAMLヘッダーが存在しない場合は初期化
+            if not md_file_path.exists() or not self.parse_yaml_header(md_file_path):
+                self.ensure_yaml_header(md_file_path, citation_key)
             
-            # 該当エントリを探す
-            entry_pattern = rf'(@\w+\{{{re.escape(citation_key)},.*?\n\}})'
-            match = re.search(entry_pattern, content, re.DOTALL)
+            # 現在のメタデータを読み込み
+            metadata = self.parse_yaml_header(md_file_path)
             
-            if not match:
-                raise ValueError(f"Citation key '{citation_key}' not found in {bibtex_file}")
+            if 'obsclippings_metadata' not in metadata:
+                self.logger.error(f"Failed to initialize YAML header for {citation_key}")
+                return False
             
-            entry_content = match.group(1)
+            # 状態を更新
+            metadata['obsclippings_metadata']['processing_status'][process_type] = status.value
+            metadata['obsclippings_metadata']['last_updated'] = datetime.now(timezone.utc).isoformat()
             
-            # 既存の状態フィールドを更新または追加
-            field_pattern = rf'{re.escape(field_name)}\s*=\s*\{{[^}}]*\}}'
-            field_line = f'{field_name}={{{status.value}}}'
+            # YAMLヘッダーを書き戻し
+            success = self.write_yaml_header(md_file_path, metadata)
             
-            if re.search(field_pattern, entry_content):
-                # 既存フィールドを更新
-                new_entry = re.sub(field_pattern, field_line, entry_content)
-            else:
-                # 新しいフィールドを追加（最後のフィールドの後に挿入）
-                lines = entry_content.split('\n')
-                if lines[-1].strip() == '}':
-                    # 最後のフィールドを探して、カンマを追加してから新しいフィールドを挿入
-                    for i in range(len(lines) - 2, -1, -1):
-                        line = lines[i].strip()
-                        if line and not line.startswith('@') and '=' in line:
-                            # 最後のフィールド行を見つけた
-                            if not line.endswith(','):
-                                lines[i] = lines[i] + ','
-                            break
-                    lines.insert(-1, f'    {field_line}')
-                    new_entry = '\n'.join(lines)
-                else:
-                    new_entry = entry_content
+            if success:
+                self.logger.info(
+                    f"Updated status for {citation_key}.{process_type} = {status.value}"
+                )
             
-            # ファイル全体を更新
-            new_content = content.replace(entry_content, new_entry)
-            
-            # ファイルに書き戻し
-            with open(bibtex_file, 'w', encoding='utf-8') as f:
-                f.write(new_content)
-            
-            self.logger.info(
-                f"Updated status for {citation_key}.{process_type} = {status.value}"
-            )
-            return True
+            return success
             
         except Exception as e:
             self.logger.error(f"Failed to update status: {e}")
             return False
     
-    def batch_update_statuses(self, bibtex_file: str, 
+    def batch_update_statuses(self, clippings_dir: str,
                             updates: Dict[str, Dict[str, ProcessStatus]]) -> bool:
         """
-        複数の論文の状態を一括更新
+        複数論文の状態を一括更新
         
         Args:
-            bibtex_file: BibTeXファイルパス
+            clippings_dir: Clippingsディレクトリパス
             updates: Dict[citation_key, Dict[process_type, status]]
             
         Returns:
@@ -192,7 +325,7 @@ class StatusManager:
             
             for citation_key, status_updates in updates.items():
                 for process_type, status in status_updates.items():
-                    if self.update_status(bibtex_file, citation_key, process_type, status):
+                    if self.update_status(clippings_dir, citation_key, process_type, status):
                         success_count += 1
             
             self.logger.info(
@@ -204,13 +337,13 @@ class StatusManager:
             self.logger.error(f"Batch update failed: {e}")
             return False
     
-    def get_papers_needing_processing(self, bibtex_file: str, process_type: str,
+    def get_papers_needing_processing(self, clippings_dir: str, process_type: str,
                                     include_failed: bool = True) -> List[str]:
         """
-        指定された処理が必要な論文のリストを取得
+        指定処理が必要な論文リストを取得
         
         Args:
-            bibtex_file: BibTeXファイルパス
+            clippings_dir: Clippingsディレクトリパス
             process_type: 処理タイプ
             include_failed: 失敗したものも含めるか
             
@@ -218,7 +351,7 @@ class StatusManager:
             List[citation_key]: 処理が必要な論文のリスト
         """
         try:
-            statuses = self.load_bib_statuses(bibtex_file)
+            statuses = self.load_md_statuses(clippings_dir)
             needing_papers = []
             
             for citation_key, paper_statuses in statuses.items():
@@ -238,10 +371,63 @@ class StatusManager:
             self.logger.error(f"Failed to get papers needing processing: {e}")
             return []
     
+    def reset_statuses(self, clippings_dir: str, 
+                      target_papers: Optional[Union[str, List[str]]] = None) -> bool:
+        """
+        状態をリセット
+        
+        Args:
+            clippings_dir: Clippingsディレクトリパス
+            target_papers: リセット対象のcitation key（文字列またはリスト、Noneの場合は全論文）
+            
+        Returns:
+            bool: リセット成功時True
+        """
+        try:
+            if target_papers:
+                # 特定の論文をリセット
+                if isinstance(target_papers, str):
+                    target_list = [target_papers]
+                else:
+                    target_list = target_papers
+                
+                updates = {}
+                for citation_key in target_list:
+                    updates[citation_key] = {
+                        'organize': ProcessStatus.PENDING,
+                        'sync': ProcessStatus.PENDING,
+                        'fetch': ProcessStatus.PENDING,
+                        'parse': ProcessStatus.PENDING
+                    }
+                
+                success = self.batch_update_statuses(clippings_dir, updates)
+                if success:
+                    self.logger.info(f"Reset statuses for {len(target_list)} papers: {', '.join(target_list)}")
+            else:
+                # 全論文をリセット
+                statuses = self.load_md_statuses(clippings_dir)
+                updates = {}
+                for key in statuses.keys():
+                    updates[key] = {
+                        'organize': ProcessStatus.PENDING,
+                        'sync': ProcessStatus.PENDING,
+                        'fetch': ProcessStatus.PENDING,
+                        'parse': ProcessStatus.PENDING
+                    }
+                success = self.batch_update_statuses(clippings_dir, updates)
+                if success:
+                    self.logger.info(f"Reset statuses for all {len(updates)} papers")
+            
+            return success
+            
+        except Exception as e:
+            self.logger.error(f"Failed to reset statuses: {e}")
+            return False
+    
     def check_status_consistency(self, bibtex_file: str, 
                                clippings_dir: str) -> Dict[str, Any]:
         """
-        状態の整合性をチェック
+        BibTeX ↔ Clippings間の整合性チェック
         
         Args:
             bibtex_file: BibTeXファイルパス
@@ -257,31 +443,33 @@ class StatusManager:
                 'status_inconsistencies': []
             }
             
-            # BibTeX内の論文とClippingsディレクトリの対応チェック
-            statuses = self.load_bib_statuses(bibtex_file)
+            # BibTeX内の論文を取得
+            bib_papers = set()
+            if os.path.exists(bibtex_file):
+                entries = self.bibtex_parser.parse_file(bibtex_file)
+                bib_papers = set(entries.keys())
             
+            # Clippingsディレクトリ内の論文を取得
+            clippings_papers = set()
             if os.path.exists(clippings_dir):
-                existing_dirs = {
+                clippings_papers = {
                     d for d in os.listdir(clippings_dir)
                     if os.path.isdir(os.path.join(clippings_dir, d))
                 }
-            else:
-                existing_dirs = set()
-            
-            bib_papers = set(statuses.keys())
             
             # BibTeXにあるがClippingsにないディレクトリ
-            result['missing_directories'] = list(bib_papers - existing_dirs)
+            result['missing_directories'] = list(bib_papers - clippings_papers)
             
             # ClippingsにあるがBibTeXにないディレクトリ
-            result['orphaned_directories'] = list(existing_dirs - bib_papers)
+            result['orphaned_directories'] = list(clippings_papers - bib_papers)
             
             # 状態の矛盾チェック（organize完了だがディレクトリがない等）
+            statuses = self.load_md_statuses(clippings_dir)
             for citation_key, paper_statuses in statuses.items():
                 organize_status = paper_statuses.get('organize', ProcessStatus.PENDING)
                 
                 if organize_status == ProcessStatus.COMPLETED:
-                    if citation_key not in existing_dirs:
+                    if citation_key not in clippings_papers:
                         result['status_inconsistencies'].append({
                             'citation_key': citation_key,
                             'issue': 'organize_completed_but_no_directory',
@@ -306,70 +494,18 @@ class StatusManager:
                 'error': str(e)
             }
     
-    def reset_statuses(self, bibtex_file: str, target_papers: Optional[Union[str, List[str]]] = None) -> bool:
-        """
-        指定された論文（または全論文）の状態をリセット
-        
-        Args:
-            bibtex_file: BibTeXファイルパス
-            target_papers: リセット対象のcitation key（文字列またはリスト、Noneの場合は全論文）
-            
-        Returns:
-            bool: リセット成功時True
-        """
-        try:
-            if target_papers:
-                # 特定の論文をリセット
-                if isinstance(target_papers, str):
-                    target_list = [target_papers]
-                else:
-                    target_list = target_papers
-                
-                updates = {}
-                for citation_key in target_list:
-                    updates[citation_key] = {
-                        'organize': ProcessStatus.PENDING,
-                        'sync': ProcessStatus.PENDING,
-                        'fetch': ProcessStatus.PENDING,
-                        'parse': ProcessStatus.PENDING
-                    }
-                
-                success = self.batch_update_statuses(bibtex_file, updates)
-                if success:
-                    self.logger.info(f"Reset statuses for {len(target_list)} papers: {', '.join(target_list)}")
-            else:
-                # 全論文をリセット
-                statuses = self.load_bib_statuses(bibtex_file)
-                updates = {}
-                for key in statuses.keys():
-                    updates[key] = {
-                        'organize': ProcessStatus.PENDING,
-                        'sync': ProcessStatus.PENDING,
-                        'fetch': ProcessStatus.PENDING,
-                        'parse': ProcessStatus.PENDING
-                    }
-                success = self.batch_update_statuses(bibtex_file, updates)
-                if success:
-                    self.logger.info(f"Reset statuses for all {len(updates)} papers")
-            
-            return success
-            
-        except Exception as e:
-            self.logger.error(f"Failed to reset statuses: {e}")
-            return False
-    
-    def get_workflow_summary(self, bibtex_file: str) -> Dict[str, Any]:
+    def get_workflow_summary(self, clippings_dir: str) -> Dict[str, Any]:
         """
         ワークフロー全体の状態サマリーを取得
         
         Args:
-            bibtex_file: BibTeXファイルパス
+            clippings_dir: Clippingsディレクトリパス
             
         Returns:
             Dict: 状態サマリー
         """
         try:
-            statuses = self.load_bib_statuses(bibtex_file)
+            statuses = self.load_md_statuses(clippings_dir)
             
             summary = {
                 'total_papers': len(statuses),
@@ -378,7 +514,7 @@ class StatusManager:
             }
             
             # 各処理タイプごとの統計
-            for process_type in self.STATUS_FIELDS.keys():
+            for process_type in self.PROCESS_TYPES:
                 counts = {
                     'pending': 0,
                     'completed': 0,
@@ -406,9 +542,17 @@ class StatusManager:
                                v.get('parse') == ProcessStatus.PENDING])
             }
             
-            self.logger.info(f"Generated workflow summary for {summary['total_papers']} papers")
             return summary
             
         except Exception as e:
-            self.logger.error(f"Failed to generate workflow summary: {e}")
-            return {'error': str(e)} 
+            self.logger.error(f"Failed to get workflow summary: {e}")
+            return {'error': str(e)}
+    
+    # 後方互換性のためのレガシーメソッド（BibTeX方式）
+    def load_bib_statuses(self, bibtex_file: str) -> Dict[str, Dict[str, ProcessStatus]]:
+        """
+        後方互換性のためのレガシーメソッド
+        YAMLヘッダー方式に移行してください
+        """
+        self.logger.warning("load_bib_statuses is deprecated. Use load_md_statuses instead.")
+        return {} 

@@ -12,6 +12,7 @@ from datetime import datetime
 from .citation_workflow import CitationWorkflow
 from .organization_workflow import OrganizationWorkflow
 from .sync_check_workflow import SyncCheckWorkflow
+from .citation_parser_workflow import CitationParserWorkflow
 
 
 class WorkflowType(Enum):
@@ -39,6 +40,7 @@ class WorkflowManager:
         self.citation_workflow = CitationWorkflow(config_manager, logger)
         self.organization_workflow = OrganizationWorkflow(config_manager, logger)
         self.sync_check_workflow = SyncCheckWorkflow(config_manager, logger)
+        self.citation_parser_workflow = CitationParserWorkflow(config_manager, logger)
         
         # 実行履歴
         self.execution_history = []
@@ -168,7 +170,7 @@ class WorkflowManager:
     
     def _execute_citation_parser_workflow(self, options: Dict[str, Any]) -> Tuple[bool, Dict[str, Any]]:
         """
-        Citation Parser Workflowの実行（未実装のため成功として返す）
+        Citation Parser Workflowの実行
         
         Args:
             options: 実行オプション
@@ -176,14 +178,8 @@ class WorkflowManager:
         Returns:
             実行結果
         """
-        self.logger.info("Executing citation parser workflow (placeholder)")
-        
-        # 現在は未実装のため、成功として返す
-        return True, {
-            "success": True,
-            "message": "Citation parser workflow completed (placeholder implementation)",
-            "parsed_citations": 0
-        }
+        self.logger.info("Executing citation parser workflow")
+        return self.citation_parser_workflow.execute(**options)
     
     def _execute_integrated_workflow(self, options: Dict[str, Any]) -> Tuple[bool, Dict[str, Any]]:
         """
