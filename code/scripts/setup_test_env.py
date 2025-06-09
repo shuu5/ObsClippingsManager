@@ -2,10 +2,10 @@
 """
 TestManuscripts環境構築スクリプト
 
-本番環境(/home/user/ManuscriptsManager)からテストデータをコピーし、
+固定されたマスターテストデータからテストデータをコピーし、
 テスト用の初期状態を作成・管理します。
 
-**重要**: 本番データのみを使用し、サンプルデータは一切作成しません。
+**重要**: 固定データのみを使用し、本番データの変更に影響されません。
 """
 
 import os
@@ -15,26 +15,26 @@ from pathlib import Path
 from datetime import datetime
 import argparse
 
-def setup_test_environment(source_dir: str = "/home/user/ManuscriptsManager", 
+def setup_test_environment(source_dir: str = "code/test_data_master", 
                           test_dir: str = "/home/user/proj/ObsClippingsManager/TestManuscripts"):
     """
-    テスト環境をセットアップ（本番データのみ使用）
+    テスト環境をセットアップ（固定マスターデータのみ使用）
     
     Args:
-        source_dir: 本番環境のパス
+        source_dir: 固定マスターデータのパス
         test_dir: テスト環境のパス
     """
     source_path = Path(source_dir)
     test_path = Path(test_dir)
     
     print(f"🚀 Setting up test environment...")
-    print(f"   Source: {source_path}")
+    print(f"   Source: {source_path} (Fixed Master Data)")
     print(f"   Target: {test_path}")
     
-    # 1. 本番ディレクトリの存在確認
+    # 1. 固定マスターデータの存在確認
     if not source_path.exists():
-        print(f"❌ ERROR: Source directory not found: {source_path}")
-        print(f"   Test environment requires actual production data.")
+        print(f"❌ ERROR: Master test data directory not found: {source_path}")
+        print(f"   Please ensure the fixed master test data exists.")
         return False
     
     # 2. 必須ファイルの確認
@@ -42,13 +42,13 @@ def setup_test_environment(source_dir: str = "/home/user/ManuscriptsManager",
     source_clippings = source_path / "Clippings"
     
     if not source_bib.exists():
-        print(f"❌ ERROR: BibTeX file not found: {source_bib}")
-        print(f"   Test environment requires actual production BibTeX file.")
+        print(f"❌ ERROR: Master BibTeX file not found: {source_bib}")
+        print(f"   Fixed master test data is incomplete.")
         return False
         
     if not source_clippings.exists():
-        print(f"❌ ERROR: Clippings directory not found: {source_clippings}")
-        print(f"   Test environment requires actual production Clippings directory.")
+        print(f"❌ ERROR: Master Clippings directory not found: {source_clippings}")
+        print(f"   Fixed master test data is incomplete.")
         return False
     
     # 3. テストディレクトリの準備
@@ -64,7 +64,7 @@ def setup_test_environment(source_dir: str = "/home/user/ManuscriptsManager",
     
     test_path.mkdir(parents=True, exist_ok=True)
     
-    # 4. 本番データの完全コピー
+    # 4. 固定マスターデータの完全コピー
     target_bib = test_path / "CurrentManuscript.bib"
     target_clippings = test_path / "Clippings"
     
@@ -83,6 +83,7 @@ def setup_test_environment(source_dir: str = "/home/user/ManuscriptsManager",
     print(f"📊 Test data summary:")
     print(f"   BibTeX entries: {bib_entries}")
     print(f"   Markdown files: {md_files}")
+    print(f"   Data source: Fixed master test data (independent of production)")
     
     # 6. テスト環境情報ファイルの作成
     backup_info = test_path / ".test_env_info.txt"
@@ -90,12 +91,13 @@ def setup_test_environment(source_dir: str = "/home/user/ManuscriptsManager",
         f.write(f"Test Environment Setup Information\n")
         f.write(f"==================================\n")
         f.write(f"Setup Date: {datetime.now().isoformat()}\n")
-        f.write(f"Source Directory: {source_path}\n")
+        f.write(f"Source Directory: {source_path} (Fixed Master Data)\n")
         f.write(f"Test Directory: {test_path}\n")
         f.write(f"BibTeX File: {target_bib}\n")
         f.write(f"Clippings Directory: {target_clippings}\n")
         f.write(f"BibTeX Entries: {bib_entries}\n")
         f.write(f"Markdown Files: {md_files}\n")
+        f.write(f"Data Type: Fixed Master Test Data\n")
         f.write(f"\n")
         f.write(f"Reset Command:\n")
         f.write(f"python code/scripts/setup_test_env.py --reset\n")
@@ -127,7 +129,7 @@ def count_markdown_files(clippings_dir: Path) -> int:
 
 def reset_test_environment(test_dir: str = "/home/user/proj/ObsClippingsManager/TestManuscripts"):
     """
-    テスト環境を初期状態にリセット（本番データを使用）
+    テスト環境を初期状態にリセット（固定マスターデータを使用）
     """
     test_path = Path(test_dir)
     
@@ -137,7 +139,7 @@ def reset_test_environment(test_dir: str = "/home/user/proj/ObsClippingsManager/
     
     # バックアップ情報の確認
     backup_info = test_path / ".test_env_info.txt"
-    source_dir = "/home/user/ManuscriptsManager"
+    source_dir = "code/test_data_master"  # 固定マスターデータを使用
     
     if backup_info.exists():
         print(f"📋 Found test environment info:")
@@ -155,7 +157,7 @@ def reset_test_environment(test_dir: str = "/home/user/proj/ObsClippingsManager/
                 print(f"   Removing citation key directory: {item.name}")
                 shutil.rmtree(item)
         
-        # 本番データからの復元
+        # 固定マスターデータからの復元
         source_clippings = Path(source_dir) / "Clippings"
         if source_clippings.exists():
             # 既存ファイルを削除
@@ -163,17 +165,17 @@ def reset_test_environment(test_dir: str = "/home/user/proj/ObsClippingsManager/
                 if item.is_file():
                     item.unlink()
             
-            # 本番データをコピー
+            # 固定マスターデータをコピー
             for item in source_clippings.iterdir():
                 if item.is_file():
                     shutil.copy2(item, clippings_dir / item.name)
             
             print(f"✅ Reset Clippings directory to initial state")
         else:
-            print(f"❌ ERROR: Source Clippings directory not found: {source_clippings}")
+            print(f"❌ ERROR: Master Clippings directory not found: {source_clippings}")
             return False
     
-    # BibTeXファイルも本番データで復元
+    # BibTeXファイルも固定マスターデータで復元
     bibtex_file = test_path / "CurrentManuscript.bib"
     source_bib = Path(source_dir) / "CurrentManuscript.bib"
     
@@ -181,7 +183,7 @@ def reset_test_environment(test_dir: str = "/home/user/proj/ObsClippingsManager/
         shutil.copy2(source_bib, bibtex_file)
         print(f"✅ Reset BibTeX file to initial state")
     else:
-        print(f"❌ ERROR: Source BibTeX file not found: {source_bib}")
+        print(f"❌ ERROR: Master BibTeX file not found: {source_bib}")
         return False
     
     print(f"")
@@ -195,8 +197,8 @@ def reset_test_environment(test_dir: str = "/home/user/proj/ObsClippingsManager/
 def main():
     parser = argparse.ArgumentParser(description="Test environment setup and management")
     parser.add_argument('--reset', action='store_true', help='Reset test environment to initial state')
-    parser.add_argument('--source', default="/home/user/ManuscriptsManager", 
-                       help='Source directory (default: /home/user/ManuscriptsManager)')
+    parser.add_argument('--source', default="code/test_data_master", 
+                       help='Source directory (default: code/test_data_master)')
     parser.add_argument('--test-dir', default="/home/user/proj/ObsClippingsManager/TestManuscripts",
                        help='Test directory (default: ./TestManuscripts)')
     

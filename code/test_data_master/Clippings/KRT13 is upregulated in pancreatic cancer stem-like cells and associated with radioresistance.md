@@ -1,15 +1,10 @@
 ---
-obsclippings_metadata:
-  citation_key: takenakaW2023J.Radiat.Res.Tokyo
-  last_updated: '2025-06-09T14:40:32.891168+00:00'
-  processing_status:
-    fetch: completed
-    organize: pending
-    parse: completed
-    sync: completed
-  workflow_version: '3.0'
+title: "KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance"
+doi: "10.1093/jrr/rrac091"
+source: "https://academic.oup.com/jrr/article/64/2/284/6968637"
+created: 2025-06-09
+tags:
 ---
-
 [Skip to Main Content](https://academic.oup.com/jrr/article/64/2/284/#skipNav)
 
 Journal Article
