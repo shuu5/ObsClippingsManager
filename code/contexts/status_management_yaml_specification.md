@@ -1,42 +1,26 @@
-# 状態管理システム仕様書 v3.0 - YAMLヘッダー方式
+# 状態管理システム仕様書 v3.0
 
 ## 概要
-ObsClippingsManager v3.0では、論文の処理状態をBibTeXファイルではなく、各論文の.mdファイルのYAMLヘッダーに記録する方式に変更します。これにより、Zoteroによる自動BibTeX再生成の影響を受けずに、永続的な状態管理を実現します。
+ObsClippingsManager v3.0の状態管理システムは、各論文の処理状態をMarkdownファイルのYAMLヘッダーに記録し、効率的な重複処理回避を実現します。Zoteroによる自動BibTeX再生成の影響を受けずに、永続的な状態管理を提供します。
 
-## 変更理由
-- **問題**: BibTeXファイル（CurrentManuscript.bib）はZoteroにより自動生成され、状態フラグが消去される
-- **解決策**: 各論文ディレクトリ内の.mdファイルのYAMLヘッダーに状態を記録
-- **利点**: 
-  - Zoteroの再生成に影響されない
-  - 論文ファイルと状態の密結合
-  - 可読性・編集可能性の向上
+## 基本原理
 
-## アーキテクチャ変更
+### YAMLヘッダー方式の利点
+- **永続性**: Zoteroの再生成に影響されない
+- **可視性**: 論文ファイルで直接状態確認可能
+- **密結合**: 論文ファイルと状態の自然な関連付け
+- **編集可能**: 必要時の手動編集が容易
 
-### 旧方式（v2.x）
-```
-CurrentManuscript.bib（Zotero管理）
-├── @article{smith2023test,
-│   ├── title = {...},
-│   ├── author = {...},
-│   ├── obsclippings_organize_status = {completed},
-│   ├── obsclippings_sync_status = {completed},
-│   ├── obsclippings_fetch_status = {pending},
-│   └── obsclippings_parse_status = {pending}
-│   }
-└── [Zotero再生成時に状態フラグ消失]
-```
+### 状態追跡対象
+- **organize**: ファイル整理状態
+- **sync**: 同期チェック状態  
+- **fetch**: 引用文献取得状態
+- **parse**: 引用文献解析状態
 
-### 新方式（v3.0）
-```
-/home/user/ManuscriptsManager/Clippings/
-├── smith2023test/
-│   ├── smith2023test.md（状態管理ヘッダー付き）
-│   └── references.bib
-├── jones2024neural/
-│   ├── jones2024neural.md（状態管理ヘッダー付き）
-│   └── references.bib
-```
+### 状態値定義
+- **"pending"**: 処理が必要（初期状態・失敗後）
+- **"completed"**: 処理完了
+- **"failed"**: 処理失敗（次回再処理対象）
 
 ## YAMLヘッダー仕様
 
@@ -48,8 +32,8 @@ obsclippings_metadata:
   processing_status:
     organize: "completed"
     sync: "completed" 
-    fetch: "pending"
-    parse: "pending"
+    fetch: "completed"
+    parse: "completed"
   last_updated: "2025-01-15T10:30:00Z"
   source_doi: "10.1000/example.doi"
   workflow_version: "3.0"
@@ -60,86 +44,46 @@ obsclippings_metadata:
 論文の内容...
 ```
 
-### フィールド定義
+### フィールド詳細
 
-#### obsclippings_metadata
+#### obsclippings_metadata (必須)
 論文の処理メタデータを格納するトップレベルオブジェクト
 
 #### citation_key (必須)
 - **型**: String
-- **説明**: BibTeXファイル内のcitation keyと同一の値
+- **説明**: BibTeXファイル内のcitation keyと同一
 - **例**: "smith2023test"
+- **制約**: ファイル名と一致する必要がある
 
 #### processing_status (必須)
 - **型**: Object
-- **説明**: 各処理ステップの状態を記録
+- **説明**: 各処理ステップの状態記録
 - **フィールド**:
   - `organize`: ファイル整理状態
   - `sync`: 同期チェック状態
   - `fetch`: 引用文献取得状態
   - `parse`: 引用文献解析状態
 
-#### 状態値定義
-- **"pending"**: 処理が必要（初期状態・失敗後の再処理待ち）
-- **"completed"**: 処理完了
-- **"failed"**: 処理失敗（次回実行時に再処理対象）
-
 #### last_updated (自動生成)
 - **型**: ISO 8601 DateTime String
-- **説明**: 状態が最後に更新された日時
+- **説明**: 状態最終更新日時
 - **例**: "2025-01-15T10:30:00Z"
+- **更新**: 状態変更時に自動更新
 
 #### source_doi (オプション)
 - **型**: String
-- **説明**: 論文のDOI（参照用）
+- **説明**: 論文のDOI（参照・検証用）
 - **例**: "10.1000/example.doi"
 
 #### workflow_version (自動生成)
 - **型**: String
-- **説明**: 使用したワークフローのバージョン
+- **説明**: 使用ワークフローバージョン
 - **例**: "3.0"
+- **用途**: 将来の互換性確認
 
-## StatusManager v3.0 設計
+## StatusManager v3.0 クラス設計
 
-### 主要な変更点
-
-#### 1. ファイル読み込み方式の変更
-```python
-# 旧方式（v2.x）
-def load_bib_statuses(self, bibtex_file: str) -> Dict[str, Dict[str, ProcessStatus]]:
-    """BibTeXファイルから状態を読み込み"""
-
-# 新方式（v3.0）
-def load_md_statuses(self, clippings_dir: str) -> Dict[str, Dict[str, ProcessStatus]]:
-    """Clippingsディレクトリの各.mdファイルから状態を読み込み"""
-```
-
-#### 2. 状態更新方式の変更
-```python
-# 旧方式（v2.x）
-def update_status(self, bibtex_file: str, citation_key: str, 
-                 process_type: str, status: ProcessStatus) -> bool:
-    """BibTeXファイル内の状態フィールドを更新"""
-
-# 新方式（v3.0）
-def update_status(self, clippings_dir: str, citation_key: str,
-                 process_type: str, status: ProcessStatus) -> bool:
-    """対応する.mdファイルのYAMLヘッダーを更新"""
-```
-
-#### 3. ファイル発見・作成メカニズム
-```python
-def get_md_file_path(self, clippings_dir: str, citation_key: str) -> Path:
-    """citation keyに対応する.mdファイルパスを取得"""
-    return Path(clippings_dir) / citation_key / f"{citation_key}.md"
-
-def ensure_yaml_header(self, md_file_path: Path, citation_key: str) -> bool:
-    """YAMLヘッダーが存在しない場合は初期化"""
-```
-
-### クラス設計
-
-#### StatusManager v3.0
+### クラス概要
 ```python
 class StatusManager:
     """YAMLヘッダーベースの状態管理システム"""
@@ -148,195 +92,581 @@ class StatusManager:
         self.config_manager = config_manager
         self.logger = logger.get_logger('StatusManager')
         
-    def load_md_statuses(self, clippings_dir: str) -> Dict[str, Dict[str, ProcessStatus]]:
-        """Clippingsディレクトリから全論文の状態を読み込み"""
-        
-    def update_status(self, clippings_dir: str, citation_key: str,
-                     process_type: str, status: ProcessStatus) -> bool:
-        """指定論文の状態を更新"""
-        
-    def batch_update_statuses(self, clippings_dir: str,
-                            updates: Dict[str, Dict[str, ProcessStatus]]) -> bool:
-        """複数論文の状態を一括更新"""
-        
-    def get_papers_needing_processing(self, clippings_dir: str, process_type: str,
-                                    include_failed: bool = True) -> List[str]:
-        """指定処理が必要な論文リストを取得"""
-        
-    def reset_statuses(self, clippings_dir: str, 
-                      target_papers: Optional[Union[str, List[str]]] = None) -> bool:
-        """状態をリセット"""
-        
-    def check_status_consistency(self, bibtex_file: str, 
-                               clippings_dir: str) -> Dict[str, Any]:
-        """BibTeX ↔ Clippings間の整合性チェック"""
-        
-    def ensure_yaml_header(self, md_file_path: Path, citation_key: str) -> bool:
-        """YAMLヘッダーの初期化"""
-        
-    def parse_yaml_header(self, md_file_path: Path) -> Dict[str, Any]:
-        """YAMLヘッダーの解析"""
-        
-    def write_yaml_header(self, md_file_path: Path, metadata: Dict[str, Any]) -> bool:
-        """YAMLヘッダーの書き込み"""
+    # 主要メソッド群
+    def load_md_statuses(self, clippings_dir: str) -> Dict[str, Dict[str, ProcessStatus]]
+    def update_status(self, clippings_dir: str, citation_key: str, step: str, status: ProcessStatus) -> bool
+    def get_papers_needing_processing(self, clippings_dir: str, step: str, target_papers: List[str] = None) -> List[str]
+    def reset_statuses(self, clippings_dir: str, target_papers: List[str] = None) -> bool
+    def check_consistency(self, bibtex_file: str, clippings_dir: str) -> Dict[str, Any]
 ```
 
-### YAMLパーサー統合
+### 主要メソッド詳細
 
-#### 依存関係追加
+#### load_md_statuses() - 状態読み込み
 ```python
-import yaml
-from datetime import datetime, timezone
-```
-
-#### YAMLヘッダー処理
-```python
-def parse_yaml_header(self, md_file_path: Path) -> Dict[str, Any]:
+def load_md_statuses(self, clippings_dir: str) -> Dict[str, Dict[str, ProcessStatus]]:
     """
-    .mdファイルからYAMLヘッダーを解析
+    Clippingsディレクトリから全論文の状態を読み込み
+    
+    Args:
+        clippings_dir: Clippingsディレクトリパス
+    
+    Returns:
+        {
+            "smith2023test": {
+                "organize": ProcessStatus.COMPLETED,
+                "sync": ProcessStatus.COMPLETED,
+                "fetch": ProcessStatus.PENDING,
+                "parse": ProcessStatus.PENDING
+            },
+            "jones2024neural": {
+                "organize": ProcessStatus.PENDING,
+                "sync": ProcessStatus.PENDING,
+                "fetch": ProcessStatus.PENDING,
+                "parse": ProcessStatus.PENDING
+            }
+        }
+    
+    処理フロー:
+    1. clippings_dir内のサブディレクトリを走査
+    2. 各ディレクトリ内の.mdファイルを検索
+    3. YAMLヘッダーから状態情報を抽出
+    4. 状態辞書として返却
+    """
+    statuses = {}
+    clippings_path = Path(clippings_dir)
+    
+    if not clippings_path.exists():
+        self.logger.warning(f"Clippings directory not found: {clippings_dir}")
+        return statuses
+    
+    for paper_dir in clippings_path.iterdir():
+        if not paper_dir.is_dir():
+            continue
+            
+        citation_key = paper_dir.name
+        md_file_path = paper_dir / f"{citation_key}.md"
+        
+        if md_file_path.exists():
+            paper_status = self._parse_md_status(md_file_path)
+            if paper_status:
+                statuses[citation_key] = paper_status
+            else:
+                # YAMLヘッダーが存在しない場合は初期化
+                statuses[citation_key] = self._initialize_paper_status(citation_key)
+                self._ensure_yaml_header(md_file_path, citation_key)
+    
+    return statuses
+```
+
+#### update_status() - 状態更新
+```python
+def update_status(self, clippings_dir: str, citation_key: str, 
+                 step: str, status: ProcessStatus) -> bool:
+    """
+    指定論文の指定ステップの状態を更新
+    
+    Args:
+        clippings_dir: Clippingsディレクトリパス
+        citation_key: 論文のcitation key
+        step: 処理ステップ名 ("organize"|"sync"|"fetch"|"parse")
+        status: 新しい状態 (ProcessStatus.COMPLETED|FAILED|PENDING)
+    
+    Returns:
+        更新成功時 True, 失敗時 False
+    
+    処理フロー:
+    1. 対象.mdファイルパスを構築
+    2. 現在のYAMLヘッダーを読み込み
+    3. 指定ステップの状態を更新
+    4. last_updatedを現在時刻に更新
+    5. YAMLヘッダーを書き戻し
+    """
+    md_file_path = Path(clippings_dir) / citation_key / f"{citation_key}.md"
+    
+    if not md_file_path.exists():
+        self.logger.error(f"Markdown file not found: {md_file_path}")
+        return False
+    
+    try:
+        # 現在のメタデータ読み込み
+        metadata = self._parse_yaml_header(md_file_path)
+        
+        # 状態更新
+        if 'obsclippings_metadata' not in metadata:
+            metadata['obsclippings_metadata'] = self._create_default_metadata(citation_key)
+        
+        metadata['obsclippings_metadata']['processing_status'][step] = status.value
+        metadata['obsclippings_metadata']['last_updated'] = datetime.now(timezone.utc).isoformat()
+        
+        # ファイル更新
+        return self._write_yaml_header(md_file_path, metadata)
+        
+    except Exception as e:
+        self.logger.error(f"Failed to update status for {citation_key}: {str(e)}")
+        return False
+```
+
+#### get_papers_needing_processing() - 処理対象論文取得
+```python
+def get_papers_needing_processing(self, clippings_dir: str, step: str, 
+                                target_papers: List[str] = None) -> List[str]:
+    """
+    指定ステップで処理が必要な論文リストを取得
+    
+    Args:
+        clippings_dir: Clippingsディレクトリパス
+        step: 処理ステップ名
+        target_papers: 対象論文リスト（None時は全論文）
+    
+    Returns:
+        処理が必要な論文のcitation keyリスト
+    
+    処理条件:
+    - 状態が "pending" または "failed"
+    - target_papersが指定された場合はその範囲内のみ
+    - 依存関係チェック（前段階が完了していない場合は除外）
+    """
+    all_statuses = self.load_md_statuses(clippings_dir)
+    papers_needing_processing = []
+    
+    # 対象論文の決定
+    if target_papers is None:
+        target_papers = list(all_statuses.keys())
+    
+    for citation_key in target_papers:
+        if citation_key not in all_statuses:
+            # 状態情報がない場合は処理対象
+            papers_needing_processing.append(citation_key)
+            continue
+        
+        paper_status = all_statuses[citation_key]
+        step_status = paper_status.get(step, ProcessStatus.PENDING)
+        
+        # pending or failed の場合は処理対象
+        if step_status in [ProcessStatus.PENDING, ProcessStatus.FAILED]:
+            # 依存関係チェック
+            if self._check_dependencies(paper_status, step):
+                papers_needing_processing.append(citation_key)
+    
+    return papers_needing_processing
+```
+
+#### reset_statuses() - 状態リセット
+```python
+def reset_statuses(self, clippings_dir: str, 
+                  target_papers: List[str] = None) -> bool:
+    """
+    指定論文の状態をpendingにリセット（強制再処理用）
+    
+    Args:
+        clippings_dir: Clippingsディレクトリパス
+        target_papers: 対象論文リスト（None時は全論文）
+    
+    Returns:
+        リセット成功時 True
+    
+    処理内容:
+    - 全ステップの状態を "pending" に設定
+    - last_updatedを現在時刻に更新
+    - workflow_versionを現在バージョンに更新
+    """
+    all_statuses = self.load_md_statuses(clippings_dir)
+    
+    if target_papers is None:
+        target_papers = list(all_statuses.keys())
+    
+    success_count = 0
+    
+    for citation_key in target_papers:
+        try:
+            md_file_path = Path(clippings_dir) / citation_key / f"{citation_key}.md"
+            
+            if not md_file_path.exists():
+                self.logger.warning(f"Markdown file not found for reset: {citation_key}")
+                continue
+            
+            # メタデータリセット
+            metadata = self._parse_yaml_header(md_file_path)
+            
+            if 'obsclippings_metadata' not in metadata:
+                metadata['obsclippings_metadata'] = self._create_default_metadata(citation_key)
+            
+            # 全ステップをpendingに設定
+            metadata['obsclippings_metadata']['processing_status'] = {
+                'organize': ProcessStatus.PENDING.value,
+                'sync': ProcessStatus.PENDING.value,
+                'fetch': ProcessStatus.PENDING.value,
+                'parse': ProcessStatus.PENDING.value
+            }
+            
+            metadata['obsclippings_metadata']['last_updated'] = datetime.now(timezone.utc).isoformat()
+            metadata['obsclippings_metadata']['workflow_version'] = "3.0"
+            
+            if self._write_yaml_header(md_file_path, metadata):
+                success_count += 1
+                self.logger.info(f"Reset status for: {citation_key}")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to reset status for {citation_key}: {str(e)}")
+    
+    self.logger.info(f"Successfully reset {success_count}/{len(target_papers)} papers")
+    return success_count == len(target_papers)
+```
+
+#### check_consistency() - 整合性チェック
+```python
+def check_consistency(self, bibtex_file: str, clippings_dir: str) -> Dict[str, Any]:
+    """
+    BibTeX ↔ Clippingsディレクトリ間の整合性チェック
+    
+    Args:
+        bibtex_file: BibTeXファイルパス
+        clippings_dir: Clippingsディレクトリパス
+    
+    Returns:
+        {
+            "status": "success"|"warning"|"error",
+            "summary": {
+                "bibtex_entries": 10,
+                "clippings_directories": 12,
+                "matched": 8,
+                "missing_in_clippings": 2,
+                "orphaned_directories": 4
+            },
+            "details": {
+                "missing_in_clippings": [
+                    {
+                        "citation_key": "smith2023",
+                        "title": "Example Paper",
+                        "doi": "10.1000/example.doi"
+                    }
+                ],
+                "orphaned_directories": [
+                    {
+                        "citation_key": "old_paper2022",
+                        "directory_path": "/path/to/clippings/old_paper2022"
+                    }
+                ],
+                "status_inconsistencies": [
+                    {
+                        "citation_key": "jones2024",
+                        "issue": "marked as completed but references.bib missing"
+                    }
+                ]
+            }
+        }
+    """
+    from .bibtex_parser import BibTeXParser
+    
+    # BibTeXエントリ読み込み
+    bibtex_parser = BibTeXParser(self.logger)
+    bib_entries = bibtex_parser.parse_file(bibtex_file)
+    bib_keys = set(bib_entries.keys())
+    
+    # Clippingsディレクトリ読み込み
+    clippings_path = Path(clippings_dir)
+    clipping_keys = set()
+    
+    if clippings_path.exists():
+        clipping_keys = {d.name for d in clippings_path.iterdir() if d.is_dir()}
+    
+    # 整合性分析
+    matched = bib_keys & clipping_keys
+    missing_in_clippings = bib_keys - clipping_keys
+    orphaned_directories = clipping_keys - bib_keys
+    
+    # 状態管理整合性チェック
+    status_inconsistencies = self._check_status_inconsistencies(clippings_dir, clipping_keys)
+    
+    # 結果生成
+    result = {
+        "status": "success",
+        "summary": {
+            "bibtex_entries": len(bib_keys),
+            "clippings_directories": len(clipping_keys),
+            "matched": len(matched),
+            "missing_in_clippings": len(missing_in_clippings),
+            "orphaned_directories": len(orphaned_directories)
+        },
+        "details": {
+            "missing_in_clippings": [
+                {
+                    "citation_key": key,
+                    "title": bib_entries[key].get('title', 'Unknown'),
+                    "doi": bib_entries[key].get('doi', 'Unknown')
+                }
+                for key in missing_in_clippings
+            ],
+            "orphaned_directories": [
+                {
+                    "citation_key": key,
+                    "directory_path": str(clippings_path / key)
+                }
+                for key in orphaned_directories
+            ],
+            "status_inconsistencies": status_inconsistencies
+        }
+    }
+    
+    # ステータス判定
+    if missing_in_clippings or orphaned_directories or status_inconsistencies:
+        result["status"] = "warning"
+    
+    return result
+```
+
+## ヘルパーメソッド
+
+### YAMLヘッダー処理
+```python
+def _parse_yaml_header(self, md_file_path: Path) -> Dict[str, Any]:
+    """
+    MarkdownファイルからYAMLヘッダーを解析
     
     Returns:
         YAMLヘッダーの内容、存在しない場合は空辞書
     """
-    
-def write_yaml_header(self, md_file_path: Path, metadata: Dict[str, Any]) -> bool:
+    try:
+        with open(md_file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # YAML frontmatter の抽出
+        if content.startswith('---\n'):
+            end_marker = content.find('\n---\n', 4)
+            if end_marker != -1:
+                yaml_content = content[4:end_marker]
+                return yaml.safe_load(yaml_content) or {}
+        
+        return {}
+        
+    except Exception as e:
+        self.logger.error(f"Failed to parse YAML header from {md_file_path}: {str(e)}")
+        return {}
+
+def _write_yaml_header(self, md_file_path: Path, metadata: Dict[str, Any]) -> bool:
     """
-    .mdファイルにYAMLヘッダーを書き込み
+    MarkdownファイルにYAMLヘッダーを書き込み
     
-    既存のヘッダーがある場合は更新、ない場合は追加
+    Args:
+        md_file_path: 対象ファイルパス
+        metadata: 書き込むメタデータ
+    
+    Returns:
+        書き込み成功時 True
     """
+    try:
+        # 既存コンテンツの読み込み
+        with open(md_file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # YAML frontmatter とボディの分離
+        body = content
+        if content.startswith('---\n'):
+            end_marker = content.find('\n---\n', 4)
+            if end_marker != -1:
+                body = content[end_marker + 5:]  # "---\n" 以降
+        
+        # 新しいYAMLヘッダーの生成
+        yaml_header = yaml.dump(metadata, default_flow_style=False, allow_unicode=True)
+        
+        # ファイル書き込み
+        new_content = f"---\n{yaml_header}---\n{body}"
+        
+        with open(md_file_path, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+        
+        return True
+        
+    except Exception as e:
+        self.logger.error(f"Failed to write YAML header to {md_file_path}: {str(e)}")
+        return False
+
+def _ensure_yaml_header(self, md_file_path: Path, citation_key: str) -> bool:
+    """
+    YAMLヘッダーが存在しない場合の初期化
+    
+    Args:
+        md_file_path: 対象ファイルパス
+        citation_key: 論文のcitation key
+    
+    Returns:
+        初期化成功時 True
+    """
+    if not md_file_path.exists():
+        # ファイル自体が存在しない場合は作成
+        default_content = f"# {citation_key}\n\n論文の内容をここに記載してください。\n"
+        
+        try:
+            md_file_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(md_file_path, 'w', encoding='utf-8') as f:
+                f.write(default_content)
+        except Exception as e:
+            self.logger.error(f"Failed to create markdown file {md_file_path}: {str(e)}")
+            return False
+    
+    # YAMLヘッダーの確認・初期化
+    metadata = self._parse_yaml_header(md_file_path)
+    
+    if 'obsclippings_metadata' not in metadata:
+        metadata['obsclippings_metadata'] = self._create_default_metadata(citation_key)
+        return self._write_yaml_header(md_file_path, metadata)
+    
+    return True
 ```
 
-## 移行戦略
-
-### 段階的移行
-
-#### Phase 1: StatusManager v3.0実装
-1. 新しいStatusManagerクラスの実装
-2. YAMLヘッダー処理機能の実装
-3. ユニットテストの作成・実行
-
-#### Phase 2: ワークフロー統合
-1. EnhancedIntegratedWorkflow の修正
-2. 各ワークフローのStatusManager呼び出し修正
-3. CLI引数の調整
-
-#### Phase 3: 後方互換性の確保
-1. 旧形式（BibTeX状態フラグ）の検出・移行機能
-2. 移行ツールの提供
-3. 移行完了後の旧データクリーンアップ
-
-### 移行ツール仕様
-
-#### migrate_status_to_yaml コマンド
-```bash
-uv run python code/py/main.py migrate-status-to-yaml \
-  -b /path/to/CurrentManuscript.bib \
-  -d /path/to/Clippings \
-  [--backup] [--dry-run]
-```
-
-**動作**:
-1. BibTeXファイルから状態フラグを読み取り
-2. 対応する.mdファイルを特定
-3. YAMLヘッダーに状態を移行
-4. 移行完了後、BibTeXから状態フラグを削除（オプション）
-
-## テスト仕様変更
-
-### 新規テストファイル
-- `test_status_management_yaml.py`: YAMLヘッダー方式のテスト
-- `test_migration_tools.py`: 移行ツールのテスト
-
-### 既存テストの更新
-- `test_enhanced_run_integrated.py`: StatusManager呼び出し方法の変更
-- `test_workflow_manager.py`: 状態管理に関連する部分の更新
-
-### テストケース
-
-#### YAMLヘッダー処理テスト
+### 状態管理ヘルパー
 ```python
-class TestYAMLHeaderProcessing(unittest.TestCase):
-    def test_parse_yaml_header_existing(self):
-        """既存YAMLヘッダーの解析テスト"""
+def _create_default_metadata(self, citation_key: str) -> Dict[str, Any]:
+    """
+    デフォルトメタデータの生成
+    """
+    return {
+        'citation_key': citation_key,
+        'processing_status': {
+            'organize': ProcessStatus.PENDING.value,
+            'sync': ProcessStatus.PENDING.value,
+            'fetch': ProcessStatus.PENDING.value,
+            'parse': ProcessStatus.PENDING.value
+        },
+        'last_updated': datetime.now(timezone.utc).isoformat(),
+        'workflow_version': '3.0'
+    }
+
+def _check_dependencies(self, paper_status: Dict[str, ProcessStatus], step: str) -> bool:
+    """
+    ステップ依存関係のチェック
+    
+    依存関係: organize → sync → fetch → parse
+    """
+    dependencies = {
+        'organize': [],
+        'sync': ['organize'],
+        'fetch': ['organize', 'sync'],
+        'parse': ['organize', 'sync', 'fetch']
+    }
+    
+    required_steps = dependencies.get(step, [])
+    
+    for required_step in required_steps:
+        if paper_status.get(required_step) != ProcessStatus.COMPLETED:
+            return False
+    
+    return True
+
+def _check_status_inconsistencies(self, clippings_dir: str, clipping_keys: Set[str]) -> List[Dict[str, str]]:
+    """
+    状態管理の整合性チェック
+    
+    チェック項目:
+    - fetch完了だがreferences.bibが存在しない
+    - organize完了だが適切なディレクトリ構造でない
+    """
+    inconsistencies = []
+    
+    for citation_key in clipping_keys:
+        paper_dir = Path(clippings_dir) / citation_key
+        md_file = paper_dir / f"{citation_key}.md"
         
-    def test_parse_yaml_header_missing(self):
-        """YAMLヘッダーなしファイルの処理テスト"""
+        if not md_file.exists():
+            continue
         
-    def test_write_yaml_header_new(self):
-        """新規YAMLヘッダー作成テスト"""
+        metadata = self._parse_yaml_header(md_file)
+        processing_status = metadata.get('obsclippings_metadata', {}).get('processing_status', {})
         
-    def test_write_yaml_header_update(self):
-        """既存YAMLヘッダー更新テスト"""
+        # fetch完了だがreferences.bibが存在しない
+        if processing_status.get('fetch') == 'completed':
+            references_bib = paper_dir / 'references.bib'
+            if not references_bib.exists():
+                inconsistencies.append({
+                    'citation_key': citation_key,
+                    'issue': 'fetch marked as completed but references.bib missing'
+                })
         
-    def test_yaml_format_validation(self):
-        """YAMLフォーマット検証テスト"""
+        # organize完了だが適切な構造でない
+        if processing_status.get('organize') == 'completed':
+            if not paper_dir.is_dir():
+                inconsistencies.append({
+                    'citation_key': citation_key,
+                    'issue': 'organize marked as completed but directory structure incorrect'
+                })
+    
+    return inconsistencies
 ```
 
-#### 状態管理機能テスト
+## ProcessStatus 列挙型
+
+### 定義
 ```python
-class TestStatusManagerV3(unittest.TestCase):
-    def test_load_md_statuses(self):
-        """Clippingsディレクトリからの状態読み込みテスト"""
-        
-    def test_update_status_yaml(self):
-        """YAMLヘッダー経由の状態更新テスト"""
-        
-    def test_batch_update_yaml(self):
-        """一括状態更新テスト（YAML）"""
-        
-    def test_consistency_check_yaml(self):
-        """BibTeX-Clippings整合性チェック（YAML）"""
+from enum import Enum
+
+class ProcessStatus(Enum):
+    """処理状態の列挙型"""
+    PENDING = "pending"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    
+    @classmethod
+    def from_string(cls, status_str: str) -> 'ProcessStatus':
+        """文字列から ProcessStatus オブジェクトを生成"""
+        try:
+            return cls(status_str.lower())
+        except ValueError:
+            return cls.PENDING  # 不明な状態はpending扱い
 ```
 
-#### 移行テスト
+## 使用例
+
+### 基本的な状態確認
 ```python
-class TestMigrationTools(unittest.TestCase):
-    def test_migrate_bibtex_to_yaml(self):
-        """BibTeX状態フラグ → YAML移行テスト"""
-        
-    def test_migration_rollback(self):
-        """移行ロールバックテスト"""
-        
-    def test_migration_error_handling(self):
-        """移行エラーハンドリングテスト"""
+# StatusManager初期化
+status_manager = StatusManager(config_manager, logger)
+
+# 全論文の状態読み込み
+statuses = status_manager.load_md_statuses("/home/user/ManuscriptsManager/Clippings")
+
+# organize処理が必要な論文を取得
+papers_needing_organize = status_manager.get_papers_needing_processing(
+    "/home/user/ManuscriptsManager/Clippings", "organize"
+)
+
+# 特定論文の状態更新
+status_manager.update_status(
+    "/home/user/ManuscriptsManager/Clippings", 
+    "smith2023test", 
+    "organize", 
+    ProcessStatus.COMPLETED
+)
 ```
 
-## 実装優先順位
+### 整合性チェック
+```python
+# BibTeX ↔ Clippings整合性チェック
+consistency_result = status_manager.check_consistency(
+    "/home/user/ManuscriptsManager/CurrentManuscript.bib",
+    "/home/user/ManuscriptsManager/Clippings"
+)
 
-### 高優先度（即時実装）
-1. StatusManager v3.0 基本実装
-2. YAMLヘッダー読み書き機能
-3. 基本的なユニットテスト
+if consistency_result["status"] == "warning":
+    print("整合性に問題があります:")
+    for missing in consistency_result["details"]["missing_in_clippings"]:
+        print(f"  - 不足: {missing['citation_key']}")
+```
 
-### 中優先度（基本実装後）
-1. EnhancedIntegratedWorkflow修正
-2. 全ワークフローの統合
-3. 包括的テストスイート
+### 強制再処理
+```python
+# 特定論文の状態リセット
+status_manager.reset_statuses(
+    "/home/user/ManuscriptsManager/Clippings",
+    target_papers=["smith2023test", "jones2024neural"]
+)
 
-### 低優先度（安定化後）
-1. 移行ツール実装
-2. 後方互換性確保
-3. パフォーマンス最適化
-
-## 注意事項
-
-### 設計上の考慮点
-- **YAMLパーサーの選択**: PyYAMLまたはruamel.yaml
-- **ファイルロック**: 複数プロセス同時実行時の競合回避
-- **エラーハンドリング**: YAML構文エラー、ファイル権限等
-- **パフォーマンス**: 大量論文時のファイルI/O最適化
-
-### セキュリティ考慮
-- YAML Bomb攻撃の防止
-- ファイルパストラバーサル対策
-- 権限チェック
-
-### 互換性確保
-- 既存.mdファイルの内容保持
-- 段階的移行による運用継続
-- ロールバック機能の提供
+# 全論文の状態リセット
+status_manager.reset_statuses(
+    "/home/user/ManuscriptsManager/Clippings"
+)
+```
 
 ---
 
-**この仕様書は、ObsClippingsManager v3.0における状態管理システムの根本的な改善を定義し、Zotero環境での安定した動作を保証します。** 
+**状態管理システム仕様書バージョン**: 3.0.0 

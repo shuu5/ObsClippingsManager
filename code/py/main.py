@@ -22,6 +22,7 @@ from modules.shared.logger import IntegratedLogger
 from modules.workflows.workflow_manager import WorkflowManager, WorkflowType, create_workflow_execution_summary
 from modules.workflows.citation_parser_workflow import CitationParserWorkflow
 from modules.workflows.enhanced_integrated_workflow import EnhancedIntegratedWorkflow
+from modules.workflows.integrated_workflow import IntegratedWorkflow
 from modules.shared.exceptions import ObsClippingsError, ConfigError
 
 
@@ -570,382 +571,158 @@ def parse_citations(ctx: Dict[str, Any],
 
 
 @cli.command()
-@click.option('--sync-first',
-              is_flag=True,
-              help='Run sync-check first before other operations')
-@click.option('--fetch-citations',
-              is_flag=True,
-              help='Include citation fetching in the integrated workflow')
-@click.option('--organize-first',
-              is_flag=True,
-              help='Run file organization first before other operations')
-@click.option('--include-citation-parser',
-              is_flag=True,
-              help='Include citation parser workflow (requires input file)')
-@click.option('--citation-parser-input',
-              help='Input file for citation parser',
+@click.option('--workspace', '-w',
+              help='Workspace root path (auto-derives all other paths)',
+              type=click.Path())
+@click.option('--bibtex-file', '-b',
+              help='BibTeX file path (overrides workspace-based path)',
               type=click.Path(exists=True))
-@click.option('--backup-existing',
-              is_flag=True,
-              help='Create backup of existing references.bib files')
-@click.option('--continue-on-failure',
-              is_flag=True,
-              help='Continue subsequent operations even if one fails')
-@click.option('--auto-approve', '-y',
-              is_flag=True,
-              help='Automatically approve all operations')
-@click.option('--disable-enrichment',
-              is_flag=True,
-              help='Disable automatic metadata enrichment in citation fetching')
-@click.option('--enrichment-field-type',
-              type=click.Choice(['life_sciences', 'computer_science', 'general'], case_sensitive=False),
-              default='general',
-              help='Research field for API prioritization (default: general)')
-@click.option('--enhanced-mode',
-              is_flag=True,
-              help='Use enhanced workflow with status management and smart skip logic')
-@click.option('--force-regenerate',
-              is_flag=True,
-              help='Force regenerate all processing (resets all status flags)')
+@click.option('--clippings-dir', '-d',
+              help='Clippings directory path (overrides workspace-based path)',
+              type=click.Path(exists=True))
 @click.option('--papers',
               help='Comma-separated list of specific papers to process (citation keys)',
               type=str)
-@click.option('--show-execution-plan',
+@click.option('--skip-steps',
+              help='Comma-separated list of steps to skip (organize,sync,fetch,parse)',
+              type=str)
+@click.option('--force-reprocess',
+              is_flag=True,
+              help='Force reprocess all papers (resets all status flags)')
+@click.option('--show-plan',
               is_flag=True,
               help='Display execution plan without running the workflow')
-@click.option('--check-consistency',
+@click.option('--auto-approve', '-y',
               is_flag=True,
-              help='Check status consistency between bib file and clippings directory')
-@click.option('--bibtex-file', '-b',
-              help='BibTeX file to process (for enhanced mode)',
-              type=click.Path(exists=True))
-@click.option('--clippings-dir', '-d',
-              help='Clippings directory path (for enhanced mode)',
-              type=click.Path(exists=True))
+              help='Automatically approve all operations')
 @pass_context
 def run_integrated(ctx: Dict[str, Any],
-                  sync_first: bool,
-                  fetch_citations: bool,
-                  organize_first: bool,
-                  include_citation_parser: bool,
-                  citation_parser_input: Optional[str],
-                  backup_existing: bool,
-                  continue_on_failure: bool,
-                  auto_approve: bool,
-                  disable_enrichment: bool,
-                  enrichment_field_type: str,
-                  enhanced_mode: bool,
-                  force_regenerate: bool,
-                  papers: Optional[str],
-                  show_execution_plan: bool,
-                  check_consistency: bool,
+                  workspace: Optional[str],
                   bibtex_file: Optional[str],
-                  clippings_dir: Optional[str]):
+                  clippings_dir: Optional[str],
+                  papers: Optional[str],
+                  skip_steps: Optional[str],
+                  force_reprocess: bool,
+                  show_plan: bool,
+                  auto_approve: bool):
     """
-    統合ワークフローを実行 (v2.2)
+    統合ワークフローを実行 (v3.0)
     
-    デフォルトでfile-organization → sync-check → citation-fetchingの順序で実行します。
-    --enhanced-modeで状態管理ベースの効率的な処理が可能です。
-    オプションで各操作を独立して実行可能で、柔軟なワークフロー組み合わせが可能です。
+    シンプルな設定と効率的な状態管理により、学術文献管理の全プロセスを自動化します。
+    デフォルトでは引数なしで完全動作し、workspace_pathベースの統一設定を使用します。
+    
+    処理順序: organize → sync → fetch → parse
     """
     try:
-        workflow_manager = ctx['workflow_manager']
+        config_manager = ctx['config_manager']
         logger = ctx['logger'].get_logger('CLI')
         
-        # Enhanced modeの処理
-        if enhanced_mode:
-            # 必要な引数チェック
-            config_manager = ctx['config_manager']
-            if not bibtex_file:
-                bibtex_file = config_manager.get_setting('bibtex_file')
-                if not bibtex_file:
-                    click.echo("❌ BibTeX file is required for enhanced mode. Use --bibtex-file or set in config.", err=True)
-                    sys.exit(1)
+        # IntegratedWorkflow v3.0 初期化
+        integrated_workflow = IntegratedWorkflow(config_manager, ctx['logger'])
+        
+        # 実行オプションの構築
+        options = {
+            'workspace_path': workspace,
+            'bibtex_file': bibtex_file,
+            'clippings_dir': clippings_dir,
+            'papers': papers,
+            'skip_steps': skip_steps,
+            'force_reprocess': force_reprocess,
+            'show_plan': show_plan,
+            'dry_run': ctx['dry_run'],
+            'verbose': ctx.get('verbose', False),
+            'auto_approve': auto_approve
+        }
+        
+        # プラン表示モード
+        if show_plan:
+            click.echo("📋 Analyzing execution plan...")
+            plan_result = integrated_workflow.show_execution_plan(**options)
             
-            if not clippings_dir:
-                clippings_dir = config_manager.get_setting('clippings_dir')
-                if not clippings_dir:
-                    click.echo("❌ Clippings directory is required for enhanced mode. Use --clippings-dir or set in config.", err=True)
-                    sys.exit(1)
-            
-            # Enhanced Integrated Workflow初期化
-            enhanced_workflow = EnhancedIntegratedWorkflow(config_manager, ctx['logger'])
-            
-            # 対象論文の解析
-            target_papers = None
-            if papers:
-                target_papers = [paper.strip() for paper in papers.split(',')]
-                click.echo(f"🎯 Target papers: {', '.join(target_papers)}")
-            
-            # 整合性チェック
-            if check_consistency:
-                click.echo("🔍 Checking status consistency...")
-                consistency_result = enhanced_workflow.check_consistency(bibtex_file, clippings_dir)
-                
-                missing_dirs = consistency_result.get('missing_directories', [])
-                orphaned_dirs = consistency_result.get('orphaned_directories', [])
-                
-                if missing_dirs:
-                    click.echo(f"⚠️  Missing directories for {len(missing_dirs)} papers:")
-                    for paper in missing_dirs[:5]:  # 最初の5つのみ表示
-                        click.echo(f"   - {paper}")
-                    if len(missing_dirs) > 5:
-                        click.echo(f"   ... and {len(missing_dirs) - 5} more")
-                
-                if orphaned_dirs:
-                    click.echo(f"⚠️  Orphaned directories: {len(orphaned_dirs)}")
-                    for dir_name in orphaned_dirs[:5]:
-                        click.echo(f"   - {dir_name}")
-                    if len(orphaned_dirs) > 5:
-                        click.echo(f"   ... and {len(orphaned_dirs) - 5} more")
-                
-                if not missing_dirs and not orphaned_dirs:
-                    click.echo("✅ No consistency issues found")
-                
-                return
-            
-            # 強制再生成の前処理（実行計画表示の前に実行）
-            if force_regenerate:
-                click.echo("🔄 Force regenerate mode: resetting all status flags...")
-                status_manager = enhanced_workflow.status_manager
-                reset_success = status_manager.reset_statuses(clippings_dir, target_papers)
-                if reset_success:
-                    click.echo("✅ Status flags reset successfully")
-                else:
-                    click.echo("⚠️ Warning: Some status flags may not have been reset")
-            
-            # 実行計画の表示
-            if show_execution_plan:
-                click.echo("📋 Analyzing execution plan...")
-                plan = enhanced_workflow.get_execution_plan(bibtex_file, clippings_dir)
-                
+            if plan_result['status'] == 'success':
+                plan = plan_result['plan']
                 total_papers = plan['total_papers']
-                execution_steps = plan['execution_steps']
-                total_tasks = sum(step['count'] for step in execution_steps.values())
-                active_steps = sum(1 for step in execution_steps.values() if step['count'] > 0)
+                execution_plan = plan['execution_plan']
                 
-                click.echo(f"📊 Execution Plan: {total_tasks} tasks across {active_steps} steps")
-                click.echo(f"📄 Total papers in BibTeX: {total_papers}")
+                click.echo(f"📊 Execution Plan ({total_papers} total papers)")
                 
-                for step_name, step_info in execution_steps.items():
-                    papers_list = step_info['papers']
-                    if step_info['count'] > 0:
-                        click.echo(f"  {step_name}: {step_info['count']} papers")
-                        if target_papers:
-                            # 対象論文がある場合はフィルタリング
-                            filtered = [p for p in papers_list if p in target_papers]
-                            if filtered:
-                                click.echo(f"    → Target papers: {', '.join(filtered)}")
-                        else:
-                            # 最初の5つを表示
-                            shown_papers = papers_list[:5]
-                            click.echo(f"    → {', '.join(shown_papers)}")
-                            if len(papers_list) > 5:
-                                click.echo(f"      ... and {len(papers_list) - 5} more")
+                for step, step_info in execution_plan.items():
+                    papers_count = step_info['papers_count']
+                    status = step_info['status']
+                    
+                    if status == 'planned':
+                        click.echo(f"  {step}: {papers_count} papers to process")
+                        if papers_count > 0 and papers_count <= 5:
+                            papers_list = step_info.get('papers_to_process', [])
+                            click.echo(f"    → {', '.join(papers_list[:5])}")
+                        elif papers_count > 5:
+                            papers_list = step_info.get('papers_to_process', [])
+                            click.echo(f"    → {', '.join(papers_list[:3])} ... and {papers_count - 3} more")
+                    elif status == 'skipped':
+                        click.echo(f"  {step}: ⏭️  skipped")
                     else:
-                        click.echo(f"  {step_name}: ✅ all papers completed")
+                        click.echo(f"  {step}: ✅ all papers completed")
                 
-                return
-            
-            # Enhanced workflowの実行
-            click.echo("🚀 Starting enhanced integrated workflow with status management...")
-            if force_regenerate:
-                click.echo("🔄 Force regenerate mode: resetting all status flags")
-            
-            # 実行オプションの構築
-            options = {
-                'dry_run': ctx['dry_run'],
-                'auto_approve': auto_approve,
-                'backup_existing': backup_existing,
-                'continue_on_failure': continue_on_failure,
-                'enable_enrichment': not disable_enrichment,
-                'enrichment_field_type': enrichment_field_type
-            }
-            
-            # Enhanced workflow実行
-            if force_regenerate:
-                result = enhanced_workflow.execute_force_regenerate(bibtex_file, clippings_dir, **options)
-            else:
-                result = enhanced_workflow.execute_with_status_tracking(
-                    bibtex_file, clippings_dir, target_papers, **options
-                )
-            
-            # 結果の表示
-            if result['success']:
-                results = result['results']
-                steps_executed = results.get('steps_executed', [])
-                total_processed = results.get('total_papers_processed', 0)
-                
-                click.echo(f"✅ Enhanced workflow completed successfully!")
-                click.echo(f"📊 Steps executed: {' → '.join(steps_executed)}")
-                click.echo(f"📄 Papers processed: {total_processed}")
-                
-                if ctx['verbose'] and 'step_results' in results:
-                    click.echo("\n📋 Detailed Results:")
-                    for step, step_result in results['step_results'].items():
-                        click.echo(f"  {step}: {'✅' if step_result.get('success', False) else '❌'}")
-            else:
-                error = result.get('error', 'Unknown error')
-                click.echo(f"❌ Enhanced workflow failed: {error}")
-                sys.exit(1)
+                estimated_time = plan.get('estimated_total_time', '0 minutes 0 seconds')
+                click.echo(f"⏱️  Estimated time: {estimated_time}")
             
             return
         
-        # 従来のワークフロー処理
-        # 実行するワークフローの決定
-        workflows_to_run = []
-        
-        if sync_first:
-            workflows_to_run.append('sync_check')
-        if organize_first:
-            workflows_to_run.append('file_organization')
-        if fetch_citations:
-            workflows_to_run.append('citation_fetching')
-        if include_citation_parser:
-            if not citation_parser_input:
-                click.echo("❌ Citation parser requires --citation-parser-input option", err=True)
-                sys.exit(1)
-            workflows_to_run.append('citation_parser')
-        
-        # デフォルト動作: organize → sync → citation
-        if not any([sync_first, organize_first, fetch_citations, include_citation_parser]):
-            workflows_to_run = ['file_organization', 'sync_check', 'citation_fetching']
-            click.echo("🔄 Default integrated workflow: file-organization → sync-check → citation-fetching")
-        
-        # 実行順序の表示
-        workflow_names = " → ".join(workflows_to_run)
-        click.echo(f"🚀 Starting integrated workflow: {workflow_names}")
-        if backup_existing:
-            click.echo("💾 Backup mode enabled")
-        
-        # Enrichment設定の表示
-        if 'citation_fetching' in workflows_to_run and not disable_enrichment:
-            click.echo(f"🔧 Metadata enrichment enabled: {enrichment_field_type} field prioritization")
-        elif 'citation_fetching' in workflows_to_run and disable_enrichment:
-            click.echo("🔧 Metadata enrichment disabled")
-        
-        # 実行結果の収集
-        overall_success = True
-        all_results = {}
-        execution_summary = []
-        
-        # 各ワークフローを順次実行
-        for i, workflow_name in enumerate(workflows_to_run, 1):
-            try:
-                click.echo(f"\n📋 Step {i}/{len(workflows_to_run)}: {workflow_name}")
-                
-                # ワークフロー固有のオプション構築
-                options = {
-                    'dry_run': ctx['dry_run'],
-                    'auto_approve': auto_approve
-                }
-                
-                # citation_fetchingの場合は追加オプション
-                if workflow_name == 'citation_fetching':
-                    options.update({
-                        'use_sync_integration': True,  # 統合ワークフローでは常にsync連携
-                        'backup_existing': backup_existing,
-                        'enable_enrichment': not disable_enrichment,  # ユーザー設定に基づく
-                        'enrichment_field_type': enrichment_field_type,
-                        'enrichment_quality_threshold': 0.8,  # デフォルト品質閾値
-                        'enrichment_max_attempts': 3  # デフォルト最大試行回数
-                    })
-                
-                # citation_parserの場合は直接実行
-                if workflow_name == 'citation_parser':
-                    workflow = CitationParserWorkflow(ctx['config_manager'], ctx['logger'])
-                    success, results = workflow.execute(citation_parser_input, **options)
-                else:
-                    # ワークフロー実行
-                    success, results = workflow_manager.execute_workflow(
-                        WorkflowType(workflow_name),
-                        **options
-                    )
-                
-                all_results[workflow_name] = results
-                execution_summary.append({
-                    'workflow': workflow_name,
-                    'success': success,
-                    'results': results
-                })
-                
-                if success:
-                    click.echo(f"✅ {workflow_name} completed successfully")
-                    
-                    # 簡潔な結果表示
-                    if workflow_name == 'sync_check':
-                        missing_in_clippings = len(results.get('missing_in_clippings', []))
-                        missing_in_bib = len(results.get('missing_in_bib', []))
-                        total_issues = missing_in_clippings + missing_in_bib
-                        click.echo(f"   🔍 Sync status: {total_issues} issues found")
-                    
-                    elif workflow_name == 'file_organization':
-                        organized = results.get('organized_files', 0)
-                        click.echo(f"   📁 Organized: {organized} files")
-                    
-                    elif workflow_name == 'citation_fetching':
-                        individual_saves = results.get('successful_individual_saves', 0)
-                        total_refs = results.get('total_references_saved', 0)
-                        click.echo(f"   📖 Citations: {individual_saves} papers, {total_refs} references")
-                    
-                    elif workflow_name == 'citation_parser':
-                        stats = results.get('statistics', {})
-                        total_citations = stats.get('total_citations', 0)
-                        converted_citations = stats.get('converted_citations', 0)
-                        click.echo(f"   📝 Citations parsed: {converted_citations}/{total_citations}")
-                
-                else:
-                    error = results.get('error', 'Unknown error')
-                    click.echo(f"❌ {workflow_name} failed: {error}")
-                    overall_success = False
-                    
-                    if not continue_on_failure:
-                        break
-                
-            except Exception as e:
-                click.echo(f"❌ {workflow_name} error: {e}")
-                overall_success = False
-                
-                if not continue_on_failure:
-                    break
-        
-        # 最終結果の表示
-        click.echo(f"\n{'='*50}")
-        if overall_success:
-            click.echo("🎉 Integrated workflow completed successfully!")
+        # 強制再処理モード
+        if force_reprocess:
+            click.echo("🔄 Force reprocess mode: resetting all status flags...")
+            result = integrated_workflow.force_reprocess(**options)
         else:
-            click.echo("⚠️ Integrated workflow completed with some failures")
-        
-        # 詳細統計の表示
-        if ctx['verbose']:
-            click.echo(f"\n📊 Detailed Results:")
-            for summary in execution_summary:
-                workflow = summary['workflow']
-                success = summary['success']
-                status_icon = "✅" if success else "❌"
-                click.echo(f"  {status_icon} {workflow}")
-                
-                if success and 'statistics' in summary['results']:
-                    stats = summary['results']['statistics']
-                    for key, value in stats.items():
-                        if isinstance(value, (int, float)) and value > 0:
-                            click.echo(f"     {key}: {value}")
-        
-        # 統合結果の構築
-        integrated_results = {
-            'overall_success': overall_success,
-            'workflows_executed': workflows_to_run,
-            'individual_results': all_results,
-            'execution_summary': execution_summary
-        }
-        
-        if not overall_success:
-            sys.exit(1)
+            # 通常実行
+            click.echo("🚀 Starting integrated workflow v3.0...")
+            if workspace:
+                click.echo(f"📁 Workspace: {workspace}")
             
+            result = integrated_workflow.execute(**options)
+        
+        # 結果表示
+        if result['status'] == 'success':
+            click.echo("✅ Integrated workflow completed successfully!")
+            
+            # 統計表示
+            if 'statistics' in result:
+                stats = result['statistics']
+                click.echo(f"📊 Statistics:")
+                click.echo(f"   • Total papers: {stats.get('total_papers', 0)}")
+                click.echo(f"   • Processed papers: {stats.get('processed_papers', 0)}")
+                
+                for step in ['organize', 'sync', 'fetch', 'parse']:
+                    if step in stats:
+                        step_stats = stats[step]
+                        processed = step_stats.get('processed', 0)
+                        skipped = step_stats.get('skipped', 0)
+                        if processed > 0 or skipped > 0:
+                            click.echo(f"   • {step}: {processed} processed, {skipped} skipped")
+        
+        elif result['status'] == 'error':
+            click.echo(f"❌ Integrated workflow failed: {result.get('message', 'Unknown error')}")
+            if 'details' in result:
+                details = result['details']
+                if isinstance(details, dict):
+                    for key, value in details.items():
+                        click.echo(f"   {key}: {value}")
+                else:
+                    click.echo(f"   Details: {details}")
+            sys.exit(1)
+        
+        else:
+            click.echo(f"⚠️  Workflow completed with status: {result['status']}")
+            if 'message' in result:
+                click.echo(f"   Message: {result['message']}")
+                
     except Exception as e:
-        logger.error(f"Integrated workflow failed: {e}")
-        click.echo(f"❌ Unexpected error: {e}", err=True)
+        click.echo(f"❌ Integrated workflow failed: {e}", err=True)
+        logger = ctx['logger'].get_logger('CLI')
+        logger.error(f"Integrated workflow error: {e}")
         sys.exit(1)
+
+
+
 
 
 @cli.command()

@@ -15,6 +15,7 @@ from .exceptions import ConfigError, ValidationError
 DEFAULT_INTEGRATED_CONFIG = {
     # 共通設定
     "common": {
+        "workspace_path": "/home/user/ManuscriptsManager",
         "bibtex_file": "TestManuscripts/CurrentManuscript.bib",
         "clippings_dir": "TestManuscripts/Clippings",
         "output_dir": "TestManuscripts/References",
@@ -102,6 +103,7 @@ DEFAULT_INTEGRATED_CONFIG = {
 # バリデーションルール
 VALIDATION_RULES = {
     "common": {
+        "workspace_path": {"required": False, "type": "directory_path"},
         "bibtex_file": {"required": True, "type": "file_path"},
         "clippings_dir": {"required": True, "type": "directory_path"},
         "log_level": {"required": False, "type": "choice", "choices": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]}

@@ -33,7 +33,7 @@ uv run code/unittest/run_all_tests.py
 **重要**: 全テストが成功してから次に進む
 
 ### 4. 仕様書同期
-- 実装と仕様書(`code/contexts/*.md`)の整合性確認
+- 実装と仕様書(`code/contexts/*.md`, `README.md`)の整合性確認
 - 不整合があれば仕様書を更新
 
 ### 5. Git操作

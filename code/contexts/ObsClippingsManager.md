@@ -1,17 +1,17 @@
-# ObsClippingsManager v2.0 統合システム仕様書
+# ObsClippingsManager v3.0 統合システム仕様書
 
 ## 概要
-ObsClippingsManager v2.0 は、学術研究における文献管理とMarkdownファイル整理を自動化する統合システムです。BibTeX文献データベースと連携し、引用文献の自動取得からファイル整理まで一貫した研究支援機能を提供します。
+ObsClippingsManager v3.0 は、学術研究における文献管理とMarkdownファイル整理を自動化する統合システムです。**シンプルな設定**と**デフォルト引数なし実行**を重視し、効率的な状態管理により重複処理を自動回避します。
 
-**v2.0 の特徴:**
-- 完全統合されたモジュラーアーキテクチャ
-- 単一エントリーポイント (`main.py`) による簡素化
-- 9つの専用コマンドによる機能分離（同期チェック機能追加）
-- レガシーコード完全削除による保守性向上
+**v3.0 の特徴:**
+- **シンプル設定**: 単一引数での統一ディレクトリ設定
+- **デフォルト実行**: 引数なしでの完全動作
+- **効率的処理**: 状態管理による重複処理の自動スキップ
+- **独立モジュール**: 各機能の完全な分離を維持
 
 ## システム構成
 
-本システムは以下の5つの主要モジュールで構成されています：
+本システムは以下の5つの独立モジュールで構成され、すべてが`run-integrated`で統合実行されます：
 
 ### 1. Citation Fetcher機能
 - 学術論文の引用文献を自動取得
@@ -24,128 +24,321 @@ ObsClippingsManager v2.0 は、学術研究における文献管理とMarkdown�
 - YAML frontmatter内のDOIとBibTeX DOIの自動照合
 - Citation keyベースのディレクトリ構造での整理
 
-### 3. 同期チェック機能（新機能）
+### 3. 同期チェック機能
 - BibTeXファイルとClippingsディレクトリの整合性確認
 - 不足論文の詳細報告（タイトル、DOI、ウェブリンク）
 - ブラウザでのDOIリンク自動開放
 
-### 4. 引用文献パース機能（新機能）
+### 4. 引用文献パース機能
 - 様々な形式の引用文献を統一フォーマットに変換
 - リンク付き引用からの対応表生成
 - 複数の引用パターンの自動検出・変換
 
-### 5. 共通モジュール (Shared)
-- 統合設定管理 (ConfigManager)
-- 統合ログシステム (IntegratedLogger)
-- BibTeX解析エンジン (BibTeXParser)
+### 5. 状態管理システム
+- 各論文の処理状態をYAMLヘッダーで追跡
+- 完了済み処理の自動スキップ
+- 失敗処理の再実行制御
 
-## 全体アーキテクチャ (v2.0)
+## 全体アーキテクチャ (v3.0)
 
 ```
-ObsClippingsManager v2.0 統合システム
-├── main.py                           # 統合メインプログラム (946行)
+ObsClippingsManager v3.0 統合システム
+├── main.py                           # 統合メインプログラム
 └── modules/                          # モジュラーアーキテクチャ
-    ├── __init__.py                   # v2.0 統合エクスポート
-    ├── shared/                       # 共有モジュール (6 files)
+    ├── shared/                       # 共有モジュール
     │   ├── config_manager.py         # 統合設定管理
     │   ├── logger.py                 # 統合ログシステム
     │   ├── bibtex_parser.py          # 高度BibTeX解析
     │   ├── utils.py                  # 共通ユーティリティ
     │   └── exceptions.py             # 階層的例外管理
-    ├── citation_fetcher/             # 引用文献取得 (10 files)
-    │   ├── crossref_client.py        # CrossRef APIクライアント
-    │   ├── opencitations_client.py   # OpenCitations APIクライアント
-    │   ├── metadata_enricher.py      # メタデータ補完機能
-    │   ├── pubmed_client.py          # PubMed APIクライアント
-    │   ├── semantic_scholar_client.py # Semantic Scholar APIクライアント
-    │   ├── openalex_client.py        # OpenAlex APIクライアント
-    │   ├── reference_formatter.py    # BibTeX変換
-    │   ├── fallback_strategy.py      # フォールバック戦略
-    │   └── sync_integration.py       # 同期機能統合
-    ├── rename_mkdir_citation_key/    # ファイル整理 (5 files)
-    ├── citation_parser/              # 引用文献パース (9 files)
-    │   ├── citation_parser.py        # メインパーサー
-    │   ├── pattern_detector.py       # パターン検出エンジン
-    │   ├── format_converter.py       # フォーマット変換エンジン
-    │   └── link_extractor.py         # リンク抽出機能
-    └── workflows/                    # ワークフロー管理 (6 files)
-        ├── citation_workflow.py      # 引用文献取得ワークフロー
-        ├── organization_workflow.py  # ファイル整理ワークフロー
-        ├── sync_check_workflow.py    # 同期チェックワークフロー（新規）
-        ├── citation_parser_workflow.py # 引用文献パースワークフロー（新規）
-        └── workflow_manager.py       # 統合ワークフロー管理
+    ├── citation_fetcher/             # 引用文献取得
+    ├── rename_mkdir_citation_key/    # ファイル整理
+    ├── citation_parser/              # 引用文献パース
+    ├── status_management/            # 状態管理
+    └── workflows/                    # ワークフロー管理
+        └── integrated_workflow.py    # 統合ワークフロー（メイン）
 ```
 
-## 主要機能
+## 統一設定システム
 
-### 1. 引用文献自動取得
-- **入力**: BibTeXファイル内のDOI
-- **処理**: CrossRef → PubMed → Semantic Scholar → OpenAlex → OpenCitations フォールバック戦略
-- **出力**: 引用文献のBibTeXファイル
+### 基本原理
+**単一のワークスペースパス設定**ですべてのディレクトリを統一管理：
 
-### 2. ファイル自動整理
-- **入力**: Clippingsディレクトリ内のMarkdownファイル
-- **処理**: BibTeX DOIとの照合、citation keyディレクトリ作成
-- **出力**: 整理されたディレクトリ構造
+```yaml
+# config/config.yaml（デフォルト設定）
+workspace_path: "/home/user/ManuscriptsManager"  # 単一設定
 
-### 3. 同期チェック（新機能）
-- **入力**: CurrentManuscript.bibファイルとClippings/サブディレクトリ
-- **処理**: 双方向整合性チェック、不一致の検出
-- **出力**: 不足論文の詳細報告（タイトル、DOI、ウェブリンク）
+# 自動導出されるパス
+bibtex_file: "{workspace_path}/CurrentManuscript.bib"
+clippings_dir: "{workspace_path}/Clippings"
+output_dir: "{workspace_path}/Clippings"
+```
 
-## 実行方法 (v2.0)
-
-### 基本実行コマンド
+### デフォルト実行（引数なし）
 ```bash
-PYTHONPATH=code/py uv run python code/py/main.py [COMMAND] [OPTIONS]
+# これだけで完全実行
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated
 ```
 
-### 利用可能コマンド (9コマンド)
-
+### 個別設定（必要時のみ）
 ```bash
-# システム管理
-version                    # バージョン情報
-validate-config           # 設定ファイル検証
-show-stats               # システム統計表示
-show-history             # 実行履歴表示
+# ワークスペースパス変更
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace "/path/to/other/workspace"
 
-# 主要機能
-organize-files           # ファイル整理ワークフロー
-sync-check              # 同期チェックワークフロー（新機能）
-fetch-citations         # 引用文献取得ワークフロー
-parse-citations         # 引用文献パースワークフロー（新機能）
-run-integrated          # 統合ワークフロー
+# 個別ファイル指定（上級者向け）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --bibtex-file "/path/to/specific.bib" \
+    --clippings-dir "/path/to/specific/clippings"
 ```
+
+## テスト環境構築・管理
+
+### テスト環境の概要
+ObsClippingsManager v3.0 では、本番環境を模したテスト環境を簡単に構築・管理できます。テスト環境は本番データの複製または疑似データを使用して、安全にシステムの動作検証を行えます。
+
+### テスト環境セットアップ
+
+#### 1. 初期構築
+```bash
+# 本番環境からテストデータを作成
+python code/scripts/setup_test_env.py
+
+# カスタムパスでの構築
+python code/scripts/setup_test_env.py \
+    --source "/path/to/production" \
+    --test-dir "/path/to/test/environment"
+```
+
+#### 2. テスト環境リセット
+```bash
+# テスト環境を初期状態に戻す
+python code/scripts/setup_test_env.py --reset
+
+# カスタムテストディレクトリのリセット
+python code/scripts/setup_test_env.py --reset --test-dir "/path/to/test/environment"
+```
+
+### テスト環境での実行
+
+#### 基本的なテスト実行
+```bash
+# テスト環境での統合ワークフロー実行
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts"
+
+# 簡略コマンド（エイリアス推奨）
+TEST_WS="/home/user/proj/ObsClippingsManager/TestManuscripts"
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace "$TEST_WS"
+```
+
+#### テスト実行オプション
+```bash
+# 実行計画確認（テスト環境）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --workspace "$TEST_WS" --show-plan
+
+# ドライラン実行（テスト環境）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --workspace "$TEST_WS" --dry-run
+
+# 詳細ログでテスト実行
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --workspace "$TEST_WS" --log-level debug --verbose
+```
+
+### テスト環境構造
+```
+TestManuscripts/                        # テストワークスペース
+├── .test_env_info.txt                  # テスト環境情報
+├── CurrentManuscript.bib               # テスト用BibTeXファイル
+└── Clippings/                          # テスト用論文ディレクトリ
+    ├── sample_paper1.md               # サンプル論文1
+    ├── sample_paper2.md               # サンプル論文2
+    └── ...                            # その他のテストファイル
+```
+
+### テスト環境管理
+
+#### 環境情報確認
+```bash
+# テスト環境の詳細確認
+cat TestManuscripts/.test_env_info.txt
+
+# テスト環境の状態確認
+ls -la TestManuscripts/
+ls -la TestManuscripts/Clippings/
+```
+
+#### テストサイクル
+```bash
+# 1. テスト環境リセット
+python code/scripts/setup_test_env.py --reset
+
+# 2. テスト実行
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts"
+
+# 3. 結果確認
+ls -la TestManuscripts/Clippings/  # 処理後の状態確認
+
+# 4. 次回テストのためのリセット
+python code/scripts/setup_test_env.py --reset
+```
+
+### テスト推奨ワークフロー
+
+#### 開発時テスト
+```bash
+# 新機能開発後の基本テスト
+python code/scripts/setup_test_env.py --reset
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts" \
+    --log-level debug
+```
+
+#### デバッグ用テスト
+```bash
+# 問題特定のための詳細テスト
+python code/scripts/setup_test_env.py --reset
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts" \
+    --dry-run --show-plan --verbose
+```
+
+#### 本番前最終確認
+```bash
+# 本番環境と同等データでのテスト
+python code/scripts/setup_test_env.py  # 本番データコピー
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts"
+```
+
+## メイン機能: run-integrated
+
+### 基本実行
+```bash
+# デフォルト実行（推奨）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated
+
+# 実行計画確認
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --show-plan
+
+# 強制再処理
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --force-reprocess
+```
+
+### 処理フロー
+1. **organize**: Markdownファイル → citation keyディレクトリ整理
+2. **sync**: BibTeX ↔ Clippingsディレクトリ整合性チェック
+3. **fetch**: DOI → references.bib引用文献取得
+4. **parse**: Markdownファイル内引用解析
+
+### 状態管理による効率化
+- **自動スキップ**: 完了済み処理は自動的にスキップ
+- **失敗再実行**: 失敗した処理のみ再実行
+- **依存関係**: 前段階完了後に次段階を実行
+- **状態追跡**: 各論文の.mdファイルのYAMLヘッダーで状態管理
+
+## 主要オプション
 
 ### グローバルオプション
 ```bash
-Options:
-  -c, --config PATH      Configuration file path
-  -l, --log-level        Logging level [debug|info|warning|error]
-  -n, --dry-run         Perform dry run without changes
-  -v, --verbose         Enable verbose output
+-w, --workspace PATH     # ワークスペースパス（デフォルト: /home/user/ManuscriptsManager）
+-c, --config PATH        # 設定ファイルパス
+-l, --log-level LEVEL    # ログレベル [debug|info|warning|error]
+-n, --dry-run           # ドライラン実行
+-v, --verbose           # 詳細出力
+```
+
+### 実行制御オプション
+```bash
+--show-plan             # 実行計画表示（実行しない）
+--force-reprocess       # 全状態リセット後実行
+--papers TEXT           # 特定論文のみ処理（カンマ区切り）
+--skip-steps TEXT       # 特定ステップをスキップ
+```
+
+### 個別設定オプション（上級者向け）
+```bash
+--bibtex-file PATH      # BibTeXファイル個別指定
+--clippings-dir PATH    # Clippingsディレクトリ個別指定
+--output-dir PATH       # 出力ディレクトリ個別指定
 ```
 
 ## 使用例
 
-### 基本的な実行
+### 基本的な使用方法
 ```bash
-# 統合実行（推奨）
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --dry-run --verbose
+# 初回実行（すべて処理される）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated
 
-# 個別機能実行
-PYTHONPATH=code/py uv run python code/py/main.py organize-files --auto-approve
-PYTHONPATH=code/py uv run python code/py/main.py sync-check --open-doi-links
-PYTHONPATH=code/py uv run python code/py/main.py fetch-citations
-PYTHONPATH=code/py uv run python code/py/main.py parse-citations --input-file paper.md
+# 2回目実行（完了済みはスキップされる）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated
+
+# 実行前に計画確認
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --show-plan
+
+# 特定論文のみ処理
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --papers "smith2023,jones2024"
+
+# 強制再処理
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --force-reprocess
+```
+
+### 異なるワークスペースでの実行
+```bash
+# プロジェクトA
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace "/home/user/ProjectA"
+
+# プロジェクトB  
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace "/home/user/ProjectB"
 ```
 
 ### システム管理
 ```bash
-# システム情報確認
+# バージョン確認
 PYTHONPATH=code/py uv run python code/py/main.py version
+
+# 設定検証
+PYTHONPATH=code/py uv run python code/py/main.py validate-config
+
+# 統計情報
 PYTHONPATH=code/py uv run python code/py/main.py show-stats
-PYTHONPATH=code/py uv run python code/py/main.py show-history
+```
+
+## ディレクトリ構造
+
+### 標準ワークスペース
+```
+/home/user/ManuscriptsManager/          # ワークスペースルート
+├── CurrentManuscript.bib               # メインBibTeXファイル
+└── Clippings/                          # 論文ディレクトリ
+    ├── smith2023test/
+    │   ├── smith2023test.md            # 状態管理ヘッダー付き論文ファイル
+    │   └── references.bib              # 引用文献
+    ├── jones2024neural/
+    │   ├── jones2024neural.md
+    │   └── references.bib
+    └── ...
+```
+
+### 状態管理ヘッダー例
+```yaml
+---
+obsclippings_metadata:
+  citation_key: "smith2023test"
+  processing_status:
+    organize: "completed"
+    sync: "completed" 
+    fetch: "completed"
+    parse: "completed"
+  last_updated: "2025-01-15T10:30:00Z"
+  workflow_version: "3.0"
+---
+
+# Smith et al. (2023) - Example Paper Title
+
+論文の内容...
 ```
 
 ## 依存関係
@@ -159,6 +352,7 @@ python-levenshtein>=0.12.0 # 高速文字列比較
 requests>=2.25.0          # HTTP APIクライアント
 pydantic>=1.8.0           # 設定バリデーション
 metapub>=0.5.5            # PubMed API クライアント
+pyyaml>=6.0               # YAML処理
 ```
 
 ### 実行環境
@@ -166,43 +360,29 @@ metapub>=0.5.5            # PubMed API クライアント
 uv sync                   # 依存関係同期
 ```
 
-## v2.0 の改善点
+## v3.0 の改善点
 
-### アーキテクチャ改善
-- **単一エントリーポイント**: main.py への統一
-- **モジュール完全分離**: 機能別の明確な境界
-- **重複コード削除**: 20.7%のファイル削減
+### シンプル化
+- **単一設定**: workspace_pathのみでの統一管理
+- **デフォルト実行**: 引数なしでの完全動作
+- **統合コマンド**: run-integratedへの機能集約
 
-### 機能強化
-- **9つの専用コマンド**: 機能別の最適化実行
-- **同期チェック機能**: .bibとClippings/の整合性確認、DOIリンク自動開放
-- **引用文献パース機能**: 複数引用形式の統一化・リンク抽出
-- **メタデータ補完機能**: PubMed、Semantic Scholar、OpenAlex API統合
-- **統合ログシステム**: ファイル出力対応
-- **設定管理強化**: ConfigManager による一元管理
+### 効率化
+- **状態管理**: YAMLヘッダーによる永続的状態追跡
+- **自動スキップ**: 完了済み処理の自動回避
+- **依存関係**: 効率的な実行順序制御
 
-### 運用改善
-- **簡素化された実行方法**: 複雑なパス指定の削減
-- **エラーハンドリング向上**: 階層的例外管理
-- **デバッグ支援**: 詳細ログと統計情報
-
-### テスト品質向上
-- **包括的テストカバレッジ**: 126個のテストで100%成功率
-- **TDDアプローチ**: 仕様先行の高品質開発
-- **エッジケース対応**: 例外処理・境界値テストの強化
-- **CLI機能テスト**: Click フレームワークによる統合テスト
-- **Python 3.x互換性**: 例外チェーン構文の最適化
+### 品質向上
+- **モジュール独立性**: 各機能の完全分離維持
+- **エラーハンドリング**: 失敗時の適切な状態管理
+- **設定検証**: 実行前の設定妥当性チェック
 
 ---
 
-**統合仕様書バージョン**: 2.0.0  
+**統合仕様書バージョン**: 3.0.0
 
 ## 関連仕様書
-- [メイン統合仕様書](./main_integration_specification.md) - 詳細な実装仕様
-- [Citation Fetcher仕様書](./citation_fetcher_specification.md) - 引用取得機能
-- [Rename MkDir Citation Key仕様書](./rename_mkdir_citation_key_specification.md) - ファイル整理機能
-- [同期チェックワークフロー仕様書](./sync_check_workflow_specification.md) - 同期チェック機能
-- [引用文献パーサー仕様書](./citation_parser_specification.md) - 引用文献パース機能
-- [共通モジュール仕様書](./shared_modules_specification.md) - 共通モジュール詳細
-- [メタデータ補完機能仕様書](./metadata_enrichment_specification.md) - メタデータ補完機能詳細
+- [統合ワークフロー仕様](./integrated_workflow_specification.md)
+- [状態管理システム仕様](./status_management_specification.md)
+- [共有モジュール仕様](./shared_modules_specification.md)
 

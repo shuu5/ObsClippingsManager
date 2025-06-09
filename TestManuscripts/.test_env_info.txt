@@ -1,0 +1,10 @@
+Test Environment Setup Information
+==================================
+Setup Date: 2025-06-09T13:26:49.387277
+Source Directory: /home/user/ManuscriptsManager
+Test Directory: /home/user/proj/ObsClippingsManager/TestManuscripts
+BibTeX File: /home/user/proj/ObsClippingsManager/TestManuscripts/CurrentManuscript.bib
+Clippings Directory: /home/user/proj/ObsClippingsManager/TestManuscripts/Clippings
+
+Reset Command:
+python code/scripts/setup_test_env.py --reset
