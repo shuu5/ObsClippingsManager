@@ -1,47 +1,46 @@
 """
-ObsClippingsManager モジュールパッケージ - v2.0 統合システム
+ObsClippingsManager モジュールパッケージ - v3.0 統合システム
 """
 
-__version__ = "2.0.0"
+__version__ = "3.0.0"
 __author__ = "ObsClippingsManager Team"
 
 # 新しいモジュラーアーキテクチャ
 from .shared import *
 from .citation_fetcher import *
-from .citation_parser import *
 from .rename_mkdir_citation_key import *
 from .workflows import *
+from .ai_citation_support import *
 
 __all__ = [
-    # Shared modules
+    # 共有モジュール
     'ConfigManager',
     'IntegratedLogger',
     'BibTeXParser',
+    'StatusManager',
+    'ProcessStatus',
     
-    # Citation fetcher
+    # 引用文献取得モジュール
     'CrossRefClient',
     'OpenCitationsClient',
     'ReferenceFormatter',
     'FallbackStrategy',
+    'CitationFetcher',
     
-    # Citation parser
-    'CitationParser',
-    'PatternDetector',
-    'FormatConverter',
-    'LinkExtractor',
-    'CitationMatch',
-    'CitationResult',
-    'LinkEntry',
-    'ProcessingStats',
-    
-    # File organization
+    # ファイル整理モジュール
     'FileMatcher',
     'MarkdownManager',
     'DirectoryOrganizer',
     
-    # Workflows
-    'CitationWorkflow',
+    # ワークフローモジュール
+    'IntegratedWorkflow',
     'OrganizationWorkflow',
-    'WorkflowManager',
-    'WorkflowType'
+    'SyncCheckWorkflow',
+    'CitationWorkflow',
+    'AIMappingWorkflow',
+    
+    # AI理解支援モジュール
+    'CitationMappingEngine',
+    'CitationResolver',
+    'AIAssistantFileGenerator'
 ] 

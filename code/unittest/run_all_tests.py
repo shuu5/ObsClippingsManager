@@ -23,8 +23,8 @@ import test_shared_utils
 import test_shared_logger
 # import test_shared_exceptions  # 構文エラーのため一時的にコメントアウト
 import test_citation_fetcher
-import test_citation_parser
-import test_citation_parser_workflow
+# import test_citation_parser  # Deprecated in v3.0
+# import test_citation_parser_workflow  # Deprecated in v3.0
 import test_workflow_manager
 import test_rename_mkdir_citation_key
 import test_ai_citation_support  # v4.0 新機能テスト
@@ -48,8 +48,8 @@ def run_all_tests():
         test_shared_logger,
         # test_shared_exceptions,  # 構文エラーのため一時的にコメントアウト
         test_citation_fetcher,
-        test_citation_parser,
-        test_citation_parser_workflow,
+        # test_citation_parser,  # Deprecated in v3.0
+        # test_citation_parser_workflow,  # Deprecated in v3.0
         test_workflow_manager,
         test_rename_mkdir_citation_key,
         test_ai_citation_support,  # v4.0 新機能テスト
@@ -117,8 +117,8 @@ def run_specific_module_tests(module_name: str):
         'bibtex': test_shared_bibtex_parser,
         'utils': test_shared_utils,
         'citation': test_citation_fetcher,
-        'citation_parser': test_citation_parser,
-        'citation_parser_workflow': test_citation_parser_workflow,
+        # 'citation_parser': test_citation_parser,  # Deprecated in v3.0
+        # 'citation_parser_workflow': test_citation_parser_workflow,  # Deprecated in v3.0
         'workflow': test_workflow_manager,
         'rename_mkdir_citation_key': test_rename_mkdir_citation_key,
         'ai_citation_support': test_ai_citation_support

@@ -45,7 +45,7 @@ class StatusManager:
     """
     
     # 処理タイプ定義
-    PROCESS_TYPES = ['organize', 'sync', 'fetch', 'parse']
+    PROCESS_TYPES = ['organize', 'sync', 'fetch', 'ai-citation-support']
     
     def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger):
         """
@@ -181,7 +181,7 @@ class StatusManager:
                         'organize': ProcessStatus.PENDING.value,
                         'sync': ProcessStatus.PENDING.value,
                         'fetch': ProcessStatus.PENDING.value,
-                        'parse': ProcessStatus.PENDING.value
+                        'ai-citation-support': ProcessStatus.PENDING.value
                     },
                     'last_updated': datetime.now(timezone.utc).isoformat(),
                     'workflow_version': '3.0'
@@ -270,7 +270,7 @@ class StatusManager:
         Args:
             clippings_dir: Clippingsディレクトリパス
             citation_key: 論文のcitation key
-            process_type: 処理タイプ ('organize', 'sync', 'fetch', 'parse')
+            process_type: 処理タイプ ('organize', 'sync', 'fetch', 'ai-citation-support')
             status: 新しい状態
             
         Returns:
@@ -467,7 +467,7 @@ class StatusManager:
                         'organize': ProcessStatus.PENDING,
                         'sync': ProcessStatus.PENDING,
                         'fetch': ProcessStatus.PENDING,
-                        'parse': ProcessStatus.PENDING
+                        'ai-citation-support': ProcessStatus.PENDING
                     }
                 
                 success = self.batch_update_statuses(clippings_dir, updates)
@@ -482,7 +482,7 @@ class StatusManager:
                         'organize': ProcessStatus.PENDING,
                         'sync': ProcessStatus.PENDING,
                         'fetch': ProcessStatus.PENDING,
-                        'parse': ProcessStatus.PENDING
+                        'ai-citation-support': ProcessStatus.PENDING
                     }
                 success = self.batch_update_statuses(clippings_dir, updates)
                 if success:
@@ -607,9 +607,9 @@ class StatusManager:
                 'fetch': len([k for k, v in statuses.items() 
                             if v.get('sync') == ProcessStatus.COMPLETED and 
                                v.get('fetch') == ProcessStatus.PENDING]),
-                'parse': len([k for k, v in statuses.items() 
-                            if v.get('fetch') == ProcessStatus.COMPLETED and 
-                               v.get('parse') == ProcessStatus.PENDING])
+                'ai-citation-support': len([k for k, v in statuses.items()
+                                          if k in target_papers and
+                                          v.get('ai-citation-support') == ProcessStatus.PENDING])
             }
             
             return summary

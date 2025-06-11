@@ -22,7 +22,9 @@ from ..shared.exceptions import ObsClippingsError
 from .organization_workflow import OrganizationWorkflow
 from .sync_check_workflow import SyncCheckWorkflow
 from .citation_workflow import CitationWorkflow
-from .citation_parser_workflow import CitationParserWorkflow
+# from .citation_parser_workflow import CitationParserWorkflow  # Deprecated in v3.0
+
+from ..ai_citation_support import AIMappingWorkflow
 
 
 class IntegratedWorkflow:
@@ -37,7 +39,7 @@ class IntegratedWorkflow:
     """
     
     # 処理順序の定義
-    PROCESS_ORDER = ['organize', 'sync', 'fetch', 'parse']
+    PROCESS_ORDER = ['organize', 'sync', 'fetch', 'ai-citation-support']
     
     # デフォルト設定
     DEFAULT_WORKSPACE_PATH = "/home/user/ManuscriptsManager"
@@ -59,7 +61,8 @@ class IntegratedWorkflow:
         self.organize_workflow = OrganizationWorkflow(config_manager, logger)
         self.sync_workflow = SyncCheckWorkflow(config_manager, logger)
         self.fetch_workflow = CitationWorkflow(config_manager, logger)
-        self.parse_workflow = CitationParserWorkflow(config_manager, logger)
+        # self.parse_workflow = CitationParserWorkflow(config_manager, logger)  # Deprecated in v3.0
+        self.ai_citation_support_workflow = AIMappingWorkflow(config_manager, logger)
         
         self.logger.info("IntegratedWorkflow v3.0 initialized successfully")
     
@@ -192,10 +195,10 @@ class IntegratedWorkflow:
             見積もり時間（秒）
         """
         estimates = {
-            'organize': 5,   # 5秒/論文
-            'sync': 2,       # 2秒/論文  
-            'fetch': 30,     # 30秒/論文（API呼び出し）
-            'parse': 10      # 10秒/論文
+            'organize': 2,   # 2秒/論文
+            'sync': 1,       # 1秒/論文  
+            'fetch': 15,     # 15秒/論文
+            'ai-citation-support': 5      # 5秒/論文
         }
         
         return estimates.get(step, 5)
@@ -369,7 +372,7 @@ class IntegratedWorkflow:
         1. organize: ファイル整理
         2. sync: 同期チェック
         3. fetch: 引用文献取得
-        4. parse: 引用文献解析
+        4. ai-citation-support: AI理解支援統合
         
         Args:
             paths: 解決済みパス辞書
@@ -484,9 +487,8 @@ class IntegratedWorkflow:
                 success, result = self.sync_workflow.execute(**step_options)
             elif step == 'fetch':
                 success, result = self.fetch_workflow.execute(**step_options)
-            elif step == 'parse':
-                # parseは個別ファイル処理が必要なため特別処理
-                success, result = self._execute_parse_step(papers, paths, **step_options)
+            elif step == 'ai-citation-support':
+                success, result = self._execute_ai_citation_support_step(papers, paths, **step_options)
             else:
                 raise ValueError(f"Unknown step: {step}")
             
@@ -511,74 +513,80 @@ class IntegratedWorkflow:
                 'processed_papers': []
             }
     
-    def _execute_parse_step(self, papers: List[str], paths: Dict[str, str], **options) -> Tuple[bool, Dict[str, Any]]:
+    def _execute_ai_citation_support_step(self, papers: List[str], paths: Dict[str, str], **options) -> Tuple[bool, Dict[str, Any]]:
         """
-        引用文献解析ステップの実行
+        AI理解支援統合ステップ実行
         
         Args:
-            papers: 処理対象論文リスト
+            papers: 対象論文リスト
             paths: 解決済みパス辞書
             **options: 実行オプション
             
         Returns:
-            (成功フラグ, 実行結果)
+            (成功フラグ, 結果辞書)
         """
-        self.logger.info(f"Parse step: processing {len(papers)} papers")
-        
         try:
-            overall_success = True
-            processed_count = 0
-            failed_papers = []
+            self.logger.info(f"AI citation support step: processing {len(papers)} papers")
             
-            # 各論文のMarkdownファイルを個別に処理
-            for paper in papers:
-                paper_dir = os.path.join(paths['clippings_dir'], paper)
-                markdown_file = os.path.join(paper_dir, f"{paper}.md")
-                
-                if not os.path.exists(markdown_file):
-                    self.logger.warning(f"Markdown file not found for {paper}: {markdown_file}")
-                    failed_papers.append(paper)
-                    continue
-                
-                # CitationParserWorkflowを使用して引用文献を解析
-                parse_options = {
-                    'input_file': markdown_file,
-                    'output_file': markdown_file,  # 同じファイルに上書き
-                    'pattern_type': 'all',
-                    'output_format': 'unified',
-                    'enable_link_extraction': True,  # リンク抽出を有効化
-                    'expand_ranges': True,
-                    'auto_approve': options.get('auto_approve', False),
-                    'dry_run': options.get('dry_run', False)
-                }
-                
-                try:
-                    success, result = self.parse_workflow.execute(**parse_options)
-                    
-                    if success:
-                        processed_count += 1
-                        self.logger.debug(f"Successfully parsed citations for {paper}")
-                    else:
-                        overall_success = False
-                        failed_papers.append(paper)
-                        self.logger.warning(f"Failed to parse citations for {paper}: {result.get('error', 'Unknown error')}")
-                        
-                except Exception as e:
-                    overall_success = False
-                    failed_papers.append(paper)
-                    self.logger.error(f"Parse error for {paper}: {e}")
-            
-            return overall_success, {
-                'processed_papers': processed_count,
-                'failed_papers': failed_papers,
-                'total_papers': len(papers),
-                'message': f'Citation parsing completed: {processed_count}/{len(papers)} papers processed successfully'
+            # AIMappingWorkflowを使用してAI理解支援統合を実行
+            ai_citation_support_options = {
+                'clippings_dir': paths['clippings_dir'],
+                'bibtex_file': paths['bibtex_file'],
+                'target_papers': papers,
+                'enable_complete_mapping': options.get('enable_complete_mapping', True),
+                'update_yaml_header': options.get('update_yaml_header', True),
+                'backup_original': options.get('backup_original', True),
+                'include_abstracts': options.get('include_abstracts', True)
             }
             
+            # AIMappingWorkflowを実行
+            ai_result = self.ai_citation_support_workflow.execute(**ai_citation_support_options)
+            
+            if ai_result['status'] == 'success':
+                # 状態更新: 成功した論文の状態を更新
+                processed_papers = ai_result.get('processed_papers', papers)
+                for paper in processed_papers:
+                    success = self.status_manager.update_status(
+                        paths['clippings_dir'], paper, 'ai-citation-support', ProcessStatus.COMPLETED
+                    )
+                    if not success:
+                        self.logger.warning(f"Failed to update ai-citation-support status for {paper}")
+                
+                result = {
+                    'status': 'success',
+                    'processed_papers': len(processed_papers),
+                    'total_papers': len(papers),
+                    'ai_files_generated': ai_result.get('ai_files_generated', 0),
+                    'yaml_headers_updated': ai_result.get('yaml_headers_updated', 0)
+                }
+                
+                self.logger.info(f"AI citation support step completed: {len(processed_papers)}/{len(papers)} papers processed")
+                return True, result
+                
+            else:
+                # 失敗の場合
+                self.logger.error(f"AI citation support step failed: {ai_result.get('message', 'Unknown error')}")
+                
+                # 失敗した論文の状態を更新
+                for paper in papers:
+                    self.status_manager.update_status(
+                        paths['clippings_dir'], paper, 'ai-citation-support', ProcessStatus.FAILED
+                    )
+                
+                return False, ai_result
+                
         except Exception as e:
-            self.logger.error(f"Parse step failed: {e}")
+            self.logger.error(f"AI citation support step failed: {e}")
+            
+            # 例外の場合も失敗状態に更新
+            for paper in papers:
+                self.status_manager.update_status(
+                    paths['clippings_dir'], paper, 'ai-citation-support', ProcessStatus.FAILED
+                )
+            
             return False, {
-                'error': str(e),
+                'status': 'error',
+                'message': str(e),
                 'processed_papers': 0,
-                'failed_papers': papers
+                'total_papers': len(papers)
             } 
