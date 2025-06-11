@@ -169,23 +169,21 @@ class StatusManager:
             # 既存のYAMLヘッダーをチェック
             existing_metadata = self.parse_yaml_header(md_file_path)
             
-            if 'obsclippings_metadata' in existing_metadata:
+            if 'processing_status' in existing_metadata:
                 # 既に存在する場合は何もしない
                 return True
             
-            # 初期メタデータを作成
+            # 初期メタデータを作成（obsclippings_metadataなし）
             initial_metadata = {
-                'obsclippings_metadata': {
-                    'citation_key': citation_key,
-                    'processing_status': {
-                        'organize': ProcessStatus.PENDING.value,
-                        'sync': ProcessStatus.PENDING.value,
-                        'fetch': ProcessStatus.PENDING.value,
-                        'ai-citation-support': ProcessStatus.PENDING.value
-                    },
-                    'last_updated': datetime.now(timezone.utc).isoformat(),
-                    'workflow_version': '3.0'
-                }
+                'citation_key': citation_key,
+                'processing_status': {
+                    'organize': ProcessStatus.PENDING.value,
+                    'sync': ProcessStatus.PENDING.value,
+                    'fetch': ProcessStatus.PENDING.value,
+                    'ai-citation-support': ProcessStatus.PENDING.value
+                },
+                'last_updated': datetime.now(timezone.utc).isoformat(),
+                'workflow_version': '3.0'
             }
             
             # YAMLヘッダーを書き込み
@@ -233,14 +231,14 @@ class StatusManager:
                 # YAMLヘッダーを解析
                 metadata = self.parse_yaml_header(md_file_path)
                 
-                if 'obsclippings_metadata' not in metadata:
+                if 'processing_status' not in metadata:
                     # YAMLヘッダーがない場合は初期化
                     self.ensure_yaml_header(md_file_path, citation_key)
                     metadata = self.parse_yaml_header(md_file_path)
                 
                 # 状態を抽出
                 paper_statuses = {}
-                processing_status = metadata.get('obsclippings_metadata', {}).get('processing_status', {})
+                processing_status = metadata.get('processing_status', {})
                 
                 for process_type in self.PROCESS_TYPES:
                     status_value = processing_status.get(process_type, ProcessStatus.PENDING.value)
@@ -294,13 +292,13 @@ class StatusManager:
             # 現在のメタデータを読み込み
             metadata = self.parse_yaml_header(md_file_path)
             
-            if 'obsclippings_metadata' not in metadata:
+            if 'processing_status' not in metadata:
                 self.logger.error(f"Failed to initialize YAML header for {citation_key}")
                 return False
             
             # 状態を更新
-            metadata['obsclippings_metadata']['processing_status'][process_type] = status.value
-            metadata['obsclippings_metadata']['last_updated'] = datetime.now(timezone.utc).isoformat()
+            metadata['processing_status'][process_type] = status.value
+            metadata['last_updated'] = datetime.now(timezone.utc).isoformat()
             
             # YAMLヘッダーを書き戻し
             success = self.write_yaml_header(md_file_path, metadata)

@@ -79,6 +79,41 @@ class BibTeXParser:
             
         except Exception as e:
             raise BibTeXParseError(f"Failed to parse BibTeX file: {e}")
+
+    def parse_file_with_duplicates(self, file_path: str) -> List[Dict[str, str]]:
+        """
+        BibTeXファイルを解析（重複エントリーを保持）
+        
+        Args:
+            file_path: BibTeXファイルパス
+            
+        Returns:
+            List[エントリ情報] のリスト（重複キーを含む）
+        """
+        file_path_obj = Path(file_path)
+        
+        if not file_path_obj.exists():
+            raise BibTeXParseError(f"BibTeX file not found: {file_path}")
+        
+        try:
+            with open(file_path_obj, 'r', encoding=self.encoding) as bibtex_file:
+                parser = BibtexparserBibTexParser(common_strings=True)
+                parser.customization = convert_to_unicode
+                bib_database = bibtexparser.load(bibtex_file, parser=parser)
+            
+            # エントリを内部形式に変換（リストとして保持し重複を許可）
+            entries = []
+            for entry in bib_database.entries:
+                citation_key = entry.get('ID', '')
+                if citation_key:
+                    normalized_entry = self.normalize_entry(entry)
+                    entries.append(normalized_entry)
+            
+            logging.info(f"Parsed {len(entries)} BibTeX entries (with duplicates) from {file_path}")
+            return entries
+            
+        except Exception as e:
+            raise BibTeXParseError(f"Failed to parse BibTeX file: {e}")
     
     def extract_dois(self, entries: Dict[str, Dict[str, str]]) -> List[str]:
         """

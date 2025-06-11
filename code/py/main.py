@@ -632,12 +632,8 @@ def run_integrated(ctx: Dict[str, Any],
 @click.option('--output-file', '-o',
               help='AI readable file output path (auto-generated if not specified)',
               type=click.Path())
-@click.option('--no-ai-file',
-              is_flag=True,
-              help='Skip AI file generation (mapping only)')
-@click.option('--preview',
-              is_flag=True,
-              help='Show citation preview only')
+# AI用ファイル生成オプションは削除されました
+# 仕様書に従い、YAMLヘッダー統合機能のみを実装
 @click.option('--auto-approve', '-y',
               is_flag=True,
               help='Automatically approve all operations')
@@ -646,14 +642,12 @@ def ai_mapping(ctx: Dict[str, Any],
                markdown_file: str,
                references_bib: str,
                output_file: Optional[str],
-               no_ai_file: bool,
-               preview: bool,
                auto_approve: bool):
     """
     AI理解支援引用文献統合を実行 (v4.0)
     
     Markdownファイル内の引用番号 [1], [2], [3] をreferences.bibの
-    citation_keyとマッピングし、AIアシスタントが理解できる統合ファイルを生成します。
+    citation_keyとマッピングし、YAMLヘッダーに統合します。
     """
     try:
         workflow_manager = ctx['workflow_manager']

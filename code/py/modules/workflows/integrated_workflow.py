@@ -528,15 +528,30 @@ class IntegratedWorkflow:
         try:
             self.logger.info(f"AI citation support step: processing {len(papers)} papers")
             
-            # 各論文のMarkdownファイルとBibTeXファイルのペアを作成
+            # 各論文のMarkdownファイルとローカルreferences.bibファイルのペアを作成
             file_pairs = []
             for paper in papers:
                 paper_dir = os.path.join(paths['clippings_dir'], paper)
                 markdown_file = os.path.join(paper_dir, f"{paper}.md")
-                references_bib = paths['bibtex_file']
+                local_references_bib = os.path.join(paper_dir, "references.bib")
                 
                 if os.path.exists(markdown_file):
-                    file_pairs.append((markdown_file, references_bib))
+                    # ローカルreferences.bibが存在するかチェック
+                    if os.path.exists(local_references_bib):
+                        file_pairs.append((markdown_file, local_references_bib))
+                        self.logger.info(f"Using local references.bib for {paper}: {local_references_bib}")
+                    else:
+                        # ローカルreferences.bibが存在しない場合は、グローバルBibTeXファイルをコピー
+                        try:
+                            import shutil
+                            shutil.copy2(paths['bibtex_file'], local_references_bib)
+                            file_pairs.append((markdown_file, local_references_bib))
+                            self.logger.info(f"Created local references.bib for {paper} from {paths['bibtex_file']}")
+                        except Exception as e:
+                            self.logger.warning(f"Failed to create local references.bib for {paper}: {e}")
+                            # フォールバックとしてグローバルBibTeXファイルを使用
+                            file_pairs.append((markdown_file, paths['bibtex_file']))
+                            self.logger.info(f"Using global bibtex file for {paper}: {paths['bibtex_file']}")
                 else:
                     self.logger.warning(f"Markdown file not found for {paper}: {markdown_file}")
             
@@ -550,7 +565,8 @@ class IntegratedWorkflow:
                 }
             
             # AIMappingWorkflowのバッチ実行
-            generate_ai_files = options.get('generate_ai_files', True)
+            # 仕様書に従い、AI用ファイル生成は行わない
+            generate_ai_files = False
             batch_results = self.ai_citation_support_workflow.batch_execute_ai_mapping(
                 file_pairs, generate_ai_files
             )

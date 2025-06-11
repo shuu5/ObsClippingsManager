@@ -1,7 +1,7 @@
 """
 AI理解支援引用文献統合ワークフロー v4.0
 
-統合ワークフローの第5段階として、AI用ファイル生成機能を実行します。
+統合ワークフローの第5段階として、YAMLヘッダー統合機能を実行します。
 """
 
 import time
@@ -10,7 +10,6 @@ from pathlib import Path
 
 from .data_structures import AIGenerationResult, MappingStatistics
 from .citation_mapping_engine import CitationMappingEngine
-from .ai_assistant_file_generator import AIAssistantFileGenerator
 from ..shared.logger import get_integrated_logger
 
 
@@ -34,7 +33,6 @@ class AIMappingWorkflow:
         
         # コアエンジンの初期化
         self.mapping_engine = CitationMappingEngine(config_manager)
-        self.file_generator = AIAssistantFileGenerator(config_manager)
         
         # ワークフロー統計
         self.execution_statistics = {
@@ -48,7 +46,7 @@ class AIMappingWorkflow:
         self.logger.info("AIMappingWorkflow initialized successfully")
     
     def execute_ai_mapping(self, markdown_file: str, references_bib: str,
-                          generate_ai_file: bool = True,
+                          generate_ai_file: bool = False,
                           output_file: Optional[str] = None) -> AIGenerationResult:
         """
         AI理解支援引用文献統合の完全実行
@@ -56,8 +54,8 @@ class AIMappingWorkflow:
         Args:
             markdown_file: 対象Markdownファイル
             references_bib: 対応するreferences.bibファイル
-            generate_ai_file: AI用ファイル生成フラグ
-            output_file: 出力ファイル（Noneの場合は自動生成）
+            generate_ai_file: AI用ファイル生成フラグ（仕様書に従い常にFalse）
+            output_file: 出力ファイル（使用されない）
             
         Returns:
             AIGenerationResult: 実行結果
@@ -65,8 +63,6 @@ class AIMappingWorkflow:
         Process:
         1. 軽量引用マッピング作成
         2. YAMLヘッダー更新
-        3. AI用統合ファイル生成（オプション）
-        4. 品質検証
         """
         start_time = time.time()
         
@@ -107,47 +103,18 @@ class AIMappingWorkflow:
             self.execution_statistics['successful_mappings'] += 1
             self.execution_statistics['total_citations_processed'] += citation_mapping.total_citations
             
-            # Step 3: AI用統合ファイル生成（オプション）
-            if generate_ai_file:
-                self.logger.info("Step 3: Generating AI readable file...")
-                generation_result = self.file_generator.generate_ai_readable_file(
-                    markdown_file, output_file
+            # AI理解支援引用文献統合は常にマッピングのみ実行
+            # 仕様書に従い、外部ファイル生成は行いません
+            self.logger.info("AI mapping workflow completed (YAML header mapping only)")
+            return AIGenerationResult(
+                success=True,
+                output_file="",  # AI用ファイルは生成しない
+                statistics=MappingStatistics(
+                    created_mappings=1,
+                    total_citations_mapped=citation_mapping.total_citations,
+                    processing_time=time.time() - start_time
                 )
-                
-                if generation_result.success:
-                    self.execution_statistics['successful_generations'] += 1
-                    
-                    # Step 4: 品質検証
-                    self.logger.info("Step 4: Validating AI file quality...")
-                    quality_ok, issues = self.file_generator.validate_ai_file_quality(
-                        generation_result.output_file
-                    )
-                    
-                    if not quality_ok:
-                        generation_result.warnings.extend(issues)
-                        self.logger.warning(f"Quality issues found: {issues}")
-                    
-                    # 実行時間を追加
-                    if generation_result.statistics:
-                        generation_result.statistics.processing_time = time.time() - start_time
-                    
-                    self.logger.info(f"AI mapping workflow completed successfully in {time.time() - start_time:.2f}s")
-                    return generation_result
-                else:
-                    self.execution_statistics['failed_operations'] += 1
-                    return generation_result
-            else:
-                # マッピングのみ実行された場合
-                self.logger.info("AI mapping workflow completed (mapping only)")
-                return AIGenerationResult(
-                    success=True,
-                    output_file="",  # AI用ファイルは生成していない
-                    statistics=MappingStatistics(
-                        created_mappings=1,
-                        total_citations_mapped=citation_mapping.total_citations,
-                        processing_time=time.time() - start_time
-                    )
-                )
+            )
             
         except Exception as e:
             self.execution_statistics['failed_operations'] += 1
@@ -158,13 +125,13 @@ class AIMappingWorkflow:
             )
     
     def batch_execute_ai_mapping(self, file_pairs: List[Tuple[str, str]],
-                                generate_ai_files: bool = True) -> Dict[str, AIGenerationResult]:
+                                generate_ai_files: bool = False) -> Dict[str, AIGenerationResult]:
         """
         複数ファイルのAI理解支援引用文献統合をバッチ実行
         
         Args:
             file_pairs: (markdown_file, references_bib) のペアのリスト
-            generate_ai_files: AI用ファイル生成フラグ
+            generate_ai_files: AI用ファイル生成フラグ（仕様書に従い常にFalse）
             
         Returns:
             ファイル名 → AIGenerationResult の辞書
@@ -178,7 +145,7 @@ class AIMappingWorkflow:
             self.logger.info(f"Processing {i}/{len(file_pairs)}: {Path(markdown_file).name}")
             
             result = self.execute_ai_mapping(
-                markdown_file, references_bib, generate_ai_files
+                markdown_file, references_bib, generate_ai_file=False
             )
             
             results[markdown_file] = result
@@ -216,9 +183,6 @@ class AIMappingWorkflow:
                 markdown_file, references_bib
             )
             
-            # プレビュー生成
-            preview = self.file_generator.generate_citation_preview(markdown_file, max_citations=5)
-            
             # ドライランレポート作成
             report_lines = [
                 "🔍 AI Mapping Workflow Dry Run Analysis",
@@ -239,11 +203,20 @@ class AIMappingWorkflow:
             else:
                 report_lines.append("  No citations found")
             
+            # 引用プレビューを追加
+            if citation_mapping.index_map:
+                citation_preview_lines = []
+                for number, citation_info in sorted(citation_mapping.index_map.items()):
+                    citation_preview_lines.append(f"  [{number}] {citation_info.title} ({citation_info.year})")
+                
+                report_lines.extend([
+                    "",
+                    "📚 Citation Preview:",
+                    "-" * 20,
+                    *citation_preview_lines
+                ])
+            
             report_lines.extend([
-                "",
-                "📚 Citation Preview:",
-                "-" * 20,
-                preview,
                 "",
                 "✅ Dry run completed successfully"
             ])

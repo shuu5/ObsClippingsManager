@@ -62,11 +62,8 @@ def main():
         help='AI用ファイルの出力先（省略時は自動生成）'
     )
     
-    parser.add_argument(
-        '--no-ai-file',
-        action='store_true',
-        help='AI用ファイル生成をスキップ（マッピングのみ実行）'
-    )
+    # --no-ai-fileオプションは削除されました
+    # 仕様書に従い、常にYAMLヘッダー統合のみを実行
     
     parser.add_argument(
         '--dry-run',
@@ -153,13 +150,12 @@ def main():
         # 実際の実行
         main_logger.info("🚀 AI理解支援引用文献統合を開始します...")
         
-        generate_ai_file = not args.no_ai_file
-        
+        # 仕様書に従い、AI用ファイル生成は行わない
         result = ai_workflow.execute_ai_mapping(
             markdown_file=str(markdown_path),
             references_bib=str(bib_path),
-            generate_ai_file=generate_ai_file,
-            output_file=args.output_file
+            generate_ai_file=False,
+            output_file=None
         )
         
         # 結果表示
@@ -177,20 +173,8 @@ def main():
                 print(f"   処理された引用数: {stats.total_citations_mapped}")
                 print(f"   処理時間: {stats.processing_time:.2f}秒")
             
-            if generate_ai_file and result.output_file:
-                print(f"📁 AI用ファイル: {Path(result.output_file).name}")
-                
-                # ファイル品質検証
-                from modules.ai_citation_support.ai_assistant_file_generator import AIAssistantFileGenerator
-                file_generator = AIAssistantFileGenerator(config_manager)
-                quality_ok, issues = file_generator.validate_ai_file_quality(result.output_file)
-                
-                if quality_ok:
-                    print("✅ ファイル品質: 良好")
-                else:
-                    print("⚠️  ファイル品質: 問題あり")
-                    for issue in issues:
-                        print(f"   - {issue}")
+            # AI用ファイルは生成されません（仕様書に従い）
+            print("📄 YAMLヘッダーに引用マッピングが統合されました")
             
             if result.warnings:
                 print("⚠️  警告:")
@@ -202,7 +186,7 @@ def main():
             print(f"\n📊 ワークフロー統計:")
             print(f"   総処理ファイル数: {workflow_stats['total_files_processed']}")
             print(f"   マッピング成功率: {workflow_stats['mapping_success_rate']:.1%}")
-            print(f"   AI生成成功率: {workflow_stats['generation_success_rate']:.1%}")
+            # AI用ファイル生成は行わないため、generation関連統計は表示しない
             
         else:
             print("❌ 処理に失敗しました")

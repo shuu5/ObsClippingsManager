@@ -50,9 +50,9 @@ class CitationResolver:
             CitationInfo: 完全な引用文献情報（見つからない場合はNone）
             
         Process:
-        1. YAMLヘッダーからcitation_keyを取得
-        2. references.bibから詳細情報を取得
-        3. 文脈情報を抽出
+        1. citation_mappingから直接CitationInfoを取得
+        2. 文脈情報を抽出
+        3. 関連度スコア算出（簡易版）
         4. 統合したCitationInfoを返す
         """
         try:
@@ -64,7 +64,7 @@ class CitationResolver:
             
             self.logger.info(f"Resolving citation [{citation_number}] from {markdown_file}")
             
-            # Step 1: YAMLヘッダーからcitation_keyを取得
+            # Step 1: citation_mappingから直接CitationInfoを取得
             citation_mapping = self.mapping_engine.get_mapping_from_file(markdown_file)
             if not citation_mapping:
                 self.logger.warning(f"No citation mapping found in {markdown_file}")
@@ -74,34 +74,14 @@ class CitationResolver:
                 self.logger.warning(f"Citation number {citation_number} not found in mapping")
                 return None
             
-            citation_key = citation_mapping.index_map[citation_number]
-            self.logger.debug(f"Citation [{citation_number}] maps to key: {citation_key}")
-            
-            # Step 2: references.bibから詳細情報を取得
-            bib_entries = self.bibtex_parser.parse_file(citation_mapping.references_file)
-            if citation_key not in bib_entries:
-                self.logger.warning(f"Citation key '{citation_key}' not found in references.bib")
-                return None
-            
-            bib_entry = bib_entries[citation_key]
-            
-            # Step 3: BibTeX情報をCitationInfoに変換
-            citation_info = self._create_citation_info(
-                citation_number, citation_key, bib_entry
-            )
-            
-            # Step 4: 文脈情報を抽出
-            context = self.extract_citation_context(markdown_file, citation_number)
-            citation_info.context = context
-            
-            # Step 5: 関連度スコア算出（簡易版）
-            citation_info.relevance_score = self._calculate_relevance_score(citation_info)
+            # citation_mappingにはすでに完全なCitationInfoが含まれている
+            citation_info = citation_mapping.index_map[citation_number]
+            self.logger.debug(f"Citation [{citation_number}] retrieved: {citation_info.citation_key}")
             
             # キャッシュに保存
             if self.cache_enabled:
                 self._citation_cache[cache_key] = citation_info
             
-            self.logger.info(f"Citation [{citation_number}] resolved successfully: {citation_info.title[:50]}...")
             return citation_info
             
         except Exception as e:
@@ -180,102 +160,7 @@ class CitationResolver:
             self.logger.error(f"Failed to extract context for citation {citation_number}: {e}")
             return ""
     
-    def _create_citation_info(self, number: int, citation_key: str, 
-                             bib_entry: Dict[str, str]) -> CitationInfo:
-        """BibTeXエントリからCitationInfoを作成"""
-        
-        # 著者情報の整形
-        authors = bib_entry.get('author', 'Unknown Authors')
-        authors = self._format_authors(authors)
-        
-        # 年の抽出
-        year_str = bib_entry.get('year', '0')
-        try:
-            year = int(year_str)
-        except ValueError:
-            year = 0
-        
-        # 完全BibTeXエントリの再構築
-        full_bibtex = self._reconstruct_bibtex_entry(citation_key, bib_entry)
-        
-        return CitationInfo(
-            number=number,
-            citation_key=citation_key,
-            title=bib_entry.get('title', 'Unknown Title'),
-            authors=authors,
-            year=year,
-            journal=bib_entry.get('journal', bib_entry.get('booktitle', 'Unknown Journal')),
-            volume=bib_entry.get('volume', ''),
-            pages=bib_entry.get('pages', ''),
-            doi=bib_entry.get('doi', ''),
-            full_bibtex=full_bibtex
-        )
-    
-    def _format_authors(self, authors_str: str) -> str:
-        """著者情報を整形"""
-        if not authors_str or authors_str == 'Unknown Authors':
-            return authors_str
-        
-        # BibTeX形式の著者情報を解析
-        # "Last, First and Last2, First2" → "Last, First & Last2, First"
-        authors = authors_str.split(' and ')
-        formatted_authors = []
-        
-        for author in authors[:3]:  # 最大3人まで表示
-            author = author.strip()
-            if ',' in author:
-                # "Last, First" 形式 - そのまま保持
-                formatted_authors.append(author)
-            else:
-                # "First Last" 形式 - "Last, First"に変換
-                parts = author.split()
-                if len(parts) >= 2:
-                    last_name = parts[-1]
-                    first_names = ' '.join(parts[:-1])
-                    formatted_authors.append(f"{last_name}, {first_names}")
-                else:
-                    formatted_authors.append(author)
-        
-        if len(authors) > 3:
-            formatted_authors.append("et al.")
-        
-        return ' & '.join(formatted_authors)
-    
-    def _reconstruct_bibtex_entry(self, citation_key: str, bib_entry: Dict[str, str]) -> str:
-        """BibTeXエントリを文字列形式で再構築"""
-        entry_type = bib_entry.get('ENTRYTYPE', 'article')
-        
-        lines = [f"@{entry_type}{{{citation_key},"]
-        
-        for key, value in bib_entry.items():
-            if key != 'ENTRYTYPE' and key != 'ID':
-                lines.append(f"  {key} = {{{value}}},")
-        
-        lines.append("}")
-        
-        return "\n".join(lines)
-    
-    def _calculate_relevance_score(self, citation_info: CitationInfo) -> float:
-        """関連度スコアを算出（簡易版）"""
-        score = 0.0
-        
-        # DOIがある場合はスコア向上
-        if citation_info.doi:
-            score += 0.3
-        
-        # 文脈情報がある場合はスコア向上
-        if citation_info.context:
-            score += 0.3
-        
-        # 著者情報が詳細な場合はスコア向上
-        if citation_info.authors and citation_info.authors != 'Unknown Authors':
-            score += 0.2
-        
-        # タイトルが適切な場合はスコア向上
-        if citation_info.title and citation_info.title != 'Unknown Title':
-            score += 0.2
-        
-        return min(score, 1.0)
+
     
     def clear_cache(self):
         """キャッシュをクリア"""
