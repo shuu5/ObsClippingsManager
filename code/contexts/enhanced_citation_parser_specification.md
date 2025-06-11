@@ -1,435 +1,527 @@
-# Enhanced Citation Parser 機能仕様書 v3.0
+# AI理解支援引用文献パーサー機能仕様書 v4.0
 
 ## 概要
-ObsClippingsManager v3.0における引用文献パース機能の大幅強化版仕様です。現存するあらゆる引用形式を完全に統一されたフォーマットに変換し、特にエスケープされた引用形式への完全対応を実現します。
+ObsClippingsManager v4.0における引用文献パース機能の革新的強化版です。**AIアシスタント（ChatGPT、Claude等）が引用文献を完全に理解し、適切な引用付き論文を執筆できるよう支援する**ことを主目的とします。
 
-## 課題と改善目標
+従来の引用形式統一に加え、**AI用統合ファイル生成機能**を新たに追加し、人間がAIに論文執筆を依頼する際の課題を解決します。
 
-### 現在の課題
-TestManuscriptsディレクトリに存在する以下のような不統一な引用形式：
-- `\[[1]\]` (エスケープされた基本形式)
-- `\[[4,5,6,7,8](https://academic.oup.com/jrr/article/64/2/284/)\]` (エスケープされたURL付き形式)
-- `\[[12], [13]\]` (エスケープされた個別形式)
-- `\[[^10]\]` (エスケープされた脚注形式)
-- `\[[^1],[^2],[^3]\]` (エスケープされた脚注複数形式)
+## 背景と解決すべき課題
 
-### 改善目標
-エスケープパターンと標準パターンを区別した以下の形式への変換：
+### 現在の問題
+```
+ユーザー → AI：「この論文のIntroductionをまとめて」
 
-#### エスケープパターン（外側の `\[\]` を保持）
-- 単一引用: `\[[1]\]`
-- 複数引用: `\[[2], [3], [4]\]` (常にカンマ+スペース区切り)
-
-#### 標準パターン（従来通り）
-- 単一引用: `[1]`
-- 複数引用: `[2], [3], [4]` (常にカンマ+スペース区切り)
-
-## 対応パターン詳細仕様
-
-### 1. エスケープされた基本引用
-
-#### パターン定義
-```python
-ESCAPED_BASIC_PATTERNS = {
-    'escaped_single': r'\\?\[\[(\d+)\]\]',
-    'escaped_multiple_grouped': r'\\?\[\[(\d+(?:[,\s]*\d+)*)\]\]',
-    'escaped_individual_multiple': r'\\?\[\[(\d+)\]\](?:\s*,\s*\\?\[\[(\d+)\]\])*'
-}
+AI：「[1],[2],[3]という引用がありますが、これが何の文献なのか分からないため、
+     適切な引用付きの文章を作成できません」
 ```
 
-#### 変換例
+### 目標：AIが完全理解できる統合ファイル生成
 ```
-入力: \[[1]\]
-出力: \[[1]\]
+ObsClippingsManager処理後:
 
-入力: \[[12], [13]\]  
-出力: \[[12], [13]\]
+## 📚 Citation Reference Table
+[1] → Smith, J. et al. (2023). "Novel Method for Cancer Analysis". Cancer Research, 83(12), 1234-1245.
+[2] → Jones, M. & Wilson, K. (2022). "Advanced Biomarker Techniques". Nature Medicine, 28, 567-578.
+[3] → Brown, A. (2021). "Differential Diagnosis in Oncology". Cell, 185, 890-905.
 
-入力: \[[1,2,3]\]
-出力: \[[1], [2], [3]\]
-```
+## 📄 Paper Content
+Aberrant expression in various cancers makes KRTs useful as biomarkers [1],[2],[3].
 
-### 2. エスケープされたURL付き引用
-
-#### パターン定義
-```python
-ESCAPED_LINKED_PATTERNS = {
-    'escaped_single_link': r'\\?\[\[(\d+)\]\(([^)]+)\)\]',
-    'escaped_multiple_link': r'\\?\[\[(\d+(?:[,\s]*\d+)*)\]\(([^)]+)\)\]',
-    'escaped_range_link': r'\\?\[\[(\d+)[-–](\d+)\]\(([^)]+)\)\]'
-}
+AI：「[1]はSmith et al.のがん解析手法の論文、[2]はJonesのバイオマーカー技術論文、
+     [3]はBrownの診断学論文ですね。これらを踏まえて適切な論文を執筆します」
 ```
 
-#### 変換例
-```
-入力: \[[1](https://example.com)\]
-処理: 
-  1. URLを抽出: https://example.com
-  2. 引用番号を統一化、外側エスケープ保持: \[[1]\]
-出力: \[[1]\]
+## 主要機能
 
-入力: \[[4,5,6,7,8](https://academic.oup.com/jrr/article/64/2/284/)\]
-処理:
-  1. URLを抽出: https://academic.oup.com/jrr/article/64/2/284/
-  2. 引用番号を分離・統一化、外側エスケープ保持: \[[4], [5], [6], [7], [8]\]
-出力: \[[4], [5], [6], [7], [8]\]
-```
+### 1. 軽量引用マッピング機能
+- YAMLヘッダーに最小限のマッピング情報を追加
+- references.bibとの動的連携
+- データ重複を避けたシンプル設計
 
-### 3. エスケープされた脚注引用
+### 2. AI用統合ファイル生成機能（新機能）
+- 引用文献情報を完全に統合したAI理解用ファイル生成
+- Citation Reference Table + Paper Content形式
+- AIが即座に引用文献を理解可能
 
-#### パターン定義
-```python
-ESCAPED_FOOTNOTE_PATTERNS = {
-    'escaped_footnote_single': r'\\?\[\[\^(\d+)\]\]',
-    'escaped_footnote_multiple_grouped': r'\\?\[\[\^(\d+(?:[,\s]*\d+)*)\]\]',
-    'escaped_footnote_multiple_individual': r'\\?\[\[\^(\d+)\]\](?:\s*,\s*\\?\[\[\^(\d+)\]\])*'
-}
-```
+### 3. 引用形式統一機能（従来機能強化）
+- 多様な引用形式の検出・統一
+- エスケープパターン対応
+- URL付き引用のクリーンアップ
 
-#### 変換例
-```
-入力: \[[^1]\]
-処理:
-  1. エスケープ処理
-  2. ^記号除去: 1
-  3. 統一化、外側エスケープ保持: \[[1]\]
-出力: \[[1]\]
+## 機能詳細仕様
 
-入力: \[[^10]\]
-処理:
-  1. エスケープ処理
-  2. ^記号除去: 10
-  3. 統一化、外側エスケープ保持: \[[10]\]
-出力: \[[10]\]
+### 1. 軽量引用マッピング機能
 
-入力: \[[^1],[^2],[^3]\]
-処理:
-  1. エスケープ処理
-  2. ^記号除去: 1,2,3
-  3. 個別化・統一化、外側エスケープ保持: \[[1], [2], [3]\]
-出力: \[[1], [2], [3]\]
-```
-
-### 4. 既存の標準形式
-
-#### パターン定義
-```python
-STANDARD_PATTERNS = {
-    'single': r'\[(\d+)\]',
-    'multiple': r'\[(\d+(?:[,\s]+\d+)*)\]',
-    'range': r'\[(\d+)[-–](\d+)\]',
-    'footnote': r'\[\^(\d+)\]'
-}
-```
-
-#### 変換例
-```
-入力: [1]
-出力: [1] (変更なし)
-
-入力: [2,3] または [2, 3] または [2 , 3]
-出力: [2], [3] (スペース統一)
-
-入力: [1-5]
-出力: [1], [2], [3], [4], [5] (範囲展開)
-```
-
-## 処理アルゴリズム
-
-### Phase 1: エスケープ解除とパターン検出
-
-```python
-def detect_escaped_patterns(text: str) -> List[CitationMatch]:
-    """エスケープされたパターンを優先検出"""
-    matches = []
-    
-    # 1. エスケープされたURL付き引用 (最優先)
-    for pattern_name, regex in ESCAPED_LINKED_PATTERNS.items():
-        for match in re.finditer(regex, text):
-            citation_match = create_escaped_linked_match(match, pattern_name)
-            matches.append(citation_match)
-    
-    # 2. エスケープされた脚注引用
-    for pattern_name, regex in ESCAPED_FOOTNOTE_PATTERNS.items():
-        for match in re.finditer(regex, text):
-            citation_match = create_escaped_footnote_match(match, pattern_name)
-            matches.append(citation_match)
-    
-    # 3. エスケープされた基本引用
-    for pattern_name, regex in ESCAPED_BASIC_PATTERNS.items():
-        for match in re.finditer(regex, text):
-            citation_match = create_escaped_basic_match(match, pattern_name)
-            matches.append(citation_match)
-    
-    return remove_overlapping_matches(matches)
-```
-
-### Phase 2: URL抽出とリンク表生成
-
-```python
-def extract_links_from_escaped_citations(matches: List[CitationMatch]) -> Tuple[List[LinkEntry], List[CitationMatch]]:
-    """エスケープされた引用からリンクを抽出"""
-    link_entries = []
-    cleaned_matches = []
-    
-    for match in matches:
-        if match.has_link and match.link_url:
-            # 各引用番号に対してリンクエントリを作成
-            for citation_num in match.citation_numbers:
-                link_entry = LinkEntry(
-                    citation_number=citation_num,
-                    url=match.link_url,
-                    original_text=match.original_text
-                )
-                link_entries.append(link_entry)
-            
-            # リンクなしの引用マッチを作成
-            cleaned_match = CitationMatch(
-                original_text=match.original_text,
-                citation_numbers=match.citation_numbers,
-                has_link=False,
-                link_url=None,
-                pattern_type='cleaned_escaped',
-                start_pos=match.start_pos,
-                end_pos=match.end_pos
-            )
-            cleaned_matches.append(cleaned_match)
-        else:
-            cleaned_matches.append(match)
-    
-    return link_entries, cleaned_matches
-```
-
-### Phase 3: 統一フォーマット変換
-
-```python
-def convert_to_unified_format(matches: List[CitationMatch]) -> str:
-    """統一フォーマットに変換"""
-    
-    # 統一変換ルール
-    UNIFIED_FORMAT_RULES = {
-        'single_template': '[{number}]',
-        'multiple_separator': '], [',
-        'multiple_template': '[{numbers}]',
-        'sort_numbers': True,
-        'expand_ranges': True,
-        'individual_citations': True  # 常に個別の引用として出力
-    }
-    
-    for match in sorted(matches, key=lambda x: x.start_pos, reverse=True):
-        # 引用番号の正規化
-        normalized_numbers = normalize_citation_numbers(match.citation_numbers)
-        
-        # エスケープパターンかどうかの判定
-        is_escaped_pattern = match.pattern_type.startswith('escaped_')
-        
-        # 個別の引用として出力
-        if len(normalized_numbers) == 1:
-            unified_citation = f"[{normalized_numbers[0]}]"
-        else:
-            # 複数の場合は個別の引用として分離
-            individual_citations = [f"[{num}]" for num in normalized_numbers]
-            unified_citation = ', '.join(individual_citations)
-        
-        # エスケープパターンの場合は外側に \[\] を追加
-        if is_escaped_pattern:
-            unified_citation = f"\\[{unified_citation}\\]"
-        
-        # テキスト置換
-        text = replace_citation_in_text(text, match, unified_citation)
-    
-    return text
-```
-
-## 設定とカスタマイズ
-
-### デフォルト設定
-
+#### YAMLヘッダー拡張
 ```yaml
-# config/citation_parser_enhanced.yaml
-citation_parser:
-  # パターン検出設定
-  pattern_detection:
-    enable_escaped_patterns: true
-    priority_order:
-      - escaped_linked
-      - escaped_footnote  
-      - escaped_basic
-      - standard_linked
-      - standard_range
-      - standard_multiple
-      - standard_single
-  
-  # 変換設定
-  conversion:
-    output_format: "individual" # individual | grouped
-    separator: ", "
-    expand_ranges: true
-    sort_numbers: true
-    remove_duplicates: true
-  
-  # エスケープ処理設定
-  escape_handling:
-    auto_detect: true
-    preserve_original: false
-    log_conversions: true
+---
+title: "論文タイトル"
+doi: "10.1093/jrr/rrac091"
+# 新機能：軽量引用マッピング
+citation_mapping:
+  references_file: "./references.bib"           # 対応するreferences.bibファイル
+  index_map:                                    # 引用番号 → citation_key マッピング
+    1: "smith2023test"                          # [1] → citation_key
+    2: "jones2022study"                         # [2] → citation_key  
+    3: "brown2021method"                        # [3] → citation_key
+  last_updated: "2024-01-15T10:30:00"          # マッピング最終更新時刻
+  mapping_version: "1.0"                       # マッピングバージョン
+---
 ```
 
-### 出力フォーマット設定
-
+#### 実装クラス
 ```python
-class UnifiedOutputFormat:
-    """統一出力フォーマット設定"""
+class CitationMappingEngine:
+    """軽量引用マッピング作成エンジン"""
     
-    INDIVIDUAL_FORMAT = {
-        'single': '[{number}]',
-        'multiple': '[{num1}], [{num2}], [{num3}]...',
-        'separator': '], ['
-    }
+    def create_citation_mapping(self, markdown_file: str, references_bib: str) -> CitationMapping:
+        """
+        引用番号とcitation_keyの軽量マッピングを作成
+        
+        Process:
+        1. Markdownファイル内の引用番号を検出
+        2. references.bibからcitation_keyを抽出
+        3. 引用順序に基づいてマッピング作成
+        4. YAMLヘッダーに軽量マッピング情報を追加
+        
+        Returns:
+            CitationMapping: マッピング情報オブジェクト
+        """
+        
+    def update_yaml_header(self, markdown_file: str, citation_mapping: CitationMapping) -> bool:
+        """
+        YAMLヘッダーにマッピング情報を追加・更新
+        
+        Args:
+            markdown_file: 対象Markdownファイル
+            citation_mapping: 作成されたマッピング情報
+            
+        Returns:
+            成功フラグ
+        """
+```
+
+### 2. AI用統合ファイル生成機能（核心機能）
+
+#### 生成される統合ファイル形式
+```markdown
+# 論文タイトル
+*Generated by ObsClippingsManager v4.0 for AI Assistant*
+
+## 📚 Citation Reference Table
+**AI Assistant Reference Guide: This table provides complete citation information for all numbered references in the paper.**
+
+[1] → **Smith, J., Wilson, K., & Davis, M.** (2023). *Novel Method for Cancer Cell Analysis*. **Cancer Research**, 83(12), 1234-1245. DOI: 10.1158/0008-5472.CAN-23-0123
+    └─ **Context**: This paper introduces innovative methodologies for analyzing cancer cell behavior.
+
+[2] → **Jones, M. & Brown, A.** (2022). *Advanced Biomarker Techniques in Oncology*. **Nature Medicine**, 28, 567-578. DOI: 10.1038/s41591-022-0456-7
+    └─ **Context**: Comprehensive review of current biomarker applications in cancer diagnosis.
+
+[3] → **Brown, A., Lee, S., & Kumar, R.** (2021). *Differential Diagnosis Methods in Modern Oncology*. **Cell**, 185, 890-905. DOI: 10.1016/j.cell.2021.03.012
+    └─ **Context**: Systematic approach to differential diagnosis using molecular markers.
+
+---
+
+## 📄 Paper Content
+
+### Introduction
+Aberrant expression in various cancers makes KRTs useful as biomarkers for differential diagnoses and metastatic status. Recent studies suggest that KRTs in cancer cells are not only epithelial marker proteins but are also mediators capable of interacting with a range of proteins to regulate signaling networks associated with cell death, survival, proliferation, migration, invasion and metastasis [1],[2],[3].
+
+The established framework [2] provides a foundation for understanding biomarker applications, while novel analytical methods [1] offer new insights into cancer cell behavior. Previous comprehensive studies [3] have demonstrated the importance of systematic diagnostic approaches.
+
+---
+*End of AI Assistant Document*
+*Original file: paper.md | References: references.bib | Generated: 2024-01-15 10:30:00*
+```
+
+#### 実装クラス
+```python
+class AIAssistantFileGenerator:
+    """AI理解支援用統合ファイル生成器"""
     
-    GROUPED_FORMAT = {
-        'single': '[{number}]', 
-        'multiple': '[{numbers}]',
-        'separator': ', '
-    }
+    def generate_ai_readable_file(self, markdown_file: str, references_bib: str, 
+                                 output_file: str = None) -> str:
+        """
+        AIが完全に理解できる統合ファイルを生成
+        
+        Args:
+            markdown_file: 元のMarkdownファイル
+            references_bib: 対応するreferences.bibファイル
+            output_file: 出力ファイル名（未指定時は自動生成）
+            
+        Returns:
+            生成されたファイルパス
+            
+        Process:
+        1. YAMLヘッダーからcitation_mappingを読み込み
+        2. references.bibから詳細情報を取得
+        3. Citation Reference Tableを生成
+        4. 元のPaper Contentと統合
+        5. AI理解最適化フォーマットで出力
+        """
+        
+    def create_citation_reference_table(self, citation_mapping: CitationMapping, 
+                                       bibtex_entries: Dict[str, BibTeXEntry]) -> str:
+        """
+        AI理解用Citation Reference Tableを生成
+        
+        Format:
+        [番号] → **著者** (年). *タイトル*. **ジャーナル**, 巻(号), ページ. DOI: xxx
+            └─ **Context**: 論文の概要説明
+        """
+        
+    def enhance_paper_content(self, content: str, citation_mapping: CitationMapping) -> str:
+        """
+        論文内容にAI理解支援コメントを追加
+        """
+```
+
+### 3. 動的引用解決機能
+
+#### リアルタイム情報取得
+```python
+class CitationResolver:
+    """引用番号からリアルタイムでBibTeX情報を取得"""
+    
+    def resolve_citation(self, citation_number: int, markdown_file: str) -> CitationInfo:
+        """
+        引用番号から完全な文献情報を動的に取得
+        
+        Process:
+        1. YAMLヘッダーからcitation_keyを取得
+        2. references.bibから詳細情報を取得
+        3. 文脈情報を抽出
+        4. 統合したCitationInfoを返す
+        
+        Returns:
+            CitationInfo: 完全な引用文献情報
+        """
+        
+    def batch_resolve_citations(self, citation_numbers: List[int], 
+                               markdown_file: str) -> Dict[int, CitationInfo]:
+        """
+        複数の引用番号を一括解決
+        """
+        
+    def extract_citation_context(self, markdown_file: str, citation_number: int) -> str:
+        """
+        引用箇所周辺の文脈を抽出してAI理解を支援
+        """
+```
+
+### 4. 引用形式統一機能（従来機能継承）
+
+#### 対応パターン
+```python
+CITATION_PATTERNS = {
+    # エスケープ形式
+    'escaped_basic': r'\\?\[\[(\d+)\]\]',                    # \[[1]\]
+    'escaped_multiple': r'\\?\[\[(\d+(?:[,\s]*\d+)*)\]\]',   # \[[1,2,3]\]
+    'escaped_footnote': r'\\?\[\[\^(\d+)\]\]',               # \[[^1]\]
+    'escaped_linked': r'\\?\[\[(\d+)\]\(([^)]+)\)\]',        # \[[1](URL)\]
+    
+    # 標準形式
+    'standard_single': r'\[(\d+)\]',                         # [1]
+    'standard_multiple': r'\[(\d+(?:[,\s]+\d+)*)\]',         # [1,2,3]
+    'standard_range': r'\[(\d+)[-–](\d+)\]',                 # [1-5]
+    'standard_footnote': r'\[\^(\d+)\]',                     # [^1]
+    'standard_linked': r'\[(\d+)\]\(([^)]+)\)',              # [1](URL)
+}
+```
+
+#### 統一出力形式
+```
+すべての引用は以下の統一フォーマットに変換：
+- 単一引用: [1]
+- 複数引用: [1], [2], [3] （常に個別形式、カンマ+スペース区切り）
+- 脚注統一: [^1] → [1] （^記号除去）
+- URL分離: [1](URL) → [1] + リンク表生成
+```
+
+## コマンドライン仕様
+
+### 基本コマンド
+
+#### 1. 軽量マッピング作成
+```bash
+# 引用番号 → citation_key マッピングを作成
+PYTHONPATH=code/py uv run python code/py/main.py create-citation-mapping \
+    --input paper.md \
+    --references references.bib
+```
+
+#### 2. AI用統合ファイル生成（核心機能）
+```bash
+# AIが理解できる統合ファイルを生成
+PYTHONPATH=code/py uv run python code/py/main.py generate-ai-format \
+    --input paper.md \
+    --references references.bib \
+    --output paper_for_ai.md
+```
+
+#### 3. 引用情報解決
+```bash
+# 特定の引用番号の詳細情報を取得
+PYTHONPATH=code/py uv run python code/py/main.py resolve-citation \
+    --paper paper.md \
+    --citation-number 1
+```
+
+#### 4. 統合処理
+```bash
+# マッピング作成 + AI形式生成を一括実行
+PYTHONPATH=code/py uv run python code/py/main.py parse-citations \
+    --input paper.md \
+    --references references.bib \
+    --generate-ai-format \
+    --output-dir ./ai_ready/
+```
+
+### 統合ワークフローへの組み込み
+```bash
+# run-integratedに自動組み込み
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --enable-ai-citation-support
+```
+
+## 設定仕様
+
+### 設定ファイル
+```yaml
+# config/ai_citation_parser.yaml
+ai_citation_parser:
+  # マッピング設定
+  mapping:
+    auto_create: true                    # 自動マッピング作成
+    update_yaml_header: true             # YAMLヘッダー自動更新
+    backup_original: true                # 元ファイルバックアップ
+    
+  # AI統合ファイル生成設定
+  ai_format:
+    enable_generation: true              # AI形式生成有効化
+    include_context: true                # 文脈情報含める
+    reference_table_style: "enhanced"    # enhanced | simple
+    output_suffix: "_for_ai"             # 出力ファイル接尾辞
+    
+  # 引用形式統一設定  
+  unified_format:
+    output_format: "individual"          # individual | grouped
+    separator: ", "                      # 区切り文字
+    expand_ranges: true                  # 範囲展開
+    remove_footnote_symbols: true        # 脚注記号除去
+    
+  # 動的解決設定
+  resolution:
+    cache_results: true                  # 解決結果キャッシュ
+    context_window: 50                   # 文脈抽出文字数
+    relevance_scoring: true              # 関連度スコア算出
+```
+
+## データ構造
+
+### CitationMapping
+```python
+@dataclass
+class CitationMapping:
+    """軽量引用マッピング情報"""
+    references_file: str                 # references.bibファイルパス
+    index_map: Dict[int, str]           # 引用番号 → citation_key
+    last_updated: datetime              # 最終更新時刻
+    mapping_version: str                # マッピングバージョン
+    total_citations: int                # 総引用数
+```
+
+### CitationInfo
+```python
+@dataclass  
+class CitationInfo:
+    """完全な引用文献情報"""
+    number: int                         # 引用番号
+    citation_key: str                   # BibTeX citation_key
+    title: str                          # 論文タイトル
+    authors: str                        # 著者情報
+    year: int                           # 発行年
+    journal: str                        # ジャーナル名
+    volume: str                         # 巻号情報
+    pages: str                          # ページ情報
+    doi: str                            # DOI
+    context: str                        # 引用文脈
+    relevance_score: float              # 関連度スコア
+    full_bibtex: str                    # 完全BibTeXエントリ
+```
+
+### AIReadableDocument
+```python
+@dataclass
+class AIReadableDocument:
+    """AI理解用統合文書"""
+    original_file: str                  # 元ファイル
+    references_file: str                # references.bibファイル
+    citation_table: str                 # Citation Reference Table
+    paper_content: str                  # 論文内容
+    generation_timestamp: datetime     # 生成時刻
+    total_citations: int                # 総引用数
+    ai_optimization_level: str          # AI最適化レベル
 ```
 
 ## テスト仕様
 
-### テストケース
+### 機能テスト
 
-#### 1. エスケープ基本形式テスト
+#### 1. マッピング作成テスト
 ```python
-def test_escaped_basic_citations():
-    test_cases = [
-        ('\[[1]\]', '\[[1]\]'),
-        ('\[[12], [13]\]', '\[[12], [13]\]'),
-        ('\[[1,2,3]\]', '\[[1], [2], [3]\]'),
-        ('\[[10]\]', '\[[10]\]'),
-    ]
+def test_citation_mapping_creation():
+    """軽量マッピング作成のテスト"""
+    markdown_file = "test_paper.md"
+    references_bib = "test_references.bib"
     
-    for input_text, expected in test_cases:
-        result = parser.parse_document(input_text)
-        assert result.converted_text == expected
+    mapping = citation_engine.create_citation_mapping(markdown_file, references_bib)
+    
+    assert mapping.index_map[1] == "smith2023test"
+    assert mapping.index_map[2] == "jones2022study"
+    assert mapping.total_citations == 3
+    assert mapping.references_file == references_bib
 ```
 
-#### 2. エスケープURL付き形式テスト
+#### 2. AI統合ファイル生成テスト
 ```python
-def test_escaped_linked_citations():
-    test_cases = [
-        (
-            '\[[4,5,6,7,8](https://academic.oup.com/jrr/article/64/2/284/)\]',
-            '\[[4], [5], [6], [7], [8]\]'
-        ),
-        (
-            '\[[1](https://example.com)\]',
-            '\[[1]\]'
-        ),
-    ]
+def test_ai_readable_file_generation():
+    """AI理解用ファイル生成のテスト"""
+    input_file = "test_paper.md"
+    output_file = ai_generator.generate_ai_readable_file(input_file, "references.bib")
     
-    for input_text, expected in test_cases:
-        result = parser.parse_document(input_text)
-        assert result.converted_text == expected
-        # リンク表も検証
-        assert len(result.link_table) > 0
+    with open(output_file, 'r') as f:
+        content = f.read()
+    
+    # Citation Reference Table存在確認
+    assert "📚 Citation Reference Table" in content
+    assert "[1] → **Smith, J." in content
+    
+    # Paper Content存在確認  
+    assert "📄 Paper Content" in content
+    assert "cancer cells [1],[2],[3]" in content
 ```
 
-#### 3. エスケープ脚注形式テスト
+#### 3. 動的解決テスト
 ```python
-def test_escaped_footnote_citations():
-    """
-    エスケープ脚注パターンのテスト
+def test_citation_resolution():
+    """引用情報動的解決のテスト"""
+    citation_info = resolver.resolve_citation(1, "test_paper.md")
     
-    重要: 脚注パターン（^記号）は通常の引用パターンに変換される
-    すべての引用は統一フォーマット \[[number]\] になる
-    """
-    test_cases = [
-        ('\[[^1]\]', '\[[1]\]'),              # 脚注 → 通常引用
-        ('\[[^10]\]', '\[[10]\]'),            # 脚注 → 通常引用
-        ('\[[^27]\]', '\[[27]\]'),            # 脚注 → 通常引用
-        ('\[[^1],[^2],[^3]\]', '\[[1], [2], [3]\]'),  # 複数脚注 → 個別通常引用
-        ('\[[^22], [^23]\]', '\[[22], [23]\]'),       # 複数脚注 → 個別通常引用
-    ]
-    
-    for input_text, expected in test_cases:
-        result = parser.parse_document(input_text)
-        assert result.converted_text == expected
-        
-    # 重要な注意: 
-    # - 脚注の^記号は除去される
-    # - すべての引用は \[[number]\] 形式に統一される
-    # - 複数脚注は個別の引用に分離される
+    assert citation_info.number == 1
+    assert citation_info.citation_key == "smith2023test"
+    assert citation_info.title == "Novel Method for Cancer Analysis"
+    assert citation_info.authors == "Smith, J. et al."
+    assert citation_info.year == 2023
 ```
 
-#### 4. 混在形式テスト
+### 統合テスト
+
+#### AI理解度評価テスト
 ```python
-def test_mixed_citation_formats():
-    input_text = """
-    This study \[[1]\] builds on previous work \[[2], [3]\].
-    Additional references \[[4,5,6,7,8](https://academic.oup.com/jrr/article/64/2/284/)\]
-    and footnotes \[[^10],[^11],[^12]\] support the findings.
-    """
+def test_ai_understanding_evaluation():
+    """生成されたファイルでAIが適切に引用を理解できるかテスト"""
     
-    expected = """
-    This study \[[1]\] builds on previous work \[[2], [3]\].
-    Additional references \[[4], [5], [6], [7], [8]\]
-    and footnotes \[[10], [11], [12]\] support the findings.
-    """
+    # AI用ファイル生成
+    ai_file = ai_generator.generate_ai_readable_file("paper.md", "references.bib")
     
-    result = parser.parse_document(input_text)
-    assert normalize_whitespace(result.converted_text) == normalize_whitespace(expected)
+    # AI理解度シミュレーション
+    understanding_score = evaluate_ai_understanding(ai_file)
+    
+    assert understanding_score >= 0.95  # 95%以上の理解度を要求
 ```
 
 ## 実装ロードマップ
 
-### Phase 1: パターン検出強化
-1. EscapedPatternDetector クラス実装
-2. 既存PatternDetectorへの統合
-3. 優先度ベースの検出ロジック
+### Phase 1: 軽量マッピング機能（2週間）
+1. CitationMappingEngineクラス実装
+2. YAMLヘッダー拡張機能
+3. 基本テスト作成・実行
 
-### Phase 2: 変換エンジン改善  
-1. UnifiedFormatConverter クラス実装
-2. 個別引用出力対応
-3. リンク抽出とクリーンアップ強化
+### Phase 2: AI統合ファイル生成機能（3週間）
+1. AIAssistantFileGeneratorクラス実装
+2. Citation Reference Table生成ロジック
+3. AI最適化フォーマット設計・実装
 
-### Phase 3: テスト・検証
-1. 包括的テストスイート作成
-2. TestManuscriptsでの実地テスト
-3. パフォーマンス最適化
+### Phase 3: 動的解決機能（2週間）
+1. CitationResolverクラス実装
+2. リアルタイム情報取得機能
+3. 文脈抽出機能
 
-### Phase 4: 統合・リリース
+### Phase 4: 統合・最適化（2週間）
 1. 既存ワークフローへの統合
-2. 設定システム更新
-3. ドキュメント更新
+2. パフォーマンス最適化
+3. 包括的テスト実行
+
+### Phase 5: リリース準備（1週間）
+1. ドキュメント更新
+2. 設定システム整備
+3. 最終検証
 
 ## 期待される効果
 
-### 統一性の向上
-- エスケープパターンは `\[[1]\]`, `\[[2], [3], [4]\]` 形式に統一
-- 標準パターンは `[1]`, `[2], [3], [4]` 形式に統一  
-- エスケープと標準の適切な区別維持
-- URL付き引用の適切な分離とリンク表生成
-
-### 可読性の改善
-- パターン別の一貫した引用フォーマット
-- エスケープパターンの外側括弧保持による明確な区別
-- 明確な個別引用表現
+### AIアシスタント利用の革命的改善
+- **完全な引用理解**: AIが[1],[2],[3]の意味を完全把握
+- **適切な論文生成**: 引用情報を理解した高品質な論文作成
+- **作業効率向上**: 人間がAIに論文執筆依頼時の準備時間短縮
 
 ### データ品質向上
-- 引用番号の正規化
-- 重複の自動除去
-- 範囲の展開による明示化 
+- **軽量設計**: YAMLヘッダーは最小限の情報のみ
+- **データ一意性**: references.bibが唯一の情報源
+- **リアルタイム更新**: 常に最新の引用情報を提供
 
-#### 統一フォーマット原則
+### ワークフロー改善
+- **シンプルなコマンド**: 1つのコマンドでAI用ファイル生成
+- **統合実行**: run-integratedに自動組み込み
+- **柔軟な設定**: 用途に応じたカスタマイズ可能
 
-**すべての引用は以下の統一フォーマットになる：**
+## 使用例
 
-1. **単一引用**: `\[[24]\]`
-2. **複数引用**: `\[[20], [21], [22]\]` （個別形式）
-3. **脚注も同様**: `\[[^27]\]` → `\[[27]\]`（^記号除去）
-4. **URL付きも同様**: `\[[4,5,6](URL)\]` → `\[[4], [5], [6]\]`
+### 基本的な使用フロー
 
-**許可されない形式：**
-- `\[[^27]\]` （脚注記号は変換される）
-- `\[[20,21,22]\]` （グループ化は個別化される）
-- `[27]` （エスケープなしは対象外） 
+```bash
+# 1. 論文執筆完了後、AI用ファイル生成
+PYTHONPATH=code/py uv run python code/py/main.py generate-ai-format \
+    --input "pancreatic_cancer_analysis.md" \
+    --references "references.bib" \
+    --output "pancreatic_cancer_for_ai.md"
+
+# 2. 生成されたファイルをAIアシスタントに提供
+# → AIが引用文献を完全理解
+# → 高品質な論文執筆・要約・分析が可能
+
+# 3. 統合ワークフローでの自動実行
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --enable-ai-citation-support
+```
+
+### 出力例比較
+
+#### Before（従来）
+```
+# AIに提供するファイル
+Recent studies suggest that KRTs are mediators [1],[2],[3].
+
+# AIの反応
+AI: 「[1],[2],[3]が何の文献か分からないため、適切な引用付き文章を作成できません」
+```
+
+#### After（v4.0）
+```
+# AIに提供するファイル（自動生成）
+## 📚 Citation Reference Table
+[1] → Smith, J. et al. (2023). "Novel Method for Cancer Analysis". Cancer Research, 83(12), 1234-1245.
+[2] → Jones, M. & Wilson, K. (2022). "Advanced Biomarker Techniques". Nature Medicine, 28, 567-578.
+[3] → Brown, A. (2021). "Differential Diagnosis in Oncology". Cell, 185, 890-905.
+
+## 📄 Paper Content
+Recent studies suggest that KRTs are mediators [1],[2],[3].
+
+# AIの反応
+AI: 「Smith et al.の癌細胞解析手法[1]、Jonesのバイオマーカー技術[2]、Brownの診断手法[3]を踏まえて、
+     適切な引用付きの論文を執筆いたします」
+```
+
+---
+
+**v4.0の革新ポイント：AIが引用文献を完全理解し、人間のAI論文執筆支援が飛躍的に向上**

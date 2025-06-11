@@ -1,7 +1,9 @@
-# 統合ワークフロー仕様書 v3.0
+# 統合ワークフロー仕様書 v4.0
 
 ## 概要
-統合ワークフロー（Integrated Workflow）は、ObsClippingsManager v3.0の中核機能であり、すべての処理を`run-integrated`コマンド一つで完結させるシンプルかつ効率的なシステムです。状態管理により重複処理を自動回避し、デフォルト設定での引数なし実行を実現します。
+統合ワークフロー（Integrated Workflow）は、ObsClippingsManager v4.0の中核機能であり、すべての処理を`run-integrated`コマンド一つで完結させるシンプルかつ効率的なシステムです。状態管理により重複処理を自動回避し、デフォルト設定での引数なし実行を実現します。
+
+**v4.0新機能**: AI理解支援引用文献統合機能により、AIアシスタント（ChatGPT、Claude等）が論文の引用文献を完全に理解できるファイル生成機能を追加。
 
 ## 基本原理
 
@@ -9,35 +11,40 @@
 - **すべての機能**を`run-integrated`に集約
 - **引数なし実行**でデフォルト動作
 - **個別設定**は必要時のみ
+- **AI理解支援**をオプションで追加
 
 ### 状態管理による効率化
 - **YAMLヘッダー**による処理状態追跡
 - **自動スキップ**で完了済み処理を回避
 - **失敗再実行**で必要な処理のみ実施
+- **引用マッピング状態**の追跡
 
 ### 統一ディレクトリ設定
 - **workspace_path**一つでの全パス管理
 - **自動導出**による設定シンプル化
 - **個別指定**での柔軟性確保
+- **AI用ファイル出力**の統合管理
 
 ## システム構成
 
-### 処理フロー
+### 処理フロー v4.0
 ```
-1. organize  →  2. sync  →  3. fetch  →  4. parse
-    ↓             ↓           ↓            ↓
- ファイル整理   同期チェック  引用取得    引用解析
+1. organize  →  2. sync  →  3. fetch  →  4. parse  →  5. ai-mapping
+    ↓             ↓           ↓            ↓             ↓
+ ファイル整理   同期チェック  引用取得    引用解析    AI理解支援統合
 ```
 
 ### 依存関係
 - 各ステップは**順次実行**
 - **前段階完了**後に次段階実行
 - **失敗時は後続ステップ停止**
+- **ai-mapping**は**parse完了後**に実行
 
 ### 状態追跡
 - 各論文の`.md`ファイルYAMLヘッダーで状態管理
 - ステップごとの処理状態を記録
 - 完了/失敗/保留の状態管理
+- **引用マッピング状態**と**AI用ファイル生成状態**を追跡
 
 ## 統一設定システム
 
@@ -50,6 +57,14 @@ workspace_path: "/home/user/ManuscriptsManager"
 bibtex_file: "{workspace_path}/CurrentManuscript.bib"
 clippings_dir: "{workspace_path}/Clippings"
 output_dir: "{workspace_path}/Clippings"
+
+# AI理解支援設定（v4.0新機能）
+ai_citation_support:
+  enabled: false                    # デフォルトは無効
+  output_dir: "{workspace_path}/AI_Ready"  # AI用ファイル出力ディレクトリ
+  generate_mapping: true            # 引用マッピング生成
+  generate_unified_file: true       # AI用統合ファイル生成
+  backup_original: true             # 元ファイルバックアップ
 ```
 
 ### 設定優先順位
@@ -100,6 +115,7 @@ class IntegratedWorkflow:
         self.sync_workflow = SyncCheckWorkflow(config_manager, logger)
         self.fetch_workflow = CitationWorkflow(config_manager, logger)
         self.parse_workflow = CitationParserWorkflow(config_manager, logger)
+        self.ai_mapping_workflow = AIMappingWorkflow(config_manager, logger)  # v4.0新機能
     
     def execute(self, **options) -> Dict[str, Any]:
         """統合ワークフロー実行"""
@@ -115,21 +131,23 @@ class IntegratedWorkflow:
 
 #### execute() - 統合実行
 ```python
-def execute(self, **options) -> Dict[str, Any]:
-    """
-    統合ワークフロー実行
-    
-    Args:
-        workspace_path: ワークスペースパス
-        papers: 対象論文リスト (カンマ区切り文字列)
-        skip_steps: スキップステップリスト (カンマ区切り文字列)
-        force_reprocess: 強制再処理フラグ
-        show_plan: 実行計画表示フラグ
-        **kwargs: 個別設定パラメータ
-    
-    Returns:
-        実行結果辞書
-    """
+    def execute(self, **options) -> Dict[str, Any]:
+        """
+        統合ワークフロー実行
+        
+        Args:
+            workspace_path: ワークスペースパス
+            papers: 対象論文リスト (カンマ区切り文字列)
+            skip_steps: スキップステップリスト (カンマ区切り文字列)
+            force_reprocess: 強制再処理フラグ
+            show_plan: 実行計画表示フラグ
+            enable_ai_citation_support: AI理解支援機能有効化（v4.0新機能）
+            ai_output_dir: AI用ファイル出力ディレクトリ（v4.0新機能）
+            **kwargs: 個別設定パラメータ
+        
+        Returns:
+            実行結果辞書
+        """
     # 1. パス解決
     paths = self._resolve_paths(**options)
     
@@ -178,8 +196,12 @@ def _execute_workflow(self, paths: Dict[str, str], **options) -> Dict[str, Any]:
     # スキップステップ処理
     skip_steps = self._parse_skip_steps(options.get('skip_steps', ''))
     
-    # ステップ実行
+    # ステップ実行（v4.0ではai-mappingステップを追加）
     steps = ['organize', 'sync', 'fetch', 'parse']
+    
+    # AI理解支援機能が有効な場合はai-mappingステップを追加
+    if options.get('enable_ai_citation_support'):
+        steps.append('ai-mapping')
     
     for step in steps:
         if step in skip_steps:
@@ -219,7 +241,7 @@ def _execute_step(self, step: str, papers: List[str], paths: Dict[str, str], **o
     個別ステップの実行
     
     Args:
-        step: 実行ステップ名 ('organize'|'sync'|'fetch'|'parse')
+        step: 実行ステップ名 ('organize'|'sync'|'fetch'|'parse'|'ai-mapping')
         papers: 対象論文リスト
         paths: 解決済みパス辞書
         **options: 実行オプション
@@ -238,6 +260,8 @@ def _execute_step(self, step: str, papers: List[str], paths: Dict[str, str], **o
             result = self._execute_fetch_step(papers, paths, **options)
         elif step == 'parse':
             result = self._execute_parse_step(papers, paths, **options)
+        elif step == 'ai-mapping':  # v4.0新機能
+            result = self._execute_ai_mapping_step(papers, paths, **options)
         else:
             raise ValueError(f"Unknown step: {step}")
         
@@ -355,6 +379,31 @@ def _execute_parse_step(self, papers: List[str], paths: Dict[str, str], **option
     }
     
     return self.parse_workflow.execute(parse_options)
+
+### 5. ai-mapping ステップ（v4.0新機能）
+```python
+def _execute_ai_mapping_step(self, papers: List[str], paths: Dict[str, str], **options) -> Dict[str, Any]:
+    """
+    AI理解支援統合ステップ実行（v4.0新機能）
+    
+    機能:
+    - YAMLヘッダーに軽量引用マッピング追加
+    - AI理解用統合ファイル生成
+    - Citation Reference Table作成
+    - AI最適化フォーマット出力
+    """
+    ai_mapping_options = {
+        'clippings_dir': paths['clippings_dir'],
+        'bibtex_file': paths['bibtex_file'],
+        'ai_output_dir': options.get('ai_output_dir', f"{paths['workspace_path']}/AI_Ready"),
+        'target_papers': papers,
+        'generate_mapping': options.get('generate_mapping', True),
+        'generate_unified_file': options.get('generate_unified_file', True),
+        'backup_original': options.get('backup_original', True),
+        **self._extract_ai_mapping_options(**options)
+    }
+    
+    return self.ai_mapping_workflow.execute(ai_mapping_options)
 ```
 
 ## 実行計画システム
@@ -443,6 +492,10 @@ def show_execution_plan(self, **options) -> Dict[str, Any]:
 @click.option('-l', '--log-level', 
               type=click.Choice(['debug', 'info', 'warning', 'error']),
               default='info', help='ログレベル')
+@click.option('--enable-ai-citation-support', is_flag=True, help='AI理解支援機能有効化（v4.0新機能）')
+@click.option('--ai-output-dir', help='AI用ファイル出力ディレクトリ（v4.0新機能）')
+@click.option('--generate-mapping', is_flag=True, default=True, help='引用マッピング生成（v4.0新機能）')
+@click.option('--generate-unified-file', is_flag=True, default=True, help='AI用統合ファイル生成（v4.0新機能）')
 def run_integrated(**options):
     """統合ワークフロー実行"""
     
@@ -496,6 +549,14 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated --skip-steps "pa
 
 # 強制再処理
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --force-reprocess
+
+# AI理解支援機能有効化（v4.0新機能）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-ai-citation-support
+
+# AI理解支援機能（カスタム出力ディレクトリ）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --enable-ai-citation-support \
+    --ai-output-dir "/path/to/ai_ready_files"
 ```
 
 ### ワークスペース変更
@@ -512,4 +573,29 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
 
 ---
 
-**統合ワークフロー仕様書バージョン**: 3.0.0 
+## v4.0の革新ポイント
+
+### AI理解支援機能の追加
+- **ai-mappingステップ**: 引用文献パース後にAI理解用ファイルを自動生成
+- **軽量マッピング**: YAMLヘッダーに最小限の引用情報を追加
+- **統合ファイル生成**: AIが完全に理解できるCitation Reference Table付きファイル作成
+- **シームレス統合**: run-integratedコマンドで全機能を一括実行
+
+### 使用シナリオ
+```bash
+# 論文執筆完了後、AI用ファイルを自動生成
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-ai-citation-support
+
+# 生成されたファイルをAIアシスタントに提供
+# → AIが[1],[2],[3]の引用文献を完全理解
+# → 高品質な論文執筆・要約・分析が可能
+```
+
+### 期待される効果
+- **AIアシスタント活用の革命的改善**: 引用文献理解によるAI論文支援の飛躍的向上
+- **作業効率向上**: 人間のAI論文執筆依頼準備時間の大幅短縮  
+- **データ品質維持**: 軽量設計による情報重複回避と整合性確保
+
+---
+
+**統合ワークフロー仕様書バージョン**: 4.0.0

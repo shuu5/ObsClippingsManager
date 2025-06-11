@@ -13,6 +13,7 @@ from .citation_workflow import CitationWorkflow
 from .organization_workflow import OrganizationWorkflow
 from .sync_check_workflow import SyncCheckWorkflow
 from .citation_parser_workflow import CitationParserWorkflow
+from ..ai_citation_support.ai_mapping_workflow import AIMappingWorkflow
 
 
 class WorkflowType(Enum):
@@ -21,6 +22,7 @@ class WorkflowType(Enum):
     FILE_ORGANIZATION = "file_organization"
     SYNC_CHECK = "sync_check"
     CITATION_PARSER = "citation_parser"
+    AI_MAPPING = "ai_mapping"
     INTEGRATED = "integrated"
 
 
@@ -41,6 +43,7 @@ class WorkflowManager:
         self.organization_workflow = OrganizationWorkflow(config_manager, logger)
         self.sync_check_workflow = SyncCheckWorkflow(config_manager, logger)
         self.citation_parser_workflow = CitationParserWorkflow(config_manager, logger)
+        self.ai_mapping_workflow = AIMappingWorkflow(config_manager)
         
         # 実行履歴
         self.execution_history = []
@@ -82,6 +85,9 @@ class WorkflowManager:
                 
             elif workflow_type == WorkflowType.CITATION_PARSER:
                 success, results = self._execute_citation_parser_workflow(options)
+                
+            elif workflow_type == WorkflowType.AI_MAPPING:
+                success, results = self._execute_ai_mapping_workflow(options)
                 
             elif workflow_type == WorkflowType.INTEGRATED:
                 success, results = self._execute_integrated_workflow(options)
@@ -181,12 +187,81 @@ class WorkflowManager:
         self.logger.info("Executing citation parser workflow")
         return self.citation_parser_workflow.execute(**options)
     
-    def _execute_integrated_workflow(self, options: Dict[str, Any]) -> Tuple[bool, Dict[str, Any]]:
+    def _execute_ai_mapping_workflow(self, options: Dict[str, Any]) -> Tuple[bool, Dict[str, Any]]:
         """
-        統合ワークフローの実行（引用文献取得 → ファイル整理）
+        AI Mapping Workflowの実行
         
         Args:
             options: 実行オプション
+                - markdown_file: 対象Markdownファイル
+                - references_bib: 対応するreferences.bibファイル
+                - generate_ai_file: AI用ファイル生成フラグ (デフォルト: True)
+                - output_file: 出力ファイル (オプション)
+                - dry_run: ドライラン実行フラグ (デフォルト: False)
+            
+        Returns:
+            実行結果
+        """
+        self.logger.info("Executing AI mapping workflow")
+        
+        # 必須パラメータの検証
+        if 'markdown_file' not in options:
+            return False, {"error": "markdown_file parameter is required"}
+        
+        if 'references_bib' not in options:
+            return False, {"error": "references_bib parameter is required"}
+        
+        markdown_file = options['markdown_file']
+        references_bib = options['references_bib']
+        generate_ai_file = options.get('generate_ai_file', True)
+        output_file = options.get('output_file', None)
+        dry_run = options.get('dry_run', False)
+        
+        try:
+            if dry_run:
+                # ドライラン実行
+                dry_run_result = self.ai_mapping_workflow.dry_run_ai_mapping(
+                    markdown_file, references_bib
+                )
+                return True, {
+                    "type": "dry_run",
+                    "markdown_file": markdown_file,
+                    "references_bib": references_bib,
+                    "dry_run_report": dry_run_result
+                }
+            else:
+                # 実際の実行
+                ai_result = self.ai_mapping_workflow.execute_ai_mapping(
+                    markdown_file, references_bib, generate_ai_file, output_file
+                )
+                
+                return ai_result.success, {
+                    "type": "ai_mapping",
+                    "markdown_file": markdown_file,
+                    "references_bib": references_bib,
+                    "ai_file_generated": ai_result.success and generate_ai_file,
+                    "output_file": ai_result.output_file if ai_result.success else "",
+                    "statistics": ai_result.statistics.__dict__ if ai_result.statistics else {},
+                    "error_message": ai_result.error_message if not ai_result.success else "",
+                    "warnings": ai_result.warnings
+                }
+                
+        except Exception as e:
+            self.logger.error(f"AI mapping workflow failed: {e}")
+            return False, {
+                "type": "ai_mapping",
+                "error": str(e),
+                "markdown_file": markdown_file,
+                "references_bib": references_bib
+            }
+    
+    def _execute_integrated_workflow(self, options: Dict[str, Any]) -> Tuple[bool, Dict[str, Any]]:
+        """
+        統合ワークフローの実行（引用文献取得 → ファイル整理 → AI理解支援）
+        
+        Args:
+            options: 実行オプション
+                - enable_ai_citation_support: AI理解支援機能を有効化 (デフォルト: False)
             
         Returns:
             統合実行結果
@@ -197,6 +272,7 @@ class WorkflowManager:
             "stage": "initialization",
             "citation_results": {},
             "organization_results": {},
+            "ai_mapping_results": {},
             "overall_success": False
         }
         
@@ -224,12 +300,38 @@ class WorkflowManager:
         org_success, org_results = self.organization_workflow.execute(**options)
         integrated_results["organization_results"] = org_results
         
+        # Phase 3: AI理解支援引用文献統合（オプション）
+        ai_mapping_success = True  # デフォルト値
+        ai_mapping_results = {}
+        
+        if options.get('enable_ai_citation_support', False):
+            self.logger.info("Phase 3: AI citation support mapping")
+            integrated_results["stage"] = "ai_mapping"
+            
+            # AI Mappingに必要なパラメータが提供されているかチェック
+            if 'markdown_file' in options and 'references_bib' in options:
+                ai_mapping_success, ai_mapping_results = self._execute_ai_mapping_workflow(options)
+                integrated_results["ai_mapping_results"] = ai_mapping_results
+                
+                if ai_mapping_success:
+                    self.logger.info("AI citation support mapping completed successfully")
+                else:
+                    ai_mapping_error = ai_mapping_results.get("error_message", "Unknown error")
+                    self.logger.warning(f"AI citation support mapping failed: {ai_mapping_error}")
+            else:
+                self.logger.warning("AI citation support requested but required parameters missing")
+                ai_mapping_success = False
+                ai_mapping_results = {
+                    "error": "Missing required parameters: markdown_file and references_bib"
+                }
+                integrated_results["ai_mapping_results"] = ai_mapping_results
+        
         # 統合結果の判定
-        integrated_results["overall_success"] = citation_success and org_success
+        integrated_results["overall_success"] = citation_success and org_success and ai_mapping_success
         
         # 統合統計の計算
         integrated_results["statistics"] = self._calculate_integrated_statistics(
-            citation_results, org_results
+            citation_results, org_results, ai_mapping_results
         )
         
         # ステージ完了
@@ -243,6 +345,8 @@ class WorkflowManager:
                 errors.append(f"Citation: {citation_results.get('error', 'Unknown')}")
             if not org_success:
                 errors.append(f"Organization: {org_results.get('error', 'Unknown')}")
+            if not ai_mapping_success and options.get('enable_ai_citation_support', False):
+                errors.append(f"AI Mapping: {ai_mapping_results.get('error', 'Unknown')}")
             
             integrated_results["error"] = "; ".join(errors)
             self.logger.error(f"Integrated workflow failed: {integrated_results['error']}")
@@ -251,13 +355,15 @@ class WorkflowManager:
     
     def _calculate_integrated_statistics(self, 
                                        citation_results: Dict[str, Any], 
-                                       org_results: Dict[str, Any]) -> Dict[str, Any]:
+                                       org_results: Dict[str, Any],
+                                       ai_mapping_results: Dict[str, Any] = None) -> Dict[str, Any]:
         """
         統合統計の計算
         
         Args:
             citation_results: 引用文献取得結果
             org_results: ファイル整理結果
+            ai_mapping_results: AI理解支援マッピング結果
             
         Returns:
             統合統計情報
@@ -277,6 +383,17 @@ class WorkflowManager:
                 "directories_created": org_results.get("created_directories", 0)
             }
         }
+        
+        # AI Mapping統計（オプション）
+        if ai_mapping_results:
+            ai_stats = ai_mapping_results.get("statistics", {})
+            stats["ai_mapping_phase"] = {
+                "success": ai_mapping_results.get("type") == "ai_mapping" and "error" not in ai_mapping_results,
+                "ai_file_generated": ai_mapping_results.get("ai_file_generated", False),
+                "output_file": ai_mapping_results.get("output_file", ""),
+                "citations_mapped": ai_stats.get("total_citations_mapped", 0),
+                "processing_time": ai_stats.get("processing_time", 0.0)
+            }
         
         # 全体統計
         stats["overall"] = {

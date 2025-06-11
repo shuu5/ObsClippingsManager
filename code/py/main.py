@@ -592,6 +592,9 @@ def parse_citations(ctx: Dict[str, Any],
 @click.option('--show-plan',
               is_flag=True,
               help='Display execution plan without running the workflow')
+@click.option('--enable-ai-citation-support',
+              is_flag=True,
+              help='Enable AI citation support mapping (v4.0)')
 @click.option('--auto-approve', '-y',
               is_flag=True,
               help='Automatically approve all operations')
@@ -604,14 +607,15 @@ def run_integrated(ctx: Dict[str, Any],
                   skip_steps: Optional[str],
                   force_reprocess: bool,
                   show_plan: bool,
+                  enable_ai_citation_support: bool,
                   auto_approve: bool):
     """
-    統合ワークフローを実行 (v3.0)
+    統合ワークフローを実行 (v4.0対応)
     
     シンプルな設定と効率的な状態管理により、学術文献管理の全プロセスを自動化します。
     デフォルトでは引数なしで完全動作し、workspace_pathベースの統一設定を使用します。
     
-    処理順序: organize → sync → fetch → parse
+    処理順序: organize → sync → fetch → parse → ai-mapping (オプション)
     """
     try:
         config_manager = ctx['config_manager']
@@ -631,7 +635,8 @@ def run_integrated(ctx: Dict[str, Any],
             'show_plan': show_plan,
             'dry_run': ctx['dry_run'],
             'verbose': ctx.get('verbose', False),
-            'auto_approve': auto_approve
+            'auto_approve': auto_approve,
+            'enable_ai_citation_support': enable_ai_citation_support
         }
         
         # プラン表示モード
@@ -674,9 +679,14 @@ def run_integrated(ctx: Dict[str, Any],
             result = integrated_workflow.force_reprocess(**options)
         else:
             # 通常実行
-            click.echo("🚀 Starting integrated workflow v3.0...")
+            if enable_ai_citation_support:
+                click.echo("🚀 Starting integrated workflow v4.0 with AI citation support...")
+            else:
+                click.echo("🚀 Starting integrated workflow v3.0...")
             if workspace:
                 click.echo(f"📁 Workspace: {workspace}")
+            if enable_ai_citation_support:
+                click.echo("🤖 AI citation support: enabled")
             
             result = integrated_workflow.execute(**options)
         
@@ -726,8 +736,136 @@ def run_integrated(ctx: Dict[str, Any],
 
 
 @cli.command()
+@click.option('--markdown-file', '-m',
+              required=True,
+              help='Target Markdown file',
+              type=click.Path(exists=True))
+@click.option('--references-bib', '-r',
+              required=True,
+              help='Corresponding references.bib file',
+              type=click.Path(exists=True))
+@click.option('--output-file', '-o',
+              help='AI readable file output path (auto-generated if not specified)',
+              type=click.Path())
+@click.option('--no-ai-file',
+              is_flag=True,
+              help='Skip AI file generation (mapping only)')
+@click.option('--preview',
+              is_flag=True,
+              help='Show citation preview only')
+@click.option('--auto-approve', '-y',
+              is_flag=True,
+              help='Automatically approve all operations')
+@pass_context
+def ai_mapping(ctx: Dict[str, Any],
+               markdown_file: str,
+               references_bib: str,
+               output_file: Optional[str],
+               no_ai_file: bool,
+               preview: bool,
+               auto_approve: bool):
+    """
+    AI理解支援引用文献統合を実行 (v4.0)
+    
+    Markdownファイル内の引用番号 [1], [2], [3] をreferences.bibの
+    citation_keyとマッピングし、AIアシスタントが理解できる統合ファイルを生成します。
+    """
+    try:
+        workflow_manager = ctx['workflow_manager']
+        logger = ctx['logger'].get_logger('CLI')
+        
+        if preview:
+            click.echo("🔍 引用情報プレビューモードで実行...")
+        elif ctx['dry_run']:
+            click.echo("🧪 AI理解支援引用文献統合のドライラン実行...")
+        else:
+            click.echo("🚀 AI理解支援引用文献統合を開始...")
+        
+        # 実行オプションの構築
+        options = {
+            'markdown_file': markdown_file,
+            'references_bib': references_bib,
+            'generate_ai_file': not no_ai_file,
+            'dry_run': ctx['dry_run'] or preview,
+            'auto_approve': auto_approve
+        }
+        
+        if output_file:
+            options['output_file'] = output_file
+        
+        # ワークフロー実行
+        success, results = workflow_manager.execute_workflow(
+            WorkflowType.AI_MAPPING,
+            **options
+        )
+        
+        if preview:
+            # プレビュー結果の表示
+            if success and 'dry_run_report' in results:
+                click.echo("\n" + "=" * 60)
+                click.echo(results['dry_run_report'])
+                click.echo("=" * 60)
+            else:
+                click.echo("❌ プレビュー生成に失敗しました")
+        elif ctx['dry_run']:
+            # ドライラン結果の表示
+            if success and 'dry_run_report' in results:
+                click.echo("\n" + "=" * 60)
+                click.echo(results['dry_run_report'])
+                click.echo("=" * 60)
+            else:
+                click.echo("❌ ドライラン実行に失敗しました")
+        else:
+            # 実際の実行結果表示
+            click.echo("\n" + "=" * 60)
+            click.echo("📊 AI理解支援引用文献統合結果")
+            click.echo("=" * 60)
+            
+            if success:
+                click.echo("✅ 処理が正常に完了しました")
+                
+                if results.get('ai_file_generated', False):
+                    output_path = Path(results.get('output_file', ''))
+                    click.echo(f"📁 AI用ファイル: {output_path.name}")
+                
+                # 統計情報の表示
+                stats = results.get('statistics', {})
+                if stats:
+                    click.echo(f"📈 統計情報:")
+                    click.echo(f"   処理された引用数: {stats.get('total_citations_mapped', 0)}")
+                    click.echo(f"   処理時間: {stats.get('processing_time', 0.0):.2f}秒")
+                
+                # 警告の表示
+                warnings = results.get('warnings', [])
+                if warnings:
+                    click.echo("⚠️  警告:")
+                    for warning in warnings:
+                        click.echo(f"   - {warning}")
+            else:
+                click.echo("❌ 処理に失敗しました")
+                error_msg = results.get('error_message', results.get('error', 'Unknown error'))
+                click.echo(f"エラー: {error_msg}")
+            
+            click.echo("=" * 60)
+        
+        # 詳細情報の表示（verboseモード）
+        if ctx['verbose'] and not preview:
+            execution_summary = create_workflow_execution_summary(results)
+            click.echo("\n📋 実行詳細:")
+            click.echo(execution_summary)
+        
+        if not success:
+            sys.exit(1)
+            
+    except Exception as e:
+        logger.error(f"AI mapping workflow execution failed: {e}")
+        click.echo(f"❌ AI理解支援引用文献統合の実行に失敗しました: {e}", err=True)
+        sys.exit(1)
+
+
+@cli.command()
 @click.option('--workflow-type', '-w',
-              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'citation_parser', 'integrated'], case_sensitive=False),
+              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'citation_parser', 'ai_mapping', 'integrated'], case_sensitive=False),
               help='Validate specific workflow configuration')
 @pass_context
 def validate_config(ctx: Dict[str, Any], workflow_type: Optional[str]):
@@ -781,7 +919,7 @@ def validate_config(ctx: Dict[str, Any], workflow_type: Optional[str]):
               default=10,
               help='Number of recent executions to show')
 @click.option('--workflow-type', '-w',
-              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'citation_parser', 'integrated'], case_sensitive=False),
+              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'citation_parser', 'ai_mapping', 'integrated'], case_sensitive=False),
               help='Filter by workflow type')
 @pass_context
 def show_history(ctx: Dict[str, Any], limit: int, workflow_type: Optional[str]):

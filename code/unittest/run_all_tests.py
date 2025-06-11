@@ -27,6 +27,7 @@ import test_citation_parser
 import test_citation_parser_workflow
 import test_workflow_manager
 import test_rename_mkdir_citation_key
+import test_ai_citation_support  # v4.0 新機能テスト
 # import test_sync_check_workflow  # API未確認のため一時的にコメントアウト
 
 
@@ -51,6 +52,7 @@ def run_all_tests():
         test_citation_parser_workflow,
         test_workflow_manager,
         test_rename_mkdir_citation_key,
+        test_ai_citation_support,  # v4.0 新機能テスト
         # test_sync_check_workflow  # API未確認のため一時的にコメントアウト
     ]
     
@@ -118,7 +120,8 @@ def run_specific_module_tests(module_name: str):
         'citation_parser': test_citation_parser,
         'citation_parser_workflow': test_citation_parser_workflow,
         'workflow': test_workflow_manager,
-        'rename_mkdir_citation_key': test_rename_mkdir_citation_key
+        'rename_mkdir_citation_key': test_rename_mkdir_citation_key,
+        'ai_citation_support': test_ai_citation_support
     }
     
     if module_name not in module_mapping:
