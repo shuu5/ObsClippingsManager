@@ -1,9 +1,9 @@
-# ObsClippingsManager v4.0 統合システム仕様書
+# ObsClippingsManager v3.0 統合システム仕様書
 
 ## 概要
-ObsClippingsManager v4.0 は、学術研究における文献管理とMarkdownファイル整理を自動化する統合システムです。**シンプルな設定**と**デフォルト引数なし実行**を重視し、効率的な状態管理により重複処理を自動回避します。
+ObsClippingsManager v3.0 は、学術研究における文献管理とMarkdownファイル整理を自動化する統合システムです。**シンプルな設定**と**デフォルト引数なし実行**を重視し、効率的な状態管理により重複処理を自動回避します。
 
-**v4.0 の特徴:**
+**v3.0 の特徴:**
 - **シンプル設定**: 単一引数での統一ディレクトリ設定
 - **デフォルト実行**: 引数なしでの完全動作
 - **効率的処理**: 状態管理による重複処理の自動スキップ
@@ -94,124 +94,11 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
     --clippings-dir "/path/to/specific/clippings"
 ```
 
-## テスト環境構築・管理
+## テスト環境
 
-### テスト環境の概要
-ObsClippingsManager v4.0 では、本番環境を模したテスト環境を簡単に構築・管理できます。テスト環境は本番データの複製または疑似データを使用して、安全にシステムの動作検証を行えます。
-
-### テスト環境セットアップ
-
-#### 1. 初期構築
+### 基本テスト実行
 ```bash
-# 本番環境からテストデータを作成
-python code/scripts/setup_test_env.py
-
-# カスタムパスでの構築
-python code/scripts/setup_test_env.py \
-    --source "/path/to/production" \
-    --test-dir "/path/to/test/environment"
-```
-
-#### 2. テスト環境リセット
-```bash
-# テスト環境を初期状態に戻す
-python code/scripts/setup_test_env.py --reset
-
-# カスタムテストディレクトリのリセット
-python code/scripts/setup_test_env.py --reset --test-dir "/path/to/test/environment"
-```
-
-### テスト環境での実行
-
-#### 基本的なテスト実行
-```bash
-# テスト環境での統合ワークフロー実行
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts"
-
-# 簡略コマンド（エイリアス推奨）
-TEST_WS="/home/user/proj/ObsClippingsManager/TestManuscripts"
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace "$TEST_WS"
-```
-
-#### テスト実行オプション
-```bash
-# 実行計画確認（テスト環境）
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --workspace "$TEST_WS" --show-plan
-
-# ドライラン実行（テスト環境）
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --workspace "$TEST_WS" --dry-run
-
-# 詳細ログでテスト実行
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --workspace "$TEST_WS" --log-level debug --verbose
-```
-
-### テスト環境構造
-```
-TestManuscripts/                        # テストワークスペース
-├── .test_env_info.txt                  # テスト環境情報
-├── CurrentManuscript.bib               # テスト用BibTeXファイル
-└── Clippings/                          # テスト用論文ディレクトリ
-    ├── sample_paper1.md               # サンプル論文1
-    ├── sample_paper2.md               # サンプル論文2
-    └── ...                            # その他のテストファイル
-```
-
-### テスト環境管理
-
-#### 環境情報確認
-```bash
-# テスト環境の詳細確認
-cat TestManuscripts/.test_env_info.txt
-
-# テスト環境の状態確認
-ls -la TestManuscripts/
-ls -la TestManuscripts/Clippings/
-```
-
-#### テストサイクル
-```bash
-# 1. テスト環境リセット
-python code/scripts/setup_test_env.py --reset
-
-# 2. テスト実行
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts"
-
-# 3. 結果確認
-ls -la TestManuscripts/Clippings/  # 処理後の状態確認
-
-# 4. 次回テストのためのリセット
-python code/scripts/setup_test_env.py --reset
-```
-
-### テスト推奨ワークフロー
-
-#### 開発時テスト
-```bash
-# 新機能開発後の基本テスト
-python code/scripts/setup_test_env.py --reset
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts" \
-    --log-level debug
-```
-
-#### デバッグ用テスト
-```bash
-# 問題特定のための詳細テスト
-python code/scripts/setup_test_env.py --reset
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts" \
-    --dry-run --show-plan --verbose
-```
-
-#### 本番前最終確認
-```bash
-# 本番環境と同等データでのテスト
-python code/scripts/setup_test_env.py  # 本番データコピー
+# テスト環境での実行
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
     --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts"
 ```
@@ -252,26 +139,29 @@ ObsClippingsManager v3.0では、AI理解支援引用文献パーサー機能を
 ### YAMLヘッダー完全統合形式
 ```yaml
 ---
-title: "論文タイトル"
-doi: "10.1093/jrr/rrac091"
+citation_key: smith2023test
+citation_metadata:
+  last_updated: '2025-01-15T10:30:00.123456'
+  mapping_version: '2.0'
+  source_bibtex: references.bib
+  total_citations: 1
 citations:
   1:
-    citation_key: "smith2023test"
-    title: "Novel Method for Cancer Cell Analysis"
-    authors: "Smith, J., Wilson, K., & Davis, M."
+    authors: Smith
+    citation_key: smith2023test
+    doi: 10.1158/0008-5472.CAN-23-0123
+    journal: Cancer Research
+    pages: '1234-1245'
+    title: Novel Method for Cancer Cell Analysis
+    volume: '83'
     year: 2023
-    journal: "Cancer Research"
-    volume: "83"
-    number: "12"
-    pages: "1234-1245"
-    doi: "10.1158/0008-5472.CAN-23-0123"
-    abstract: "This paper introduces innovative methodologies for analyzing cancer cell behavior using advanced computational techniques."
-
-citation_metadata:
-  total_citations: 1
-  last_updated: "2024-01-15T10:30:00"
-  source_bibtex: "references.bib"
-  mapping_version: "2.0"
+last_updated: '2025-01-15T10:30:00.654321+00:00'
+processing_status:
+  ai-citation-support: completed
+  fetch: completed
+  organize: completed
+  sync: completed
+workflow_version: '3.0'
 ---
 ```
 
@@ -373,15 +263,20 @@ PYTHONPATH=code/py uv run python code/py/main.py show-stats
 ### 状態管理ヘッダー例
 ```yaml
 ---
-obsclippings_metadata:
-  citation_key: "smith2023test"
-  processing_status:
-    organize: "completed"
-    sync: "completed" 
-    fetch: "completed"
-    parse: "completed"
-  last_updated: "2025-01-15T10:30:00Z"
-  workflow_version: "3.0"
+citation_key: smith2023test
+citation_metadata:
+  last_updated: '2025-01-15T10:30:00.123456'
+  mapping_version: '2.0'
+  source_bibtex: references.bib
+  total_citations: 0
+citations: {}
+last_updated: '2025-01-15T10:30:00.654321+00:00'
+processing_status:
+  ai-citation-support: pending
+  fetch: completed
+  organize: completed
+  sync: completed
+workflow_version: '3.0'
 ---
 
 # Smith et al. (2023) - Example Paper Title

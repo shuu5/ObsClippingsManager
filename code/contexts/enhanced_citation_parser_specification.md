@@ -1,4 +1,4 @@
-# AI理解支援引用文献パーサー機能仕様書 v4.0
+# AI理解支援引用文献パーサー機能仕様書 v3.0
 
 ## 概要
 references.bibの内容をそのまま順序通りにYAMLヘッダーに統合し、AIが直接Markdownファイルを読むだけで引用文献を理解できるシンプルな自己完結型システム。
@@ -16,40 +16,38 @@ references.bibの内容をそのまま順序通りにYAMLヘッダーに統合�
 ### YAMLヘッダー統合形式
 ```yaml
 ---
-obsclippings_metadata:
-  citation_key: "smith2023test"
-  processing_status:
-    organize: "completed"
-    sync: "completed" 
-    fetch: "completed"
-    ai-citation-support: "completed"
-  last_updated: "2025-01-15T10:30:00Z"
-  source_doi: "10.1093/jrr/rrac091"
-  workflow_version: "4.0"
-  citations:
-    1:
-      citation_key: "smith2023test"
-      title: "Novel Method for Cancer Cell Analysis"
-      authors: "Smith, J., Wilson, K., & Davis, M."
-      year: 2023
-      journal: "Cancer Research"
-      volume: "83"
-      pages: "1234-1245"
-      doi: "10.1158/0008-5472.CAN-23-0123"
-    2:
-      citation_key: "jones2022biomarkers"
-      title: "Advanced Biomarker Techniques in Oncology"
-      authors: "Jones, M. & Brown, A."
-      year: 2022
-      journal: "Nature Medicine"
-      volume: "28"
-      pages: "567-578"
-      doi: "10.1038/s41591-022-0456-7"
-  citation_metadata:
-    total_citations: 2
-    last_updated: "2025-01-15T10:30:00Z"
-    source_bibtex: "references.bib"
-    mapping_version: "2.0"
+citation_key: smith2023test
+citation_metadata:
+  last_updated: '2025-01-15T10:30:00.123456'
+  mapping_version: '2.0'
+  source_bibtex: references.bib
+  total_citations: 2
+citations:
+  1:
+    authors: Smith
+    citation_key: smith2023test
+    doi: 10.1158/0008-5472.CAN-23-0123
+    journal: Cancer Research
+    pages: '1234-1245'
+    title: Novel Method for Cancer Cell Analysis
+    volume: '83'
+    year: 2023
+  2:
+    authors: Jones
+    citation_key: jones2022biomarkers
+    doi: 10.1038/s41591-022-0456-7
+    journal: Nature Medicine
+    pages: '567-578'
+    title: Advanced Biomarker Techniques in Oncology
+    volume: '28'
+    year: 2022
+last_updated: '2025-01-15T10:30:00.654321+00:00'
+processing_status:
+  ai-citation-support: completed
+  fetch: completed
+  organize: completed
+  sync: completed
+workflow_version: '3.0'
 ---
 ```
 
@@ -62,7 +60,7 @@ class CitationMappingEngine:
         """references.bibから引用情報を順序通り読み込みマッピング作成"""
         
     def update_yaml_header(self, markdown_file: str, mapping: CitationMapping) -> bool:
-        """obsclippings_metadataのcitationsフィールドに引用情報を追加・更新"""
+        """YAMLヘッダーのcitationsフィールドに引用情報を追加・更新"""
 ```
 
 ## マッピングルール
@@ -149,6 +147,6 @@ def test_duplicate_handling():
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
     --enable-ai-citation-support
 
-# 結果: obsclippings_metadataのcitationsフィールドに
+# 結果: YAMLヘッダーのcitationsフィールドに
 #       references.bibの全エントリーが順序通り統合
 ```
