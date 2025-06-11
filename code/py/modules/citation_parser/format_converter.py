@@ -1,7 +1,7 @@
 """
-引用フォーマット変換エンジン
+引用フォーマット変換モジュール
 
-検出された引用を統一されたフォーマットに変換する
+様々な形式の引用を統一された形式に変換する機能を提供
 """
 
 import re
@@ -11,6 +11,7 @@ from dataclasses import dataclass
 
 from .data_structures import CitationMatch, ProcessingError, OutputFormat
 from .exceptions import FormatConversionError
+from ..shared.logger import IntegratedLogger
 
 
 @dataclass
@@ -76,18 +77,34 @@ class FormatConverter:
         
         for match in sorted_matches:
             try:
-                # 文章破壊を防ぐための検証を追加
-                if self._is_word_boundary_violation(converted_text, match):
-                    self.logger.warning(f"Skipping citation {match.original_text} at position {match.start_pos} to prevent word boundary violation")
-                    continue
+                # 位置を安全な位置に移動
+                safe_pos = self._find_safe_citation_position(converted_text, match)
                 
-                unified_citation = self._format_citation(match)
+                # 引用を安全な位置に移動
+                if safe_pos != match.start_pos:
+                    self.logger.info(f"Moving citation {match.original_text} from position {match.start_pos} to safe position {safe_pos}")
+                    converted_text = self._move_citation_to_safe_position(converted_text, match, safe_pos)
+                    
+                    # 移動後の新しいマッチ位置を計算
+                    citation_length = len(match.original_text)
+                    new_match = CitationMatch(
+                        original_text=match.original_text,
+                        start_pos=safe_pos,
+                        end_pos=safe_pos + citation_length,
+                        citation_numbers=match.citation_numbers,
+                        citation_type=match.citation_type
+                    )
+                else:
+                    new_match = match
+                
+                # 統一フォーマットに変換
+                unified_citation = self._format_citation(new_match)
                 
                 # テキストを置換
                 converted_text = (
-                    converted_text[:match.start_pos] +
+                    converted_text[:new_match.start_pos] +
                     unified_citation +
-                    converted_text[match.end_pos:]
+                    converted_text[new_match.end_pos:]
                 )
                 
             except Exception as e:
@@ -462,87 +479,129 @@ class FormatConverter:
         """
         return all(n > 0 for n in numbers) and len(numbers) <= 50
     
-    def _is_word_boundary_violation(self, text: str, match: CitationMatch) -> bool:
+    def _find_safe_citation_position(self, text: str, match: CitationMatch) -> int:
         """
-        引用の位置が単語境界を破壊するかどうかをチェック
+        引用の安全な挿入位置を見つける
         
         Args:
             text: テキスト
             match: 引用マッチ
             
         Returns:
-            True if word boundary violation detected
+            安全な挿入位置（元の位置が安全な場合はそのまま，そうでなければ調整された位置）
         """
         start_pos = match.start_pos
         end_pos = match.end_pos
         
+        # 現在の位置が安全かチェック
+        if self._is_position_safe_for_citation(text, start_pos, end_pos):
+            return start_pos
+        
+        # 安全でない場合、近くの安全な位置を探す
+        # 1. 引用の後ろから安全な位置を探す（優先）
+        safe_pos = self._find_safe_position_after(text, end_pos)
+        if safe_pos is not None:
+            return safe_pos
+        
+        # 2. 引用の前から安全な位置を探す
+        safe_pos = self._find_safe_position_before(text, start_pos)
+        if safe_pos is not None:
+            return safe_pos
+        
+        # 3. 安全な位置が見つからない場合は、文の最後に配置
+        return self._find_sentence_end_position(text, start_pos)
+    
+    def _is_position_safe_for_citation(self, text: str, start_pos: int, end_pos: int) -> bool:
+        """
+        引用の位置が安全かどうかをチェック
+        
+        安全な位置の定義：
+        - 単語境界にある（前後が空白文字または句読点）
+        - 単語の途中ではない
+        - 適切な文脈にある
+        """
         # 範囲チェック
         if start_pos < 0 or end_pos > len(text):
-            return True
+            return False
         
-        # 前後の文字を取得（複数文字の文脈を考慮）
+        # 前後の文字を取得
         char_before = text[start_pos - 1] if start_pos > 0 else ' '
         char_after = text[end_pos] if end_pos < len(text) else ' '
         
-        # 前後2文字の文脈も取得
-        chars_before = text[max(0, start_pos - 2):start_pos] if start_pos >= 2 else text[:start_pos]
-        chars_after = text[end_pos:min(len(text), end_pos + 2)] if end_pos < len(text) else text[end_pos:]
+        # 安全な前置文字：空白、句読点、開始括弧
+        safe_before_chars = r'[\s\.,;:!?\(\[\{]'
+        # 安全な後置文字：空白、句読点、終了括弧
+        safe_after_chars = r'[\s\.,;:!?\)\]\}]'
         
-        # 単語文字（アルファベット、数字、アンダースコア）かどうかをチェック
-        word_char_pattern = r'[a-zA-Z0-9_]'
+        is_before_safe = re.match(safe_before_chars, char_before)
+        is_after_safe = re.match(safe_after_chars, char_after)
         
-        # 前の文字が単語文字で、引用の後ろの文字も単語文字の場合は境界違反の可能性が高い
-        if (re.match(word_char_pattern, char_before) and 
-            re.match(word_char_pattern, char_after)):
+        return is_before_safe and is_after_safe
+    
+    def _find_safe_position_after(self, text: str, start_pos: int) -> Optional[int]:
+        """引用の後ろから安全な挿入位置を探す"""
+        # 単語境界または句読点を探す
+        safe_boundary_pattern = r'[\s\.,;:!?\)\]\}]'
+        
+        for i in range(start_pos, min(start_pos + 50, len(text))):  # 最大50文字先まで探す
+            if re.match(safe_boundary_pattern, text[i]):
+                # さらに安全性を確認
+                if i + 1 < len(text):
+                    next_char = text[i + 1]
+                    if re.match(r'[\s\.,;:!?\)\]\}]', next_char) or text[i] in '.!?':
+                        return i + 1
+                else:
+                    return i + 1
+        
+        return None
+    
+    def _find_safe_position_before(self, text: str, start_pos: int) -> Optional[int]:
+        """引用の前から安全な挿入位置を探す"""
+        # 単語境界または句読点を探す
+        safe_boundary_pattern = r'[\s\.,;:!?\(\[\{]'
+        
+        for i in range(start_pos - 1, max(start_pos - 50, -1), -1):  # 最大50文字前まで探す
+            if re.match(safe_boundary_pattern, text[i]):
+                # 句読点の後の場合
+                if text[i] in '.!?;:':
+                    return i + 1
+                # スペースの場合
+                elif text[i] == ' ':
+                    return i + 1
+        
+        return None
+    
+    def _find_sentence_end_position(self, text: str, around_pos: int) -> int:
+        """文の終わりの位置を見つける"""
+        # 現在位置から後ろ向きに文の終わりを探す
+        for i in range(around_pos, len(text)):
+            if text[i] in '.!?':
+                return i + 1
+        
+        # 見つからない場合は文字列の最後
+        return len(text)
+    
+    def _move_citation_to_safe_position(self, text: str, match: CitationMatch, safe_pos: int) -> str:
+        """
+        引用を安全な位置に移動させる
+        
+        Args:
+            text: 元のテキスト
+            match: 移動する引用マッチ
+            safe_pos: 安全な挿入位置
             
-            # さらに詳細なチェック: 前後の文脈を確認
-            # "pancreat[citation]er" のような明らかなケースを検出
-            # "t[citation] is" のような "that is" の分割を検出
-            
-            # 前の文字列が単語の一部で、後の文字列も単語の一部の場合
-            if chars_before and chars_after:
-                # 前の部分が単語の一部で、かつ短い場合（単語が分割されている可能性）
-                if (len(chars_before) <= 10 and 
-                    re.match(r'^[a-zA-Z]+$', chars_before) and
-                    re.match(r'^[a-zA-Z]+', chars_after)):
-                    self.logger.warning(f"Word boundary violation detected: '{chars_before}[citation]{chars_after[:2]}...'")
-                    return True
-                
-                # "t [citation] is" のような短い前置文字の場合
-                if (len(char_before) == 1 and 
-                    re.match(r'^[a-zA-Z]$', char_before) and
-                    re.match(r'^[a-zA-Z]', char_after)):
-                    # 共通的な単語パターンをチェック
-                    common_words = ['that', 'this', 'they', 'the', 'to', 'and', 'or', 'in', 'on', 'at']
-                    potential_word = char_before + char_after
-                    for word in common_words:
-                        if word.startswith(potential_word):
-                            self.logger.warning(f"Likely word split detected: '{char_before}[citation]{char_after}' (potential word: {word})")
-                            return True
-            
-            return True
+        Returns:
+            引用が移動された新しいテキスト
+        """
+        # 元の引用を除去
+        text_without_citation = text[:match.start_pos] + text[match.end_pos:]
         
-        # 特別ケース: "revealed t [citation] is" のような単一文字 + スペース + 単語 のパターン
-        if (re.match(word_char_pattern, char_before) and 
-            char_after == ' ' and end_pos + 1 < len(text)):
-            # 引用の後にスペース + 単語がある場合をチェック
-            next_char = text[end_pos + 1] if end_pos + 1 < len(text) else ''
-            if re.match(word_char_pattern, next_char):
-                # 引用の直前の単語の末尾を確認
-                # "revealed t" の "t" は "that" の一部の可能性
-                word_start = start_pos - 1
-                while word_start > 0 and re.match(word_char_pattern, text[word_start - 1]):
-                    word_start -= 1
-                
-                preceding_word = text[word_start:start_pos]
-                if len(preceding_word) >= 3:  # 最低3文字以上の単語
-                    # "revealed" + "t" + " is" の場合、"that" の可能性
-                    potential_complete_word = preceding_word + char_before
-                    # よく知られた単語の末尾パターンをチェック
-                    word_endings = ['that', 'what', 'want', 'went', 'point', 'right', 'light', 'night']
-                    for ending in word_endings:
-                        if potential_complete_word.endswith(ending[:-1]) and char_before == ending[-1]:
-                            self.logger.warning(f"Potential word split detected: '{preceding_word}{char_before}[citation] {next_char}' (possible word: {ending})")
-                            return True
+        # 位置調整（元の引用を除去したことによる位置ずれを考慮）
+        if safe_pos > match.start_pos:
+            safe_pos -= (match.end_pos - match.start_pos)
         
-        return False 
+        # 安全な位置に引用を挿入
+        citation_text = match.original_text
+        new_text = text_without_citation[:safe_pos] + citation_text + text_without_citation[safe_pos:]
+        
+        return new_text 

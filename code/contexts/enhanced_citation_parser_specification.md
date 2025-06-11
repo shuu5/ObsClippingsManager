@@ -3,7 +3,7 @@
 ## 概要
 ObsClippingsManager v4.0における引用文献パース機能の革新的強化版です。**AIアシスタント（ChatGPT、Claude等）が引用文献を完全に理解し、適切な引用付き論文を執筆できるよう支援する**ことを主目的とします。
 
-従来の引用形式統一に加え、**AI用統合ファイル生成機能**を新たに追加し、人間がAIに論文執筆を依頼する際の課題を解決します。
+**YAMLヘッダー完全統合方式**により、ファイル単体で全ての引用情報を管理し、外部依存を排除した自己完結型のシステムを実現します。
 
 ## 背景と解決すべき課題
 
@@ -33,71 +33,111 @@ AI：「[1]はSmith et al.のがん解析手法の論文、[2]はJonesのバイ�
 
 ## 主要機能
 
-### 1. 軽量引用マッピング機能
-- YAMLヘッダーに最小限のマッピング情報を追加
-- references.bibとの動的連携
-- データ重複を避けたシンプル設計
+### 1. 完全統合引用マッピング機能
+- YAMLヘッダーに全ての引用文献情報を完全統合
+- references.bibから一度読み込み、Markdownファイルに永続化
+- 外部ファイル依存を排除した自己完結型設計
 
-### 2. AI用統合ファイル生成機能（新機能）
-- 引用文献情報を完全に統合したAI理解用ファイル生成
+### 2. AI用統合ファイル生成機能（核心機能）
+- YAMLヘッダーの情報のみを使用してAI理解用ファイル生成
 - Citation Reference Table + Paper Content形式
-- AIが即座に引用文献を理解可能
-
-### 3. 引用形式統一機能（従来機能強化）
-- 多様な引用形式の検出・統一
-- エスケープパターン対応
-- URL付き引用のクリーンアップ
+- 高速で信頼性の高い処理
 
 ## 機能詳細仕様
 
-### 1. 軽量引用マッピング機能
+### 1. 完全統合引用マッピング機能
 
-#### YAMLヘッダー拡張
+#### YAMLヘッダー完全統合形式
 ```yaml
 ---
 title: "論文タイトル"
 doi: "10.1093/jrr/rrac091"
-# 新機能：軽量引用マッピング
-citation_mapping:
-  references_file: "./references.bib"           # 対応するreferences.bibファイル
-  index_map:                                    # 引用番号 → citation_key マッピング
-    1: "smith2023test"                          # [1] → citation_key
-    2: "jones2022study"                         # [2] → citation_key  
-    3: "brown2021method"                        # [3] → citation_key
-  last_updated: "2024-01-15T10:30:00"          # マッピング最終更新時刻
-  mapping_version: "1.0"                       # マッピングバージョン
+# 完全統合引用マッピング
+citations:
+  1:
+    citation_key: "smith2023test"
+    title: "Novel Method for Cancer Cell Analysis"
+    authors: "Smith, J., Wilson, K., & Davis, M."
+    year: 2023
+    journal: "Cancer Research"
+    volume: "83"
+    number: "12"
+    pages: "1234-1245"
+    doi: "10.1158/0008-5472.CAN-23-0123"
+    abstract: "This paper introduces innovative methodologies for analyzing cancer cell behavior using advanced computational techniques."
+    
+  2:
+    citation_key: "jones2022biomarkers"
+    title: "Advanced Biomarker Techniques in Oncology"
+    authors: "Jones, M. & Brown, A."
+    year: 2022
+    journal: "Nature Medicine"
+    volume: "28"
+    pages: "567-578"
+    doi: "10.1038/s41591-022-0456-7"
+    abstract: "Comprehensive review of current biomarker applications in cancer diagnosis and treatment monitoring."
+    
+  3:
+    citation_key: "brown2021diagnosis"
+    title: "Differential Diagnosis Methods in Modern Oncology"
+    authors: "Brown, A., Lee, S., & Kumar, R."
+    year: 2021
+    journal: "Cell"
+    volume: "185"
+    pages: "890-905"
+    doi: "10.1016/j.cell.2021.03.012"
+    abstract: "Systematic approach to differential diagnosis using molecular markers and advanced imaging techniques."
+
+# メタデータ
+citation_metadata:
+  total_citations: 3
+  last_updated: "2024-01-15T10:30:00"
+  source_bibtex: "references.bib"
+  mapping_version: "2.0"
 ---
 ```
 
 #### 実装クラス
 ```python
-class CitationMappingEngine:
-    """軽量引用マッピング作成エンジン"""
+class CompleteCitationManager:
+    """完全統合引用管理エンジン"""
     
-    def create_citation_mapping(self, markdown_file: str, references_bib: str) -> CitationMapping:
+    def create_complete_mapping(self, markdown_file: str, references_bib: str) -> CompleteCitationMapping:
         """
-        引用番号とcitation_keyの軽量マッピングを作成
+        references.bibから完全な引用情報を読み込みYAMLヘッダーに統合
         
         Process:
         1. Markdownファイル内の引用番号を検出
-        2. references.bibからcitation_keyを抽出
-        3. 引用順序に基づいてマッピング作成
-        4. YAMLヘッダーに軽量マッピング情報を追加
+        2. references.bibから全ての文献情報を取得
+        3. 引用番号順に完全な文献情報をマッピング
+        4. YAMLヘッダーに完全な情報を埋め込み
         
         Returns:
-            CitationMapping: マッピング情報オブジェクト
+            CompleteCitationMapping: 完全な引用マッピング情報
         """
         
-    def update_yaml_header(self, markdown_file: str, citation_mapping: CitationMapping) -> bool:
+    def update_yaml_header_complete(self, markdown_file: str, mapping: CompleteCitationMapping) -> bool:
         """
-        YAMLヘッダーにマッピング情報を追加・更新
+        YAMLヘッダーに完全な引用情報を追加・更新
         
         Args:
             markdown_file: 対象Markdownファイル
-            citation_mapping: 作成されたマッピング情報
+            mapping: 完全な引用マッピング情報
             
         Returns:
             成功フラグ
+        """
+        
+    def extract_citation_from_yaml(self, markdown_file: str, citation_number: int) -> CitationInfo:
+        """
+        YAMLヘッダーから特定の引用情報を取得
+        
+        Args:
+            markdown_file: 対象Markdownファイル
+            citation_number: 引用番号
+            
+        Returns:
+            CitationInfo: 完全な引用文献情報
         """
 ```
 
@@ -107,18 +147,19 @@ class CitationMappingEngine:
 ```markdown
 # 論文タイトル
 *Generated by ObsClippingsManager v4.0 for AI Assistant*
+*Self-contained document with embedded citation information*
 
 ## 📚 Citation Reference Table
 **AI Assistant Reference Guide: This table provides complete citation information for all numbered references in the paper.**
 
 [1] → **Smith, J., Wilson, K., & Davis, M.** (2023). *Novel Method for Cancer Cell Analysis*. **Cancer Research**, 83(12), 1234-1245. DOI: 10.1158/0008-5472.CAN-23-0123
-    └─ **Context**: This paper introduces innovative methodologies for analyzing cancer cell behavior.
+    └─ **Abstract**: This paper introduces innovative methodologies for analyzing cancer cell behavior using advanced computational techniques.
 
 [2] → **Jones, M. & Brown, A.** (2022). *Advanced Biomarker Techniques in Oncology*. **Nature Medicine**, 28, 567-578. DOI: 10.1038/s41591-022-0456-7
-    └─ **Context**: Comprehensive review of current biomarker applications in cancer diagnosis.
+    └─ **Abstract**: Comprehensive review of current biomarker applications in cancer diagnosis and treatment monitoring.
 
 [3] → **Brown, A., Lee, S., & Kumar, R.** (2021). *Differential Diagnosis Methods in Modern Oncology*. **Cell**, 185, 890-905. DOI: 10.1016/j.cell.2021.03.012
-    └─ **Context**: Systematic approach to differential diagnosis using molecular markers.
+    └─ **Abstract**: Systematic approach to differential diagnosis using molecular markers and advanced imaging techniques.
 
 ---
 
@@ -131,145 +172,84 @@ The established framework [2] provides a foundation for understanding biomarker 
 
 ---
 *End of AI Assistant Document*
-*Original file: paper.md | References: references.bib | Generated: 2024-01-15 10:30:00*
+*Original file: paper.md | Generated: 2024-01-15 10:30:00*
+*Citation source: Self-contained YAML header*
 ```
 
 #### 実装クラス
 ```python
-class AIAssistantFileGenerator:
-    """AI理解支援用統合ファイル生成器"""
+class SelfContainedAIGenerator:
+    """自己完結型AI統合ファイル生成器"""
     
-    def generate_ai_readable_file(self, markdown_file: str, references_bib: str, 
-                                 output_file: str = None) -> str:
+    def generate_ai_readable_file(self, markdown_file: str, output_file: str = None) -> str:
         """
-        AIが完全に理解できる統合ファイルを生成
+        YAMLヘッダーの情報のみを使用してAI理解用ファイルを生成
         
         Args:
-            markdown_file: 元のMarkdownファイル
-            references_bib: 対応するreferences.bibファイル
+            markdown_file: 元のMarkdownファイル（YAMLヘッダーに完全な引用情報を含む）
             output_file: 出力ファイル名（未指定時は自動生成）
             
         Returns:
             生成されたファイルパス
             
         Process:
-        1. YAMLヘッダーからcitation_mappingを読み込み
-        2. references.bibから詳細情報を取得
-        3. Citation Reference Tableを生成
-        4. 元のPaper Contentと統合
-        5. AI理解最適化フォーマットで出力
+        1. YAMLヘッダーから完全な引用情報を読み込み
+        2. Citation Reference Tableを生成
+        3. 元のPaper Contentと統合
+        4. AI理解最適化フォーマットで出力
+        
+        Note: 外部ファイル依存なし、高速処理
         """
         
-    def create_citation_reference_table(self, citation_mapping: CitationMapping, 
-                                       bibtex_entries: Dict[str, BibTeXEntry]) -> str:
+    def create_citation_reference_table(self, citations: Dict[int, CitationInfo]) -> str:
         """
-        AI理解用Citation Reference Tableを生成
+        YAMLヘッダーの情報からAI理解用Citation Reference Tableを生成
         
         Format:
         [番号] → **著者** (年). *タイトル*. **ジャーナル**, 巻(号), ページ. DOI: xxx
-            └─ **Context**: 論文の概要説明
+            └─ **Abstract**: 論文の要約
         """
         
-    def enhance_paper_content(self, content: str, citation_mapping: CitationMapping) -> str:
+    def validate_self_contained_file(self, markdown_file: str) -> bool:
         """
-        論文内容にAI理解支援コメントを追加
-        """
-```
-
-### 3. 動的引用解決機能
-
-#### リアルタイム情報取得
-```python
-class CitationResolver:
-    """引用番号からリアルタイムでBibTeX情報を取得"""
-    
-    def resolve_citation(self, citation_number: int, markdown_file: str) -> CitationInfo:
-        """
-        引用番号から完全な文献情報を動的に取得
-        
-        Process:
-        1. YAMLヘッダーからcitation_keyを取得
-        2. references.bibから詳細情報を取得
-        3. 文脈情報を抽出
-        4. 統合したCitationInfoを返す
+        ファイルが自己完結型かどうかを検証
         
         Returns:
-            CitationInfo: 完全な引用文献情報
+            True: 全ての引用情報がYAMLヘッダーに含まれている
+            False: 外部依存または情報不足
         """
-        
-    def batch_resolve_citations(self, citation_numbers: List[int], 
-                               markdown_file: str) -> Dict[int, CitationInfo]:
-        """
-        複数の引用番号を一括解決
-        """
-        
-    def extract_citation_context(self, markdown_file: str, citation_number: int) -> str:
-        """
-        引用箇所周辺の文脈を抽出してAI理解を支援
-        """
-```
-
-### 4. 引用形式統一機能（従来機能継承）
-
-#### 対応パターン
-```python
-CITATION_PATTERNS = {
-    # エスケープ形式
-    'escaped_basic': r'\\?\[\[(\d+)\]\]',                    # \[[1]\]
-    'escaped_multiple': r'\\?\[\[(\d+(?:[,\s]*\d+)*)\]\]',   # \[[1,2,3]\]
-    'escaped_footnote': r'\\?\[\[\^(\d+)\]\]',               # \[[^1]\]
-    'escaped_linked': r'\\?\[\[(\d+)\]\(([^)]+)\)\]',        # \[[1](URL)\]
-    
-    # 標準形式
-    'standard_single': r'\[(\d+)\]',                         # [1]
-    'standard_multiple': r'\[(\d+(?:[,\s]+\d+)*)\]',         # [1,2,3]
-    'standard_range': r'\[(\d+)[-–](\d+)\]',                 # [1-5]
-    'standard_footnote': r'\[\^(\d+)\]',                     # [^1]
-    'standard_linked': r'\[(\d+)\]\(([^)]+)\)',              # [1](URL)
-}
-```
-
-#### 統一出力形式
-```
-すべての引用は以下の統一フォーマットに変換：
-- 単一引用: [1]
-- 複数引用: [1], [2], [3] （常に個別形式、カンマ+スペース区切り）
-- 脚注統一: [^1] → [1] （^記号除去）
-- URL分離: [1](URL) → [1] + リンク表生成
 ```
 
 ## コマンドライン仕様
 
 ### 基本コマンド
 
-#### 1. 軽量マッピング作成
+#### 1. 完全統合マッピング作成
 ```bash
-# 引用番号 → citation_key マッピングを作成
-PYTHONPATH=code/py uv run python code/py/main.py create-citation-mapping \
+# references.bibから完全な引用情報をYAMLヘッダーに統合
+PYTHONPATH=code/py uv run python code/py/main.py create-complete-mapping \
     --input paper.md \
     --references references.bib
 ```
 
 #### 2. AI用統合ファイル生成（核心機能）
 ```bash
-# AIが理解できる統合ファイルを生成
+# YAMLヘッダーの情報のみを使用してAI理解用ファイルを生成
 PYTHONPATH=code/py uv run python code/py/main.py generate-ai-format \
     --input paper.md \
-    --references references.bib \
     --output paper_for_ai.md
 ```
 
-#### 3. 引用情報解決
+#### 3. 自己完結性検証
 ```bash
-# 特定の引用番号の詳細情報を取得
-PYTHONPATH=code/py uv run python code/py/main.py resolve-citation \
-    --paper paper.md \
-    --citation-number 1
+# ファイルが外部依存なしで完全かどうかを検証
+PYTHONPATH=code/py uv run python code/py/main.py validate-self-contained \
+    --input paper.md
 ```
 
 #### 4. 統合処理
 ```bash
-# マッピング作成 + AI形式生成を一括実行
+# 完全マッピング作成 + AI形式生成を一括実行
 PYTHONPATH=code/py uv run python code/py/main.py parse-citations \
     --input paper.md \
     --references references.bib \
@@ -281,54 +261,49 @@ PYTHONPATH=code/py uv run python code/py/main.py parse-citations \
 ```bash
 # run-integratedに自動組み込み
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --enable-ai-citation-support
+    --enable-self-contained-citations
 ```
 
 ## 設定仕様
 
 ### 設定ファイル
 ```yaml
-# config/ai_citation_parser.yaml
-ai_citation_parser:
-  # マッピング設定
-  mapping:
-    auto_create: true                    # 自動マッピング作成
+# config/self_contained_citation_parser.yaml
+self_contained_citation_parser:
+  # 完全統合設定
+  complete_mapping:
+    auto_create: true                    # 自動完全マッピング作成
     update_yaml_header: true             # YAMLヘッダー自動更新
     backup_original: true                # 元ファイルバックアップ
+    include_abstracts: true              # 要約情報を含める
     
   # AI統合ファイル生成設定
   ai_format:
     enable_generation: true              # AI形式生成有効化
-    include_context: true                # 文脈情報含める
+    include_abstracts: true              # 要約情報含める
     reference_table_style: "enhanced"    # enhanced | simple
     output_suffix: "_for_ai"             # 出力ファイル接尾辞
     
-  # 引用形式統一設定  
-  unified_format:
-    output_format: "individual"          # individual | grouped
-    separator: ", "                      # 区切り文字
-    expand_ranges: true                  # 範囲展開
-    remove_footnote_symbols: true        # 脚注記号除去
-    
-  # 動的解決設定
-  resolution:
-    cache_results: true                  # 解決結果キャッシュ
-    context_window: 50                   # 文脈抽出文字数
-    relevance_scoring: true              # 関連度スコア算出
+  # 自己完結性設定
+  self_contained:
+    strict_validation: true              # 厳密な自己完結性検証
+    allow_partial_info: false            # 部分的な情報を許可しない
+    require_abstracts: true              # 要約情報を必須とする
 ```
 
 ## データ構造
 
-### CitationMapping
+### CompleteCitationMapping
 ```python
 @dataclass
-class CitationMapping:
-    """軽量引用マッピング情報"""
-    references_file: str                 # references.bibファイルパス
-    index_map: Dict[int, str]           # 引用番号 → citation_key
-    last_updated: datetime              # 最終更新時刻
-    mapping_version: str                # マッピングバージョン
-    total_citations: int                # 総引用数
+class CompleteCitationMapping:
+    """完全統合引用マッピング情報"""
+    citations: Dict[int, CitationInfo]   # 引用番号 → 完全な文献情報
+    total_citations: int                 # 総引用数
+    last_updated: datetime               # 最終更新時刻
+    source_bibtex: str                   # 元のBibTeXファイル
+    mapping_version: str                 # マッピングバージョン
+    is_self_contained: bool              # 自己完結フラグ
 ```
 
 ### CitationInfo
@@ -336,59 +311,61 @@ class CitationMapping:
 @dataclass  
 class CitationInfo:
     """完全な引用文献情報"""
-    number: int                         # 引用番号
-    citation_key: str                   # BibTeX citation_key
-    title: str                          # 論文タイトル
-    authors: str                        # 著者情報
-    year: int                           # 発行年
-    journal: str                        # ジャーナル名
-    volume: str                         # 巻号情報
-    pages: str                          # ページ情報
-    doi: str                            # DOI
-    context: str                        # 引用文脈
-    relevance_score: float              # 関連度スコア
-    full_bibtex: str                    # 完全BibTeXエントリ
+    citation_key: str                    # BibTeX citation_key
+    title: str                           # 論文タイトル
+    authors: str                         # 著者情報
+    year: int                            # 発行年
+    journal: str                         # ジャーナル名
+    volume: str                          # 巻号情報
+    number: str                          # 号数情報
+    pages: str                           # ページ情報
+    doi: str                             # DOI
+    abstract: str                        # 論文要約
+    url: str                             # URL（オプション）
+    keywords: List[str]                  # キーワード（オプション）
 ```
 
-### AIReadableDocument
+### SelfContainedDocument
 ```python
 @dataclass
-class AIReadableDocument:
-    """AI理解用統合文書"""
-    original_file: str                  # 元ファイル
-    references_file: str                # references.bibファイル
-    citation_table: str                 # Citation Reference Table
-    paper_content: str                  # 論文内容
-    generation_timestamp: datetime     # 生成時刻
-    total_citations: int                # 総引用数
-    ai_optimization_level: str          # AI最適化レベル
+class SelfContainedDocument:
+    """自己完結型統合文書"""
+    original_file: str                   # 元ファイル
+    citations: Dict[int, CitationInfo]   # 完全な引用情報
+    citation_table: str                  # Citation Reference Table
+    paper_content: str                   # 論文内容
+    generation_timestamp: datetime      # 生成時刻
+    total_citations: int                 # 総引用数
+    is_self_contained: bool              # 自己完結フラグ
 ```
 
 ## テスト仕様
 
 ### 機能テスト
 
-#### 1. マッピング作成テスト
+#### 1. 完全マッピング作成テスト
 ```python
-def test_citation_mapping_creation():
-    """軽量マッピング作成のテスト"""
+def test_complete_mapping_creation():
+    """完全統合マッピング作成のテスト"""
     markdown_file = "test_paper.md"
     references_bib = "test_references.bib"
     
-    mapping = citation_engine.create_citation_mapping(markdown_file, references_bib)
+    mapping = manager.create_complete_mapping(markdown_file, references_bib)
     
-    assert mapping.index_map[1] == "smith2023test"
-    assert mapping.index_map[2] == "jones2022study"
     assert mapping.total_citations == 3
-    assert mapping.references_file == references_bib
+    assert mapping.is_self_contained == True
+    assert 1 in mapping.citations
+    assert mapping.citations[1].title == "Novel Method for Cancer Analysis"
+    assert mapping.citations[1].authors == "Smith, J., Wilson, K., & Davis, M."
+    assert mapping.citations[1].abstract != ""
 ```
 
-#### 2. AI統合ファイル生成テスト
+#### 2. 自己完結型AI統合ファイル生成テスト
 ```python
-def test_ai_readable_file_generation():
-    """AI理解用ファイル生成のテスト"""
-    input_file = "test_paper.md"
-    output_file = ai_generator.generate_ai_readable_file(input_file, "references.bib")
+def test_self_contained_ai_file_generation():
+    """自己完結型AI理解用ファイル生成のテスト"""
+    input_file = "test_paper_with_complete_yaml.md"
+    output_file = generator.generate_ai_readable_file(input_file)
     
     with open(output_file, 'r') as f:
         content = f.read()
@@ -396,103 +373,108 @@ def test_ai_readable_file_generation():
     # Citation Reference Table存在確認
     assert "📚 Citation Reference Table" in content
     assert "[1] → **Smith, J." in content
+    assert "**Abstract**:" in content
     
     # Paper Content存在確認  
     assert "📄 Paper Content" in content
-    assert "cancer cells [1],[2],[3]" in content
+    assert "Self-contained document" in content
 ```
 
-#### 3. 動的解決テスト
+#### 3. 自己完結性検証テスト
 ```python
-def test_citation_resolution():
-    """引用情報動的解決のテスト"""
-    citation_info = resolver.resolve_citation(1, "test_paper.md")
+def test_self_contained_validation():
+    """自己完結性検証のテスト"""
+    complete_file = "test_complete.md"
+    incomplete_file = "test_incomplete.md"
     
-    assert citation_info.number == 1
-    assert citation_info.citation_key == "smith2023test"
-    assert citation_info.title == "Novel Method for Cancer Analysis"
-    assert citation_info.authors == "Smith, J. et al."
-    assert citation_info.year == 2023
+    assert generator.validate_self_contained_file(complete_file) == True
+    assert generator.validate_self_contained_file(incomplete_file) == False
 ```
 
 ### 統合テスト
 
-#### AI理解度評価テスト
+#### 外部依存なし高速処理テスト
 ```python
-def test_ai_understanding_evaluation():
-    """生成されたファイルでAIが適切に引用を理解できるかテスト"""
+def test_no_external_dependency():
+    """外部ファイル依存なしで処理できることのテスト"""
     
-    # AI用ファイル生成
-    ai_file = ai_generator.generate_ai_readable_file("paper.md", "references.bib")
+    # references.bibを削除
+    os.remove("references.bib")
     
-    # AI理解度シミュレーション
-    understanding_score = evaluate_ai_understanding(ai_file)
+    # YAMLヘッダーのみでAI用ファイル生成
+    ai_file = generator.generate_ai_readable_file("complete_paper.md")
     
-    assert understanding_score >= 0.95  # 95%以上の理解度を要求
+    # 成功することを確認
+    assert os.path.exists(ai_file)
+    
+    # 処理時間が高速であることを確認
+    start_time = time.time()
+    generator.generate_ai_readable_file("complete_paper.md")
+    processing_time = time.time() - start_time
+    
+    assert processing_time < 0.01  # 10ms以内
 ```
 
 ## 実装ロードマップ
 
-### Phase 1: 軽量マッピング機能（2週間）
-1. CitationMappingEngineクラス実装
-2. YAMLヘッダー拡張機能
-3. 基本テスト作成・実行
+### Phase 1: 完全統合マッピング機能（2週間）
+1. CompleteCitationManagerクラス実装
+2. YAMLヘッダー完全統合機能
+3. references.bib読み込み・変換機能
+4. 基本テスト作成・実行
 
-### Phase 2: AI統合ファイル生成機能（3週間）
-1. AIAssistantFileGeneratorクラス実装
-2. Citation Reference Table生成ロジック
-3. AI最適化フォーマット設計・実装
+### Phase 2: 自己完結型AI統合ファイル生成機能（2週間）
+1. SelfContainedAIGeneratorクラス実装
+2. YAMLヘッダーのみからのCitation Reference Table生成
+3. 高速処理最適化
+4. 自己完結性検証機能
 
-### Phase 3: 動的解決機能（2週間）
-1. CitationResolverクラス実装
-2. リアルタイム情報取得機能
-3. 文脈抽出機能
-
-### Phase 4: 統合・最適化（2週間）
+### Phase 3: 統合・最適化（1週間）
 1. 既存ワークフローへの統合
 2. パフォーマンス最適化
 3. 包括的テスト実行
 
-### Phase 5: リリース準備（1週間）
+### Phase 4: リリース準備（1週間）
 1. ドキュメント更新
 2. 設定システム整備
 3. 最終検証
 
 ## 期待される効果
 
+### 自己完結性による利点
+- **外部依存排除**: references.bibがなくても完全動作
+- **高速処理**: ファイルI/O削減により大幅な処理時間短縮
+- **データ整合性**: 全情報がYAMLヘッダーに統合され、整合性保証
+- **ポータビリティ**: ファイル単体で完結、移動・共有が容易
+
 ### AIアシスタント利用の革命的改善
 - **完全な引用理解**: AIが[1],[2],[3]の意味を完全把握
 - **適切な論文生成**: 引用情報を理解した高品質な論文作成
-- **作業効率向上**: 人間がAIに論文執筆依頼時の準備時間短縮
-
-### データ品質向上
-- **軽量設計**: YAMLヘッダーは最小限の情報のみ
-- **データ一意性**: references.bibが唯一の情報源
-- **リアルタイム更新**: 常に最新の引用情報を提供
+- **作業効率向上**: 準備不要でAIに論文執筆依頼が可能
 
 ### ワークフロー改善
 - **シンプルなコマンド**: 1つのコマンドでAI用ファイル生成
 - **統合実行**: run-integratedに自動組み込み
-- **柔軟な設定**: 用途に応じたカスタマイズ可能
+- **メンテナンス不要**: 外部ファイル同期の問題解消
 
 ## 使用例
 
 ### 基本的な使用フロー
 
 ```bash
-# 1. 論文執筆完了後、AI用ファイル生成
+# 1. 初回セットアップ：references.bibから完全な引用情報をYAMLヘッダーに統合
+PYTHONPATH=code/py uv run python code/py/main.py create-complete-mapping \
+    --input "pancreatic_cancer_analysis.md" \
+    --references "references.bib"
+
+# 2. 以降は外部ファイル不要：AI用ファイル生成
 PYTHONPATH=code/py uv run python code/py/main.py generate-ai-format \
     --input "pancreatic_cancer_analysis.md" \
-    --references "references.bib" \
     --output "pancreatic_cancer_for_ai.md"
 
-# 2. 生成されたファイルをAIアシスタントに提供
+# 3. 生成されたファイルをAIアシスタントに提供
 # → AIが引用文献を完全理解
 # → 高品質な論文執筆・要約・分析が可能
-
-# 3. 統合ワークフローでの自動実行
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --enable-ai-citation-support
 ```
 
 ### 出力例比較
@@ -506,13 +488,15 @@ Recent studies suggest that KRTs are mediators [1],[2],[3].
 AI: 「[1],[2],[3]が何の文献か分からないため、適切な引用付き文章を作成できません」
 ```
 
-#### After（v4.0）
+#### After（v4.0自己完結型）
 ```
-# AIに提供するファイル（自動生成）
+# AIに提供するファイル（自動生成、外部依存なし）
 ## 📚 Citation Reference Table
 [1] → Smith, J. et al. (2023). "Novel Method for Cancer Analysis". Cancer Research, 83(12), 1234-1245.
+    └─ **Abstract**: This paper introduces innovative methodologies for analyzing cancer cell behavior...
+
 [2] → Jones, M. & Wilson, K. (2022). "Advanced Biomarker Techniques". Nature Medicine, 28, 567-578.
-[3] → Brown, A. (2021). "Differential Diagnosis in Oncology". Cell, 185, 890-905.
+    └─ **Abstract**: Comprehensive review of current biomarker applications in cancer diagnosis...
 
 ## 📄 Paper Content
 Recent studies suggest that KRTs are mediators [1],[2],[3].
@@ -524,4 +508,4 @@ AI: 「Smith et al.の癌細胞解析手法[1]、Jonesのバイオマーカー�
 
 ---
 
-**v4.0の革新ポイント：AIが引用文献を完全理解し、人間のAI論文執筆支援が飛躍的に向上**
+**v4.0の革新ポイント：完全自己完結型でAIが引用文献を瞬時に理解、外部依存ゼロの高速処理を実現**

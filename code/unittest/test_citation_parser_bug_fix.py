@@ -92,6 +92,9 @@ class TestCitationParserBugFix(unittest.TestCase):
             ("proteasome act\\[[10]\\]herefore, proteasome inhibitors", "act", "herefore"),
             ("revealed t\\[[14], [15], [16]\\] is highly expressed", "t", " is"),
             ("t\\[[26], [27], [28], [29]\\]e protease, serine 3", "t", "e"),
+            # 新しい問題例
+            ("Primary antibodies to KRT13 (ERP3671, Abcam), PG (A-6, Santa Cruz Biotechnology), \\[[22]\\] (D84C12, Cell Signaling) were used.", ", ", " (D84C12"),
+            ("Each study was\\[[25]\\] for three times.", "was", " for"),
         ]
         
         for test_text, expected_before, expected_after in test_cases:
