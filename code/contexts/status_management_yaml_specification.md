@@ -1,7 +1,7 @@
-# 状態管理システム仕様書 v3.0
+# 状態管理システム仕様書 v4.0
 
 ## 概要
-ObsClippingsManager v3.0の状態管理システムは、各論文の処理状態をMarkdownファイルのYAMLヘッダーに記録し、効率的な重複処理回避を実現します。Zoteroによる自動BibTeX再生成の影響を受けずに、永続的な状態管理を提供します。
+ObsClippingsManager v4.0の状態管理システムは、各論文の処理状態をMarkdownファイルのYAMLヘッダーに記録し、効率的な重複処理回避を実現します。Zoteroによる自動BibTeX再生成の影響を受けずに、永続的な状態管理を提供します。
 
 ## 基本原理
 
@@ -36,7 +36,31 @@ obsclippings_metadata:
     ai-citation-support: "completed"
   last_updated: "2025-01-15T10:30:00Z"
   source_doi: "10.1000/example.doi"
-  workflow_version: "3.0"
+  workflow_version: "4.0"
+  citations:
+    1:
+      citation_key: "jones2022biomarkers"
+      title: "Advanced Biomarker Techniques in Oncology"
+      authors: "Jones, M. & Brown, A."
+      year: 2022
+      journal: "Nature Medicine"
+      volume: "28"
+      pages: "567-578"
+      doi: "10.1038/s41591-022-0456-7"
+    2:
+      citation_key: "davis2023neural"
+      title: "Neural Networks in Medical Diagnosis"
+      authors: "Davis, R., Wilson, S., & Clark, T."
+      year: 2023
+      journal: "Science"
+      volume: "381"
+      pages: "123-135"
+      doi: "10.1126/science.abcd1234"
+  citation_metadata:
+    total_citations: 2
+    last_updated: "2025-01-15T10:30:00Z"
+    source_bibtex: "references.bib"
+    mapping_version: "2.0"
 ---
 
 # Smith et al. (2023) - Example Paper Title
@@ -78,10 +102,26 @@ obsclippings_metadata:
 #### workflow_version (自動生成)
 - **型**: String
 - **説明**: 使用ワークフローバージョン
-- **例**: "3.0"
+- **例**: "4.0"
 - **用途**: 将来の互換性確認
 
-## StatusManager v3.0 クラス設計
+#### citations (AI理解支援機能)
+- **型**: Object
+- **説明**: references.bibから統合された引用文献情報
+- **構造**: {引用番号: CitationInfo}
+- **生成**: ai-citation-supportステップで作成
+- **更新**: references.bib変更時に再生成
+
+#### citation_metadata (AI理解支援機能)
+- **型**: Object
+- **説明**: 引用文献統合のメタデータ
+- **フィールド**:
+  - `total_citations`: 総引用数（BibTeXエントリー数）
+  - `last_updated`: 引用情報最終更新日時
+  - `source_bibtex`: 元のBibTeXファイルパス
+  - `mapping_version`: マッピングバージョン
+
+## StatusManager v4.0 クラス設計
 
 ### クラス概要
 ```python

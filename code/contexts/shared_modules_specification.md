@@ -1,7 +1,7 @@
-# 共有モジュール仕様書 v3.0
+# 共有モジュール仕様書 v4.0
 
 ## 概要
-ObsClippingsManager v3.0の共有モジュールは、全システムで使用される基盤機能を提供します。統一設定管理、ログシステム、BibTeX解析、例外処理などの重要な機能を独立したモジュールとして実装し、システム全体の一貫性を保証します。
+ObsClippingsManager v4.0の共有モジュールは、全システムで使用される基盤機能を提供します。統一設定管理、ログシステム、BibTeX解析、例外処理などの重要な機能を独立したモジュールとして実装し、システム全体の一貫性を保証します。
 
 ## モジュール構成
 
@@ -42,6 +42,14 @@ api_settings:
 processing:
   similarity_threshold: 0.8
   auto_approve: false
+
+# AI理解支援設定（v4.0新機能）
+ai_citation_support:
+  enabled: false                    # デフォルトは無効
+  complete_mapping: true            # 完全統合マッピング作成
+  update_yaml_header: true          # YAMLヘッダー更新
+  backup_original: true             # 元ファイルバックアップ
+  include_abstracts: true           # 要約情報の含有
 ```
 
 ### 主要メソッド

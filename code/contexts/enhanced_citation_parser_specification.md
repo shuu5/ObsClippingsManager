@@ -16,34 +16,40 @@ references.bibの内容をそのまま順序通りにYAMLヘッダーに統合�
 ### YAMLヘッダー統合形式
 ```yaml
 ---
-title: "論文タイトル"
-doi: "10.1093/jrr/rrac091"
-citations:
-  1:
-    citation_key: "smith2023test"
-    title: "Novel Method for Cancer Cell Analysis"
-    authors: "Smith, J., Wilson, K., & Davis, M."
-    year: 2023
-    journal: "Cancer Research"
-    volume: "83"
-    pages: "1234-1245"
-    doi: "10.1158/0008-5472.CAN-23-0123"
-    
-  2:
-    citation_key: "jones2022biomarkers"
-    title: "Advanced Biomarker Techniques in Oncology"
-    authors: "Jones, M. & Brown, A."
-    year: 2022
-    journal: "Nature Medicine"
-    volume: "28"
-    pages: "567-578"
-    doi: "10.1038/s41591-022-0456-7"
-
-citation_metadata:
-  total_citations: 2
-  last_updated: "2024-01-15T10:30:00"
-  source_bibtex: "references.bib"
-  mapping_version: "2.0"
+obsclippings_metadata:
+  citation_key: "smith2023test"
+  processing_status:
+    organize: "completed"
+    sync: "completed" 
+    fetch: "completed"
+    ai-citation-support: "completed"
+  last_updated: "2025-01-15T10:30:00Z"
+  source_doi: "10.1093/jrr/rrac091"
+  workflow_version: "4.0"
+  citations:
+    1:
+      citation_key: "smith2023test"
+      title: "Novel Method for Cancer Cell Analysis"
+      authors: "Smith, J., Wilson, K., & Davis, M."
+      year: 2023
+      journal: "Cancer Research"
+      volume: "83"
+      pages: "1234-1245"
+      doi: "10.1158/0008-5472.CAN-23-0123"
+    2:
+      citation_key: "jones2022biomarkers"
+      title: "Advanced Biomarker Techniques in Oncology"
+      authors: "Jones, M. & Brown, A."
+      year: 2022
+      journal: "Nature Medicine"
+      volume: "28"
+      pages: "567-578"
+      doi: "10.1038/s41591-022-0456-7"
+  citation_metadata:
+    total_citations: 2
+    last_updated: "2025-01-15T10:30:00Z"
+    source_bibtex: "references.bib"
+    mapping_version: "2.0"
 ---
 ```
 
@@ -56,7 +62,7 @@ class CitationMappingEngine:
         """references.bibから引用情報を順序通り読み込みマッピング作成"""
         
     def update_yaml_header(self, markdown_file: str, mapping: CitationMapping) -> bool:
-        """YAMLヘッダーに引用情報を追加・更新"""
+        """obsclippings_metadataのcitationsフィールドに引用情報を追加・更新"""
 ```
 
 ## マッピングルール
@@ -76,16 +82,17 @@ class CitationMappingEngine:
 
 ### 基本コマンド
 
-#### 引用マッピング作成
+#### AI理解支援機能有効化（統合ワークフロー）
+```bash
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --enable-ai-citation-support
+```
+
+#### 個別実行（デバッグ用）
 ```bash
 PYTHONPATH=code/py uv run python code/py/main.py parse-citations \
     --input paper.md \
     --references references.bib
-```
-
-#### 統合ワークフロー
-```bash
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated
 ```
 
 ## データ構造
@@ -138,10 +145,10 @@ def test_duplicate_handling():
 ## 使用例
 
 ```bash
-# マッピング作成
-PYTHONPATH=code/py uv run python code/py/main.py parse-citations \
-    --input "paper.md" \
-    --references "references.bib"
+# AI理解支援機能を有効化した統合ワークフロー実行
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
+    --enable-ai-citation-support
 
-# 結果: YAMLヘッダーにreferences.bibの全エントリーが順序通り統合
+# 結果: obsclippings_metadataのcitationsフィールドに
+#       references.bibの全エントリーが順序通り統合
 ```
