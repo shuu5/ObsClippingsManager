@@ -17,14 +17,19 @@ from ..shared.logger import get_integrated_logger
 class AIMappingWorkflow:
     """AI理解支援引用文献統合ワークフロー"""
     
-    def __init__(self, config_manager=None):
+    def __init__(self, config_manager=None, logger=None):
         """
         初期化
         
         Args:
             config_manager: 設定管理インスタンス
+            logger: ロガーインスタンス
         """
-        self.logger = get_integrated_logger().get_logger("AICitationSupport.AIMappingWorkflow")
+        if logger:
+            self.logger = logger.get_logger("AICitationSupport.AIMappingWorkflow")
+        else:
+            self.logger = get_integrated_logger().get_logger("AICitationSupport.AIMappingWorkflow")
+        
         self.config_manager = config_manager
         
         # コアエンジンの初期化

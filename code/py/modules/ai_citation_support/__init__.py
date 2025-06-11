@@ -19,6 +19,7 @@ from .data_structures import (
 from .citation_mapping_engine import CitationMappingEngine
 from .ai_assistant_file_generator import AIAssistantFileGenerator
 from .citation_resolver import CitationResolver
+from .ai_mapping_workflow import AIMappingWorkflow
 
 __version__ = "4.0.0"
 __all__ = [
@@ -27,5 +28,6 @@ __all__ = [
     "AIReadableDocument",
     "CitationMappingEngine",
     "AIAssistantFileGenerator",
-    "CitationResolver"
+    "CitationResolver",
+    "AIMappingWorkflow"
 ] 

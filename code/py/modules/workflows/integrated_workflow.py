@@ -528,52 +528,77 @@ class IntegratedWorkflow:
         try:
             self.logger.info(f"AI citation support step: processing {len(papers)} papers")
             
-            # AIMappingWorkflowを使用してAI理解支援統合を実行
-            ai_citation_support_options = {
-                'clippings_dir': paths['clippings_dir'],
-                'bibtex_file': paths['bibtex_file'],
-                'target_papers': papers,
-                'enable_complete_mapping': options.get('enable_complete_mapping', True),
-                'update_yaml_header': options.get('update_yaml_header', True),
-                'backup_original': options.get('backup_original', True),
-                'include_abstracts': options.get('include_abstracts', True)
+            # 各論文のMarkdownファイルとBibTeXファイルのペアを作成
+            file_pairs = []
+            for paper in papers:
+                paper_dir = os.path.join(paths['clippings_dir'], paper)
+                markdown_file = os.path.join(paper_dir, f"{paper}.md")
+                references_bib = paths['bibtex_file']
+                
+                if os.path.exists(markdown_file):
+                    file_pairs.append((markdown_file, references_bib))
+                else:
+                    self.logger.warning(f"Markdown file not found for {paper}: {markdown_file}")
+            
+            if not file_pairs:
+                self.logger.warning("No valid markdown files found for processing")
+                return False, {
+                    'status': 'error',
+                    'message': 'No valid markdown files found',
+                    'processed_papers': 0,
+                    'total_papers': len(papers)
+                }
+            
+            # AIMappingWorkflowのバッチ実行
+            generate_ai_files = options.get('generate_ai_files', True)
+            batch_results = self.ai_citation_support_workflow.batch_execute_ai_mapping(
+                file_pairs, generate_ai_files
+            )
+            
+            # 結果の処理
+            successful_papers = []
+            failed_papers = []
+            ai_files_generated = 0
+            yaml_headers_updated = 0
+            
+            for markdown_file, result in batch_results.items():
+                paper_name = os.path.basename(os.path.dirname(markdown_file))
+                if result.success:
+                    successful_papers.append(paper_name)
+                    if result.output_file:  # AI用ファイルが生成された場合
+                        ai_files_generated += 1
+                    yaml_headers_updated += 1
+                else:
+                    failed_papers.append(paper_name)
+                    self.logger.error(f"Failed to process {paper_name}: {result.error_message}")
+            
+            # 状態更新
+            for paper in successful_papers:
+                success = self.status_manager.update_status(
+                    paths['clippings_dir'], paper, 'ai-citation-support', ProcessStatus.COMPLETED
+                )
+                if not success:
+                    self.logger.warning(f"Failed to update ai-citation-support status for {paper}")
+            
+            for paper in failed_papers:
+                self.status_manager.update_status(
+                    paths['clippings_dir'], paper, 'ai-citation-support', ProcessStatus.FAILED
+                )
+            
+            # 結果のまとめ
+            overall_success = len(successful_papers) > 0
+            result = {
+                'status': 'success' if overall_success else 'error',
+                'processed_papers': len(successful_papers),
+                'failed_papers': len(failed_papers),
+                'total_papers': len(papers),
+                'ai_files_generated': ai_files_generated,
+                'yaml_headers_updated': yaml_headers_updated,
+                'message': f'AI citation support completed: {len(successful_papers)}/{len(papers)} papers processed successfully'
             }
             
-            # AIMappingWorkflowを実行
-            ai_result = self.ai_citation_support_workflow.execute(**ai_citation_support_options)
-            
-            if ai_result['status'] == 'success':
-                # 状態更新: 成功した論文の状態を更新
-                processed_papers = ai_result.get('processed_papers', papers)
-                for paper in processed_papers:
-                    success = self.status_manager.update_status(
-                        paths['clippings_dir'], paper, 'ai-citation-support', ProcessStatus.COMPLETED
-                    )
-                    if not success:
-                        self.logger.warning(f"Failed to update ai-citation-support status for {paper}")
-                
-                result = {
-                    'status': 'success',
-                    'processed_papers': len(processed_papers),
-                    'total_papers': len(papers),
-                    'ai_files_generated': ai_result.get('ai_files_generated', 0),
-                    'yaml_headers_updated': ai_result.get('yaml_headers_updated', 0)
-                }
-                
-                self.logger.info(f"AI citation support step completed: {len(processed_papers)}/{len(papers)} papers processed")
-                return True, result
-                
-            else:
-                # 失敗の場合
-                self.logger.error(f"AI citation support step failed: {ai_result.get('message', 'Unknown error')}")
-                
-                # 失敗した論文の状態を更新
-                for paper in papers:
-                    self.status_manager.update_status(
-                        paths['clippings_dir'], paper, 'ai-citation-support', ProcessStatus.FAILED
-                    )
-                
-                return False, ai_result
+            self.logger.info(f"AI citation support step completed: {len(successful_papers)}/{len(papers)} papers processed")
+            return overall_success, result
                 
         except Exception as e:
             self.logger.error(f"AI citation support step failed: {e}")
