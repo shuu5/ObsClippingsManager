@@ -40,7 +40,7 @@ class ConfigManager:
             'escaped_footnote_single': {
                 'regex': r'\\\[\[\^(\d+)\]\\\]',
                 'type': 'escaped_footnote',
-                'priority': 2,
+                'priority': 2,  # 高優先度で処理
                 'enabled': True
             },
             'escaped_individual_multiple': {
@@ -61,41 +61,41 @@ class ConfigManager:
                 'priority': 3,
                 'enabled': True
             },
-            # 標準パターン
+            # 標準パターン（エスケープ処理後に処理）
             'linked_citation': {
                 'regex': r'\[(\^?\d+)\]\(([^)]+)\)',
                 'type': 'linked',
-                'priority': 4,
+                'priority': 10,  # エスケープパターンより大幅に低く設定
                 'enabled': True
             },
             'footnote_citation': {
-                'regex': r'\[\^(\d+)\]',
+                'regex': r'(?<!\\)\[\^(\d+)\](?!\\)',  # エスケープされていない脚注のみ
                 'type': 'footnote',
-                'priority': 5,
+                'priority': 11,
                 'enabled': True
             },
             'range_citation': {
-                'regex': r'\[(\d+)[-–](\d+)\]',
+                'regex': r'(?<!\\)\[(\d+)[-–](\d+)\](?!\\)',  # エスケープされていない範囲のみ
                 'type': 'range',
-                'priority': 6,
+                'priority': 12,
                 'enabled': True
             },
             'multiple_citation': {
-                'regex': r'\[(\d+(?:[,\s]+\d+)+)\]',
+                'regex': r'(?<!\\)\[(\d+(?:[,\s]+\d+)+)\](?!\\)',  # エスケープされていない複数のみ
                 'type': 'multiple',
-                'priority': 7,
+                'priority': 13,
                 'enabled': True
             },
             'single_citation': {
-                'regex': r'\[(\d+)\]',
+                'regex': r'(?<!\\)\[(\d+)\](?!\\)',  # エスケープされていない単一のみ
                 'type': 'single',
-                'priority': 8,
+                'priority': 14,
                 'enabled': True
             },
             'mixed_footnote': {
-                'regex': r'\[\^(\d+(?:,\^?\d+)*)\]',
+                'regex': r'(?<!\\)\[\^(\d+(?:,\^?\d+)*)\](?!\\)',  # エスケープされていない混合脚注のみ
                 'type': 'footnote',
-                'priority': 9,
+                'priority': 15,
                 'enabled': True
             }
         },

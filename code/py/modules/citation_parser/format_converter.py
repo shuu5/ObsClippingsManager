@@ -124,7 +124,12 @@ class FormatConverter:
         # エスケープパターンかどうかを判定
         is_escaped_pattern = match.pattern_type.startswith('escaped_')
         
-        # 個別引用形式での出力
+        # 統一フォーマット原則:
+        # - すべての引用（脚注含む）は \[[number]\] 形式に統一
+        # - 複数の場合は個別形式: \[[20], [21], [22]\]
+        # - 脚注の^記号は除去される
+        
+        # 個別引用形式での出力（統一フォーマット）
         if hasattr(self.output_format, 'individual_citations') and self.output_format.individual_citations:
             # 常に個別の引用として出力: [1], [2], [3]
             if len(numbers) == 1:
@@ -139,7 +144,7 @@ class FormatConverter:
             else:
                 return formatted_citation
         else:
-            # 従来のグループ化形式
+            # 従来のグループ化形式（使用しないが、後方互換性のため保持）
             if len(numbers) == 1:
                 formatted_citation = self.output_format.single_template.format(number=numbers[0])
             else:

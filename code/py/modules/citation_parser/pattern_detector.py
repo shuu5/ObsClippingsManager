@@ -424,4 +424,51 @@ class PatternDetector:
     def reset_statistics(self):
         """統計をリセット"""
         for pattern_name in self.pattern_stats:
-            self.pattern_stats[pattern_name] = 0 
+            self.pattern_stats[pattern_name] = 0
+    
+    def _remove_overlapping_matches(self, matches: List[CitationMatch]) -> List[CitationMatch]:
+        """
+        オーバーラップするマッチを除去（優先度順）
+        
+        重要: 脚注パターンも含めてすべて統一フォーマット \\[[number]\\] に変換される
+        
+        Args:
+            matches: マッチリスト
+            
+        Returns:
+            オーバーラップが除去されたマッチリスト
+        """
+        if not matches:
+            return []
+        
+        # 優先度順にソート（数値が小さいほど高優先度）
+        sorted_matches = sorted(matches, key=lambda m: (
+            self.patterns[self._get_pattern_name_for_match(m)].priority,
+            m.start_pos
+        ))
+        
+        result = []
+        used_positions = set()
+        
+        for match in sorted_matches:
+            # 位置の範囲を計算
+            match_range = set(range(match.start_pos, match.end_pos))
+            
+            # オーバーラップチェック
+            if not match_range.intersection(used_positions):
+                result.append(match)
+                used_positions.update(match_range)
+                
+                # ログ出力（脚注パターンの処理確認用）
+                if 'footnote' in match.pattern_type:
+                    self.logger.debug(f"Footnote pattern detected: {match.original_text} -> numbers: {match.citation_numbers}")
+        
+        return result
+    
+    def _get_pattern_name_for_match(self, match: CitationMatch) -> str:
+        """マッチに対応するパターン名を取得"""
+        # パターンタイプから対応するパターン名を検索
+        for name, config in self.patterns.items():
+            if config.pattern_type == match.pattern_type:
+                return name
+        return "unknown" 
