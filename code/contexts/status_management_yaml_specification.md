@@ -27,40 +27,38 @@ ObsClippingsManager v4.0の状態管理システムは、各論文の処理状�
 ### 標準フォーマット
 ```yaml
 ---
-obsclippings_metadata:
-  citation_key: "smith2023test"
-  processing_status:
-    organize: "completed"
-    sync: "completed" 
-    fetch: "completed"
-    ai-citation-support: "completed"
-  last_updated: "2025-01-15T10:30:00Z"
-  source_doi: "10.1000/example.doi"
-  workflow_version: "4.0"
-  citations:
-    1:
-      citation_key: "jones2022biomarkers"
-      title: "Advanced Biomarker Techniques in Oncology"
-      authors: "Jones, M. & Brown, A."
-      year: 2022
-      journal: "Nature Medicine"
-      volume: "28"
-      pages: "567-578"
-      doi: "10.1038/s41591-022-0456-7"
-    2:
-      citation_key: "davis2023neural"
-      title: "Neural Networks in Medical Diagnosis"
-      authors: "Davis, R., Wilson, S., & Clark, T."
-      year: 2023
-      journal: "Science"
-      volume: "381"
-      pages: "123-135"
-      doi: "10.1126/science.abcd1234"
-  citation_metadata:
-    total_citations: 2
-    last_updated: "2025-01-15T10:30:00Z"
-    source_bibtex: "references.bib"
-    mapping_version: "2.0"
+citation_key: smith2023test
+citation_metadata:
+  last_updated: '2025-01-15T10:30:00.123456'
+  mapping_version: '2.0'
+  source_bibtex: references.bib
+  total_citations: 2
+citations:
+  1:
+    authors: Jones
+    citation_key: jones2022biomarkers
+    doi: 10.1038/s41591-022-0456-7
+    journal: Nature Medicine
+    pages: '567-578'
+    title: Advanced Biomarker Techniques in Oncology
+    volume: '28'
+    year: 2022
+  2:
+    authors: Davis
+    citation_key: davis2023neural
+    doi: 10.1126/science.abcd1234
+    journal: Science
+    pages: '123-135'
+    title: Neural Networks in Medical Diagnosis
+    volume: '381'
+    year: 2023
+last_updated: '2025-01-15T10:30:00.654321+00:00'
+processing_status:
+  ai-citation-support: completed
+  fetch: completed
+  organize: completed
+  sync: completed
+workflow_version: '3.0'
 ---
 
 # Smith et al. (2023) - Example Paper Title
@@ -69,9 +67,6 @@ obsclippings_metadata:
 ```
 
 ### フィールド詳細
-
-#### obsclippings_metadata (必須)
-論文の処理メタデータを格納するトップレベルオブジェクト
 
 #### citation_key (必須)
 - **型**: String
@@ -94,15 +89,10 @@ obsclippings_metadata:
 - **例**: "2025-01-15T10:30:00Z"
 - **更新**: 状態変更時に自動更新
 
-#### source_doi (オプション)
-- **型**: String
-- **説明**: 論文のDOI（参照・検証用）
-- **例**: "10.1000/example.doi"
-
 #### workflow_version (自動生成)
 - **型**: String
 - **説明**: 使用ワークフローバージョン
-- **例**: "4.0"
+- **例**: "3.0"
 - **用途**: 将来の互換性確認
 
 #### citations (AI理解支援機能)
@@ -233,11 +223,11 @@ def update_status(self, clippings_dir: str, citation_key: str,
         metadata = self._parse_yaml_header(md_file_path)
         
         # 状態更新
-        if 'obsclippings_metadata' not in metadata:
-            metadata['obsclippings_metadata'] = self._create_default_metadata(citation_key)
+        if 'processing_status' not in metadata:
+            metadata.update(self._create_default_metadata(citation_key))
         
-        metadata['obsclippings_metadata']['processing_status'][step] = status.value
-        metadata['obsclippings_metadata']['last_updated'] = datetime.now(timezone.utc).isoformat()
+        metadata['processing_status'][step] = status.value
+        metadata['last_updated'] = datetime.now(timezone.utc).isoformat()
         
         # ファイル更新
         return self._write_yaml_header(md_file_path, metadata)
@@ -329,19 +319,19 @@ def reset_statuses(self, clippings_dir: str,
             # メタデータリセット
             metadata = self._parse_yaml_header(md_file_path)
             
-            if 'obsclippings_metadata' not in metadata:
-                metadata['obsclippings_metadata'] = self._create_default_metadata(citation_key)
+            if 'processing_status' not in metadata:
+                metadata.update(self._create_default_metadata(citation_key))
             
             # 全ステップをpendingに設定
-            metadata['obsclippings_metadata']['processing_status'] = {
+            metadata['processing_status'] = {
                 'organize': ProcessStatus.PENDING.value,
                 'sync': ProcessStatus.PENDING.value,
                 'fetch': ProcessStatus.PENDING.value,
                 'ai-citation-support': ProcessStatus.PENDING.value
             }
             
-            metadata['obsclippings_metadata']['last_updated'] = datetime.now(timezone.utc).isoformat()
-            metadata['obsclippings_metadata']['workflow_version'] = "3.0"
+            metadata['last_updated'] = datetime.now(timezone.utc).isoformat()
+            metadata['workflow_version'] = "3.0"
             
             if self._write_yaml_header(md_file_path, metadata):
                 success_count += 1
@@ -548,8 +538,8 @@ def _ensure_yaml_header(self, md_file_path: Path, citation_key: str) -> bool:
     # YAMLヘッダーの確認・初期化
     metadata = self._parse_yaml_header(md_file_path)
     
-    if 'obsclippings_metadata' not in metadata:
-        metadata['obsclippings_metadata'] = self._create_default_metadata(citation_key)
+    if 'processing_status' not in metadata:
+        metadata.update(self._create_default_metadata(citation_key))
         return self._write_yaml_header(md_file_path, metadata)
     
     return True
@@ -563,13 +553,20 @@ def _create_default_metadata(self, citation_key: str) -> Dict[str, Any]:
     """
     return {
         'citation_key': citation_key,
+        'citation_metadata': {
+            'last_updated': datetime.now(timezone.utc).isoformat()[:26],
+            'mapping_version': '2.0',
+            'source_bibtex': 'references.bib',
+            'total_citations': 0
+        },
+        'citations': {},
+        'last_updated': datetime.now(timezone.utc).isoformat(),
         'processing_status': {
             'organize': ProcessStatus.PENDING.value,
             'sync': ProcessStatus.PENDING.value,
             'fetch': ProcessStatus.PENDING.value,
             'ai-citation-support': ProcessStatus.PENDING.value
         },
-        'last_updated': datetime.now(timezone.utc).isoformat(),
         'workflow_version': '3.0'
     }
 
@@ -612,7 +609,7 @@ def _check_status_inconsistencies(self, clippings_dir: str, clipping_keys: Set[s
             continue
         
         metadata = self._parse_yaml_header(md_file)
-        processing_status = metadata.get('obsclippings_metadata', {}).get('processing_status', {})
+        processing_status = metadata.get('processing_status', {})
         
         # fetch完了だがreferences.bibが存在しない
         if processing_status.get('fetch') == 'completed':
