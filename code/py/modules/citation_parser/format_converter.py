@@ -18,7 +18,7 @@ class OutputFormat:
     """出力フォーマット設定"""
     single_template: str = "[{number}]"
     multiple_template: str = "[{numbers}]"
-    separator: str = "], ["
+    separator: str = ", "  # 正しい区切り文字に修正
     sort_numbers: bool = True
     expand_ranges: bool = True
     remove_spaces: bool = False
@@ -121,23 +121,38 @@ class FormatConverter:
         # 重複除去
         numbers = list(dict.fromkeys(numbers))  # 順序を保持して重複除去
         
+        # エスケープパターンかどうかを判定
+        is_escaped_pattern = match.pattern_type.startswith('escaped_')
+        
         # 個別引用形式での出力
         if hasattr(self.output_format, 'individual_citations') and self.output_format.individual_citations:
             # 常に個別の引用として出力: [1], [2], [3]
             if len(numbers) == 1:
-                return f'[{numbers[0]}]'
+                formatted_citation = f'[{numbers[0]}]'
             else:
                 individual_citations = [f'[{n}]' for n in numbers]
-                return ', '.join(individual_citations)
+                formatted_citation = ', '.join(individual_citations)
+            
+            # エスケープパターンの場合は外側に \[\] を追加
+            if is_escaped_pattern:
+                return f'\\[{formatted_citation}\\]'
+            else:
+                return formatted_citation
         else:
             # 従来のグループ化形式
             if len(numbers) == 1:
-                return self.output_format.single_template.format(number=numbers[0])
+                formatted_citation = self.output_format.single_template.format(number=numbers[0])
             else:
                 numbers_str = self.output_format.separator.join(str(n) for n in numbers)
                 if self.output_format.remove_spaces:
                     numbers_str = numbers_str.replace(" ", "")
-                return self.output_format.multiple_template.format(numbers=numbers_str)
+                formatted_citation = self.output_format.multiple_template.format(numbers=numbers_str)
+            
+            # エスケープパターンの場合は外側に \[\] を追加
+            if is_escaped_pattern:
+                return f'\\[{formatted_citation}\\]'
+            else:
+                return formatted_citation
     
     def expand_ranges(self, range_citation: str) -> List[int]:
         """
@@ -238,7 +253,7 @@ class FormatConverter:
         self.output_format.individual_citations = enabled
         
         if enabled:
-            self.output_format.separator = '], ['
+            self.output_format.separator = ', '  # 正しい区切り文字に修正
             self.output_format.multiple_template = '[{numbers}]'
         else:
             self.output_format.separator = ','

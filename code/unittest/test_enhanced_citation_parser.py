@@ -24,10 +24,10 @@ class TestEscapedBasicCitations(unittest.TestCase):
     def test_escaped_single_citation(self):
         """エスケープされた単一引用のテスト"""
         test_cases = [
-            (r'\[[1]\]', '[1]'),
-            (r'\[[5]\]', '[5]'),
-            (r'\[[10]\]', '[10]'),
-            (r'\[[123]\]', '[123]'),
+            (r'\[[1]\]', r'\[[1]\]'),
+            (r'\[[5]\]', r'\[[5]\]'),
+            (r'\[[10]\]', r'\[[10]\]'),
+            (r'\[[123]\]', r'\[[123]\]'),
         ]
         
         for input_text, expected in test_cases:
@@ -39,10 +39,10 @@ class TestEscapedBasicCitations(unittest.TestCase):
     def test_escaped_multiple_individual_citations(self):
         """エスケープされた個別複数引用のテスト"""
         test_cases = [
-            (r'\[[2], [3]\]', '[2], [3]'),
-            (r'\[[1], [4], [7]\]', '[1], [4], [7]'),
-            (r'\[[10], [20]\]', '[10], [20]'),
-            (r'\[[12], [13]\]', '[12], [13]'),  # ユーザー指定のテストケース
+            (r'\[[2], [3]\]', r'\[[2], [3]\]'),
+            (r'\[[1], [4], [7]\]', r'\[[1], [4], [7]\]'),
+            (r'\[[10], [20]\]', r'\[[10], [20]\]'),
+            (r'\[[12], [13]\]', r'\[[12], [13]\]'),  # ユーザー指定のテストケース
         ]
         
         for input_text, expected in test_cases:
@@ -54,9 +54,9 @@ class TestEscapedBasicCitations(unittest.TestCase):
     def test_escaped_multiple_grouped_citations(self):
         """エスケープされたグループ化複数引用のテスト"""
         test_cases = [
-            (r'\[[1,2,3]\]', '[1], [2], [3]'),
-            (r'\[[4, 5, 6]\]', '[4], [5], [6]'),
-            (r'\[[1,2,3,4,5]\]', '[1], [2], [3], [4], [5]'),
+            (r'\[[1,2,3]\]', r'\[[1], [2], [3]\]'),
+            (r'\[[4, 5, 6]\]', r'\[[4], [5], [6]\]'),
+            (r'\[[1,2,3,4,5]\]', r'\[[1], [2], [3], [4], [5]\]'),
         ]
         
         for input_text, expected in test_cases:
@@ -74,8 +74,8 @@ class TestEscapedLinkedCitations(unittest.TestCase):
     def test_escaped_single_linked_citation(self):
         """エスケープされた単一リンク付き引用のテスト"""
         test_cases = [
-            (r'\[[1](https://example.com)\]', '[1]'),
-            (r'\[[5](https://test.org)\]', '[5]'),
+            (r'\[[1](https://example.com)\]', r'\[[1]\]'),
+            (r'\[[5](https://test.org)\]', r'\[[5]\]'),
         ]
         
         for input_text, expected in test_cases:
@@ -88,7 +88,7 @@ class TestEscapedLinkedCitations(unittest.TestCase):
         """エスケープされた複数リンク付き引用のテスト"""
         # ユーザー指定のテストケース
         input_text = r'\[[4,5,6,7,8](https://academic.oup.com/jrr/article/64/2/284/)\]'
-        expected = '[4], [5], [6], [7], [8]'
+        expected = r'\[[4], [5], [6], [7], [8]\]'
         
         result = self.parser.parse_document(input_text)
         self.assertEqual(result.converted_text, expected)
@@ -107,10 +107,10 @@ class TestEscapedFootnoteCitations(unittest.TestCase):
     def test_escaped_single_footnote_citation(self):
         """エスケープされた単一脚注引用のテスト"""
         test_cases = [
-            (r'\[[^1]\]', '[1]'),
-            (r'\[[^5]\]', '[5]'),
-            (r'\[[^10]\]', '[10]'),  # ユーザー指定のテストケース
-            (r'\[[^123]\]', '[123]'),
+            (r'\[[^1]\]', r'\[[1]\]'),
+            (r'\[[^5]\]', r'\[[5]\]'),
+            (r'\[[^10]\]', r'\[[10]\]'),  # ユーザー指定のテストケース
+            (r'\[[^123]\]', r'\[[123]\]'),
         ]
         
         for input_text, expected in test_cases:
@@ -123,7 +123,7 @@ class TestEscapedFootnoteCitations(unittest.TestCase):
         """エスケープされた複数脚注引用のテスト"""
         # ユーザー指定のテストケース
         input_text = r'\[[^1],[^2],[^3]\]'
-        expected = '[1], [2], [3]'
+        expected = r'\[[1], [2], [3]\]'
         
         result = self.parser.parse_document(input_text)
         self.assertEqual(result.converted_text, expected)
@@ -145,9 +145,9 @@ class TestMixedEscapedCitations(unittest.TestCase):
         """
         
         expected = """
-        This study [1] builds on previous work [2], [3].
-        Additional references [4], [5], [6], [7], [8]
-        and footnotes [10], [1], [2], [3] support the findings.
+        This study \\[[1]\\] builds on previous work \\[[2], [3]\\].
+        Additional references \\[[4], [5], [6], [7], [8]\\]
+        and footnotes \\[[10]\\], \\[[1], [2], [3]\\] support the findings.
         """
         
         result = self.parser.parse_document(input_text)
@@ -229,8 +229,8 @@ class TestMixedCitationFormats(unittest.TestCase):
         """
         
         expected_text = """
-        This study [1] builds on previous work [2], [3].
-        Additional references [4], [5], [6] and [7] support the findings.
+        This study \[[1]\] builds on previous work [2], [3].
+        Additional references \[[4], [5], [6]\] and [7] support the findings.
         """
         
         result = self.parser.parse_document(input_text)
@@ -245,8 +245,8 @@ class TestMixedCitationFormats(unittest.TestCase):
         """
         
         expected_text = """
-        Previous studies [1] and [2], [3], [4] 
-        showed that [5], [6] and [7], [8], [9] are important.
+        Previous studies \[[1]\] and \[[2], [3], [4]\] 
+        showed that \[[5], [6]\] and [7], [8], [9] are important.
         """
         
         result = self.parser.parse_document(input_text)
@@ -268,10 +268,10 @@ class TestMixedCitationFormats(unittest.TestCase):
         """
         
         expected_text = """
-        Pancreatic cancer is extremely poor worldwide [1]. 
-        Radiotherapy is an option [2], [3]. 
-        Several studies have been conducted [4], [5], [6], [7], [8].
-        CSCs can be purified [12], [13].
+        Pancreatic cancer is extremely poor worldwide \[[1]\]. 
+        Radiotherapy is an option \[[2], [3]\]. 
+        Several studies have been conducted \[[4], [5], [6], [7], [8]\].
+        CSCs can be purified \[[12], [13]\].
         """
         
         result = self.parser.parse_document(input_text)
@@ -327,9 +327,9 @@ class TestEdgeCases(unittest.TestCase):
     def test_large_citation_numbers(self):
         """大きな引用番号のテスト"""
         test_cases = [
-            (r'\[[999]\]', '[999]'),
-            (r'\[[1000]\]', '[1000]'),
-            (r'\[[123,456,789]\]', '[123], [456], [789]'),
+            (r'\[[999]\]', r'\[[999]\]'),
+            (r'\[[1000]\]', r'\[[1000]\]'),
+            (r'\[[123,456,789]\]', r'\[[123], [456], [789]\]'),
         ]
         
         for input_text, expected in test_cases:
@@ -341,7 +341,7 @@ class TestEdgeCases(unittest.TestCase):
         """重複するパターンのテスト"""
         # この場合は最初に検出されたパターンが優先される
         input_text = r'\[[1]\] and \[[1]\] again'
-        expected = '[1] and [1] again'
+        expected = r'\[[1]\] and \[[1]\] again'
         
         result = self.parser.parse_document(input_text)
         self.assertEqual(result.converted_text, expected)

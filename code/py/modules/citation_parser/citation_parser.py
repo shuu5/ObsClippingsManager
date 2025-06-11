@@ -192,46 +192,70 @@ class CitationParser:
         # まず元のマッチが clean_text でも有効かチェック
         valid_matches = []
         
+        # リンクが除去されている場合の位置ずれを計算  
+        # LinkExtractorは後ろから前に処理するので、前方のマッチから順番に調整
+        
         for original_match in original_matches:
+            # clean_textで実際の位置を検索して位置を調整
+            clean_citation = self._get_clean_escaped_citation(original_match.original_text) if original_match.has_link else original_match.original_text
+            
+            # clean_text内で該当するテキストを検索
+            search_start = max(0, original_match.start_pos - 50)  # 前後50文字の範囲で検索
+            search_end = min(len(clean_text), original_match.end_pos + 50)
+            search_region = clean_text[search_start:search_end]
+            
+            # clean_citationがsearch_region内に存在するかチェック
+            pos_in_region = search_region.find(clean_citation)
+            
+            if pos_in_region >= 0:
+                adjusted_start = search_start + pos_in_region
+                adjusted_end = adjusted_start + len(clean_citation)
+            else:
+                # 見つからない場合は元の位置を使用
+                adjusted_start = original_match.start_pos
+                adjusted_end = original_match.start_pos + len(clean_citation)
+            
             # エスケープパターンの場合は、リンク除去後も保持
             if ('escaped' in original_match.pattern_type or 
                 original_match.pattern_type.startswith('escaped_')):
                 
-                # エスケープパターンの場合、リンク除去後のテキストを修正
-                if original_match.has_link:
-                    # リンクが除去されたテキストに合わせてマッチを更新
-                    clean_citation = self._get_clean_escaped_citation(original_match.original_text)
-                    new_end_pos = original_match.start_pos + len(clean_citation)
-                    
+                # 位置の妥当性をチェック
+                if adjusted_end <= len(clean_text):
                     updated_match = CitationMatch(
                         original_text=clean_citation,
                         citation_numbers=original_match.citation_numbers,
                         has_link=False,  # リンクは除去済み
                         link_url=None,
                         pattern_type=original_match.pattern_type,
-                        start_pos=original_match.start_pos,
-                        end_pos=new_end_pos
+                        start_pos=adjusted_start,
+                        end_pos=adjusted_end
                     )
                     valid_matches.append(updated_match)
-                    self.logger.debug(f"Updated escaped match after link removal: {clean_citation}")
+                    self.logger.debug(f"Updated escaped match: {clean_citation} at {adjusted_start}-{adjusted_end}")
                 else:
-                    # リンクがない場合はそのまま保持
-                    valid_matches.append(original_match)
-                    self.logger.debug(f"Preserved escaped match: {original_match.original_text}")
+                    self.logger.warning(f"Match position out of bounds: {adjusted_start}-{adjusted_end} vs {len(clean_text)}")
             else:
-                # 通常のパターンの場合は従来のチェック
-                if (original_match.start_pos < len(clean_text) and 
-                    original_match.end_pos <= len(clean_text)):
+                # 通常のパターンの場合
+                if (adjusted_start < len(clean_text) and adjusted_end <= len(clean_text)):
                     
                     # テキストの該当箇所が元のマッチと同じかチェック
-                    actual_text = clean_text[original_match.start_pos:original_match.end_pos]
+                    actual_text = clean_text[adjusted_start:adjusted_end]
                     
-                    if actual_text == original_match.original_text:
+                    if actual_text == clean_citation:
                         # マッチが有効なので保持
-                        valid_matches.append(original_match)
-                        self.logger.debug(f"Preserved original match: {original_match.original_text}")
+                        updated_match = CitationMatch(
+                            original_text=clean_citation,
+                            citation_numbers=original_match.citation_numbers,
+                            has_link=False,
+                            link_url=None,
+                            pattern_type=original_match.pattern_type,
+                            start_pos=adjusted_start,
+                            end_pos=adjusted_end
+                        )
+                        valid_matches.append(updated_match)
+                        self.logger.debug(f"Preserved match: {clean_citation} at {adjusted_start}-{adjusted_end}")
                     else:
-                        self.logger.debug(f"Match position changed: '{original_match.original_text}' -> '{actual_text}'")
+                        self.logger.debug(f"Match position changed: '{clean_citation}' -> '{actual_text}'")
         
         # 有効なマッチがあればそれを返す
         if valid_matches:
@@ -309,14 +333,13 @@ class CitationParser:
         """
         import re
         
-        # エスケープされたリンク付き引用パターン: \\[[...](URL)\\]
-        escaped_link_pattern = r'(\\?\[\[)([^\]]+)\]\([^)]+\)(\\?\]\])'
+        # LinkExtractorと同じパターンを使用
+        # エスケープされたリンク付き引用パターン: \[[...](URL)\]
+        escaped_link_pattern = r'\\\[\[([^\]]+)\]\([^)]+\)\\\]'
         
         def replace_func(match):
-            prefix = match.group(1)  # \\[[
-            content = match.group(2)  # 1,2,3 or ^1,^2,^3
-            suffix = match.group(3)   # \\]]
-            return f"{prefix}{content}{suffix}"
+            content = match.group(1)  # 1,2,3 or ^1,^2,^3
+            return f"\\[[{content}]\\]"
         
         clean_citation = re.sub(escaped_link_pattern, replace_func, escaped_citation)
         return clean_citation

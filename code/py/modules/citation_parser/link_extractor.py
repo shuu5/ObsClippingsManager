@@ -132,9 +132,22 @@ class LinkExtractor:
         Returns:
             リンクが除去された引用テキスト
         """
-        # [1](URL) -> [1] の形式に変換
-        link_pattern = r'\[(\^?\d+)\]\([^)]+\)'
-        return re.sub(link_pattern, r'[\1]', citation_text)
+        # エスケープされたパターンを優先的に処理
+        # \[[4–8](URL)\] -> \[[4–8]\]
+        escaped_link_pattern = r'\\\[\[([^\]]+)\]\([^)]+\)\\\]'
+        
+        def replace_escaped(match):
+            content = match.group(1)  # 4–8 or ^1,^2,^3
+            return f"\\[[{content}]\\]"
+        
+        result = re.sub(escaped_link_pattern, replace_escaped, citation_text)
+        
+        # 通常のパターンも処理
+        # [1](URL) -> [1]
+        normal_link_pattern = r'\[(\^?\d+)\]\([^)]+\)'
+        result = re.sub(normal_link_pattern, r'[\1]', result)
+        
+        return result
     
     def _normalize_url(self, url: str) -> str:
         """

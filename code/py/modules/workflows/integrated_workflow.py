@@ -546,7 +546,7 @@ class IntegratedWorkflow:
                     'output_file': markdown_file,  # 同じファイルに上書き
                     'pattern_type': 'all',
                     'output_format': 'unified',
-                    'enable_link_extraction': False,
+                    'enable_link_extraction': True,  # リンク抽出を有効化
                     'expand_ranges': True,
                     'auto_approve': options.get('auto_approve', False),
                     'dry_run': options.get('dry_run', False)
