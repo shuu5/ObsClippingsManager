@@ -67,6 +67,18 @@ class CitationResult:
 
 
 @dataclass
+class OutputFormat:
+    """出力フォーマット設定"""
+    single_template: str = '[{number}]'        # 単一引用テンプレート
+    multiple_template: str = '[{numbers}]'     # 複数引用テンプレート
+    separator: str = ', '                      # 区切り文字
+    sort_numbers: bool = True                  # 番号ソートの有効/無効
+    expand_ranges: bool = True                 # 範囲展開の有効/無効
+    remove_spaces: bool = False                # スペース除去の有効/無効
+    individual_citations: bool = False         # 個別引用形式の有効/無効
+
+
+@dataclass
 class PatternConfig:
     """パターン設定"""
     name: str                            # パターン名

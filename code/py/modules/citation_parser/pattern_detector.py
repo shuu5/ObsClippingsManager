@@ -16,37 +16,74 @@ from .exceptions import PatternDetectionError
 class PatternDetector:
     """引用パターン検出エンジン"""
     
-    # 仕様書で定義された基本パターン
+    # 仕様書で定義された基本パターン + エスケープパターン
     DEFAULT_PATTERNS = {
+        # エスケープされたパターン（最優先）
+        'escaped_linked_citation': {
+            'regex': r'\\\[\[(\d+(?:[,\s]*\d+)*)\]\(([^)]+)\)\\\]',
+            'type': 'escaped_linked',
+            'priority': 1
+        },
+        'escaped_linked_range': {
+            'regex': r'\\\[\[(\d+)[-–](\d+)\]\(([^)]+)\)\\\]',
+            'type': 'escaped_linked_range',
+            'priority': 1
+        },
+        'escaped_footnote_multiple_individual': {
+            'regex': r'\\\[\[\^(\d+)\](?:\s*,\s*\[\^(\d+)\])*\\\]',
+            'type': 'escaped_footnote',
+            'priority': 2
+        },
+        'escaped_footnote_single': {
+            'regex': r'\\\[\[\^(\d+)\]\\\]',
+            'type': 'escaped_footnote',
+            'priority': 2
+        },
+        'escaped_individual_multiple': {
+            'regex': r'\\\[\[(\d+)\](?:\s*,\s*\[(\d+)\])*\\\]',
+            'type': 'escaped_individual',
+            'priority': 3
+        },
+        'escaped_multiple_grouped': {
+            'regex': r'\\\[\[(\d+(?:[,\s]*\d+)*)\]\\\]',
+            'type': 'escaped_multiple',
+            'priority': 3
+        },
+        'escaped_single': {
+            'regex': r'\\\[\[(\d+)\]\\\]',
+            'type': 'escaped_single',
+            'priority': 3
+        },
+        # 標準パターン
         'linked_citation': {
             'regex': r'\[(\^?\d+)\]\(([^)]+)\)',
             'type': 'linked',
-            'priority': 1
+            'priority': 4
         },
         'footnote_citation': {
             'regex': r'\[\^(\d+)\]',
             'type': 'footnote', 
-            'priority': 2
+            'priority': 5
         },
         'range_citation': {
             'regex': r'\[(\d+)[-–](\d+)\]',
             'type': 'range',
-            'priority': 3
+            'priority': 6
         },
         'multiple_citation': {
             'regex': r'\[(\d+(?:[,\s]+\d+)+)\]',
             'type': 'multiple',
-            'priority': 4
+            'priority': 7
         },
         'single_citation': {
             'regex': r'\[(\d+)\]',
             'type': 'single',
-            'priority': 5
+            'priority': 8
         },
         'mixed_footnote': {
             'regex': r'\[\^(\d+(?:,\^?\d+)*)\]',
             'type': 'footnote',
-            'priority': 6
+            'priority': 9
         }
     }
     
@@ -62,34 +99,27 @@ class PatternDetector:
     
     def _register_default_patterns(self):
         """デフォルトパターンを登録"""
-        for name, config in self.DEFAULT_PATTERNS.items():
-            pattern_config = PatternConfig(
-                name=name,
-                regex=config['regex'],
-                pattern_type=config['type'],
-                priority=config['priority']
+        for pattern_name, pattern_config in self.DEFAULT_PATTERNS.items():
+            config = PatternConfig(
+                name=pattern_name,
+                regex=pattern_config['regex'],
+                pattern_type=pattern_config['type'],
+                priority=pattern_config['priority'],
+                enabled=True
             )
-            self.register_pattern(pattern_config)
+            self.register_pattern(config)
     
-    def register_pattern(self, pattern: PatternConfig) -> None:
-        """
-        新しいパターンを登録
-        
-        Args:
-            pattern: パターン設定
-        """
+    def register_pattern(self, pattern_config: PatternConfig):
+        """パターンを登録"""
         try:
-            # 正規表現をコンパイルして検証
-            compiled_regex = re.compile(pattern.regex)
+            compiled_pattern = re.compile(pattern_config.regex)
+            self.patterns[pattern_config.name] = pattern_config
+            self.compiled_patterns[pattern_config.name] = compiled_pattern
+            self.pattern_stats[pattern_config.name] = 0
             
-            self.patterns[pattern.name] = pattern
-            self.compiled_patterns[pattern.name] = compiled_regex
-            self.pattern_stats[pattern.name] = 0
-            
-            self.logger.debug(f"Registered pattern: {pattern.name}")
-            
+            self.logger.debug(f"Registered pattern: {pattern_config.name}")
         except re.error as e:
-            raise PatternDetectionError(f"Invalid regex pattern '{pattern.name}': {e}")
+            raise PatternDetectionError(f"Invalid regex pattern {pattern_config.name}: {e}")
     
     def detect_patterns(self, text: str) -> List[CitationMatch]:
         """
@@ -134,38 +164,25 @@ class PatternDetector:
     def _find_pattern_matches(self, text: str, compiled_pattern: re.Pattern,
                              pattern_config: PatternConfig, 
                              processed_positions: set) -> List[CitationMatch]:
-        """
-        特定のパターンでマッチを検索
-        
-        Args:
-            text: 検索対象テキスト
-            compiled_pattern: コンパイル済み正規表現
-            pattern_config: パターン設定
-            processed_positions: 処理済み位置のセット
-            
-        Returns:
-            マッチしたCitationMatchのリスト
-        """
+        """特定パターンのマッチを検索"""
         matches = []
         
         for match in compiled_pattern.finditer(text):
             start_pos = match.start()
             end_pos = match.end()
             
-            # 重複チェック
-            if any(pos in processed_positions for pos in range(start_pos, end_pos)):
+            # 重複位置チェック
+            position_range = set(range(start_pos, end_pos))
+            if position_range.intersection(processed_positions):
                 continue
             
             try:
                 citation_match = self._create_citation_match(match, pattern_config)
                 matches.append(citation_match)
+                processed_positions.update(position_range)
                 
-                # 処理済み位置を記録
-                for pos in range(start_pos, end_pos):
-                    processed_positions.add(pos)
-                    
-            except Exception as e:
-                self.logger.warning(f"Failed to process match: {e}")
+            except PatternDetectionError as e:
+                self.logger.warning(f"Failed to create citation match: {e}")
                 continue
         
         return matches
@@ -187,7 +204,22 @@ class PatternDetector:
         end_pos = match.end()
         
         # パターンタイプ別の処理
-        if pattern_config.pattern_type == 'linked':
+        if pattern_config.pattern_type in ['escaped_linked', 'escaped_linked_range']:
+            citation_numbers, link_url = self._parse_escaped_linked_citation(match, pattern_config.pattern_type)
+            has_link = True
+        elif pattern_config.pattern_type == 'escaped_footnote':
+            citation_numbers = self._parse_escaped_footnote_citation(match)
+            link_url = None
+            has_link = False
+        elif pattern_config.pattern_type == 'escaped_individual':
+            citation_numbers = self._parse_escaped_individual_citation(match)
+            link_url = None
+            has_link = False
+        elif pattern_config.pattern_type in ['escaped_multiple', 'escaped_single']:
+            citation_numbers = self._parse_escaped_basic_citation(match)
+            link_url = None
+            has_link = False
+        elif pattern_config.pattern_type == 'linked':
             citation_numbers, link_url = self._parse_linked_citation(match)
             has_link = True
         elif pattern_config.pattern_type == 'range':
@@ -216,6 +248,97 @@ class PatternDetector:
             start_pos=start_pos,
             end_pos=end_pos
         )
+    
+    def _parse_escaped_linked_citation(self, match: re.Match, pattern_type: str) -> Tuple[List[int], str]:
+        """エスケープされたリンク付き引用を解析"""
+        if pattern_type == 'escaped_linked_range':
+            # 範囲リンク: \[[1-3](URL)\]
+            start_num = int(match.group(1))
+            end_num = int(match.group(2))
+            url = match.group(3)
+            
+            if start_num > end_num:
+                raise PatternDetectionError(f"Invalid range: {start_num}-{end_num}")
+            if end_num - start_num > 50:
+                raise PatternDetectionError(f"Range too large: {start_num}-{end_num}")
+            
+            citation_numbers = list(range(start_num, end_num + 1))
+            return citation_numbers, url
+        else:
+            # 複数リンク: \[[1,2,3](URL)\]
+            citation_part = match.group(1)
+            url = match.group(2)
+            
+            # カンマまたは空白で分割
+            parts = re.split(r'[,\s]+', citation_part.strip())
+            numbers = []
+            
+            for part in parts:
+                if part.strip():
+                    try:
+                        numbers.append(int(part.strip()))
+                    except ValueError:
+                        raise PatternDetectionError(f"Invalid citation number: {part}")
+            
+            return sorted(list(set(numbers))), url
+    
+    def _parse_escaped_footnote_citation(self, match: re.Match) -> List[int]:
+        """エスケープされた脚注引用を解析"""
+        original_text = match.group(0)
+        
+        # \[[^1],[^2],[^3]\] または \[[^1]\] のパターン
+        # 脚注番号を抽出
+        footnote_pattern = r'\[\^(\d+)\]'
+        footnote_matches = re.findall(footnote_pattern, original_text)
+        
+        if footnote_matches:
+            # 複数の脚注番号を処理
+            numbers = []
+            for num_str in footnote_matches:
+                try:
+                    numbers.append(int(num_str))
+                except ValueError:
+                    raise PatternDetectionError(f"Invalid footnote number: {num_str}")
+            return sorted(list(set(numbers)))
+        else:
+            # 単一の脚注: \[[^1]\] のパターン
+            if match.group(1):
+                return [int(match.group(1))]
+            else:
+                raise PatternDetectionError(f"No footnote numbers found in: {original_text}")
+    
+    def _parse_escaped_individual_citation(self, match: re.Match) -> List[int]:
+        r"""エスケープされた個別引用を解析 (\[[12], [13]\] パターン)"""
+        original_text = match.group(0)
+        
+        # 個別の引用番号を抽出: \[[12], [13]\] から 12, 13 を取得
+        individual_pattern = r'\[(\d+)\]'
+        numbers = []
+        
+        for num_match in re.finditer(individual_pattern, original_text):
+            try:
+                numbers.append(int(num_match.group(1)))
+            except ValueError:
+                raise PatternDetectionError(f"Invalid citation number: {num_match.group(1)}")
+        
+        return sorted(list(set(numbers)))
+    
+    def _parse_escaped_basic_citation(self, match: re.Match) -> List[int]:
+        """エスケープされた基本引用を解析"""
+        citation_part = match.group(1)
+        
+        # カンマまたは空白で分割
+        parts = re.split(r'[,\s]+', citation_part.strip())
+        numbers = []
+        
+        for part in parts:
+            if part.strip():
+                try:
+                    numbers.append(int(part.strip()))
+                except ValueError:
+                    raise PatternDetectionError(f"Invalid citation number: {part}")
+        
+        return sorted(list(set(numbers)))
     
     def _parse_linked_citation(self, match: re.Match) -> Tuple[List[int], str]:
         """リンク付き引用を解析"""
@@ -264,11 +387,11 @@ class PatternDetector:
     
     def _parse_footnote_citation(self, match: re.Match) -> List[int]:
         """脚注引用を解析"""
-        numbers_str = match.group(1)
+        citation_part = match.group(1)
         
-        if ',' in numbers_str:
-            # 複数脚注の場合
-            parts = numbers_str.split(',')
+        # 複数の脚注番号の場合
+        if ',' in citation_part:
+            parts = citation_part.split(',')
             numbers = []
             for part in parts:
                 part = part.strip()
@@ -278,13 +401,13 @@ class PatternDetector:
                     numbers.append(int(part))
                 except ValueError:
                     raise PatternDetectionError(f"Invalid footnote number: {part}")
-            return sorted(numbers)
+            return sorted(list(set(numbers)))
         else:
-            # 単一脚注
+            # 単一の脚注番号
             try:
-                return [int(numbers_str)]
+                return [int(citation_part)]
             except ValueError:
-                raise PatternDetectionError(f"Invalid footnote number: {numbers_str}")
+                raise PatternDetectionError(f"Invalid footnote number: {citation_part}")
     
     def _parse_single_citation(self, match: re.Match) -> List[int]:
         """単一引用を解析"""
@@ -294,16 +417,11 @@ class PatternDetector:
         except ValueError:
             raise PatternDetectionError(f"Invalid citation number: {match.group(1)}")
     
-    def get_pattern_stats(self) -> Dict[str, int]:
-        """
-        パターン別統計を取得
-        
-        Returns:
-            パターン名: 検出回数の辞書
-        """
+    def get_pattern_statistics(self) -> Dict[str, int]:
+        """パターン別統計を取得"""
         return self.pattern_stats.copy()
     
-    def reset_stats(self):
+    def reset_statistics(self):
         """統計をリセット"""
         for pattern_name in self.pattern_stats:
             self.pattern_stats[pattern_name] = 0 

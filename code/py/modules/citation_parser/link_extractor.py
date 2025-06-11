@@ -47,9 +47,10 @@ class LinkExtractor:
         
         for match in sorted_matches:
             try:
-                # リンクエントリを作成
-                link_entry = self._create_link_entry(match)
-                link_entries.append(link_entry)
+                # 複数の引用番号がある場合は、それぞれに対してリンクエントリを作成
+                for citation_number in match.citation_numbers:
+                    link_entry = self._create_link_entry_for_number(match, citation_number)
+                    link_entries.append(link_entry)
                 
                 # テキストからリンクを除去
                 clean_citation = self._remove_link_from_citation(match.original_text)
@@ -76,7 +77,7 @@ class LinkExtractor:
     
     def _create_link_entry(self, match: CitationMatch) -> LinkEntry:
         """
-        CitationMatchからLinkEntryを作成
+        CitationMatchからLinkEntryを作成（後方互換性のため）
         
         Args:
             match: 引用マッチ
@@ -84,14 +85,26 @@ class LinkExtractor:
         Returns:
             LinkEntry
         """
-        if not match.has_link or not match.link_url:
-            raise LinkExtractionError("Citation match does not have a link")
-        
         if not match.citation_numbers:
             raise LinkExtractionError("Citation match has no citation numbers")
         
         # 複数の引用番号がある場合は最初のものを使用
         citation_number = match.citation_numbers[0]
+        return self._create_link_entry_for_number(match, citation_number)
+    
+    def _create_link_entry_for_number(self, match: CitationMatch, citation_number: int) -> LinkEntry:
+        """
+        特定の引用番号に対してLinkEntryを作成
+        
+        Args:
+            match: 引用マッチ
+            citation_number: 対象の引用番号
+            
+        Returns:
+            LinkEntry
+        """
+        if not match.has_link or not match.link_url:
+            raise LinkExtractionError("Citation match does not have a link")
         
         # URLを正規化
         normalized_url = self._normalize_url(match.link_url)

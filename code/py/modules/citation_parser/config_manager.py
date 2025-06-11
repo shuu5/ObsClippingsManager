@@ -18,40 +18,84 @@ class ConfigManager:
     
     DEFAULT_CONFIG = {
         'patterns': {
+            # エスケープされたパターン（最優先）
+            'escaped_linked_citation': {
+                'regex': r'\\\[\[(\d+(?:[,\s]*\d+)*)\]\(([^)]+)\)\\\]',
+                'type': 'escaped_linked',
+                'priority': 1,
+                'enabled': True
+            },
+            'escaped_linked_range': {
+                'regex': r'\\\[\[(\d+)[-–](\d+)\]\(([^)]+)\)\\\]',
+                'type': 'escaped_linked_range',
+                'priority': 1,
+                'enabled': True
+            },
+            'escaped_footnote_multiple_individual': {
+                'regex': r'\\\[\[\^(\d+)\](?:\s*,\s*\[\^(\d+)\])*\\\]',
+                'type': 'escaped_footnote',
+                'priority': 2,
+                'enabled': True
+            },
+            'escaped_footnote_single': {
+                'regex': r'\\\[\[\^(\d+)\]\\\]',
+                'type': 'escaped_footnote',
+                'priority': 2,
+                'enabled': True
+            },
+            'escaped_individual_multiple': {
+                'regex': r'\\\[\[(\d+)\](?:\s*,\s*\[(\d+)\])*\\\]',
+                'type': 'escaped_individual',
+                'priority': 3,
+                'enabled': True
+            },
+            'escaped_multiple_grouped': {
+                'regex': r'\\\[\[(\d+(?:[,\s]*\d+)*)\]\\\]',
+                'type': 'escaped_multiple',
+                'priority': 3,
+                'enabled': True
+            },
+            'escaped_single': {
+                'regex': r'\\\[\[(\d+)\]\\\]',
+                'type': 'escaped_single',
+                'priority': 3,
+                'enabled': True
+            },
+            # 標準パターン
             'linked_citation': {
                 'regex': r'\[(\^?\d+)\]\(([^)]+)\)',
                 'type': 'linked',
-                'priority': 1,
+                'priority': 4,
                 'enabled': True
             },
             'footnote_citation': {
                 'regex': r'\[\^(\d+)\]',
                 'type': 'footnote',
-                'priority': 2,
+                'priority': 5,
                 'enabled': True
             },
             'range_citation': {
                 'regex': r'\[(\d+)[-–](\d+)\]',
                 'type': 'range',
-                'priority': 3,
+                'priority': 6,
                 'enabled': True
             },
             'multiple_citation': {
                 'regex': r'\[(\d+(?:[,\s]+\d+)+)\]',
                 'type': 'multiple',
-                'priority': 4,
+                'priority': 7,
                 'enabled': True
             },
             'single_citation': {
                 'regex': r'\[(\d+)\]',
                 'type': 'single',
-                'priority': 5,
+                'priority': 8,
                 'enabled': True
             },
             'mixed_footnote': {
                 'regex': r'\[\^(\d+(?:,\^?\d+)*)\]',
                 'type': 'footnote',
-                'priority': 6,
+                'priority': 9,
                 'enabled': True
             }
         },
@@ -59,10 +103,11 @@ class ConfigManager:
             'standard': {
                 'single': '[{number}]',
                 'multiple': '[{numbers}]',
-                'separator': ',',
+                'separator': ', ',
                 'sort_numbers': True,
                 'expand_ranges': True,
-                'remove_spaces': False
+                'remove_spaces': False,
+                'individual_citations': True
             },
             'compact': {
                 'single': '[{number}]',
@@ -70,7 +115,8 @@ class ConfigManager:
                 'separator': ',',
                 'sort_numbers': True,
                 'expand_ranges': True,
-                'remove_spaces': True
+                'remove_spaces': True,
+                'individual_citations': False
             },
             'spaced': {
                 'single': '[{number}]',
@@ -78,7 +124,8 @@ class ConfigManager:
                 'separator': ', ',
                 'sort_numbers': True,
                 'expand_ranges': True,
-                'remove_spaces': False
+                'remove_spaces': False,
+                'individual_citations': True
             }
         },
         'conversion_rules': {

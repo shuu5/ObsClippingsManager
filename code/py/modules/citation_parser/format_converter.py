@@ -1,7 +1,7 @@
 """
 引用フォーマット変換エンジン
 
-検出した引用を統一フォーマットに変換する
+検出された引用を統一されたフォーマットに変換する
 """
 
 import re
@@ -9,7 +9,7 @@ import logging
 from typing import List, Dict, Optional, Set
 from dataclasses import dataclass
 
-from .data_structures import CitationMatch, ProcessingError
+from .data_structures import CitationMatch, ProcessingError, OutputFormat
 from .exceptions import FormatConversionError
 
 
@@ -18,10 +18,11 @@ class OutputFormat:
     """出力フォーマット設定"""
     single_template: str = "[{number}]"
     multiple_template: str = "[{numbers}]"
-    separator: str = ","
+    separator: str = "], ["
     sort_numbers: bool = True
     expand_ranges: bool = True
     remove_spaces: bool = False
+    individual_citations: bool = True  # デフォルトで個別引用形式を有効化
 
 
 class FormatConverter:
@@ -34,8 +35,24 @@ class FormatConverter:
         Args:
             output_format: 出力フォーマット設定
         """
-        self.output_format = output_format or OutputFormat()
         self.logger = logging.getLogger("ObsClippingsManager.CitationParser.FormatConverter")
+        
+        if output_format is None:
+            self.output_format = OutputFormat()
+        else:
+            self.output_format = output_format
+        
+        # 個別引用モードを確実に有効化
+        self.set_individual_citation_mode(True)
+        
+        self.current_text = ""  # テキスト参照用
+        self.conversion_stats = {
+            'converted': 0,
+            'errors': 0,
+            'total': 0
+        }
+        
+        self.logger.debug("FormatConverter initialized with individual citation mode enabled")
     
     def convert_to_unified(self, text: str, matches: List[CitationMatch]) -> str:
         """
@@ -104,14 +121,23 @@ class FormatConverter:
         # 重複除去
         numbers = list(dict.fromkeys(numbers))  # 順序を保持して重複除去
         
-        # フォーマット
-        if len(numbers) == 1:
-            return self.output_format.single_template.format(number=numbers[0])
+        # 個別引用形式での出力
+        if hasattr(self.output_format, 'individual_citations') and self.output_format.individual_citations:
+            # 常に個別の引用として出力: [1], [2], [3]
+            if len(numbers) == 1:
+                return f'[{numbers[0]}]'
+            else:
+                individual_citations = [f'[{n}]' for n in numbers]
+                return ', '.join(individual_citations)
         else:
-            numbers_str = self.output_format.separator.join(str(n) for n in numbers)
-            if self.output_format.remove_spaces:
-                numbers_str = numbers_str.replace(" ", "")
-            return self.output_format.multiple_template.format(numbers=numbers_str)
+            # 従来のグループ化形式
+            if len(numbers) == 1:
+                return self.output_format.single_template.format(number=numbers[0])
+            else:
+                numbers_str = self.output_format.separator.join(str(n) for n in numbers)
+                if self.output_format.remove_spaces:
+                    numbers_str = numbers_str.replace(" ", "")
+                return self.output_format.multiple_template.format(numbers=numbers_str)
     
     def expand_ranges(self, range_citation: str) -> List[int]:
         """
@@ -155,8 +181,11 @@ class FormatConverter:
         # 複数の空白を単一の空白に変換
         citation = re.sub(r'\s+', ' ', citation)
         
-        # カンマ周りのスペースを標準化
-        if self.output_format.remove_spaces:
+        # 個別引用形式の場合はコンマ+スペース
+        if hasattr(self.output_format, 'individual_citations') and self.output_format.individual_citations:
+            # 個別引用: [1], [2], [3] 形式
+            citation = re.sub(r'\s*,\s*', ', ', citation)
+        elif self.output_format.remove_spaces:
             citation = re.sub(r'\s*,\s*', ',', citation)
         else:
             citation = re.sub(r'\s*,\s*', ', ', citation)
@@ -166,6 +195,55 @@ class FormatConverter:
         citation = re.sub(r'\s+\]', ']', citation)
         
         return citation.strip()
+    
+    def format_multiple_citations(self, numbers: List[int]) -> str:
+        """
+        複数の引用番号を統一フォーマットで出力
+        
+        Args:
+            numbers: 引用番号のリスト
+            
+        Returns:
+            フォーマット済み引用文字列
+        """
+        if not numbers:
+            return ""
+        
+        # ソートと重複除去
+        if self.output_format.sort_numbers:
+            numbers = sorted(list(set(numbers)))
+        else:
+            numbers = list(dict.fromkeys(numbers))
+        
+        # 個別引用形式
+        if hasattr(self.output_format, 'individual_citations') and self.output_format.individual_citations:
+            individual_citations = [f'[{n}]' for n in numbers]
+            return ', '.join(individual_citations)
+        
+        # グループ化形式（レガシー）
+        if len(numbers) == 1:
+            return f'[{numbers[0]}]'
+        else:
+            numbers_str = ', '.join(str(n) for n in numbers)
+            return f'[{numbers_str}]'
+    
+    def set_individual_citation_mode(self, enabled: bool = True):
+        """
+        個別引用モードの設定
+        
+        Args:
+            enabled: 個別引用モードを有効にするか
+        """
+        # OutputFormatにindividual_citationsアトリビュートを確実に設定
+        self.output_format.individual_citations = enabled
+        
+        if enabled:
+            self.output_format.separator = '], ['
+            self.output_format.multiple_template = '[{numbers}]'
+        else:
+            self.output_format.separator = ','
+        
+        self.logger.debug(f"Individual citation mode: {'enabled' if enabled else 'disabled'}")
     
     def merge_adjacent_citations(self, matches: List[CitationMatch]) -> List[CitationMatch]:
         """

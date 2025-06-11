@@ -523,10 +523,62 @@ class IntegratedWorkflow:
         Returns:
             (成功フラグ, 実行結果)
         """
-        # 現在は簡単な実装。実際の引用文献解析は将来実装
         self.logger.info(f"Parse step: processing {len(papers)} papers")
         
-        return True, {
-            'processed_papers': len(papers),
-            'message': 'Citation parsing completed (placeholder implementation)'
-        } 
+        try:
+            overall_success = True
+            processed_count = 0
+            failed_papers = []
+            
+            # 各論文のMarkdownファイルを個別に処理
+            for paper in papers:
+                paper_dir = os.path.join(paths['clippings_dir'], paper)
+                markdown_file = os.path.join(paper_dir, f"{paper}.md")
+                
+                if not os.path.exists(markdown_file):
+                    self.logger.warning(f"Markdown file not found for {paper}: {markdown_file}")
+                    failed_papers.append(paper)
+                    continue
+                
+                # CitationParserWorkflowを使用して引用文献を解析
+                parse_options = {
+                    'input_file': markdown_file,
+                    'output_file': markdown_file,  # 同じファイルに上書き
+                    'pattern_type': 'all',
+                    'output_format': 'unified',
+                    'enable_link_extraction': False,
+                    'expand_ranges': True,
+                    'auto_approve': options.get('auto_approve', False),
+                    'dry_run': options.get('dry_run', False)
+                }
+                
+                try:
+                    success, result = self.parse_workflow.execute(**parse_options)
+                    
+                    if success:
+                        processed_count += 1
+                        self.logger.debug(f"Successfully parsed citations for {paper}")
+                    else:
+                        overall_success = False
+                        failed_papers.append(paper)
+                        self.logger.warning(f"Failed to parse citations for {paper}: {result.get('error', 'Unknown error')}")
+                        
+                except Exception as e:
+                    overall_success = False
+                    failed_papers.append(paper)
+                    self.logger.error(f"Parse error for {paper}: {e}")
+            
+            return overall_success, {
+                'processed_papers': processed_count,
+                'failed_papers': failed_papers,
+                'total_papers': len(papers),
+                'message': f'Citation parsing completed: {processed_count}/{len(papers)} papers processed successfully'
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Parse step failed: {e}")
+            return False, {
+                'error': str(e),
+                'processed_papers': 0,
+                'failed_papers': papers
+            } 
