@@ -76,6 +76,11 @@ class FormatConverter:
         
         for match in sorted_matches:
             try:
+                # 文章破壊を防ぐための検証を追加
+                if self._is_word_boundary_violation(converted_text, match):
+                    self.logger.warning(f"Skipping citation {match.original_text} at position {match.start_pos} to prevent word boundary violation")
+                    continue
+                
                 unified_citation = self._format_citation(match)
                 
                 # テキストを置換
@@ -455,4 +460,89 @@ class FormatConverter:
         Returns:
             妥当性
         """
-        return all(n > 0 for n in numbers) and len(numbers) <= 50 
+        return all(n > 0 for n in numbers) and len(numbers) <= 50
+    
+    def _is_word_boundary_violation(self, text: str, match: CitationMatch) -> bool:
+        """
+        引用の位置が単語境界を破壊するかどうかをチェック
+        
+        Args:
+            text: テキスト
+            match: 引用マッチ
+            
+        Returns:
+            True if word boundary violation detected
+        """
+        start_pos = match.start_pos
+        end_pos = match.end_pos
+        
+        # 範囲チェック
+        if start_pos < 0 or end_pos > len(text):
+            return True
+        
+        # 前後の文字を取得（複数文字の文脈を考慮）
+        char_before = text[start_pos - 1] if start_pos > 0 else ' '
+        char_after = text[end_pos] if end_pos < len(text) else ' '
+        
+        # 前後2文字の文脈も取得
+        chars_before = text[max(0, start_pos - 2):start_pos] if start_pos >= 2 else text[:start_pos]
+        chars_after = text[end_pos:min(len(text), end_pos + 2)] if end_pos < len(text) else text[end_pos:]
+        
+        # 単語文字（アルファベット、数字、アンダースコア）かどうかをチェック
+        word_char_pattern = r'[a-zA-Z0-9_]'
+        
+        # 前の文字が単語文字で、引用の後ろの文字も単語文字の場合は境界違反の可能性が高い
+        if (re.match(word_char_pattern, char_before) and 
+            re.match(word_char_pattern, char_after)):
+            
+            # さらに詳細なチェック: 前後の文脈を確認
+            # "pancreat[citation]er" のような明らかなケースを検出
+            # "t[citation] is" のような "that is" の分割を検出
+            
+            # 前の文字列が単語の一部で、後の文字列も単語の一部の場合
+            if chars_before and chars_after:
+                # 前の部分が単語の一部で、かつ短い場合（単語が分割されている可能性）
+                if (len(chars_before) <= 10 and 
+                    re.match(r'^[a-zA-Z]+$', chars_before) and
+                    re.match(r'^[a-zA-Z]+', chars_after)):
+                    self.logger.warning(f"Word boundary violation detected: '{chars_before}[citation]{chars_after[:2]}...'")
+                    return True
+                
+                # "t [citation] is" のような短い前置文字の場合
+                if (len(char_before) == 1 and 
+                    re.match(r'^[a-zA-Z]$', char_before) and
+                    re.match(r'^[a-zA-Z]', char_after)):
+                    # 共通的な単語パターンをチェック
+                    common_words = ['that', 'this', 'they', 'the', 'to', 'and', 'or', 'in', 'on', 'at']
+                    potential_word = char_before + char_after
+                    for word in common_words:
+                        if word.startswith(potential_word):
+                            self.logger.warning(f"Likely word split detected: '{char_before}[citation]{char_after}' (potential word: {word})")
+                            return True
+            
+            return True
+        
+        # 特別ケース: "revealed t [citation] is" のような単一文字 + スペース + 単語 のパターン
+        if (re.match(word_char_pattern, char_before) and 
+            char_after == ' ' and end_pos + 1 < len(text)):
+            # 引用の後にスペース + 単語がある場合をチェック
+            next_char = text[end_pos + 1] if end_pos + 1 < len(text) else ''
+            if re.match(word_char_pattern, next_char):
+                # 引用の直前の単語の末尾を確認
+                # "revealed t" の "t" は "that" の一部の可能性
+                word_start = start_pos - 1
+                while word_start > 0 and re.match(word_char_pattern, text[word_start - 1]):
+                    word_start -= 1
+                
+                preceding_word = text[word_start:start_pos]
+                if len(preceding_word) >= 3:  # 最低3文字以上の単語
+                    # "revealed" + "t" + " is" の場合、"that" の可能性
+                    potential_complete_word = preceding_word + char_before
+                    # よく知られた単語の末尾パターンをチェック
+                    word_endings = ['that', 'what', 'want', 'went', 'point', 'right', 'light', 'night']
+                    for ending in word_endings:
+                        if potential_complete_word.endswith(ending[:-1]) and char_before == ending[-1]:
+                            self.logger.warning(f"Potential word split detected: '{preceding_word}{char_before}[citation] {next_char}' (possible word: {ending})")
+                            return True
+        
+        return False 
