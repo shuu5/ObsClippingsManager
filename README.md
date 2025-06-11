@@ -19,7 +19,7 @@ v3.0では、すべての機能が単一の`run-integrated`コマンドで統合
 1. **引用文献自動取得** - CrossRef API + OpenCitations APIのフォールバック戦略
 2. **ファイル自動整理** - Citation keyベースのディレクトリ構造での整理  
 3. **同期チェック機能** - BibTeXとClippingsディレクトリの整合性確認
-4. **引用文献パース** - 様々な形式の引用文献を統一フォーマットに変換
+4. **AI理解支援引用文献パーサー** - AIが直接理解できる自己完結型ファイル生成
 5. **状態管理システム** - YAMLヘッダーで処理状態を追跡し重複処理を自動スキップ
 
 ### v3.0の特徴
@@ -132,7 +132,7 @@ code/py/
     │   └── exceptions.py             # 階層的例外管理
     ├── citation_fetcher/             # 引用文献取得
     ├── rename_mkdir_citation_key/    # ファイル整理
-    ├── citation_parser/              # 引用文献パース
+    ├── ai_citation_support/          # AI理解支援引用文献パーサー
     ├── status_management/            # 状態管理（v3.0新機能）
     └── workflows/                    # ワークフロー管理
         └── integrated_workflow.py    # 統合ワークフロー（メイン）
@@ -165,9 +165,9 @@ code/py/
    ├── BibTeX形式で出力
    └── 処理状態をYAMLヘッダーに記録
    ↓
-6. 引用文献パース（parse-citations）
-   ├── 取得した引用文献の解析
-   ├── 統一フォーマットへの変換
+6. AI理解支援引用文献パーサー（ai-citation-support）
+   ├── YAMLヘッダーに完全な引用文献情報を統合
+   ├── references.bibから一度読み込み、Markdownファイルに永続化
    └── 処理状態をYAMLヘッダーに記録
 ```
 

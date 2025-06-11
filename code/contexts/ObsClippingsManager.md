@@ -29,11 +29,10 @@ ObsClippingsManager v3.0 は、学術研究における文献管理とMarkdown�
 - 不足論文の詳細報告（タイトル、DOI、ウェブリンク）
 - ブラウザでのDOIリンク自動開放
 
-### 4. 引用文献パース機能
-- 様々な形式の引用文献を統一フォーマットに変換
-- エスケープされた引用形式（\[[1]\]）への完全対応  
-- リンク付き引用からの対応表生成とクリーンアップ
-- 複数の引用パターンの自動検出・完全統一化変換
+### 4. AI理解支援引用文献パーサー機能
+- YAMLヘッダーに完全な引用文献情報を統合
+- references.bibから一度読み込み、Markdownファイルに永続化
+- AIが直接Markdownファイルを読むだけで引用文献を完全理解できる自己完結型システム
 
 ### 5. 状態管理システム
 - 各論文の処理状態をYAMLヘッダーで追跡
@@ -54,7 +53,7 @@ ObsClippingsManager v3.0 統合システム
     │   └── exceptions.py             # 階層的例外管理
     ├── citation_fetcher/             # 引用文献取得
     ├── rename_mkdir_citation_key/    # ファイル整理
-    ├── citation_parser/              # 引用文献パース
+    ├── ai_citation_support/          # AI理解支援引用文献パーサー
     ├── status_management/            # 状態管理
     └── workflows/                    # ワークフロー管理
         └── integrated_workflow.py    # 統合ワークフロー（メイン）
@@ -232,103 +231,58 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated --force-reproces
 1. **organize**: Markdownファイル → citation keyディレクトリ整理
 2. **sync**: BibTeX ↔ Clippingsディレクトリ整合性チェック
 3. **fetch**: DOI → references.bib引用文献取得
-4. **parse**: Markdownファイル内引用解析・統一化
+4. **ai-citation-support**: AI理解支援引用文献パーサー（自己完結型ファイル生成）
 
-## 引用文献パース機能 (v3.0強化版)
+## AI理解支援引用文献パーサー機能 (v3.0新機能)
 
 ### 概要
-ObsClippingsManager v3.0では、引用文献パース機能を大幅に強化し、現存するあらゆる引用形式を完全に統一された形式に変換します。
+ObsClippingsManager v3.0では、AI理解支援引用文献パーサー機能を新たに追加しました。この機能により、AIアシスタント（ChatGPT、Claude等）が論文の引用文献を完全に理解できる自己完結型ファイルを生成します。
 
-### 対応する引用形式
+### 基本原理
 
-#### 入力形式（検出・変換対象）
-1. **エスケープされた基本形式**
-   - `\[[1]\]` → `[1]`
-   - `\[[2], [3]\]` → `[2], [3]`
+#### 完全統合引用マッピング機能
+- YAMLヘッダーに全ての引用文献情報を完全統合
+- references.bibから一度読み込み、Markdownファイルに永続化
+- 外部ファイル依存を排除した自己完結型設計
+- AIが直接Markdownファイルを読むだけで完全理解可能
 
-2. **エスケープされたURL付き形式**
-   - `\[[1](https://example.com)\]` → `[1]`
-   - `\[[4,5,6,7,8](https://academic.oup.com/jrr/article/64/2/284/)\]` → `[4], [5], [6], [7], [8]`
+### YAMLヘッダー完全統合形式
+```yaml
+---
+title: "論文タイトル"
+doi: "10.1093/jrr/rrac091"
+citations:
+  1:
+    citation_key: "smith2023test"
+    title: "Novel Method for Cancer Cell Analysis"
+    authors: "Smith, J., Wilson, K., & Davis, M."
+    year: 2023
+    journal: "Cancer Research"
+    volume: "83"
+    number: "12"
+    pages: "1234-1245"
+    doi: "10.1158/0008-5472.CAN-23-0123"
+    abstract: "This paper introduces innovative methodologies for analyzing cancer cell behavior using advanced computational techniques."
 
-3. **エスケープされた脚注形式**
-   - `\[[^1]\]` → `[1]`
-   - `\[[^1],[^2],[^3]\]` → `[1], [2], [3]`
-
-4. **通常の形式**
-   - `[1]` → `[1]` (そのまま)
-   - `[2, 3]` → `[2], [3]` (スペース統一)
-   - `[1-5]` → `[1], [2], [3], [4], [5]` (範囲展開)
-
-#### 最終統一形式（目標出力）
-- **単一引用**: `[1]`
-- **複数引用**: `[2], [3], [4]` (カンマ+スペース区切り)
-- **連続番号**: `[1], [2], [3]` (範囲は常に展開)
-
-### 変換ルール
-
-#### 1. エスケープ解除
-```
-入力: \[[1]\]
-処理: エスケープバックスラッシュを除去
-出力: [1]
-```
-
-#### 2. URL抽出とクリーンアップ
-```
-入力: \[[4,5,6,7,8](https://academic.oup.com/jrr/article/64/2/284/)\]
-処理: 
-  1. URLを抽出してリンク表に保存
-  2. 引用番号のみ残す
-  3. 個別の引用に分離
-出力: [4], [5], [6], [7], [8]
+citation_metadata:
+  total_citations: 1
+  last_updated: "2024-01-15T10:30:00"
+  source_bibtex: "references.bib"
+  mapping_version: "2.0"
+---
 ```
 
-#### 3. 脚注記号除去
+### 使用例
+
+```bash
+# AI理解支援機能を有効化して統合実行
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-ai-citation-support
+
+# 個別実行（完全統合マッピング作成）
+PYTHONPATH=code/py uv run python code/py/main.py create-complete-mapping \
+    --input paper.md \
+    --references references.bib
 ```
-入力: \[[^1],[^2],[^3]\]
-処理: 
-  1. エスケープ解除
-  2. ^記号を除去  
-  3. 個別の引用に分離
-出力: [1], [2], [3]
-```
-
-#### 4. スペース統一化
-```
-入力: [2,3] または [2 ,3] または [2, 3]
-出力: [2], [3] (常に「, 」区切り)
-```
-
-#### 5. 範囲展開
-```
-入力: [1-5]
-出力: [1], [2], [3], [4], [5]
-```
-
-### 処理アルゴリズム
-
-#### フェーズ1: パターン検出
-1. エスケープされた引用パターンの検出
-2. URL付き引用の特定
-3. 脚注形式の識別
-4. 標準形式の確認
-
-#### フェーズ2: 前処理
-1. エスケープの解除
-2. URLの抽出とリンク表への保存
-3. 脚注記号の除去
-
-#### フェーズ3: 統一化変換
-1. 引用番号の抽出と検証
-2. 範囲の展開
-3. 重複の除去とソート
-4. 統一フォーマットでの出力
-
-### 状態管理による効率化
-- **自動スキップ**: 完了済み処理は自動的にスキップ
-- **失敗再実行**: 失敗した処理のみ再実行
-- **依存関係**: 前段階完了後に次段階を実行
-- **状態追跡**: 各論文の.mdファイルのYAMLヘッダーで状態管理
 
 ## 主要オプション
 

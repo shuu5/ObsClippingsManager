@@ -3,7 +3,7 @@
 ## 概要
 統合ワークフロー（Integrated Workflow）は、ObsClippingsManager v4.0の中核機能であり、すべての処理を`run-integrated`コマンド一つで完結させるシンプルかつ効率的なシステムです。状態管理により重複処理を自動回避し、デフォルト設定での引数なし実行を実現します。
 
-**v4.0新機能**: AI理解支援引用文献統合機能により、AIアシスタント（ChatGPT、Claude等）が論文の引用文献を完全に理解できるファイル生成機能を追加。
+**v4.0新機能**: AI理解支援引用文献パーサー機能により、AIアシスタント（ChatGPT、Claude等）が論文の引用文献を完全に理解できる自己完結型ファイル生成機能を追加。
 
 ## 基本原理
 
@@ -17,34 +17,33 @@
 - **YAMLヘッダー**による処理状態追跡
 - **自動スキップ**で完了済み処理を回避
 - **失敗再実行**で必要な処理のみ実施
-- **引用マッピング状態**の追跡
+- **AI理解支援処理状態**の追跡
 
 ### 統一ディレクトリ設定
 - **workspace_path**一つでの全パス管理
 - **自動導出**による設定シンプル化
 - **個別指定**での柔軟性確保
-- **AI用ファイル出力**の統合管理
 
 ## システム構成
 
 ### 処理フロー v4.0
 ```
-1. organize  →  2. sync  →  3. fetch  →  4. parse  →  5. ai-mapping
-    ↓             ↓           ↓            ↓             ↓
- ファイル整理   同期チェック  引用取得    引用解析    AI理解支援統合
+1. organize  →  2. sync  →  3. fetch  →  4. ai-citation-support
+    ↓             ↓           ↓            ↓
+ ファイル整理   同期チェック  引用取得    AI理解支援統合
 ```
 
 ### 依存関係
 - 各ステップは**順次実行**
 - **前段階完了**後に次段階実行
 - **失敗時は後続ステップ停止**
-- **ai-mapping**は**parse完了後**に実行
+- **ai-citation-support**は**fetch完了後**に実行
 
 ### 状態追跡
 - 各論文の`.md`ファイルYAMLヘッダーで状態管理
 - ステップごとの処理状態を記録
 - 完了/失敗/保留の状態管理
-- **引用マッピング状態**と**AI用ファイル生成状態**を追跡
+- **AI理解支援処理状態**の追跡
 
 ## 統一設定システム
 
@@ -61,10 +60,10 @@ output_dir: "{workspace_path}/Clippings"
 # AI理解支援設定（v4.0新機能）
 ai_citation_support:
   enabled: false                    # デフォルトは無効
-  output_dir: "{workspace_path}/AI_Ready"  # AI用ファイル出力ディレクトリ
-  generate_mapping: true            # 引用マッピング生成
-  generate_unified_file: true       # AI用統合ファイル生成
+  complete_mapping: true            # 完全統合マッピング作成
+  update_yaml_header: true          # YAMLヘッダー更新
   backup_original: true             # 元ファイルバックアップ
+  include_abstracts: true           # 要約情報の含有
 ```
 
 ### 設定優先順位
@@ -114,8 +113,7 @@ class IntegratedWorkflow:
         self.organize_workflow = OrganizationWorkflow(config_manager, logger)
         self.sync_workflow = SyncCheckWorkflow(config_manager, logger)
         self.fetch_workflow = CitationWorkflow(config_manager, logger)
-        self.parse_workflow = CitationParserWorkflow(config_manager, logger)
-        self.ai_mapping_workflow = AIMappingWorkflow(config_manager, logger)  # v4.0新機能
+        self.ai_citation_support_workflow = AICitationSupportWorkflow(config_manager, logger)  # v4.0新機能
     
     def execute(self, **options) -> Dict[str, Any]:
         """統合ワークフロー実行"""
@@ -178,7 +176,7 @@ def _execute_workflow(self, paths: Dict[str, str], **options) -> Dict[str, Any]:
     1. organize: ファイル整理
     2. sync: 同期チェック
     3. fetch: 引用文献取得
-    4. parse: 引用文献解析
+    4. ai-citation-support: AI理解支援統合
     """
     results = {
         'status': 'success',
@@ -196,12 +194,12 @@ def _execute_workflow(self, paths: Dict[str, str], **options) -> Dict[str, Any]:
     # スキップステップ処理
     skip_steps = self._parse_skip_steps(options.get('skip_steps', ''))
     
-    # ステップ実行（v4.0ではai-mappingステップを追加）
-    steps = ['organize', 'sync', 'fetch', 'parse']
+    # ステップ実行（v4.0ではai-citation-supportステップを追加）
+    steps = ['organize', 'sync', 'fetch']
     
-    # AI理解支援機能が有効な場合はai-mappingステップを追加
+    # AI理解支援機能が有効な場合はai-citation-supportステップを追加
     if options.get('enable_ai_citation_support'):
-        steps.append('ai-mapping')
+        steps.append('ai-citation-support')
     
     for step in steps:
         if step in skip_steps:
@@ -241,7 +239,7 @@ def _execute_step(self, step: str, papers: List[str], paths: Dict[str, str], **o
     個別ステップの実行
     
     Args:
-        step: 実行ステップ名 ('organize'|'sync'|'fetch'|'parse'|'ai-mapping')
+        step: 実行ステップ名 ('organize'|'sync'|'fetch'|'ai-citation-support')
         papers: 対象論文リスト
         paths: 解決済みパス辞書
         **options: 実行オプション
@@ -258,10 +256,8 @@ def _execute_step(self, step: str, papers: List[str], paths: Dict[str, str], **o
             result = self._execute_sync_step(papers, paths, **options)
         elif step == 'fetch':
             result = self._execute_fetch_step(papers, paths, **options)
-        elif step == 'parse':
-            result = self._execute_parse_step(papers, paths, **options)
-        elif step == 'ai-mapping':  # v4.0新機能
-            result = self._execute_ai_mapping_step(papers, paths, **options)
+        elif step == 'ai-citation-support':  # v4.0新機能
+            result = self._execute_ai_citation_support_step(papers, paths, **options)
         else:
             raise ValueError(f"Unknown step: {step}")
         
@@ -361,28 +357,9 @@ def _execute_fetch_step(self, papers: List[str], paths: Dict[str, str], **option
     return self.fetch_workflow.execute(fetch_options)
 ```
 
-### 4. parse ステップ
+### 4. ai-citation-support ステップ（v4.0新機能）
 ```python
-def _execute_parse_step(self, papers: List[str], paths: Dict[str, str], **options) -> Dict[str, Any]:
-    """
-    引用文献解析ステップ実行
-    
-    機能:
-    - Markdownファイル内引用の解析
-    - 引用フォーマットの統一
-    - リンク抽出
-    """
-    parse_options = {
-        'clippings_dir': paths['clippings_dir'],
-        'target_papers': papers,
-        **self._extract_parse_options(**options)
-    }
-    
-    return self.parse_workflow.execute(parse_options)
-
-### 5. ai-mapping ステップ（v4.0新機能）
-```python
-def _execute_ai_mapping_step(self, papers: List[str], paths: Dict[str, str], **options) -> Dict[str, Any]:
+def _execute_ai_citation_support_step(self, papers: List[str], paths: Dict[str, str], **options) -> Dict[str, Any]:
     """
     AI理解支援統合ステップ実行（v4.0新機能）
     
@@ -392,7 +369,7 @@ def _execute_ai_mapping_step(self, papers: List[str], paths: Dict[str, str], **o
     - Citation Reference Table作成
     - AI最適化フォーマット出力
     """
-    ai_mapping_options = {
+    ai_citation_support_options = {
         'clippings_dir': paths['clippings_dir'],
         'bibtex_file': paths['bibtex_file'],
         'ai_output_dir': options.get('ai_output_dir', f"{paths['workspace_path']}/AI_Ready"),
@@ -400,10 +377,13 @@ def _execute_ai_mapping_step(self, papers: List[str], paths: Dict[str, str], **o
         'generate_mapping': options.get('generate_mapping', True),
         'generate_unified_file': options.get('generate_unified_file', True),
         'backup_original': options.get('backup_original', True),
-        **self._extract_ai_mapping_options(**options)
+        'complete_mapping': options.get('complete_mapping', True),
+        'update_yaml_header': options.get('update_yaml_header', True),
+        'include_abstracts': options.get('include_abstracts', True),
+        **self._extract_ai_citation_support_options(**options)
     }
     
-    return self.ai_mapping_workflow.execute(ai_mapping_options)
+    return self.ai_citation_support_workflow.execute(ai_citation_support_options)
 ```
 
 ## 実行計画システム
@@ -425,7 +405,7 @@ def show_execution_plan(self, **options) -> Dict[str, Any]:
                 },
                 'sync': {...},
                 'fetch': {...},
-                'parse': {...}
+                'ai-citation-support': {...}
             },
             'estimated_total_time': '15 minutes'
         }
@@ -440,7 +420,7 @@ def show_execution_plan(self, **options) -> Dict[str, Any]:
         'estimated_total_time': '0 minutes'
     }
     
-    steps = ['organize', 'sync', 'fetch', 'parse']
+    steps = ['organize', 'sync', 'fetch', 'ai-citation-support']
     total_estimated_seconds = 0
     
     for step in steps:
@@ -545,7 +525,7 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated --verbose --log-
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --papers "smith2023,jones2024"
 
 # 特定ステップをスキップ
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --skip-steps "parse"
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --skip-steps "fetch"
 
 # 強制再処理
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --force-reprocess
@@ -576,7 +556,7 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
 ## v4.0の革新ポイント
 
 ### AI理解支援機能の追加
-- **ai-mappingステップ**: 引用文献パース後にAI理解用ファイルを自動生成
+- **ai-citation-supportステップ**: 引用文献パース後にAI理解用ファイルを自動生成
 - **軽量マッピング**: YAMLヘッダーに最小限の引用情報を追加
 - **統合ファイル生成**: AIが完全に理解できるCitation Reference Table付きファイル作成
 - **シームレス統合**: run-integratedコマンドで全機能を一括実行

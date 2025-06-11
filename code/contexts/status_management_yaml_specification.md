@@ -15,7 +15,7 @@ ObsClippingsManager v3.0の状態管理システムは、各論文の処理状�
 - **organize**: ファイル整理状態
 - **sync**: 同期チェック状態  
 - **fetch**: 引用文献取得状態
-- **parse**: 引用文献解析状態
+- **ai-citation-support**: AI理解支援統合状態
 
 ### 状態値定義
 - **"pending"**: 処理が必要（初期状態・失敗後）
@@ -33,7 +33,7 @@ obsclippings_metadata:
     organize: "completed"
     sync: "completed" 
     fetch: "completed"
-    parse: "completed"
+    ai-citation-support: "completed"
   last_updated: "2025-01-15T10:30:00Z"
   source_doi: "10.1000/example.doi"
   workflow_version: "3.0"
@@ -62,7 +62,7 @@ obsclippings_metadata:
   - `organize`: ファイル整理状態
   - `sync`: 同期チェック状態
   - `fetch`: 引用文献取得状態
-  - `parse`: 引用文献解析状態
+  - `ai-citation-support`: AI理解支援統合状態
 
 #### last_updated (自動生成)
 - **型**: ISO 8601 DateTime String
@@ -117,13 +117,13 @@ def load_md_statuses(self, clippings_dir: str) -> Dict[str, Dict[str, ProcessSta
                 "organize": ProcessStatus.COMPLETED,
                 "sync": ProcessStatus.COMPLETED,
                 "fetch": ProcessStatus.PENDING,
-                "parse": ProcessStatus.PENDING
+                "ai-citation-support": ProcessStatus.PENDING
             },
             "jones2024neural": {
                 "organize": ProcessStatus.PENDING,
                 "sync": ProcessStatus.PENDING,
                 "fetch": ProcessStatus.PENDING,
-                "parse": ProcessStatus.PENDING
+                "ai-citation-support": ProcessStatus.PENDING
             }
         }
     
@@ -169,7 +169,7 @@ def update_status(self, clippings_dir: str, citation_key: str,
     Args:
         clippings_dir: Clippingsディレクトリパス
         citation_key: 論文のcitation key
-        step: 処理ステップ名 ("organize"|"sync"|"fetch"|"parse")
+        step: 処理ステップ名 ("organize"|"sync"|"fetch"|"ai-citation-support")
         status: 新しい状態 (ProcessStatus.COMPLETED|FAILED|PENDING)
     
     Returns:
@@ -297,7 +297,7 @@ def reset_statuses(self, clippings_dir: str,
                 'organize': ProcessStatus.PENDING.value,
                 'sync': ProcessStatus.PENDING.value,
                 'fetch': ProcessStatus.PENDING.value,
-                'parse': ProcessStatus.PENDING.value
+                'ai-citation-support': ProcessStatus.PENDING.value
             }
             
             metadata['obsclippings_metadata']['last_updated'] = datetime.now(timezone.utc).isoformat()
@@ -527,7 +527,7 @@ def _create_default_metadata(self, citation_key: str) -> Dict[str, Any]:
             'organize': ProcessStatus.PENDING.value,
             'sync': ProcessStatus.PENDING.value,
             'fetch': ProcessStatus.PENDING.value,
-            'parse': ProcessStatus.PENDING.value
+            'ai-citation-support': ProcessStatus.PENDING.value
         },
         'last_updated': datetime.now(timezone.utc).isoformat(),
         'workflow_version': '3.0'
@@ -537,13 +537,13 @@ def _check_dependencies(self, paper_status: Dict[str, ProcessStatus], step: str)
     """
     ステップ依存関係のチェック
     
-    依存関係: organize → sync → fetch → parse
+    依存関係: organize → sync → fetch → ai-citation-support
     """
     dependencies = {
         'organize': [],
         'sync': ['organize'],
         'fetch': ['organize', 'sync'],
-        'parse': ['organize', 'sync', 'fetch']
+        'ai-citation-support': ['organize', 'sync', 'fetch']
     }
     
     required_steps = dependencies.get(step, [])
