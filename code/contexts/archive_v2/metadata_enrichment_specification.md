@@ -35,11 +35,11 @@ modules/citation_fetcher/
 ```
 CrossRef (メイン)
     ↓ (不完全な場合)
-PubMed API
-    ↓ (失敗時)
 Semantic Scholar API
     ↓ (失敗時)
 OpenAlex API
+    ↓ (失敗時)
+PubMed API
     ↓ (失敗時)
 OpenCitations API (既存)
 ```
@@ -245,10 +245,10 @@ class MetadataEnricher:
         
         # 優先順位に従ってフィールドを補完
         field_priorities = {
-            'title': ['pubmed', 'crossref', 'semantic_scholar', 'openalex'],
-            'authors': ['pubmed', 'crossref', 'semantic_scholar', 'openalex'],
-            'journal': ['pubmed', 'crossref', 'openalex', 'semantic_scholar'],
-            'year': ['crossref', 'pubmed', 'semantic_scholar', 'openalex']
+            'title': ['crossref', 'semantic_scholar', 'openalex', 'pubmed'],
+            'authors': ['crossref', 'semantic_scholar', 'openalex', 'pubmed'],
+            'journal': ['crossref', 'semantic_scholar', 'openalex', 'pubmed'],
+            'year': ['crossref', 'semantic_scholar', 'openalex', 'pubmed']
         }
         
         for field, priority_list in field_priorities.items():
@@ -355,9 +355,9 @@ class EnrichmentStatistics:
     "enrichment_quality_threshold": 0.8,
     "enrichment_max_attempts": 3,
     "api_priorities": {
-      "life_sciences": ["pubmed", "crossref", "openalex", "semantic_scholar"],
-      "computer_science": ["semantic_scholar", "crossref", "openalex", "pubmed"],
-      "general": ["crossref", "openalex", "semantic_scholar", "pubmed"]
+      "life_sciences": ["crossref", "semantic_scholar", "openalex", "pubmed", "opencitations"],
+      "computer_science": ["crossref", "semantic_scholar", "openalex", "pubmed", "opencitations"],
+      "general": ["crossref", "semantic_scholar", "openalex", "pubmed", "opencitations"]
     },
     "rate_limits": {
       "pubmed": 1.0,

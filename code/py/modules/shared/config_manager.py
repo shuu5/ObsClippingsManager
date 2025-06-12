@@ -15,7 +15,7 @@ from .exceptions import ConfigError, ValidationError
 DEFAULT_INTEGRATED_CONFIG = {
     # 共通設定
     "common": {
-        "workspace_path": "/home/user/ManuscriptsManager",
+        "workspace_path": "",
         "bibtex_file": "TestManuscripts/CurrentManuscript.bib",
         "clippings_dir": "TestManuscripts/Clippings",
         "output_dir": "TestManuscripts/References",
@@ -45,9 +45,9 @@ DEFAULT_INTEGRATED_CONFIG = {
         "enrichment_quality_threshold": 0.8,
         "enrichment_max_attempts": 3,
         "api_priorities": {
-            "life_sciences": ["crossref", "opencitations", "openalex", "semantic_scholar", "pubmed"],
-            "computer_science": ["crossref", "opencitations", "openalex", "semantic_scholar", "pubmed"],
-            "general": ["crossref", "opencitations", "openalex", "semantic_scholar", "pubmed"]
+            "life_sciences": ["crossref", "semantic_scholar", "openalex", "pubmed", "opencitations"],
+            "computer_science": ["crossref", "semantic_scholar", "openalex", "pubmed", "opencitations"],
+            "general": ["crossref", "semantic_scholar", "openalex", "pubmed", "opencitations"]
         },
         "rate_limits": {
             "pubmed": 1.0,
@@ -207,6 +207,7 @@ class ConfigManager:
         return {
             **self.config.get("citation_fetcher", {}),
             "bibtex_file": self.config["common"]["bibtex_file"],
+            "clippings_dir": self.config["common"]["clippings_dir"],
             "output_dir": self.config["common"]["output_dir"],
             "dry_run": self.config["common"]["dry_run"]
         }
@@ -335,6 +336,35 @@ class ConfigManager:
         
         update_nested(self.config, updates)
     
+    def update_workspace_path(self, workspace_path: str) -> None:
+        """ワークスペースパスを更新し、関連する相対パスを絶対パスに変換"""
+        if not workspace_path:
+            return
+            
+        # workspace_pathを更新
+        self.config["common"]["workspace_path"] = workspace_path
+        
+        # 関連する相対パスを更新（元のパスが相対パスの場合のみ）
+        clippings_dir = self.config["common"].get("clippings_dir", "")
+        if clippings_dir and not os.path.isabs(clippings_dir):
+            # 相対パス形式の場合は絶対パスに変換
+            if clippings_dir.startswith("TestManuscripts/"):
+                # TestManuscripts/ で始まる場合はworkspace_path配下に配置
+                relative_part = clippings_dir[len("TestManuscripts/"):]
+                self.config["common"]["clippings_dir"] = os.path.join(workspace_path, relative_part)
+            else:
+                # その他の相対パスはそのまま結合
+                self.config["common"]["clippings_dir"] = os.path.join(workspace_path, clippings_dir)
+        
+        # BibTeXファイルパスも同様に更新
+        bibtex_file = self.config["common"].get("bibtex_file", "")
+        if bibtex_file and not os.path.isabs(bibtex_file):
+            if bibtex_file.startswith("TestManuscripts/"):
+                relative_part = bibtex_file[len("TestManuscripts/"):]
+                self.config["common"]["bibtex_file"] = os.path.join(workspace_path, relative_part)
+            else:
+                self.config["common"]["bibtex_file"] = os.path.join(workspace_path, bibtex_file)
+    
     def get_common_config(self) -> Dict[str, Any]:
         """共通設定セクションを取得"""
         return self.config.get("common", {}).copy()
@@ -360,10 +390,17 @@ class ConfigManager:
         if not clippings_dir:
             raise ConfigError("Clippings directory path not configured")
             
+        # すでに絶対パスの場合はそのまま返す
+        if os.path.isabs(clippings_dir):
+            return clippings_dir
+            
         # workspace_pathが設定されている場合は相対パスを絶対パスに変換
         workspace_path = common_config.get("workspace_path")
-        if workspace_path and not os.path.isabs(clippings_dir):
+        if workspace_path:
             clippings_dir = os.path.join(workspace_path, clippings_dir)
+        else:
+            # workspace_pathが設定されていない場合はエラー
+            raise ConfigError("Workspace path not configured for relative clippings directory")
             
         return clippings_dir
     

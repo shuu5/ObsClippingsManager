@@ -506,7 +506,7 @@ def sync_check(ctx: Dict[str, Any],
               help='Include citation fetching step')
 @click.option('--disable-enrichment',
               is_flag=True,
-              help='Disable metadata enrichment')
+              help='Disable automatic metadata enrichment (not recommended)')
 @click.option('--auto-approve', '-y',
               is_flag=True,
               help='Automatically approve all operations')
@@ -534,7 +534,12 @@ def run_integrated(ctx: Dict[str, Any],
     """
     try:
         workflow_manager = ctx['workflow_manager']
+        config_manager = ctx['config_manager']
         logger = ctx['logger'].get_logger('CLI')
+        
+        # workspaceオプションが指定された場合、設定を動的に更新
+        if workspace:
+            config_manager.update_workspace_path(workspace)
         
         # 実行オプションの構築
         options = {
@@ -551,7 +556,7 @@ def run_integrated(ctx: Dict[str, Any],
             'enable_ai_citation_support': enable_ai_citation_support,
             'sync_first': sync_first,
             'fetch_citations': fetch_citations,
-            'enable_enrichment': not disable_enrichment  # disable_enrichmentの逆
+            'enable_enrichment': not disable_enrichment  # デフォルト有効、--disable-enrichmentで無効化
         }
         
         # プラン表示モード
@@ -580,11 +585,10 @@ def run_integrated(ctx: Dict[str, Any],
         if enable_ai_citation_support:
             click.echo("🤖 AI citation support: enabled")
         
-        # ワークフロー実行
-        success, result = workflow_manager.execute(
-            WorkflowType.INTEGRATED,
-            **options
-        )
+        # 統合ワークフロー v3.0を直接使用 (AI Citation Support機能を含む)
+        integrated_workflow = IntegratedWorkflow(config_manager, ctx['logger'])
+        result = integrated_workflow.execute(**options)
+        success = result.get('success', False)
         
         # 結果表示
         if success:

@@ -279,8 +279,15 @@ class WorkflowManager:
             "overall_success": False
         }
         
-        # Phase 1: 引用文献取得
-        self.logger.info("Phase 1: Citation fetching")
+        # Phase 1: ファイル整理
+        self.logger.info("Phase 1: File organization")
+        integrated_results["stage"] = "file_organization"
+        
+        org_success, org_results = self.organization_workflow.execute(**options)
+        integrated_results["organization_results"] = org_results
+        
+        # Phase 2: 引用文献取得
+        self.logger.info("Phase 2: Citation fetching")
         integrated_results["stage"] = "citation_fetching"
         
         citation_success, citation_results = self.citation_workflow.execute(**options)
@@ -295,13 +302,6 @@ class WorkflowManager:
             if not options.get('continue_on_citation_failure', True):
                 integrated_results["error"] = f"Citation fetching failed: {citation_error}"
                 return False, integrated_results
-        
-        # Phase 2: ファイル整理
-        self.logger.info("Phase 2: File organization")
-        integrated_results["stage"] = "file_organization"
-        
-        org_success, org_results = self.organization_workflow.execute(**options)
-        integrated_results["organization_results"] = org_results
         
         # Phase 3: AI理解支援引用文献統合（オプション）
         ai_mapping_success = True  # デフォルト値

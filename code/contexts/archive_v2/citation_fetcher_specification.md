@@ -154,9 +154,9 @@ modules/citation_fetcher/
    │
    ├── 不完全な引用文献のみ対象として順次API呼び出し
    │   ├── CrossRef API 試行
-   │   ├── PubMed API 試行
    │   ├── Semantic Scholar API 試行
    │   ├── OpenAlex API 試行
+   │   ├── PubMed API 試行
    │   └── OpenCitations API 試行
    │
    └── 十分な情報が得られた時点で当該引用文献の処理終了
@@ -184,9 +184,9 @@ modules/citation_fetcher/
 
 **最適化された優先順位:**
 ```
-生命科学分野: CrossRef → OpenCitations → OpenAlex → Semantic Scholar → PubMed
-コンピュータサイエンス: CrossRef → OpenCitations → OpenAlex → Semantic Scholar → PubMed
-一般分野: CrossRef → OpenCitations → OpenAlex → Semantic Scholar → PubMed
+生命科学分野: CrossRef → Semantic Scholar → OpenAlex → PubMed → OpenCitations
+コンピュータサイエンス: CrossRef → Semantic Scholar → OpenAlex → PubMed → OpenCitations
+一般分野: CrossRef → Semantic Scholar → OpenAlex → PubMed → OpenCitations
 ```
 
 **段階的補完の特徴:**

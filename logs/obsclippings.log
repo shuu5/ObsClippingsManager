@@ -269,3 +269,58 @@
 2025-06-12 04:12:13 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - MetadataEnricher initialized successfully
 2025-06-12 04:12:13 - INFO - ObsClippingsManager.AICitationSupport.MappingEngine - CitationMappingEngine initialized
 2025-06-12 04:12:13 - INFO - ObsClippingsManager.AICitationSupport.AIMappingWorkflow - AIMappingWorkflow initialized successfully
+2025-06-12 05:23:25 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - CrossRef client initialized
+2025-06-12 05:23:25 - INFO - ObsClippingsManager.CitationFetcher.PubMed - PubMed client initialized successfully
+2025-06-12 05:23:25 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - PubMed client initialized
+2025-06-12 05:23:25 - INFO - ObsClippingsManager.CitationFetcher.SemanticScholar - Semantic Scholar client initialized successfully
+2025-06-12 05:23:25 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - Semantic Scholar client initialized
+2025-06-12 05:23:25 - INFO - ObsClippingsManager.CitationFetcher.OpenAlex - OpenAlex client initialized successfully
+2025-06-12 05:23:25 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - OpenAlex client initialized
+2025-06-12 05:23:25 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - OpenCitations client initialized
+2025-06-12 05:23:25 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - MetadataEnricher initialized successfully
+2025-06-12 05:23:25 - INFO - ObsClippingsManager.AICitationSupport.MappingEngine - CitationMappingEngine initialized
+2025-06-12 05:23:25 - INFO - ObsClippingsManager.AICitationSupport.AIMappingWorkflow - AIMappingWorkflow initialized successfully
+2025-06-12 05:27:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - CrossRef client initialized
+2025-06-12 05:27:51 - INFO - ObsClippingsManager.CitationFetcher.PubMed - PubMed client initialized successfully
+2025-06-12 05:27:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - PubMed client initialized
+2025-06-12 05:27:51 - INFO - ObsClippingsManager.CitationFetcher.SemanticScholar - Semantic Scholar client initialized successfully
+2025-06-12 05:27:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - Semantic Scholar client initialized
+2025-06-12 05:27:51 - INFO - ObsClippingsManager.CitationFetcher.OpenAlex - OpenAlex client initialized successfully
+2025-06-12 05:27:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - OpenAlex client initialized
+2025-06-12 05:27:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - OpenCitations client initialized
+2025-06-12 05:27:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - MetadataEnricher initialized successfully
+2025-06-12 05:27:51 - INFO - ObsClippingsManager.AICitationSupport.MappingEngine - CitationMappingEngine initialized
+2025-06-12 05:27:51 - INFO - ObsClippingsManager.AICitationSupport.AIMappingWorkflow - AIMappingWorkflow initialized successfully
+2025-06-12 05:39:15 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - CrossRef client initialized
+2025-06-12 05:39:15 - INFO - ObsClippingsManager.CitationFetcher.PubMed - PubMed client initialized successfully
+2025-06-12 05:39:15 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - PubMed client initialized
+2025-06-12 05:39:15 - INFO - ObsClippingsManager.CitationFetcher.SemanticScholar - Semantic Scholar client initialized successfully
+2025-06-12 05:39:15 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - Semantic Scholar client initialized
+2025-06-12 05:39:15 - INFO - ObsClippingsManager.CitationFetcher.OpenAlex - OpenAlex client initialized successfully
+2025-06-12 05:39:15 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - OpenAlex client initialized
+2025-06-12 05:39:15 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - OpenCitations client initialized
+2025-06-12 05:39:15 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - MetadataEnricher initialized successfully
+2025-06-12 05:39:15 - INFO - ObsClippingsManager.AICitationSupport.MappingEngine - CitationMappingEngine initialized
+2025-06-12 05:39:15 - INFO - ObsClippingsManager.AICitationSupport.AIMappingWorkflow - AIMappingWorkflow initialized successfully
+2025-06-12 05:56:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - CrossRef client initialized
+2025-06-12 05:56:51 - INFO - ObsClippingsManager.CitationFetcher.PubMed - PubMed client initialized successfully
+2025-06-12 05:56:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - PubMed client initialized
+2025-06-12 05:56:51 - INFO - ObsClippingsManager.CitationFetcher.SemanticScholar - Semantic Scholar client initialized successfully
+2025-06-12 05:56:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - Semantic Scholar client initialized
+2025-06-12 05:56:51 - INFO - ObsClippingsManager.CitationFetcher.OpenAlex - OpenAlex client initialized successfully
+2025-06-12 05:56:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - OpenAlex client initialized
+2025-06-12 05:56:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - OpenCitations client initialized
+2025-06-12 05:56:51 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - MetadataEnricher initialized successfully
+2025-06-12 05:56:51 - INFO - ObsClippingsManager.AICitationSupport.MappingEngine - CitationMappingEngine initialized
+2025-06-12 05:56:51 - INFO - ObsClippingsManager.AICitationSupport.AIMappingWorkflow - AIMappingWorkflow initialized successfully
+2025-06-12 06:30:29 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - CrossRef client initialized
+2025-06-12 06:30:29 - INFO - ObsClippingsManager.CitationFetcher.PubMed - PubMed client initialized successfully
+2025-06-12 06:30:29 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - PubMed client initialized
+2025-06-12 06:30:29 - INFO - ObsClippingsManager.CitationFetcher.SemanticScholar - Semantic Scholar client initialized successfully
+2025-06-12 06:30:29 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - Semantic Scholar client initialized
+2025-06-12 06:30:29 - INFO - ObsClippingsManager.CitationFetcher.OpenAlex - OpenAlex client initialized successfully
+2025-06-12 06:30:29 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - OpenAlex client initialized
+2025-06-12 06:30:29 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - OpenCitations client initialized
+2025-06-12 06:30:29 - INFO - ObsClippingsManager.CitationFetcher.MetadataEnricher - MetadataEnricher initialized successfully
+2025-06-12 06:30:29 - INFO - ObsClippingsManager.AICitationSupport.MappingEngine - CitationMappingEngine initialized
+2025-06-12 06:30:29 - INFO - ObsClippingsManager.AICitationSupport.AIMappingWorkflow - AIMappingWorkflow initialized successfully

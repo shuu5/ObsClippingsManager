@@ -26,8 +26,14 @@
 
 ### 処理フロー v3.1
 ```
-organize → sync → fetch → ai-citation-support → tagger → translate_abstract → final-sync
+organize → sync → fetch (with automatic metadata enrichment) → ai-citation-support → tagger → translate_abstract → final-sync
 ```
+
+### メタデータ自動補完システム
+- **デフォルト有効**: 全引用文献に対して自動的にメタデータ補完を実行
+- **フォールバック戦略**: CrossRef → Semantic Scholar → OpenAlex → PubMed → OpenCitations
+- **完全自動制御**: 十分な情報（title, author, journal, year）が得られた時点で後続API呼び出しを停止
+- **API最適化**: 無駄なAPI呼び出しを削減し、効率的な処理を実現
 
 ### 依存関係
 - 各ステップは**順次実行**
