@@ -21,13 +21,15 @@ import test_shared_config_manager
 import test_shared_bibtex_parser
 import test_shared_utils
 import test_shared_logger
-# import test_shared_exceptions  # 構文エラーのため一時的にコメントアウト
+import test_shared_exceptions
 import test_citation_fetcher
 
 import test_workflow_manager
 import test_rename_mkdir_citation_key
-import test_ai_citation_support  # v4.0 新機能テスト
-# import test_sync_check_workflow  # API未確認のため一時的にコメントアウト
+import test_ai_citation_support
+import test_ai_tagging
+import test_abstract_translation
+import test_main_cli
 
 
 def run_all_tests():
@@ -45,13 +47,15 @@ def run_all_tests():
         test_shared_bibtex_parser,
         test_shared_utils,
         test_shared_logger,
-        # test_shared_exceptions,  # 構文エラーのため一時的にコメントアウト
+        test_shared_exceptions,
         test_citation_fetcher,
         
         test_workflow_manager,
         test_rename_mkdir_citation_key,
-        test_ai_citation_support,  # v4.0 新機能テスト
-        # test_sync_check_workflow  # API未確認のため一時的にコメントアウト
+        test_ai_citation_support,
+        test_ai_tagging,
+        test_abstract_translation,
+        test_main_cli
     ]
     
     for module in test_modules:
@@ -118,7 +122,10 @@ def run_specific_module_tests(module_name: str):
 
         'workflow': test_workflow_manager,
         'rename_mkdir_citation_key': test_rename_mkdir_citation_key,
-        'ai_citation_support': test_ai_citation_support
+        'ai_citation_support': test_ai_citation_support,
+        'ai_tagging': test_ai_tagging,
+        'abstract_translation': test_abstract_translation,
+        'main_cli': test_main_cli
     }
     
     if module_name not in module_mapping:
