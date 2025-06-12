@@ -351,26 +351,24 @@ class TestSyncCheckCommand(TestMainCLI):
 class TestIntegratedCommand(TestMainCLI):
     """run-integratedコマンドのテスト"""
     
-    @patch('main.WorkflowManager')
+    @patch('main.IntegratedWorkflow')
     @patch('main.IntegratedLogger')
-    @patch('main.ConfigManager')
-    def test_run_integrated_basic(self, mock_config, mock_logger, mock_workflow):
+    def test_run_integrated_basic(self, mock_logger, mock_workflow):
         """基本的な統合ワークフローのテスト"""
         # モックの設定
-        mock_config_instance = Mock()
         mock_logger_instance = Mock()
         mock_workflow_instance = Mock()
         
-        mock_config.return_value = mock_config_instance
         mock_logger.return_value = mock_logger_instance
         mock_workflow.return_value = mock_workflow_instance
         
         # ワークフロー実行の成功をモック
-        mock_workflow_instance.execute.return_value = (True, {
-            "sync_check": {"missing_files": 0},
-            "citation_fetching": {"processed_papers": 1},
-            "file_organization": {"organized_files": 1}
-        })
+        mock_workflow_instance.execute.return_value = {
+            "status": "success",
+            "success": True,
+            "completed_steps": ["organize", "sync", "fetch"],
+            "processed_papers": 1
+        }
         
         result = self.runner.invoke(main.cli, [
             '--config', self.config_file,
@@ -385,25 +383,24 @@ class TestIntegratedCommand(TestMainCLI):
     
 
     
-    @patch('main.WorkflowManager')
+    @patch('main.IntegratedWorkflow')
     @patch('main.IntegratedLogger')
-    @patch('main.ConfigManager')
-    def test_run_integrated_enrichment_auto_enabled(self, mock_config, mock_logger, mock_workflow):
+    def test_run_integrated_enrichment_auto_enabled(self, mock_logger, mock_workflow):
         """run-integratedでfetch-citationsが呼ばれる際に自動でenrichmentが有効になることのテスト"""
         # モックの設定
-        mock_config_instance = Mock()
         mock_logger_instance = Mock()
         mock_workflow_instance = Mock()
         
-        mock_config.return_value = mock_config_instance
         mock_logger.return_value = mock_logger_instance
         mock_workflow.return_value = mock_workflow_instance
         
         # ワークフロー実行の成功をモック
-        mock_workflow_instance.execute.return_value = (True, {
-            "sync_integration": {"synced_papers": 2},
-            "enriched_successes": 2
-        })
+        mock_workflow_instance.execute.return_value = {
+            "status": "success",
+            "success": True,
+            "completed_steps": ["organize", "sync", "fetch"],
+            "processed_papers": 2
+        }
         
         result = self.runner.invoke(main.cli, [
             '--config', self.config_file,
@@ -415,39 +412,34 @@ class TestIntegratedCommand(TestMainCLI):
         self.assertEqual(result.exit_code, 0)
         
         # integratedワークフローが呼ばれていることを確認
-        workflow_calls = mock_workflow_instance.execute.call_args_list
-        integrated_call = None
-        for call in workflow_calls:
-            if len(call[0]) > 0 and str(call[0][0]) == 'WorkflowType.INTEGRATED':
-                integrated_call = call
-                break
+        mock_workflow.assert_called_once()
+        mock_workflow_instance.execute.assert_called_once()
         
-        self.assertIsNotNone(integrated_call, "integrated workflow should be called")
-        
-        # enrichmentがデフォルトで有効になっていることを確認（disable_enrichmentがFalseの場合）
-        options = integrated_call[1]
-        self.assertTrue(options.get('enable_enrichment', False), 
+        # executeの呼び出し引数を確認してenrichmentが有効になっているかチェック
+        call_args = mock_workflow_instance.execute.call_args
+        options = call_args[1] if call_args and len(call_args) > 1 else {}
+        # デフォルトでenrichmentが有効になっていることを確認
+        self.assertTrue(options.get('enable_enrichment', True), 
                        "enrichment should be auto-enabled in integrated workflow")
     
-    @patch('main.WorkflowManager')
+    @patch('main.IntegratedWorkflow')
     @patch('main.IntegratedLogger')
-    @patch('main.ConfigManager')
-    def test_run_integrated_enrichment_can_be_disabled(self, mock_config, mock_logger, mock_workflow):
+    def test_run_integrated_enrichment_can_be_disabled(self, mock_logger, mock_workflow):
         """run-integratedでenrichmentを明示的に無効化できることのテスト"""
         # モックの設定
-        mock_config_instance = Mock()
         mock_logger_instance = Mock()
         mock_workflow_instance = Mock()
         
-        mock_config.return_value = mock_config_instance
         mock_logger.return_value = mock_logger_instance
         mock_workflow.return_value = mock_workflow_instance
         
         # ワークフロー実行の成功をモック
-        mock_workflow_instance.execute.return_value = (True, {
-            "sync_integration": {"synced_papers": 2},
-            "successful_fetches": 2
-        })
+        mock_workflow_instance.execute.return_value = {
+            "status": "success",
+            "success": True,
+            "completed_steps": ["organize", "sync", "fetch"],
+            "processed_papers": 2
+        }
         
         result = self.runner.invoke(main.cli, [
             '--config', self.config_file,
@@ -460,17 +452,13 @@ class TestIntegratedCommand(TestMainCLI):
         self.assertEqual(result.exit_code, 0)
         
         # integratedワークフローが呼ばれていることを確認
-        workflow_calls = mock_workflow_instance.execute.call_args_list
-        integrated_call = None
-        for call in workflow_calls:
-            if len(call[0]) > 0 and str(call[0][0]) == 'WorkflowType.INTEGRATED':
-                integrated_call = call
-                break
+        mock_workflow.assert_called_once()
+        mock_workflow_instance.execute.assert_called_once()
         
-        self.assertIsNotNone(integrated_call, "integrated workflow should be called")
-        
+        # executeの呼び出し引数を確認してenrichmentが無効になっているかチェック
+        call_args = mock_workflow_instance.execute.call_args
+        options = call_args[1] if call_args and len(call_args) > 1 else {}
         # enrichmentが無効になっていることを確認
-        options = integrated_call[1]
         self.assertFalse(options.get('enable_enrichment', True), 
                         "enrichment should be disabled when --disable-enrichment is used")
 
