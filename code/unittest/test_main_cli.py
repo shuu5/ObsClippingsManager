@@ -366,15 +366,13 @@ class TestIntegratedCommand(TestMainCLI):
         mock_workflow_instance.execute.return_value = {
             "status": "success",
             "success": True,
-            "completed_steps": ["organize", "sync", "fetch"],
+            "completed_steps": ["organize", "sync", "fetch", "ai-citation-support"],
             "processed_papers": 1
         }
         
         result = self.runner.invoke(main.cli, [
             '--config', self.config_file,
             'run-integrated',
-            '--sync-first',
-            '--fetch-citations',
             '--auto-approve'
         ])
         
@@ -386,7 +384,7 @@ class TestIntegratedCommand(TestMainCLI):
     @patch('main.IntegratedWorkflow')
     @patch('main.IntegratedLogger')
     def test_run_integrated_enrichment_auto_enabled(self, mock_logger, mock_workflow):
-        """run-integratedでfetch-citationsが呼ばれる際に自動でenrichmentが有効になることのテスト"""
+        """run-integratedでデフォルトでenrichmentが有効になることのテスト"""
         # モックの設定
         mock_logger_instance = Mock()
         mock_workflow_instance = Mock()
@@ -398,14 +396,13 @@ class TestIntegratedCommand(TestMainCLI):
         mock_workflow_instance.execute.return_value = {
             "status": "success",
             "success": True,
-            "completed_steps": ["organize", "sync", "fetch"],
+            "completed_steps": ["organize", "sync", "fetch", "ai-citation-support"],
             "processed_papers": 2
         }
         
         result = self.runner.invoke(main.cli, [
             '--config', self.config_file,
             'run-integrated',
-            '--fetch-citations',
             '--auto-approve'
         ])
         
@@ -418,9 +415,9 @@ class TestIntegratedCommand(TestMainCLI):
         # executeの呼び出し引数を確認してenrichmentが有効になっているかチェック
         call_args = mock_workflow_instance.execute.call_args
         options = call_args[1] if call_args and len(call_args) > 1 else {}
-        # デフォルトでenrichmentが有効になっていることを確認
+        # デフォルトでenrichmentが有効になっていることを確認（v3.1では常に有効）
         self.assertTrue(options.get('enable_enrichment', True), 
-                       "enrichment should be auto-enabled in integrated workflow")
+                       "enrichment should be auto-enabled in integrated workflow v3.1")
     
     @patch('main.IntegratedWorkflow')
     @patch('main.IntegratedLogger')
@@ -437,14 +434,13 @@ class TestIntegratedCommand(TestMainCLI):
         mock_workflow_instance.execute.return_value = {
             "status": "success",
             "success": True,
-            "completed_steps": ["organize", "sync", "fetch"],
+            "completed_steps": ["organize", "sync", "fetch", "ai-citation-support"],
             "processed_papers": 2
         }
         
         result = self.runner.invoke(main.cli, [
             '--config', self.config_file,
             'run-integrated',
-            '--fetch-citations',
             '--disable-enrichment',
             '--auto-approve'
         ])
