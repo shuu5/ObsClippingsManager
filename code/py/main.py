@@ -27,7 +27,7 @@ from modules.shared.exceptions import ObsClippingsError, ConfigError
 
 
 # グローバル設定
-DEFAULT_CONFIG_FILE = "config.json"
+DEFAULT_CONFIG_FILE = "config.yaml"
 DEFAULT_LOG_LEVEL = "INFO"
 
 # CLIコンテキスト用の設定
@@ -487,7 +487,7 @@ def sync_check(ctx: Dict[str, Any],
               help='Comma-separated list of specific papers to process (citation keys)',
               type=str)
 @click.option('--skip-steps',
-              help='Comma-separated list of steps to skip (organize,sync,fetch,ai-citation-support,tagger,translate_abstract,final-sync)',
+              help='Comma-separated list of steps to skip (organize,sync,fetch,section-parsing,ai-citation-support,enhanced-tagger,enhanced-translate,ochiai-format,final-sync)',
               type=str)
 @click.option('--force-reprocess',
               is_flag=True,
@@ -504,6 +504,12 @@ def sync_check(ctx: Dict[str, Any],
 @click.option('--enable-translate-abstract',
               is_flag=True,
               help='Enable AI abstract translation functionality for Japanese translation')
+@click.option('--enable-section-parsing',
+              is_flag=True,
+              help='Enable section parsing functionality for structured analysis')
+@click.option('--enable-ochiai-format',
+              is_flag=True,
+              help='Enable Ochiai format summary generation functionality')
 @click.option('--auto-approve', '-y',
               is_flag=True,
               help='Automatically approve all operations')
@@ -519,16 +525,18 @@ def run_integrated(ctx: Dict[str, Any],
                   disable_enrichment: bool,
                   enable_tagger: bool,
                   enable_translate_abstract: bool,
+                  enable_section_parsing: bool,
+                  enable_ochiai_format: bool,
                   auto_approve: bool):
     """
-    統合ワークフローを実行 (v3.1)
+    統合ワークフローを実行 (v3.2)
     
     シンプルな設定と効率的な状態管理により、学術文献管理の全プロセスを自動化します。
     デフォルトでは引数なしで完全動作し、workspace_pathベースの統一設定を使用します。
     
-    処理順序: organize → sync → fetch (with automatic metadata enrichment) → ai-citation-support → tagger → translate_abstract → final-sync
+    処理順序: organize → sync → fetch → section-parsing → ai-citation-support → enhanced-tagger → enhanced-translate → ochiai-format → final-sync
     
-    AI理解支援機能は常に有効で、AI生成機能（tagger, translate_abstract）はオプションで有効化します。
+    AI理解支援機能は常に有効で、AI生成機能（tagger, translate_abstract, section-parsing, ochiai-format）はオプションで有効化します。
     """
     try:
         workflow_manager = ctx['workflow_manager']
@@ -553,7 +561,9 @@ def run_integrated(ctx: Dict[str, Any],
             'auto_approve': auto_approve,
             'enable_enrichment': not disable_enrichment,  # デフォルト有効、--disable-enrichmentで無効化
             'enable_tagger': enable_tagger,
-            'enable_translate_abstract': enable_translate_abstract
+            'enable_translate_abstract': enable_translate_abstract,
+            'enable_section_parsing': enable_section_parsing,
+            'enable_ochiai_format': enable_ochiai_format
         }
         
         # プラン表示モード
@@ -576,15 +586,19 @@ def run_integrated(ctx: Dict[str, Any],
             return
         
         # 通常実行
-        click.echo("🚀 Starting integrated workflow v3.1...")
+        click.echo("🚀 Starting integrated workflow v3.2...")
         if workspace:
             click.echo(f"📁 Workspace: {workspace}")
         if enable_tagger:
             click.echo("🏷️  AI tagging: enabled")
         if enable_translate_abstract:
             click.echo("🌐 Abstract translation: enabled")
+        if enable_section_parsing:
+            click.echo("📄 Section parsing: enabled")
+        if enable_ochiai_format:
+            click.echo("📋 Ochiai format summary: enabled")
         
-        # 統合ワークフロー v3.1を直接使用
+        # 統合ワークフロー v3.2を直接使用
         integrated_workflow = IntegratedWorkflow(config_manager, ctx['logger'])
         result = integrated_workflow.execute(**options)
         success = result.get('status') == 'success'

@@ -1,4 +1,4 @@
-# ObsClippingsManager v3.1.0
+# ObsClippingsManager v3.2.0
 
 学術研究における文献管理とMarkdownファイル整理を自動化する統合システム。**シンプル設定**と**状態管理による重複処理回避**が特徴。
 

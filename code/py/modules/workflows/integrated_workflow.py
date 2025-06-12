@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-統合ワークフロー v3.0
+統合ワークフロー v3.2
 
-ObsClippingsManager v3.0の中核機能である統合ワークフロー。
+ObsClippingsManager v3.2の中核機能である統合ワークフロー。
 単一のrun-integratedコマンドで全機能を統合実行し、
 workspace_pathベースの統一設定システムと状態管理による効率化を提供します。
 """
@@ -35,16 +35,17 @@ from ..ochiai_format import OchiaiFormatWorkflow
 
 class IntegratedWorkflow:
     """
-    統合ワークフロー実行エンジン v3.0
+    統合ワークフロー実行エンジン v3.2
     
-    v3.0の核心機能：
+    v3.2の核心機能：
     - workspace_pathベースの統一設定システム
     - YAMLヘッダーベースの状態管理
     - デフォルト引数なし実行
     - 効率的な重複処理回避
+    - AI機能の完全統合（セクション分割、タグ生成、翻訳、落合フォーマット）
     """
     
-    # 処理順序の定義（仕様書v3.1統合ワークフロー仕様に準拠）
+    # 処理順序の定義（仕様書v3.2統合ワークフロー仕様に準拠）
     PROCESS_ORDER = ['organize', 'sync', 'fetch', 'section-parsing', 'ai-citation-support', 'enhanced-tagger', 'enhanced-translate', 'ochiai-format', 'final-sync']
     
     # デフォルト設定
@@ -75,11 +76,11 @@ class IntegratedWorkflow:
         self.translate_abstract_workflow = TranslateAbstractWorkflow(config_manager, logger)
         self.ochiai_format_workflow = OchiaiFormatWorkflow(config_manager, logger)
         
-        self.logger.info("IntegratedWorkflow v3.0 initialized successfully")
+        self.logger.info("IntegratedWorkflow v3.2 initialized successfully")
     
     def _resolve_paths(self, **options) -> Dict[str, str]:
         """
-        統一パス解決システム v3.0
+        統一パス解決システム v3.2
         
         workspace_path一つから全てのパスを自動導出し、
         必要に応じて個別パスで上書き可能。
