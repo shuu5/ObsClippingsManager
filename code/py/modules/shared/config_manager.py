@@ -87,6 +87,22 @@ DEFAULT_INTEGRATED_CONFIG = {
         "doi_required_warning": True
     },
     
+    # AI機能設定（v3.1）
+    "ai_generation": {
+        "claude_api_key": "",
+        "tagger": {
+            "enabled": True,
+            "model": "claude-3-5-sonnet-20241022",
+            "batch_size": 5,
+            "tag_count_range": [10, 20]
+        },
+        "translate_abstract": {
+            "enabled": True,
+            "model": "claude-3-5-sonnet-20241022",
+            "batch_size": 3,
+            "preserve_formatting": True
+        }
+    }
 
 }
 
@@ -132,6 +148,16 @@ VALIDATION_RULES = {
         "doi_required_warning": {"required": False, "type": "bool"}
     },
     
+    # AI機能バリデーション
+    "ai_generation": {
+        "claude_api_key": {"required": False, "type": "str"},
+        "tagger.enabled": {"required": False, "type": "bool"},
+        "tagger.model": {"required": False, "type": "str"},
+        "tagger.batch_size": {"required": False, "type": "int", "min": 1, "max": 10},
+        "translate_abstract.enabled": {"required": False, "type": "bool"},
+        "translate_abstract.model": {"required": False, "type": "str"},
+        "translate_abstract.batch_size": {"required": False, "type": "int", "min": 1, "max": 10}
+    }
 
 }
 

@@ -75,48 +75,19 @@ workflow_version: '3.1'
 
 ### フィールド詳細
 
-#### citation_key (必須)
-- **型**: String
-- **説明**: BibTeXファイル内のcitation keyと同一
-- **制約**: ファイル名と一致する必要がある
+#### 必須フィールド
+- **citation_key**: BibTeXファイル内のcitation keyと同一（ファイル名と一致）
+- **processing_status**: 各処理ステップの状態記録
+- **last_updated**: 状態最終更新日時（ISO 8601形式、自動生成）
+- **workflow_version**: 使用ワークフローバージョン（自動生成）
 
-#### processing_status (必須)
-- **型**: Object
-- **説明**: 各処理ステップの状態記録
-- **フィールド**: organize, sync, fetch, ai-citation-support, tagger, translate_abstract
+#### AI理解支援機能フィールド
+- **citations**: references.bibから統合された引用文献情報（{引用番号: CitationInfo}形式）
+- **citation_metadata**: 引用情報のメタデータ（総数、更新日時、ソース、バージョン）
 
-#### last_updated (自動生成)
-- **型**: ISO 8601 DateTime String
-- **説明**: 状態最終更新日時
-- **更新**: 状態変更時に自動更新
-
-#### workflow_version (自動生成)
-- **型**: String
-- **説明**: 使用ワークフローバージョン
-
-#### citations (AI理解支援機能)
-- **型**: Object
-- **説明**: references.bibから統合された引用文献情報
-- **構造**: {引用番号: CitationInfo}
-
-#### citation_metadata (AI理解支援機能)
-- **型**: Object
-- **フィールド**:
-  - `total_citations`: 総引用数
-  - `last_updated`: 引用情報最終更新日時
-  - `source_bibtex`: 元のBibTeXファイルパス
-  - `mapping_version`: マッピングバージョン
-
-#### tags (AI生成機能)
-- **型**: Array[String]
-- **説明**: 論文内容に基づく自動生成タグ
-- **命名規則**: 英語・スネークケース形式
-- **数量**: 10-20個程度
-
-#### abstract_japanese (AI翻訳機能)
-- **型**: String (Multi-line)
-- **説明**: 論文abstractの日本語翻訳
-- **形式**: YAML multi-line string（`|` 記法使用）
+#### AI生成機能フィールド
+- **tags**: 論文内容に基づく自動生成タグ（Array[String]、英語・スネークケース、10-20個程度）
+- **abstract_japanese**: 論文abstractの日本語翻訳（YAML multi-line string、`|` 記法使用）
 
 ## StatusManager クラス設計
 
@@ -135,92 +106,26 @@ class StatusManager:
     def check_consistency(self, bibtex_file: str, clippings_dir: str) -> Dict[str, Any]
 ```
 
-### 主要メソッド詳細
+### 主要メソッド機能
 
-#### load_md_statuses() - 状態読み込み
-```python
-def load_md_statuses(self, clippings_dir: str) -> Dict[str, Dict[str, ProcessStatus]]:
-    """
-    Clippingsディレクトリから全論文の状態を読み込み
-    
-    Returns:
-        {
-            "smith2023test": {
-                "organize": ProcessStatus.COMPLETED,
-                "sync": ProcessStatus.COMPLETED,
-                "fetch": ProcessStatus.PENDING,
-                "ai-citation-support": ProcessStatus.PENDING,
-                "tagger": ProcessStatus.PENDING,
-                "translate_abstract": ProcessStatus.PENDING
-            }
-        }
-    """
-```
+#### load_md_statuses()
+Clippingsディレクトリから全論文の状態を読み込み。
+戻り値: `{citation_key: {step: ProcessStatus}}`形式の辞書
 
-#### update_status() - 状態更新
-```python
-def update_status(self, clippings_dir: str, citation_key: str, step: str, status: ProcessStatus) -> bool:
-    """
-    特定論文の特定ステップの状態を更新
-    
-    Args:
-        clippings_dir: Clippingsディレクトリパス
-        citation_key: 論文のcitation key
-        step: 処理ステップ名
-        status: 新しい状態
-    
-    Returns:
-        更新成功可否
-    """
-```
+#### update_status()
+特定論文の特定ステップの状態を更新。
+引数: clippings_dir, citation_key, step, status
 
-#### get_papers_needing_processing() - 処理対象論文取得
-```python
-def get_papers_needing_processing(self, clippings_dir: str, step: str, target_papers: List[str] = None) -> List[str]:
-    """
-    指定ステップで処理が必要な論文リストを取得
-    
-    Args:
-        clippings_dir: Clippingsディレクトリパス
-        step: 処理ステップ名
-        target_papers: 対象論文リスト（Noneの場合は全論文）
-    
-    Returns:
-        処理が必要な論文のcitation keyリスト
-    """
-```
+#### get_papers_needing_processing()
+指定ステップで処理が必要な論文リストを取得（エッジケース除外済み論文のみ対象）。
+引数: clippings_dir, step, target_papers（必須）
 
-#### reset_statuses() - 状態リセット
-```python
-def reset_statuses(self, clippings_dir: str, target_papers: List[str] = None) -> bool:
-    """
-    指定論文の全状態をpendingにリセット
-    
-    Args:
-        clippings_dir: Clippingsディレクトリパス
-        target_papers: 対象論文リスト（Noneの場合は全論文）
-    
-    Returns:
-        リセット成功可否
-    """
-```
+#### reset_statuses()
+指定論文の全状態をpendingにリセット。
+引数: clippings_dir, target_papers（Noneの場合は全論文）
 
-#### check_consistency() - 整合性チェック
-```python
-def check_consistency(self, bibtex_file: str, clippings_dir: str) -> Dict[str, Any]:
-    """
-    BibTeXファイルとClippingsディレクトリの整合性チェック
-    
-    Returns:
-        {
-            "consistent": bool,
-            "missing_in_clippings": List[str],
-            "orphaned_in_clippings": List[str],
-            "total_papers": int,
-            "total_clippings": int
-        }
-    """
-```
+#### check_consistency()
+BibTeXファイルとClippingsディレクトリの整合性チェック（詳細情報付き）。
 
 ## ProcessStatus Enum
 
@@ -258,48 +163,83 @@ class ProcessStatus(Enum):
 
 ## YAML操作実装
 
-### ヘッダー読み込み
+### ヘッダー読み込み・更新
 ```python
 def read_yaml_header(md_file: str) -> Dict[str, Any]:
     """Markdownファイルからヘッダーを読み込み"""
-    with open(md_file, 'r', encoding='utf-8') as f:
-        content = f.read()
-    
-    # YAML frontmatter抽出
-    if content.startswith('---\n'):
-        end_pos = content.find('\n---\n', 4)
-        yaml_content = content[4:end_pos]
-        return yaml.safe_load(yaml_content)
-    return {}
-```
+    # YAML frontmatter抽出・解析処理
 
-### ヘッダー更新
-```python
 def update_yaml_header(md_file: str, updates: Dict[str, Any]) -> bool:
     """Markdownファイルのヘッダーを更新"""
-    try:
-        with open(md_file, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        # ヘッダーと本文を分離
-        if content.startswith('---\n'):
-            end_pos = content.find('\n---\n', 4)
-            yaml_content = content[4:end_pos]
-            body = content[end_pos + 5:]
-            
-            # ヘッダー更新
-            header_data = yaml.safe_load(yaml_content)
-            header_data.update(updates)
-            
-            # ファイル書き込み
-            new_content = f"---\n{yaml.dump(header_data, allow_unicode=True)}---\n{body}"
-            with open(md_file, 'w', encoding='utf-8') as f:
-                f.write(new_content)
-            
-            return True
-    except Exception as e:
-        logger.error(f"Failed to update YAML header: {e}")
-        return False
+    # ヘッダー更新・ファイル書き込み処理
+```
+
+## エッジケース処理における状態管理
+
+### 処理対象の限定
+ステータス管理システムは、BibTeXファイルとClippingsディレクトリの**両方に存在する論文のみ**を処理対象とします。
+
+#### 処理対象外ケース
+1. **missing_in_clippings**: BibTeXに記載されているが.mdファイルが存在しない
+   - **状態管理対象外**: YAMLヘッダーが存在しないため状態追跡不可
+   - **処理**: DOI情報表示後スキップ
+   - **ログ**: WARNING レベルで記録
+
+2. **orphaned_in_clippings**: .mdファイルは存在するがBibTeXに記載されていない
+   - **状態管理対象外**: BibTeX参照がないため処理ワークフローの対象外
+   - **処理**: ファイル存在通知後スキップ  
+   - **ログ**: WARNING レベルで記録
+
+### check_consistency() の拡張
+```python
+def check_consistency(self, bibtex_file: str, clippings_dir: str) -> Dict[str, Any]:
+    """
+    整合性チェック（エッジケース詳細情報付き）
+    
+    Returns:
+        {
+            "consistent": bool,
+            "missing_in_clippings": List[str],           # BibTeXにあるがMDなし
+            "orphaned_in_clippings": List[str],          # MDにあるがBibTeXなし  
+            "valid_papers": List[str],                   # 両方に存在（処理対象）
+            "total_papers": int,                         # BibTeX内論文総数
+            "total_clippings": int,                      # MD ファイル総数
+            "edge_case_details": {
+                "missing_count": int,
+                "orphaned_count": int,
+                "missing_with_doi": List[Dict[str, str]], # DOI情報付き
+                "orphaned_file_paths": List[str]          # ファイルパス情報
+            }
+        }
+    """
+    # エッジケース特定・詳細情報収集処理
+```
+
+### ワークフローとの連携
+
+#### エッジケース除外処理
+```python
+def get_papers_needing_processing(self, clippings_dir: str, step: str, target_papers: List[str] = None) -> List[str]:
+    """
+    処理が必要な論文リストを取得（エッジケース除外済み）
+    
+    Args:
+        target_papers: 事前にエッジケースが除外された有効な論文リスト（必須）
+    """
+    if target_papers is None:
+        raise ValueError("target_papers must be provided after edge case filtering")
+    
+    # 指定された有効な論文の中から、処理が必要なもののみを抽出
+    all_statuses = self.load_md_statuses(clippings_dir)
+    
+    papers_needing_processing = []
+    for paper in target_papers:
+        if paper in all_statuses:
+            current_status = all_statuses[paper].get(step, ProcessStatus.PENDING)
+            if current_status in [ProcessStatus.PENDING, ProcessStatus.FAILED]:
+                papers_needing_processing.append(paper)
+    
+    return papers_needing_processing
 ```
 
 ## エラーハンドリング
@@ -314,54 +254,18 @@ def update_yaml_header(md_file: str, updates: Dict[str, Any]) -> bool:
 - **権限エラー**: エラーログ記録後処理継続
 - **ディスク容量不足**: 処理停止とエラー通知
 
-## 使用例
+## 設計方針
 
-### 基本的な使用方法
-```python
-# StatusManager初期化
-status_manager = StatusManager(config_manager, logger)
+### エッジケース処理の原則
+1. **安全性優先**: 不完全なデータでの処理は行わない
+2. **情報提供**: 問題の詳細を明確に報告
+3. **処理継続**: 一部の問題で全体が停止しない
+4. **ユーザビリティ**: DOIリンク等で問題解決を支援
 
-# 全状態読み込み
-statuses = status_manager.load_md_statuses("/path/to/clippings")
-
-# fetch処理が必要な論文を取得
-papers_to_fetch = status_manager.get_papers_needing_processing(
-    "/path/to/clippings", "fetch"
-)
-
-# 処理実行後の状態更新
-for paper in papers_to_fetch:
-    try:
-        # 実際の処理
-        fetch_citations(paper)
-        # 成功時
-        status_manager.update_status("/path/to/clippings", paper, "fetch", ProcessStatus.COMPLETED)
-    except Exception as e:
-        # 失敗時
-        status_manager.update_status("/path/to/clippings", paper, "fetch", ProcessStatus.FAILED)
-```
-
-### 強制再処理
-```python
-# 全状態リセット
-status_manager.reset_statuses("/path/to/clippings")
-
-# 特定論文のみリセット
-status_manager.reset_statuses("/path/to/clippings", ["smith2023test", "jones2024neural"])
-```
-
-### 整合性チェック
-```python
-# BibTeXファイルとClippingsの整合性確認
-consistency = status_manager.check_consistency(
-    "/path/to/CurrentManuscript.bib",
-    "/path/to/clippings"
-)
-
-if not consistency["consistent"]:
-    print(f"Missing papers: {consistency['missing_in_clippings']}")
-    print(f"Orphaned files: {consistency['orphaned_in_clippings']}")
-```
+### 状態管理の責任範囲
+- **対象**: BibTeXとMarkdownファイルの両方に存在する論文のみ
+- **除外**: エッジケースは状態管理対象外（上位レイヤーで処理）
+- **報告**: エッジケース検出と詳細情報提供は責任範囲内
 
 ---
 

@@ -85,21 +85,25 @@ run_test() {
     case "$mode" in
         "run")
             PYTHONPATH=code/py uv run python code/py/main.py \
-                run-integrated --workspace "$TEST_WORKSPACE"
+                run-integrated --workspace "$TEST_WORKSPACE" \
+                --enable-tagger --enable-translate-abstract
             ;;
         "dry-run")
             PYTHONPATH=code/py uv run python code/py/main.py \
                 --dry-run --verbose \
-                run-integrated --workspace "$TEST_WORKSPACE"
+                run-integrated --workspace "$TEST_WORKSPACE" \
+                --enable-tagger --enable-translate-abstract
             ;;
         "plan")
             PYTHONPATH=code/py uv run python code/py/main.py \
-                run-integrated --workspace "$TEST_WORKSPACE" --show-plan
+                run-integrated --workspace "$TEST_WORKSPACE" --show-plan \
+                --enable-tagger --enable-translate-abstract
             ;;
         "debug")
             PYTHONPATH=code/py uv run python code/py/main.py \
                 --log-level debug --verbose \
-                run-integrated --workspace "$TEST_WORKSPACE"
+                run-integrated --workspace "$TEST_WORKSPACE" \
+                --enable-tagger --enable-translate-abstract
             ;;
         *)
             echo_error "不明なモード: $mode"

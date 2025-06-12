@@ -47,7 +47,7 @@ organize → sync → fetch (with automatic metadata enrichment) → ai-citation
 - 完了/失敗/保留の状態管理
 - **AI機能処理状態**の追跡
 
-## 統一設定システム
+## 設定システム
 
 ### デフォルト設定
 ```yaml
@@ -59,7 +59,7 @@ bibtex_file: "{workspace_path}/CurrentManuscript.bib"
 clippings_dir: "{workspace_path}/Clippings"
 output_dir: "{workspace_path}/Clippings"
 
-# AI機能設定
+# AI機能設定（デフォルト無効）
 ai_generation:
   tagger:
     enabled: false
@@ -76,24 +76,7 @@ ai_generation:
 2. **設定ファイル** (config.yaml)
 3. **デフォルト値** (最低優先度)
 
-### パス解決
-```python
-def resolve_paths(workspace_path: str = None, **kwargs) -> Dict[str, str]:
-    """統一パス解決システム"""
-    if not workspace_path:
-        workspace_path = "/home/user/ManuscriptsManager"
-    
-    paths = {
-        'workspace_path': workspace_path,
-        'bibtex_file': kwargs.get('bibtex_file', f"{workspace_path}/CurrentManuscript.bib"),
-        'clippings_dir': kwargs.get('clippings_dir', f"{workspace_path}/Clippings"),
-        'output_dir': kwargs.get('output_dir', f"{workspace_path}/Clippings")
-    }
-    
-    return paths
-```
-
-## メインクラス: IntegratedWorkflow
+## IntegratedWorkflow クラス
 
 ### クラス設計
 ```python
@@ -123,183 +106,108 @@ class IntegratedWorkflow:
         """強制再処理実行"""
 ```
 
-### 主要メソッド
+### 主要処理フロー
+1. **パス解決**: workspace_pathから全パス自動導出
+2. **設定検証**: ファイル存在・エッジケース検出
+3. **処理対象決定**: BibTeXとMarkdownの両方に存在する論文のみ
+4. **ステップ実行**: 順次処理（前段階完了後に次段階）
+5. **状態更新**: 各ステップ完了時の状態記録
 
-#### execute() - 統合実行
+## エッジケース処理仕様 v3.1
+
+### 概要
+BibTeXファイルとClippingsディレクトリ間の不整合ケースに対する処理方針を定義します。
+
+### エッジケース定義
+
+#### 1. missing_in_clippings
+- **定義**: BibTeXに記載されているがClippingsディレクトリに対応する.mdファイルが存在しない論文
+- **処理方針**: **DOI情報表示のみ、処理スキップ**
+- **ログレベル**: WARNING
+- **表示内容**: Citation key、DOI（利用可能な場合）、クリック可能なDOIリンク
+
+#### 2. orphaned_in_clippings  
+- **定義**: Clippingsディレクトリに存在するがBibTeXファイルに記載されていない.mdファイル
+- **処理方針**: **論文情報表示のみ、処理スキップ**
+- **ログレベル**: WARNING  
+- **表示内容**: ファイルパス、Citation key（ファイル名から推定）
+
+### 処理対象論文の決定
 ```python
-def execute(self, **options) -> Dict[str, Any]:
+def _determine_target_papers(self, paths: Dict[str, str], options: Dict[str, Any]) -> List[str]:
     """
-    統合ワークフロー実行
-    
-    Args:
-        workspace_path: ワークスペースパス
-        papers: 対象論文リスト (カンマ区切り文字列)
-        skip_steps: スキップステップリスト
-        force_reprocess: 強制再処理フラグ
-        show_plan: 実行計画表示フラグ
-        enable_tagger: タグ生成機能有効化
-        enable_translate_abstract: 要約翻訳機能有効化
-        **kwargs: 個別設定パラメータ
-    
-    Returns:
-        実行結果辞書
+    エッジケースを除外した処理対象論文リストを生成
     """
-    # 1. パス解決
-    paths = self._resolve_paths(**options)
+    # 整合性チェック実行
+    consistency = self.status_manager.check_consistency(
+        paths['bibtex_file'], 
+        paths['clippings_dir']
+    )
     
-    # 2. 設定検証
-    validation_result = self._validate_configuration(paths)
-    if not validation_result['valid']:
-        return {'status': 'error', 'details': validation_result}
+    # エッジケース検出時の警告表示
+    if not consistency['consistent']:
+        self._log_edge_cases(consistency['edge_case_details'])
     
-    # 3. 実行計画生成
-    if options.get('show_plan'):
-        return self.show_execution_plan(**options)
+    # BibTeXとMarkdownの両方に存在する論文のみを処理対象とする
+    valid_papers = consistency['valid_papers']
     
-    # 4. 強制再処理モード
-    if options.get('force_reprocess'):
-        return self.force_reprocess(**options)
+    # ユーザー指定がある場合はフィルタリング
+    if options.get('papers'):
+        specified_papers = [p.strip() for p in options['papers'].split(',')]
+        valid_papers = [p for p in valid_papers if p in specified_papers]
     
-    # 5. 通常実行
-    return self._execute_workflow(paths, **options)
+    return valid_papers
 ```
 
-#### _execute_workflow() - ワークフロー実行
+### 実行結果への影響
 ```python
-def _execute_workflow(self, paths: Dict[str, str], **options) -> Dict[str, Any]:
-    """
-    実際のワークフロー実行
-    
-    処理順序:
-    1. organize: ファイル整理
-    2. sync: 同期チェック
-    3. fetch: 引用文献取得
-    4. ai-citation-support: AI理解支援統合
-    5. tagger: タグ生成 (有効時)
-    6. translate_abstract: 要約翻訳 (有効時)
-    7. final-sync: 最終同期
-    """
-    
-    execution_results = {
-        'status': 'success',
-        'executed_steps': [],
-        'skipped_steps': [],
-        'failed_steps': [],
-        'total_papers_processed': 0,
-        'execution_time': 0
-    }
-    
-    try:
-        start_time = time.time()
-        
-        # 処理対象論文の決定
-        target_papers = self._determine_target_papers(paths, options)
-        
-        # ステップ実行
-        steps = [
-            ('organize', self.organize_workflow),
-            ('sync', self.sync_workflow),
-            ('fetch', self.fetch_workflow),
-            ('ai-citation-support', self.ai_citation_support_workflow),
-            ('tagger', self.tagger_workflow),
-            ('translate_abstract', self.translate_abstract_workflow),
-            ('final-sync', self.sync_workflow)
-        ]
-        
-        for step_name, workflow in steps:
-            if self._should_skip_step(step_name, options):
-                execution_results['skipped_steps'].append(step_name)
-                continue
-                
-            if self._execute_step(step_name, workflow, paths, target_papers, options):
-                execution_results['executed_steps'].append(step_name)
-            else:
-                execution_results['failed_steps'].append(step_name)
-                execution_results['status'] = 'partial_failure'
-                break
-        
-        execution_results['execution_time'] = time.time() - start_time
-        return execution_results
-        
-    except Exception as e:
-        self.logger.error(f"Workflow execution failed: {str(e)}")
-        execution_results['status'] = 'error'
-        execution_results['error'] = str(e)
-        return execution_results
+execution_results = {
+    'status': 'success',
+    'executed_steps': [],
+    'skipped_steps': [],
+    'failed_steps': [],
+    'total_papers_processed': 0,
+    'skipped_papers': {
+        'missing_in_clippings': [],
+        'orphaned_in_clippings': []
+    },
+    'execution_time': 0
+}
 ```
 
-#### _execute_step() - 個別ステップ実行
-```python
-def _execute_step(self, step_name: str, workflow: Any, paths: Dict[str, str], 
-                 target_papers: List[str], options: Dict[str, Any]) -> bool:
-    """
-    個別ステップの実行
-    
-    Args:
-        step_name: ステップ名
-        workflow: ワークフローオブジェクト
-        paths: パス設定
-        target_papers: 対象論文リスト
-        options: 実行オプション
-    
-    Returns:
-        実行成功時 True
-    """
-    
-    try:
-        self.logger.info(f"Starting step: {step_name}")
-        
-        # 処理対象論文の取得
-        papers_needing_processing = self.status_manager.get_papers_needing_processing(
-            paths['clippings_dir'], step_name, target_papers
-        )
-        
-        if not papers_needing_processing:
-            self.logger.info(f"No papers need processing for step: {step_name}")
-            return True
-        
-        # ステップ別処理実行
-        if step_name == 'organize':
-            result = workflow.process_papers(paths['clippings_dir'], papers_needing_processing)
-        elif step_name in ['sync', 'final-sync']:
-            result = workflow.check_sync(paths['bibtex_file'], paths['clippings_dir'])
-        elif step_name == 'fetch':
-            result = workflow.fetch_citations(paths['bibtex_file'], papers_needing_processing)
-        elif step_name == 'ai-citation-support':
-            result = workflow.process_papers(paths['clippings_dir'], papers_needing_processing)
-        elif step_name == 'tagger':
-            if options.get('enable_tagger', False):
-                result = workflow.process_papers(paths['clippings_dir'], papers_needing_processing)
-            else:
-                self.logger.info("Tagger disabled, skipping")
-                return True
-        elif step_name == 'translate_abstract':
-            if options.get('enable_translate_abstract', False):
-                result = workflow.process_papers(paths['clippings_dir'], papers_needing_processing)
-            else:
-                self.logger.info("Abstract translation disabled, skipping")
-                return True
-        
-        # 結果に基づく状態更新
-        if result.get('status') == 'success':
-            for paper in papers_needing_processing:
-                self.status_manager.update_status(
-                    paths['clippings_dir'], paper, step_name, ProcessStatus.COMPLETED
-                )
-            self.logger.info(f"Step {step_name} completed successfully")
-            return True
-        else:
-            for paper in papers_needing_processing:
-                self.status_manager.update_status(
-                    paths['clippings_dir'], paper, step_name, ProcessStatus.FAILED
-                )
-            self.logger.error(f"Step {step_name} failed: {result.get('error', 'Unknown error')}")
-            return False
-            
-    except Exception as e:
-        self.logger.error(f"Step {step_name} execution failed: {str(e)}")
-        return False
+### 表示例
 ```
+📊 Execution Summary:
+Total papers in BibTeX: 15
+Total markdown files: 12
+Valid papers (both sources): 10
+Skipped papers: 5
+  - Missing markdown files: 3
+  - Orphaned markdown files: 2
+
+⚠️  Edge Cases Detected:
+Missing markdown files for:
+  - smith2023biomarkers (DOI: 10.1038/s41591-023-1234-5)
+  - jones2024neural (DOI: 10.1126/science.xyz789)
+
+Orphaned markdown files:
+  - old_paper2022/old_paper2022.md
+  - test_paper2021/test_paper2021.md
+```
+
+## 設計原則
+
+### エッジケース処理の原則
+1. **安全性優先**: 不完全なデータでの処理は行わない
+2. **情報提供**: 問題の詳細を明確に報告
+3. **処理継続**: 一部の問題で全体が停止しない
+4. **ユーザビリティ**: DOIリンク等で問題解決を支援
+
+### 情報提供の充実
+1. **DOI表示**: 論文特定・取得支援のため
+2. **クリック可能リンク**: ターミナルでの直接アクセス支援
+3. **明確なメッセージ**: 問題の性質と対応方法の明示
+4. **統計情報**: 全体的な処理状況の把握支援
 
 ## コマンドライン仕様
 
@@ -324,82 +232,153 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-tagger
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-translate-abstract
 
 # 両方有効化
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --enable-tagger --enable-translate-abstract
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-tagger --enable-translate-abstract
 ```
 
-### 個別設定
+### カスタム設定
 ```bash
-# ワークスペース指定
+# ワークスペース変更
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace "/path/to/workspace"
 
 # 特定論文のみ処理
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --papers "smith2023,jones2024"
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --papers "paper1,paper2,paper3"
 
-# 特定ステップをスキップ
+# 特定ステップのスキップ
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --skip-steps "sync,final-sync"
 ```
 
-## エラーハンドリング
+## 実行結果例
 
-### 段階的エラー処理
-- **設定エラー**: 実行前に設定検証、エラー時は実行停止
-- **ステップエラー**: 失敗ステップで実行停止、状態は失敗として記録
-- **部分的失敗**: 一部論文の失敗時は続行、全体結果に反映
-
-### 復旧機能
-- **状態リセット**: `--force-reprocess`での全状態初期化
-- **個別再実行**: 失敗論文のみの再処理
-- **依存関係チェック**: 前段階未完了時の自動スキップ
-
-## 実行結果形式
-
-### 成功時
-```python
+### 正常実行
+```json
 {
     'status': 'success',
-    'executed_steps': ['organize', 'sync', 'fetch', 'ai-citation-support'],
+    'executed_steps': ['organize', 'sync', 'fetch', 'ai-citation-support', 'final-sync'],
     'skipped_steps': ['tagger', 'translate_abstract'],
     'failed_steps': [],
-    'total_papers_processed': 5,
-    'execution_time': 120.5,
-    'details': {
-        'organize': {'processed': 2, 'skipped': 3},
-        'sync': {'status': 'consistent'},
-        'fetch': {'fetched': 15, 'failed': 0},
-        'ai-citation-support': {'processed': 5, 'citations_added': 47}
-    }
-}
-```
-
-### 失敗時
-```python
-{
-    'status': 'error',
-    'executed_steps': ['organize', 'sync'],
-    'skipped_steps': [],
-    'failed_steps': ['fetch'],
-    'error': 'API connection failed',
+    'total_papers_processed': 10,
     'execution_time': 45.2
 }
 ```
 
-## パフォーマンス最適化
+### 部分的成功（AI機能有効化時）
+```json
+{
+    'status': 'success',
+    'executed_steps': ['organize', 'sync', 'fetch', 'ai-citation-support', 'tagger', 'translate_abstract', 'final-sync'],
+    'skipped_steps': [],
+    'failed_steps': [],
+    'total_papers_processed': 8,
+    'steps_details': {
+        'organize': {'processed': 2, 'skipped': 3},
+        'tagger': {'generated_tags': 156, 'papers': 8},
+        'translate_abstract': {'translated': 7, 'failed': 1}
+    },
+    'execution_time': 78.5
+}
+```
 
-### 並列処理
-- **AI機能**: バッチ処理による並列API呼び出し
-- **ファイル操作**: 複数論文の同時処理
-- **ネットワーク**: 非同期API通信
+## エラーハンドリング
 
-### キャッシュ機能
-- **設定情報**: 実行中の設定キャッシュ
-- **状態情報**: メモリ内状態管理
-- **API結果**: 一時的な結果キャッシュ
+### 想定エラー
+- **設定エラー**: 不正なパス・ファイル不存在
+- **整合性エラー**: BibTeX-Clippings不整合
+- **ネットワークエラー**: API通信失敗
+- **処理エラー**: ステップ実行失敗
 
-### リソース管理
-- **メモリ使用量**: 大量論文処理時の最適化
+### エラー対応
+- **設定エラー**: 詳細なエラーメッセージと修正方法の提示
+- **整合性エラー**: エッジケース処理で継続実行
+- **ネットワークエラー**: リトライ処理と適切なログ記録
+- **処理エラー**: 状態管理による再実行サポート
+
+## パフォーマンス仕様
+
+### 処理時間目標
+- **設定検証**: < 1秒
+- **エッジケース検出**: < 2秒  
+- **論文処理**: 10論文/分（AI機能無効時）
+- **AI処理**: 5論文/分（AI機能有効時）
+
+### リソース制約
+- **メモリ使用量**: 100MB以下
 - **API制限**: レート制限の適切な管理
 - **ディスク容量**: 一時ファイルの適切な削除
+
+## 9. 統合テストシステム v3.1.0
+
+### 9.1 テストシステム概要
+
+**ユニットテスト vs 統合テスト**:
+- **ユニットテスト**: 個別モジュールの単体テスト (`code/unittest/`)
+- **統合テスト**: マスターテストデータを使用したエンドツーエンドテスト
+
+### 9.2 マスターテストデータ構造
+
+```
+code/test_data_master/           # 固定マスターデータ（Git管理）
+├── CurrentManuscript.bib        # 5つのBibTeXエントリ
+└── Clippings/                   # 3つのMarkdownファイル
+    ├── Keratin_Profiling_*.md   # 対応エントリ: takenakaW2023J
+    ├── KRT13_promotes_*.md      # 対応エントリ: zhangQ2023A
+    └── KRT13_is_upregulated_*.md # orphaned（BibTeXに未対応）
+
+TestManuscripts/                 # 実行環境（自動生成・Git除外）
+├── CurrentManuscript.bib        # masterからコピー
+└── Clippings/                   # masterからコピー
+```
+
+### 9.3 エッジケーステストケース
+
+**意図的不整合データ**:
+1. `missing_in_clippings`: BibTeXにあるがClippingsにないエントリ（2件）
+2. `orphaned_in_clippings`: ClippingsにあるがBibTeXにないファイル（1件）
+3. `matching_entries`: 正常に対応するペア（2件）
+
+### 9.4 統合テストスクリプト仕様
+
+**スクリプト**: `code/scripts/test_run.sh`
+
+**主要機能**:
+- マスターデータからテスト環境自動構築
+- 統合ワークフロー実行（複数モード対応）
+- テスト結果自動確認・表示
+- 一貫したテスト環境保証
+
+**実行モード**:
+```bash
+# 基本実行
+./code/scripts/test_run.sh
+
+# 環境リセット後実行
+./code/scripts/test_run.sh --reset --run
+
+# ドライラン
+./code/scripts/test_run.sh --dry-run
+
+# デバッグモード
+./code/scripts/test_run.sh --debug
+
+# 実行計画表示
+./code/scripts/test_run.sh --plan
+```
+
+### 9.5 テスト結果検証
+
+**自動確認項目**:
+1. ファイル構造整合性
+2. YAML状態管理正確性
+3. エッジケース処理妥当性
+4. AI機能動作確認（タグ生成・翻訳）
+
+**期待される結果**:
+- `matching_entries`: 完全処理（fetch, organize, ai-support完了）
+- `missing_in_clippings`: 情報表示のみ（処理スキップ）
+- `orphaned_in_clippings`: ファイル情報表示のみ（処理スキップ）
+
+---
+
+このシステムにより、開発者は常に同一条件で統合テストを実行でき、システムの品質を確保できます。
 
 ---
 

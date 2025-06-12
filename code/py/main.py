@@ -598,7 +598,7 @@ def run_integrated(ctx: Dict[str, Any],
         # 統合ワークフロー v3.0を直接使用 (AI Citation Support機能を含む)
         integrated_workflow = IntegratedWorkflow(config_manager, ctx['logger'])
         result = integrated_workflow.execute(**options)
-        success = result.get('success', False)
+        success = result.get('status') == 'success'
         
         # 結果表示
         if success:

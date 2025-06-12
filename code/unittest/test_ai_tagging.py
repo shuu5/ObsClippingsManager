@@ -68,7 +68,11 @@ class TestClaudeAPIClient(unittest.TestCase):
         client = ClaudeAPIClient(self.config_manager, self.logger)
         
         self.assertEqual(client.model, "claude-3-5-sonnet-20241022")
-        self.assertEqual(client.api_key, "test-api-key")
+        # 環境変数ANTHROPIC_API_KEYが設定されている場合はそれを使用
+        # 設定されていない場合のみconfig.jsonの値を使用
+        import os
+        expected_api_key = os.getenv("ANTHROPIC_API_KEY") or "test-api-key"
+        self.assertEqual(client.api_key, expected_api_key)
         self.assertEqual(client.timeout, 30)
         self.assertEqual(client.max_retries, 3)
     

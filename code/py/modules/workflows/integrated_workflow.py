@@ -296,19 +296,25 @@ class IntegratedWorkflow:
                     continue
                 
                 # AI機能の条件チェック
-                if step == 'tagger' and not options.get('enable_tagger', False):
-                    plan['execution_plan'][step] = {
-                        'status': 'skipped',
-                        'reason': 'Tagger not enabled (use --enable-tagger to enable)'
-                    }
-                    continue
+                if step == 'tagger':
+                    default_enabled = self.config_manager.get_config_value("ai_generation.tagger.enabled", True)
+                    tagger_enabled = options.get('enable_tagger', default_enabled)
+                    if not tagger_enabled:
+                        plan['execution_plan'][step] = {
+                            'status': 'skipped',
+                            'reason': 'Tagger not enabled (use --enable-tagger to enable)'
+                        }
+                        continue
                 
-                if step == 'translate_abstract' and not options.get('enable_translate_abstract', False):
-                    plan['execution_plan'][step] = {
-                        'status': 'skipped',
-                        'reason': 'Abstract translation not enabled (use --enable-translate-abstract to enable)'
-                    }
-                    continue
+                if step == 'translate_abstract':
+                    default_enabled = self.config_manager.get_config_value("ai_generation.translate_abstract.enabled", True)
+                    translate_enabled = options.get('enable_translate_abstract', default_enabled)
+                    if not translate_enabled:
+                        plan['execution_plan'][step] = {
+                            'status': 'skipped',
+                            'reason': 'Abstract translation not enabled (use --enable-translate-abstract to enable)'
+                        }
+                        continue
                 
                 # 処理が必要な論文を特定
                 papers_needing_processing = self.status_manager.get_papers_needing_processing(
@@ -518,12 +524,18 @@ class IntegratedWorkflow:
             elif step == 'ai-citation-support':
                 success, result = self._execute_ai_citation_support_step(papers, paths, **step_options)
             elif step == 'tagger':
-                if options.get('enable_tagger', False):
-                    step_options.update({
-                        'clippings_dir': paths['clippings_dir'],
-                        'papers': papers
-                    })
-                    success, result = self.tagger_workflow.process_papers(papers, **step_options)
+                # ConfigManagerからデフォルト設定を取得し、コマンドラインオプションで上書き
+                default_enabled = self.config_manager.get_config_value("ai_generation.tagger.enabled", True)
+                # CLIオプションが明示的に設定されていない場合は、デフォルト設定を使用
+                is_enabled = options.get('enable_tagger', default_enabled)
+                
+                if is_enabled:
+                    tagger_result = self.tagger_workflow.process_papers(
+                        clippings_dir=paths['clippings_dir'],
+                        target_papers=papers
+                    )
+                    success = tagger_result.get('success', False)
+                    result = tagger_result
                 else:
                     self.logger.info("Tagger disabled, skipping")
                     return {
@@ -532,12 +544,18 @@ class IntegratedWorkflow:
                         'details': {'status': 'skipped', 'message': 'Tagger disabled by user'}
                     }
             elif step == 'translate_abstract':
-                if options.get('enable_translate_abstract', False):
-                    step_options.update({
-                        'clippings_dir': paths['clippings_dir'],
-                        'papers': papers
-                    })
-                    success, result = self.translate_abstract_workflow.process_papers(papers, **step_options)
+                # ConfigManagerからデフォルト設定を取得し、コマンドラインオプションで上書き
+                default_enabled = self.config_manager.get_config_value("ai_generation.translate_abstract.enabled", True)
+                # CLIオプションが明示的に設定されていない場合は、デフォルト設定を使用
+                is_enabled = options.get('enable_translate_abstract', default_enabled)
+                
+                if is_enabled:
+                    translate_result = self.translate_abstract_workflow.process_papers(
+                        clippings_dir=paths['clippings_dir'],
+                        target_papers=papers
+                    )
+                    success = translate_result.get('success', False)
+                    result = translate_result
                 else:
                     self.logger.info("Abstract translation disabled, skipping")
                     return {

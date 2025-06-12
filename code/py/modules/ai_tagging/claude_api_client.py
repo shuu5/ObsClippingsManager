@@ -5,6 +5,7 @@ Claude 3.5 Sonnet を使用したタグ生成とAbstract翻訳機能を提供
 """
 
 import json
+import os
 import re
 import time
 from typing import List, Dict, Any, Optional
@@ -38,7 +39,8 @@ class ClaudeAPIClient:
         
         # API設定の取得
         self.model = config_manager.get_config_value("claude_api.model", "claude-3-5-sonnet-20241022")
-        self.api_key = config_manager.get_config_value("claude_api.api_key", "test-api-key")
+        # 環境変数ANTHROPIC_API_KEYを優先し、なければ設定ファイルから取得
+        self.api_key = os.getenv("ANTHROPIC_API_KEY") or config_manager.get_config_value("claude_api.api_key", "test-api-key")
         self.timeout = config_manager.get_config_value("claude_api.timeout", 30)
         self.max_retries = config_manager.get_config_value("claude_api.max_retries", 3)
         

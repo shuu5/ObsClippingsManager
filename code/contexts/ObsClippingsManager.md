@@ -10,8 +10,14 @@
 - **独立モジュール**: 各機能の完全な分離を維持
 - **AI理解支援**: AIが直接理解できる自己完結型引用文献統合
 - **AI論文理解**: Claude 3.5 Sonnetによる自動タグ生成と要約翻訳
+- **エッジケース対応**: 不整合データの適切な処理とスキップ
 
 ## システム構成
+
+### 処理フロー
+```
+organize → sync → fetch → ai-citation-support → tagger → translate_abstract → final-sync
+```
 
 ### 機能モジュール（7つの独立モジュール）
 1. **Citation Fetcher**: 学術論文の引用文献を自動取得
@@ -37,111 +43,49 @@ ObsClippingsManager v3.1
     └── workflows/            # ワークフロー管理
 ```
 
-## 統一設定システム
+## 基本実行
 
-### 基本設定（デフォルト）
-```yaml
-# config/config.yaml
-workspace_path: "/home/user/ManuscriptsManager"  # 単一設定で全パス自動導出
-
-# 自動導出パス
-bibtex_file: "{workspace_path}/CurrentManuscript.bib"
-clippings_dir: "{workspace_path}/Clippings"
-output_dir: "{workspace_path}/Clippings"
-```
-
-### デフォルト実行
+### デフォルト実行（推奨）
 ```bash
 # 引数なしで完全実行
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated
 ```
 
-### カスタム設定（必要時のみ）
+### 実行オプション
 ```bash
-# ワークスペース変更
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace "/path/to/workspace"
-
-# 個別ファイル指定
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --bibtex-file "/path/to/file.bib" \
-    --clippings-dir "/path/to/clippings"
-```
-
-## メイン機能: run-integrated
-
-### 処理フロー
-```
-organize → sync → fetch → ai-citation-support → tagger → translate_abstract → final-sync
-```
-
-### 基本実行
-```bash
-# デフォルト実行（推奨）
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated
-
 # 実行計画確認
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --show-plan
 
 # 強制再処理
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --force-reprocess
+
+# AI機能有効化
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-tagger --enable-translate-abstract
+
+# ワークスペース変更
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace "/path/to/workspace"
 ```
 
-## YAMLヘッダー形式（v3.1統合形式）
-
-```yaml
----
-citation_key: smith2023test
-citation_metadata:
-  last_updated: '2025-01-15T10:30:00.123456'
-  mapping_version: '2.0'
-  source_bibtex: references.bib
-  total_citations: 2
-citations:
-  1:
-    authors: Smith
-    citation_key: smith2023test
-    doi: 10.1158/0008-5472.CAN-23-0123
-    journal: Cancer Research
-    title: Novel Method for Cancer Cell Analysis
-    year: 2023
-  2:
-    authors: Jones
-    citation_key: jones2022biomarkers
-    doi: 10.1038/s41591-022-0456-7
-    journal: Nature Medicine
-    title: Advanced Biomarker Techniques in Oncology
-    year: 2022
-tags:
-  - oncology
-  - cancer_research
-  - machine_learning
-  - KRT13
-  - EGFR
-abstract_japanese: |
-  本研究では、がん細胞解析のための新しい手法を開発した。
-  機械学習アルゴリズムを用いてTP53およびEGFR遺伝子の発現パターンを解析し、
-  診断精度の大幅な向上を実現した。
-last_updated: '2025-01-15T10:30:00.654321+00:00'
-processing_status:
-  organize: completed
-  sync: completed
-  fetch: completed
-  ai-citation-support: completed
-  tagger: completed
-  translate_abstract: completed
-workflow_version: '3.1'
----
-```
-
-## テスト環境
-
+### テスト環境
 ```bash
 # テスト環境での実行
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
     --workspace "/home/user/proj/ObsClippingsManager/TestManuscripts"
 ```
 
-## AI機能オプション
+## 設定システム
+
+### デフォルト設定
+- **workspace_path**: `/home/user/ManuscriptsManager`（単一設定で全パス自動導出）
+- **引数なし実行**: 完全なデフォルト動作
+- **AI機能**: デフォルト無効（明示的有効化が必要）
+
+### 設定優先順位
+1. **コマンドライン引数** (最高優先度)
+2. **設定ファイル** (config.yaml)
+3. **デフォルト値** (最低優先度)
+
+## AI機能
 
 ### AI理解支援引用文献パーサー
 - YAMLヘッダーに全引用文献情報を統合
@@ -158,16 +102,30 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
 - 学術的で自然な日本語表現での翻訳
 - 専門用語の正確な翻訳と一貫性確保
 
-## 状態管理
+## エッジケース処理
 
-- 各論文の処理状態をYAMLヘッダーで追跡
-- 完了済み処理の自動スキップ
-- 失敗処理の再実行制御
-- 効率的な重複処理回避
+### 処理方針
+- **missing_in_clippings**: DOI情報表示後スキップ
+- **orphaned_in_clippings**: ファイル情報表示後スキップ
+- **安全性優先**: 不完全なデータでの処理回避
+- **処理継続**: 一部問題で全体停止せず
+
+詳細仕様は [統合ワークフロー仕様書](./integrated_workflow_specification.md#エッジケース処理仕様-v31) を参照。
+
+## 詳細仕様書
+
+### 個別機能仕様
+- **[統合ワークフロー仕様](./integrated_workflow_specification.md)**: ワークフロー詳細・エッジケース処理
+- **[状態管理システム仕様](./status_management_yaml_specification.md)**: YAMLヘッダー形式・状態管理
+- **[AI タグ・翻訳仕様](./ai_tagging_translation_specification.md)**: AI機能詳細
+- **[共有モジュール仕様](./shared_modules_specification.md)**: 基盤機能・設定管理
+
+### アーカイブ仕様書
+v2.0時代の詳細仕様は [archive_v2/](./archive_v2/) ディレクトリを参照。
 
 ---
 
-**統合仕様書バージョン**: 3.0.0
+**統合仕様書バージョン**: 3.1.0
 
 ## 関連仕様書
 - [統合ワークフロー仕様](./integrated_workflow_specification.md)
