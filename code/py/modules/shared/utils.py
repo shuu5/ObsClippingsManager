@@ -390,23 +390,114 @@ def validate_directory_name(name: str) -> bool:
 
 
 def cleanup_empty_directories(base_dir: str) -> int:
-    """空のディレクトリを削除"""
-    cleaned_count = 0
+    """
+    空ディレクトリを再帰的に削除
+    
+    Args:
+        base_dir: 検索開始ディレクトリ
+        
+    Returns:
+        削除されたディレクトリ数
+    """
+    removed_count = 0
     base_path = Path(base_dir)
     
+    if not base_path.exists():
+        return 0
+    
     try:
-        # サブディレクトリのみを対象とする
-        for item in base_path.iterdir():
-            if item.is_dir():
+        # ボトムアップでディレクトリをチェック
+        for current_dir in sorted(base_path.rglob('*'), key=lambda p: len(p.parts), reverse=True):
+            if current_dir.is_dir():
                 try:
                     # ディレクトリが空かチェック
-                    if not any(item.iterdir()):
-                        item.rmdir()
-                        logging.info(f"Removed empty directory: {item}")
-                        cleaned_count += 1
-                except OSError as e:
-                    logging.warning(f"Failed to remove directory: {item} - {e}")
+                    if not any(current_dir.iterdir()):
+                        current_dir.rmdir()
+                        logging.info(f"Removed empty directory: {current_dir}")
+                        removed_count += 1
+                except OSError:
+                    # 削除できない場合はスキップ
+                    continue
     except Exception as e:
-        logging.error(f"Directory cleanup error: {e}")
+        logging.error(f"Error during directory cleanup: {e}")
     
-    return cleaned_count 
+    return removed_count
+
+
+# YAMLヘッダー操作関数
+def read_yaml_header(file_path: str) -> Tuple[dict, str]:
+    """
+    MarkdownファイルからYAMLヘッダーと本文を分離して読み込み
+    
+    Args:
+        file_path: Markdownファイルのパス
+        
+    Returns:
+        (YAMLヘッダー辞書, 本文内容)
+    """
+    import yaml
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        lines = content.split('\n')
+        
+        # YAMLヘッダーの検出
+        if not lines or lines[0].strip() != '---':
+            return {}, content
+        
+        # YAMLヘッダーの終端を検索
+        yaml_end = -1
+        for i, line in enumerate(lines[1:], 1):
+            if line.strip() == '---':
+                yaml_end = i
+                break
+        
+        if yaml_end == -1:
+            return {}, content
+        
+        # YAMLヘッダーの解析
+        yaml_content = '\n'.join(lines[1:yaml_end])
+        yaml_header = yaml.safe_load(yaml_content) if yaml_content.strip() else {}
+        
+        # 本文内容
+        body_content = '\n'.join(lines[yaml_end + 1:])
+        
+        return yaml_header or {}, body_content
+        
+    except Exception as e:
+        logging.error(f"Failed to read YAML header from {file_path}: {e}")
+        return {}, ""
+
+
+def update_yaml_header(file_path: str, yaml_header: dict, body_content: str) -> None:
+    """
+    MarkdownファイルのYAMLヘッダーを更新
+    
+    Args:
+        file_path: Markdownファイルのパス
+        yaml_header: 新しいYAMLヘッダー辞書
+        body_content: 本文内容
+    """
+    import yaml
+    
+    try:
+        # YAMLヘッダーをダンプ
+        yaml_str = yaml.dump(yaml_header, default_flow_style=False, allow_unicode=True, sort_keys=False)
+        
+        # ファイル内容を構築
+        if yaml_header:
+            file_content = f"---\n{yaml_str}---\n{body_content}"
+        else:
+            file_content = body_content
+        
+        # ファイルに書き込み
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(file_content)
+            
+        logging.debug(f"Updated YAML header in {file_path}")
+        
+    except Exception as e:
+        logging.error(f"Failed to update YAML header in {file_path}: {e}")
+        raise FileOperationError(f"Failed to update YAML header: {e}") 

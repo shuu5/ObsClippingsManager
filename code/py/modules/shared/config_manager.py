@@ -348,6 +348,43 @@ class ConfigManager:
             "dry_run": self.config["common"]["dry_run"]
         }
     
+    def get_clippings_dir(self) -> str:
+        """Clippingsディレクトリパスを取得
+        
+        Returns:
+            Clippingsディレクトリパス
+        """
+        common_config = self.get_common_config()
+        clippings_dir = common_config.get("clippings_dir")
+        
+        if not clippings_dir:
+            raise ConfigError("Clippings directory path not configured")
+            
+        # workspace_pathが設定されている場合は相対パスを絶対パスに変換
+        workspace_path = common_config.get("workspace_path")
+        if workspace_path and not os.path.isabs(clippings_dir):
+            clippings_dir = os.path.join(workspace_path, clippings_dir)
+            
+        return clippings_dir
+    
+    def get_bibtex_file(self) -> str:
+        """BibTeXファイルパスを取得
+        
+        Returns:
+            BibTeXファイルパス
+        """
+        common_config = self.get_common_config()
+        bibtex_file = common_config.get("bibtex_file")
+        
+        if not bibtex_file:
+            raise ConfigError("BibTeX file path not configured")
+            
+        # workspace_pathが設定されている場合は相対パスを絶対パスに変換
+        workspace_path = common_config.get("workspace_path")
+        if workspace_path and not os.path.isabs(bibtex_file):
+            bibtex_file = os.path.join(workspace_path, bibtex_file)
+            
+        return bibtex_file
 
     
     def get_all_configs(self) -> Dict[str, Dict[str, Any]]:

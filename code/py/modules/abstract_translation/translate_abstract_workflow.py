@@ -170,12 +170,12 @@ class TranslateAbstractWorkflow:
             abstract_patterns = [
                 r'##\s*Abstract\s*\n(.*?)(?=\n##|\n#|\Z)',
                 r'#\s*Abstract\s*\n(.*?)(?=\n##|\n#|\Z)',
-                r'Abstract\s*\n(.*?)(?=\n##|\n#|\Z)',
-                r'ABSTRACT\s*\n(.*?)(?=\n##|\n#|\Z)'
+                r'^Abstract\s*\n(.*?)(?=\n##|\n#|\Z)',
+                r'^ABSTRACT\s*\n(.*?)(?=\n##|\n#|\Z)'
             ]
             
             for pattern in abstract_patterns:
-                match = re.search(pattern, content, re.DOTALL | re.IGNORECASE)
+                match = re.search(pattern, content, re.DOTALL | re.IGNORECASE | re.MULTILINE)
                 if match:
                     abstract = match.group(1).strip()
                     # 空行や余分な改行を削除

@@ -91,7 +91,7 @@ We collected samples from 500 patients and analyzed gene expression profiles...
             json.dump(config_data, f)
         
         self.config_manager = ConfigManager(self.config_file)
-        self.logger = IntegratedLogger(self.config_manager)
+        self.logger = IntegratedLogger(log_level="INFO")
     
     def tearDown(self):
         """テスト後処理"""

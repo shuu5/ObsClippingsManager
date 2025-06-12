@@ -218,7 +218,7 @@ class TestFetchCitationsCommand(TestMainCLI):
         mock_workflow.return_value = mock_workflow_instance
         
         # ワークフロー実行の成功をモック
-        mock_workflow_instance.execute_workflow.return_value = (True, {"enriched_successes": 5})
+        mock_workflow_instance.execute.return_value = (True, {"enriched_successes": 5})
         
         result = self.runner.invoke(main.cli, [
             '--config', self.config_file,
@@ -228,10 +228,10 @@ class TestFetchCitationsCommand(TestMainCLI):
         ])
         
         self.assertEqual(result.exit_code, 0)
-        mock_workflow_instance.execute_workflow.assert_called_once()
+        mock_workflow_instance.execute.assert_called_once()
         
         # enable_enrichmentがデフォルトでTrueになっていることを確認
-        call_args = mock_workflow_instance.execute_workflow.call_args
+        call_args = mock_workflow_instance.execute.call_args
         options = call_args[1]
         self.assertTrue(options.get('enable_enrichment', False))
 
@@ -250,7 +250,7 @@ class TestFetchCitationsCommand(TestMainCLI):
         mock_workflow.return_value = mock_workflow_instance
         
         # ワークフロー実行の成功をモック
-        mock_workflow_instance.execute_workflow.return_value = (True, {"successful_fetches": 3})
+        mock_workflow_instance.execute.return_value = (True, {"successful_fetches": 3})
         
         result = self.runner.invoke(main.cli, [
             '--config', self.config_file,
@@ -261,10 +261,10 @@ class TestFetchCitationsCommand(TestMainCLI):
         ])
         
         self.assertEqual(result.exit_code, 0)
-        mock_workflow_instance.execute_workflow.assert_called_once()
+        mock_workflow_instance.execute.assert_called_once()
         
         # enable_enrichmentが明示的にFalseになっていることを確認
-        call_args = mock_workflow_instance.execute_workflow.call_args
+        call_args = mock_workflow_instance.execute.call_args
         options = call_args[1]
         self.assertFalse(options.get('enable_enrichment', True))
         
@@ -400,7 +400,7 @@ class TestIntegratedCommand(TestMainCLI):
         mock_workflow.return_value = mock_workflow_instance
         
         # ワークフロー実行の成功をモック
-        mock_workflow_instance.execute_workflow.return_value = (True, {
+        mock_workflow_instance.execute.return_value = (True, {
             "sync_integration": {"synced_papers": 2},
             "enriched_successes": 2
         })
@@ -414,18 +414,18 @@ class TestIntegratedCommand(TestMainCLI):
         
         self.assertEqual(result.exit_code, 0)
         
-        # citation_fetchingワークフローが呼ばれていることを確認
-        workflow_calls = mock_workflow_instance.execute_workflow.call_args_list
-        citation_call = None
+        # integratedワークフローが呼ばれていることを確認
+        workflow_calls = mock_workflow_instance.execute.call_args_list
+        integrated_call = None
         for call in workflow_calls:
-            if len(call[0]) > 0 and str(call[0][0]) == 'WorkflowType.CITATION_FETCHING':
-                citation_call = call
+            if len(call[0]) > 0 and str(call[0][0]) == 'WorkflowType.INTEGRATED':
+                integrated_call = call
                 break
         
-        self.assertIsNotNone(citation_call, "citation_fetching workflow should be called")
+        self.assertIsNotNone(integrated_call, "integrated workflow should be called")
         
-        # enrichmentが自動で有効になっていることを確認
-        options = citation_call[1]
+        # enrichmentがデフォルトで有効になっていることを確認（disable_enrichmentがFalseの場合）
+        options = integrated_call[1]
         self.assertTrue(options.get('enable_enrichment', False), 
                        "enrichment should be auto-enabled in integrated workflow")
     
@@ -444,7 +444,7 @@ class TestIntegratedCommand(TestMainCLI):
         mock_workflow.return_value = mock_workflow_instance
         
         # ワークフロー実行の成功をモック
-        mock_workflow_instance.execute_workflow.return_value = (True, {
+        mock_workflow_instance.execute.return_value = (True, {
             "sync_integration": {"synced_papers": 2},
             "successful_fetches": 2
         })
@@ -459,18 +459,18 @@ class TestIntegratedCommand(TestMainCLI):
         
         self.assertEqual(result.exit_code, 0)
         
-        # citation_fetchingワークフローが呼ばれていることを確認
-        workflow_calls = mock_workflow_instance.execute_workflow.call_args_list
-        citation_call = None
+        # integratedワークフローが呼ばれていることを確認
+        workflow_calls = mock_workflow_instance.execute.call_args_list
+        integrated_call = None
         for call in workflow_calls:
-            if len(call[0]) > 0 and str(call[0][0]) == 'WorkflowType.CITATION_FETCHING':
-                citation_call = call
+            if len(call[0]) > 0 and str(call[0][0]) == 'WorkflowType.INTEGRATED':
+                integrated_call = call
                 break
         
-        self.assertIsNotNone(citation_call, "citation_fetching workflow should be called")
+        self.assertIsNotNone(integrated_call, "integrated workflow should be called")
         
         # enrichmentが無効になっていることを確認
-        options = citation_call[1]
+        options = integrated_call[1]
         self.assertFalse(options.get('enable_enrichment', True), 
                         "enrichment should be disabled when --disable-enrichment is used")
 
@@ -493,7 +493,7 @@ class TestUtilityCommands(TestMainCLI):
         mock_workflow.return_value = mock_workflow_instance
         
         # 設定検証の成功をモック
-        mock_workflow_instance.validate_configuration.return_value = (True, [])
+        mock_workflow_instance.validate_workflow_configuration.return_value = (True, [])
         
         result = self.runner.invoke(main.cli, [
             '--config', self.config_file,
@@ -502,7 +502,7 @@ class TestUtilityCommands(TestMainCLI):
         ])
         
         self.assertEqual(result.exit_code, 0)
-        mock_workflow_instance.validate_configuration.assert_called_once()
+        mock_workflow_instance.validate_workflow_configuration.assert_called_once()
     
     @patch('main.WorkflowManager')
     @patch('main.IntegratedLogger')
@@ -520,7 +520,12 @@ class TestUtilityCommands(TestMainCLI):
         
         # 履歴データのモック
         mock_workflow_instance.get_execution_history.return_value = [
-            {"timestamp": "2023-01-01", "workflow_type": "sync_check", "success": True}
+            {
+                "timestamp": "2023-01-01T10:00:00", 
+                "workflow_type": "sync_check", 
+                "success": True,
+                "execution_time": 15.5
+            }
         ]
         
         result = self.runner.invoke(main.cli, [

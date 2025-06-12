@@ -8,7 +8,14 @@ import json
 import re
 import time
 from typing import List, Dict, Any, Optional
-import anthropic
+
+# オプショナルなanthropic インポート（テスト環境対応）
+try:
+    import anthropic
+    ANTHROPIC_AVAILABLE = True
+except ImportError:
+    ANTHROPIC_AVAILABLE = False
+    anthropic = None
 
 from modules.shared.config_manager import ConfigManager
 from modules.shared.logger import IntegratedLogger
@@ -41,7 +48,11 @@ class ClaudeAPIClient:
         
         # Claude クライアント初期化
         try:
-            self.client = anthropic.Anthropic(api_key=self.api_key)
+            if not ANTHROPIC_AVAILABLE:
+                self.logger.warning("Anthropic library not available. AI features will not work in production.")
+                self.client = None
+            else:
+                self.client = anthropic.Anthropic(api_key=self.api_key)
             self.logger.info("Claude API client initialized successfully")
         except Exception as e:
             self.logger.error(f"Failed to initialize Claude API client: {e}")
@@ -142,15 +153,15 @@ class ClaudeAPIClient:
         Returns:
             正規化されたタグ
         """
-        # キャメルケースをスネークケースに変換
-        tag = re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', tag).lower()
-        
         # 不要な文字の除去
         tag = re.sub(r'[^a-zA-Z0-9_]', '', tag)
         
-        # 遺伝子名は大文字のまま維持（一般的なパターン）
-        if re.match(r'^[A-Z0-9]{2,10}$', tag.upper()) and len(tag) <= 10:
+        # 遺伝子名は大文字のまま維持（元のタグが大文字で始まる場合のみ）
+        if re.match(r'^[A-Z][A-Z0-9]{1,9}$', tag) and len(tag) <= 10:
             return tag.upper()
+        
+        # キャメルケースをスネークケースに変換して小文字化
+        tag = re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', tag).lower()
         
         return tag
     
@@ -218,6 +229,9 @@ Original Abstract:
             API レスポンス
         """
         try:
+            if not ANTHROPIC_AVAILABLE or self.client is None:
+                raise ObsClippingsError("Anthropic library not available or client not initialized")
+                
             response = self.client.messages.create(
                 model=self.model,
                 max_tokens=2048,

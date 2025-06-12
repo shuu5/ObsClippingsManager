@@ -56,7 +56,7 @@ class TestClaudeAPIClient(unittest.TestCase):
             json.dump(config_data, f)
         
         self.config_manager = ConfigManager(self.config_file)
-        self.logger = IntegratedLogger(self.config_manager)
+        self.logger = IntegratedLogger(log_level="INFO")
         
     def tearDown(self):
         """テスト後処理"""
@@ -184,7 +184,7 @@ Recent advances in oncology...
             json.dump(config_data, f)
         
         self.config_manager = ConfigManager(self.config_file)
-        self.logger = IntegratedLogger(self.config_manager)
+        self.logger = IntegratedLogger(log_level="INFO")
     
     def tearDown(self):
         """テスト後処理"""

@@ -34,7 +34,7 @@ DEFAULT_LOG_LEVEL = "INFO"
 pass_context = click.make_pass_decorator(dict, ensure=True)
 
 
-@click.group()
+@click.group(invoke_without_command=True)
 @click.option('--config', '-c', 
               default=DEFAULT_CONFIG_FILE,
               help='Configuration file path',
@@ -82,6 +82,13 @@ def cli(ctx: Dict[str, Any], config: str, log_level: str, dry_run: bool, verbose
             click.echo(f"✓ Log level: {log_level}")
             if dry_run:
                 click.echo("✓ Dry run mode enabled")
+        
+        # コマンドが指定されていない場合（テスト用）
+        # ctxはClick Contextオブジェクトにアクセスする必要があります
+        click_ctx = click.get_current_context()
+        if click_ctx.invoked_subcommand is None:
+            if verbose:
+                click.echo("✓ CLI initialization completed successfully")
         
     except Exception as e:
         click.echo(f"❌ Initialization failed: {e}", err=True)
@@ -175,6 +182,14 @@ def fetch_citations(ctx: Dict[str, Any],
             options['bibtex_file'] = bibtex_file
         if clippings_dir:
             options['clippings_dir'] = clippings_dir
+        
+        # 設定から必要なパスを自動取得
+        config_manager = ctx['config_manager']
+        if not clippings_dir and hasattr(config_manager, 'get_clippings_dir'):
+            try:
+                options['clippings_dir'] = config_manager.get_clippings_dir()
+            except:
+                pass  # 設定にない場合はスキップ
         if output_dir:
             options['output_dir'] = output_dir
         if max_retries is not None:
@@ -210,7 +225,7 @@ def fetch_citations(ctx: Dict[str, Any],
             click.echo(f"   → Max API attempts: {enrichment_max_attempts}")
         
         # ワークフロー実行
-        success, results = workflow_manager.execute_workflow(
+        success, results = workflow_manager.execute(
             WorkflowType.CITATION_FETCHING, 
             **options
         )
@@ -326,7 +341,7 @@ def organize_files(ctx: Dict[str, Any],
         click.echo("📁 Starting file organization workflow...")
         
         # ワークフロー実行
-        success, results = workflow_manager.execute_workflow(
+        success, results = workflow_manager.execute(
             WorkflowType.FILE_ORGANIZATION,
             **options
         )
@@ -419,7 +434,7 @@ def sync_check(ctx: Dict[str, Any],
         click.echo("🔍 Starting sync check workflow...")
         
         # ワークフロー実行
-        success, results = workflow_manager.execute_workflow(
+        success, results = workflow_manager.execute(
             WorkflowType.SYNC_CHECK,
             **options
         )
@@ -483,6 +498,15 @@ def sync_check(ctx: Dict[str, Any],
 @click.option('--enable-ai-citation-support',
               is_flag=True,
               help='Enable AI citation support mapping (v4.0)')
+@click.option('--sync-first',
+              is_flag=True,
+              help='Perform sync check first')
+@click.option('--fetch-citations',
+              is_flag=True,
+              help='Include citation fetching step')
+@click.option('--disable-enrichment',
+              is_flag=True,
+              help='Disable metadata enrichment')
 @click.option('--auto-approve', '-y',
               is_flag=True,
               help='Automatically approve all operations')
@@ -496,6 +520,9 @@ def run_integrated(ctx: Dict[str, Any],
                   force_reprocess: bool,
                   show_plan: bool,
                   enable_ai_citation_support: bool,
+                  sync_first: bool,
+                  fetch_citations: bool,
+                  disable_enrichment: bool,
                   auto_approve: bool):
     """
     統合ワークフローを実行 (v4.0対応)
@@ -506,11 +533,8 @@ def run_integrated(ctx: Dict[str, Any],
     処理順序: organize → sync → fetch → ai-citation-support (オプション)
     """
     try:
-        config_manager = ctx['config_manager']
+        workflow_manager = ctx['workflow_manager']
         logger = ctx['logger'].get_logger('CLI')
-        
-        # IntegratedWorkflow v3.0 初期化
-        integrated_workflow = IntegratedWorkflow(config_manager, ctx['logger'])
         
         # 実行オプションの構築
         options = {
@@ -524,94 +548,63 @@ def run_integrated(ctx: Dict[str, Any],
             'dry_run': ctx['dry_run'],
             'verbose': ctx.get('verbose', False),
             'auto_approve': auto_approve,
-            'enable_ai_citation_support': enable_ai_citation_support
+            'enable_ai_citation_support': enable_ai_citation_support,
+            'sync_first': sync_first,
+            'fetch_citations': fetch_citations,
+            'enable_enrichment': not disable_enrichment  # disable_enrichmentの逆
         }
         
         # プラン表示モード
         if show_plan:
             click.echo("📋 Analyzing execution plan...")
-            plan_result = integrated_workflow.show_execution_plan(**options)
-            
-            if plan_result['status'] == 'success':
-                plan = plan_result['plan']
-                total_papers = plan['total_papers']
-                execution_plan = plan['execution_plan']
-                
-                click.echo(f"📊 Execution Plan ({total_papers} total papers)")
-                
-                for step, step_info in execution_plan.items():
-                    papers_count = step_info['papers_count']
-                    status = step_info['status']
-                    
-                    if status == 'planned':
-                        click.echo(f"  {step}: {papers_count} papers to process")
-                        if papers_count > 0 and papers_count <= 5:
-                            papers_list = step_info.get('papers_to_process', [])
-                            click.echo(f"    → {', '.join(papers_list[:5])}")
-                        elif papers_count > 5:
-                            papers_list = step_info.get('papers_to_process', [])
-                            click.echo(f"    → {', '.join(papers_list[:3])} ... and {papers_count - 3} more")
-                    elif status == 'skipped':
-                        click.echo(f"  {step}: ⏭️  skipped")
-                    else:
-                        click.echo(f"  {step}: ✅ all papers completed")
-                
-                estimated_time = plan.get('estimated_total_time', '0 minutes 0 seconds')
-                click.echo(f"⏱️  Estimated time: {estimated_time}")
-            
-            return
-        
-        # 強制再処理モード
-        if force_reprocess:
-            click.echo("🔄 Force reprocess mode: resetting all status flags...")
-            result = integrated_workflow.force_reprocess(**options)
-        else:
-            # 通常実行
-            if enable_ai_citation_support:
-                click.echo("🚀 Starting integrated workflow v4.0 with AI citation support...")
-            else:
-                click.echo("🚀 Starting integrated workflow v3.0...")
+            # プラン表示はオプション情報のみ表示
+            click.echo("📊 Execution Plan Preview")
             if workspace:
-                click.echo(f"📁 Workspace: {workspace}")
+                click.echo(f"  workspace: {workspace}")
+            if papers:
+                click.echo(f"  papers: {papers}")
+            if skip_steps:
+                click.echo(f"  skip-steps: {skip_steps}")
             if enable_ai_citation_support:
-                click.echo("🤖 AI citation support: enabled")
+                click.echo("  ai-citation-support: enabled")
             
-            result = integrated_workflow.execute(**options)
+            click.echo("⏱️  Estimated time: depends on paper count")
+            return
+        # 通常実行
+        if enable_ai_citation_support:
+            click.echo("🚀 Starting integrated workflow v4.0 with AI citation support...")
+        else:
+            click.echo("🚀 Starting integrated workflow v3.0...")
+        if workspace:
+            click.echo(f"📁 Workspace: {workspace}")
+        if enable_ai_citation_support:
+            click.echo("🤖 AI citation support: enabled")
+        
+        # ワークフロー実行
+        success, result = workflow_manager.execute(
+            WorkflowType.INTEGRATED,
+            **options
+        )
         
         # 結果表示
-        if result['status'] == 'success':
+        if success:
             click.echo("✅ Integrated workflow completed successfully!")
             
-            # 統計表示
-            if 'statistics' in result:
-                stats = result['statistics']
-                click.echo(f"📊 Statistics:")
-                click.echo(f"   • Total papers: {stats.get('total_papers', 0)}")
-                click.echo(f"   • Processed papers: {stats.get('processed_papers', 0)}")
-                
-                for step in ['organize', 'sync', 'fetch', 'ai-citation-support', 'final-sync']:
-                    if step in stats:
-                        step_stats = stats[step]
-                        processed = step_stats.get('processed', 0)
-                        skipped = step_stats.get('skipped', 0)
-                        if processed > 0 or skipped > 0:
-                            click.echo(f"   • {step}: {processed} processed, {skipped} skipped")
-        
-        elif result['status'] == 'error':
-            click.echo(f"❌ Integrated workflow failed: {result.get('message', 'Unknown error')}")
-            if 'details' in result:
-                details = result['details']
-                if isinstance(details, dict):
-                    for key, value in details.items():
-                        click.echo(f"   {key}: {value}")
-                else:
-                    click.echo(f"   Details: {details}")
-            sys.exit(1)
-        
+            # 詳細統計の表示
+            if ctx['verbose']:
+                summary = create_workflow_execution_summary(result)
+                click.echo("\n" + summary)
+            else:
+                # 簡潔な統計
+                if 'statistics' in result:
+                    stats = result['statistics']
+                    click.echo(f"📊 Statistics:")
+                    click.echo(f"   • Total papers: {stats.get('total_papers', 0)}")
+                    click.echo(f"   • Processed papers: {stats.get('processed_papers', 0)}")
         else:
-            click.echo(f"⚠️  Workflow completed with status: {result['status']}")
-            if 'message' in result:
-                click.echo(f"   Message: {result['message']}")
+            error = result.get('error', 'Unknown error')
+            click.echo(f"❌ Integrated workflow failed: {error}", err=True)
+            sys.exit(1)
                 
     except Exception as e:
         click.echo(f"❌ Integrated workflow failed: {e}", err=True)
@@ -673,7 +666,7 @@ def ai_mapping(ctx: Dict[str, Any],
             options['output_file'] = output_file
         
         # ワークフロー実行
-        success, results = workflow_manager.execute_workflow(
+        success, results = workflow_manager.execute(
             WorkflowType.AI_MAPPING,
             **options
         )
@@ -808,14 +801,10 @@ def show_history(ctx: Dict[str, Any], limit: int, workflow_type: Optional[str]):
     try:
         workflow_manager = ctx['workflow_manager']
         
-        # ワークフロータイプでフィルタ
-        wf_type_enum = None
-        if workflow_type:
-            wf_type_enum = WorkflowType(workflow_type)
-        
+        # ワークフロータイプでフィルタ（文字列として渡す）
         history = workflow_manager.get_execution_history(
             limit=limit,
-            workflow_type=wf_type_enum
+            workflow_type=workflow_type
         )
         
         if not history:

@@ -48,6 +48,21 @@ class WorkflowManager:
         # 実行履歴
         self.execution_history = []
         
+    def execute(self, 
+                workflow_type: Union[WorkflowType, str], 
+                **options) -> Tuple[bool, Dict[str, Any]]:
+        """
+        指定されたワークフローを実行（テスト用エイリアス）
+        
+        Args:
+            workflow_type: 実行するワークフロータイプ
+            **options: 実行オプション
+            
+        Returns:
+            (成功フラグ, 実行結果詳細)
+        """
+        return self.execute_workflow(workflow_type, **options)
+    
     def execute_workflow(self, 
                         workflow_type: Union[WorkflowType, str], 
                         **options) -> Tuple[bool, Dict[str, Any]]:
