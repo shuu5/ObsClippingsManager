@@ -589,7 +589,7 @@ def run_integrated(ctx: Dict[str, Any],
                 click.echo(f"   • Total papers: {stats.get('total_papers', 0)}")
                 click.echo(f"   • Processed papers: {stats.get('processed_papers', 0)}")
                 
-                for step in ['organize', 'sync', 'fetch', 'ai-citation-support']:
+                for step in ['organize', 'sync', 'fetch', 'ai-citation-support', 'final-sync']:
                     if step in stats:
                         step_stats = stats[step]
                         processed = step_stats.get('processed', 0)

@@ -1,7 +1,7 @@
-# 状態管理システム仕様書 v4.0
+# 状態管理システム仕様書 v3.0
 
 ## 概要
-ObsClippingsManager v4.0の状態管理システムは、各論文の処理状態をMarkdownファイルのYAMLヘッダーに記録し、効率的な重複処理回避を実現します。Zoteroによる自動BibTeX再生成の影響を受けずに、永続的な状態管理を提供します。
+ObsClippingsManager v3.0の状態管理システムは、各論文の処理状態をMarkdownファイルのYAMLヘッダーに記録し、効率的な重複処理回避を実現します。Zoteroによる自動BibTeX再生成の影響を受けずに、永続的な状態管理を提供します。
 
 ## 基本原理
 
@@ -111,7 +111,7 @@ workflow_version: '3.0'
   - `source_bibtex`: 元のBibTeXファイルパス
   - `mapping_version`: マッピングバージョン
 
-## StatusManager v4.0 クラス設計
+## StatusManager v3.0 クラス設計
 
 ### クラス概要
 ```python
@@ -565,7 +565,8 @@ def _create_default_metadata(self, citation_key: str) -> Dict[str, Any]:
             'organize': ProcessStatus.PENDING.value,
             'sync': ProcessStatus.PENDING.value,
             'fetch': ProcessStatus.PENDING.value,
-            'ai-citation-support': ProcessStatus.PENDING.value
+            'ai-citation-support': ProcessStatus.PENDING.value,
+            'final-sync': ProcessStatus.PENDING.value
         },
         'workflow_version': '3.0'
     }
@@ -574,13 +575,14 @@ def _check_dependencies(self, paper_status: Dict[str, ProcessStatus], step: str)
     """
     ステップ依存関係のチェック
     
-    依存関係: organize → sync → fetch → ai-citation-support
+    依存関係: organize → sync → fetch → ai-citation-support → final-sync
     """
     dependencies = {
         'organize': [],
         'sync': ['organize'],
         'fetch': ['organize', 'sync'],
-        'ai-citation-support': ['organize', 'sync', 'fetch']
+        'ai-citation-support': ['organize', 'sync', 'fetch'],
+        'final-sync': ['organize', 'sync', 'fetch', 'ai-citation-support']
     }
     
     required_steps = dependencies.get(step, [])

@@ -39,7 +39,7 @@ class IntegratedWorkflow:
     """
     
     # 処理順序の定義
-    PROCESS_ORDER = ['organize', 'sync', 'fetch', 'ai-citation-support']
+    PROCESS_ORDER = ['organize', 'sync', 'fetch', 'ai-citation-support', 'final-sync']
     
     # デフォルト設定
     DEFAULT_WORKSPACE_PATH = "/home/user/ManuscriptsManager"
@@ -198,7 +198,8 @@ class IntegratedWorkflow:
             'organize': 2,   # 2秒/論文
             'sync': 1,       # 1秒/論文  
             'fetch': 15,     # 15秒/論文
-            'ai-citation-support': 5      # 5秒/論文
+            'ai-citation-support': 5,     # 5秒/論文
+            'final-sync': 1               # 1秒/論文
         }
         
         return estimates.get(step, 5)
@@ -373,6 +374,7 @@ class IntegratedWorkflow:
         2. sync: 同期チェック
         3. fetch: 引用文献取得
         4. ai-citation-support: AI理解支援統合
+        5. final-sync: 最終同期チェック
         
         Args:
             paths: 解決済みパス辞書
@@ -489,6 +491,9 @@ class IntegratedWorkflow:
                 success, result = self.fetch_workflow.execute(**step_options)
             elif step == 'ai-citation-support':
                 success, result = self._execute_ai_citation_support_step(papers, paths, **step_options)
+            elif step == 'final-sync':
+                # final-syncは通常のsyncと同じ処理を実行
+                success, result = self.sync_workflow.execute(**step_options)
             else:
                 raise ValueError(f"Unknown step: {step}")
             

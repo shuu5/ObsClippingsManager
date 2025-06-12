@@ -42,10 +42,10 @@ ObsClippingsManager v3.0 は、学術研究における文献管理とMarkdown�
 - 完了済み処理の自動スキップ
 - 失敗処理の再実行制御
 
-## 全体アーキテクチャ (v4.0)
+## 全体アーキテクチャ (v3.0)
 
 ```
-ObsClippingsManager v4.0 統合システム
+ObsClippingsManager v3.0 統合システム
 ├── main.py                           # 統合メインプログラム
 └── modules/                          # モジュラーアーキテクチャ
     ├── shared/                       # 共有モジュール

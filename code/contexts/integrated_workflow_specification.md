@@ -177,6 +177,7 @@ def _execute_workflow(self, paths: Dict[str, str], **options) -> Dict[str, Any]:
     2. sync: 同期チェック
     3. fetch: 引用文献取得
     4. ai-citation-support: AI理解支援統合
+    5. final-sync: 最終同期チェック
     """
     results = {
         'status': 'success',
@@ -194,12 +195,15 @@ def _execute_workflow(self, paths: Dict[str, str], **options) -> Dict[str, Any]:
     # スキップステップ処理
     skip_steps = self._parse_skip_steps(options.get('skip_steps', ''))
     
-    # ステップ実行（v3.0ではai-citation-supportステップを追加）
+    # ステップ実行（v3.0ではai-citation-supportとfinal-syncステップを追加）
     steps = ['organize', 'sync', 'fetch']
     
     # AI理解支援機能が有効な場合はai-citation-supportステップを追加
     if options.get('enable_ai_citation_support'):
         steps.append('ai-citation-support')
+    
+    # 最終的な同期チェックステップを追加
+    steps.append('final-sync')
     
     for step in steps:
         if step in skip_steps:
@@ -258,6 +262,8 @@ def _execute_step(self, step: str, papers: List[str], paths: Dict[str, str], **o
             result = self._execute_fetch_step(papers, paths, **options)
         elif step == 'ai-citation-support':  # v3.0新機能
             result = self._execute_ai_citation_support_step(papers, paths, **options)
+        elif step == 'final-sync':  # v3.0新機能: 最終同期チェック
+            result = self._execute_sync_step(papers, paths, **options)
         else:
             raise ValueError(f"Unknown step: {step}")
         
