@@ -226,6 +226,92 @@ class TestIntegratedWorkflowV3(unittest.TestCase):
         self.assertEqual(plan['execution_plan']['sync']['status'], 'skipped')
         self.assertNotEqual(plan['execution_plan']['organize']['status'], 'skipped')
         self.assertNotEqual(plan['execution_plan']['fetch']['status'], 'skipped')
+
+    def test_process_order_includes_ai_features(self):
+        """処理順序にAI機能が含まれていることのテスト"""
+        expected_order = ['organize', 'sync', 'fetch', 'ai-citation-support', 'tagger', 'translate_abstract', 'final-sync']
+        
+        # PROCESS_ORDERが仕様書通りであることを確認
+        self.assertEqual(self.integrated_workflow.PROCESS_ORDER, expected_order)
+    
+    def test_ai_features_disabled_by_default(self):
+        """AI機能がデフォルトで無効であることのテスト"""
+        options = {
+            'workspace_path': self.workspace_path,
+            'show_plan': True
+        }
+        
+        plan = self.integrated_workflow.show_execution_plan(**options)
+        
+        # taggerとtranslate_abstractがデフォルトでスキップされることを確認
+        if 'tagger' in plan['execution_plan']:
+            self.assertEqual(plan['execution_plan']['tagger']['status'], 'skipped')
+        if 'translate_abstract' in plan['execution_plan']:
+            self.assertEqual(plan['execution_plan']['translate_abstract']['status'], 'skipped')
+    
+    def test_ai_features_enabled_explicitly(self):
+        """AI機能を明示的に有効化できることのテスト"""
+        options = {
+            'workspace_path': self.workspace_path,
+            'enable_tagger': True,
+            'enable_translate_abstract': True,
+            'show_plan': True
+        }
+        
+        plan = self.integrated_workflow.show_execution_plan(**options)
+        
+        # taggerとtranslate_abstractが有効になることを確認
+        if 'tagger' in plan['execution_plan']:
+            self.assertNotEqual(plan['execution_plan']['tagger']['status'], 'skipped')
+        if 'translate_abstract' in plan['execution_plan']:
+            self.assertNotEqual(plan['execution_plan']['translate_abstract']['status'], 'skipped')
+    
+    def test_tagger_only_enabled(self):
+        """taggerのみを有効化できることのテスト"""
+        options = {
+            'workspace_path': self.workspace_path,
+            'enable_tagger': True,
+            'enable_translate_abstract': False,
+            'show_plan': True
+        }
+        
+        plan = self.integrated_workflow.show_execution_plan(**options)
+        
+        # taggerが有効、translate_abstractが無効であることを確認
+        if 'tagger' in plan['execution_plan']:
+            self.assertNotEqual(plan['execution_plan']['tagger']['status'], 'skipped')
+        if 'translate_abstract' in plan['execution_plan']:
+            self.assertEqual(plan['execution_plan']['translate_abstract']['status'], 'skipped')
+    
+    def test_translate_abstract_only_enabled(self):
+        """translate_abstractのみを有効化できることのテスト"""
+        options = {
+            'workspace_path': self.workspace_path,
+            'enable_tagger': False,
+            'enable_translate_abstract': True,
+            'show_plan': True
+        }
+        
+        plan = self.integrated_workflow.show_execution_plan(**options)
+        
+        # taggerが無効、translate_abstractが有効であることを確認
+        if 'tagger' in plan['execution_plan']:
+            self.assertEqual(plan['execution_plan']['tagger']['status'], 'skipped')
+        if 'translate_abstract' in plan['execution_plan']:
+            self.assertNotEqual(plan['execution_plan']['translate_abstract']['status'], 'skipped')
+    
+    def test_ai_features_workflow_initialization(self):
+        """AI機能ワークフローが初期化されていることのテスト"""
+        # TaggerWorkflowとTranslateAbstractWorkflowが初期化されていることを確認
+        self.assertTrue(hasattr(self.integrated_workflow, 'tagger_workflow'))
+        self.assertTrue(hasattr(self.integrated_workflow, 'translate_abstract_workflow'))
+        
+        # ワークフローオブジェクトが適切なタイプであることを確認
+        from modules.ai_tagging import TaggerWorkflow
+        from modules.abstract_translation import TranslateAbstractWorkflow
+        
+        self.assertIsInstance(self.integrated_workflow.tagger_workflow, TaggerWorkflow)
+        self.assertIsInstance(self.integrated_workflow.translate_abstract_workflow, TranslateAbstractWorkflow)
     
     def _create_sample_papers(self):
         """テスト用論文ディレクトリの作成"""

@@ -462,6 +462,126 @@ class TestIntegratedCommand(TestMainCLI):
         self.assertFalse(options.get('enable_enrichment', True), 
                         "enrichment should be disabled when --disable-enrichment is used")
 
+    @patch('main.IntegratedWorkflow')
+    @patch('main.IntegratedLogger')
+    def test_run_integrated_with_tagger_enabled(self, mock_logger, mock_workflow):
+        """run-integratedで--enable-taggerオプションが正しく動作することのテスト"""
+        # モックの設定
+        mock_logger_instance = Mock()
+        mock_workflow_instance = Mock()
+        
+        mock_logger.return_value = mock_logger_instance
+        mock_workflow.return_value = mock_workflow_instance
+        
+        # ワークフロー実行の成功をモック
+        mock_workflow_instance.execute.return_value = {
+            "status": "success",
+            "success": True,
+            "completed_steps": ["organize", "sync", "fetch", "ai-citation-support", "tagger"],
+            "processed_papers": 2
+        }
+        
+        result = self.runner.invoke(main.cli, [
+            '--config', self.config_file,
+            'run-integrated',
+            '--enable-tagger',
+            '--auto-approve'
+        ])
+        
+        self.assertEqual(result.exit_code, 0)
+        
+        # integratedワークフローが呼ばれていることを確認
+        mock_workflow.assert_called_once()
+        mock_workflow_instance.execute.assert_called_once()
+        
+        # executeの呼び出し引数を確認してtaggerが有効になっているかチェック
+        call_args = mock_workflow_instance.execute.call_args
+        options = call_args[1] if call_args and len(call_args) > 1 else {}
+        # taggerが有効になっていることを確認
+        self.assertTrue(options.get('enable_tagger', False), 
+                       "tagger should be enabled when --enable-tagger is used")
+
+    @patch('main.IntegratedWorkflow')
+    @patch('main.IntegratedLogger')
+    def test_run_integrated_with_translate_abstract_enabled(self, mock_logger, mock_workflow):
+        """run-integratedで--enable-translate-abstractオプションが正しく動作することのテスト"""
+        # モックの設定
+        mock_logger_instance = Mock()
+        mock_workflow_instance = Mock()
+        
+        mock_logger.return_value = mock_logger_instance
+        mock_workflow.return_value = mock_workflow_instance
+        
+        # ワークフロー実行の成功をモック
+        mock_workflow_instance.execute.return_value = {
+            "status": "success",
+            "success": True,
+            "completed_steps": ["organize", "sync", "fetch", "ai-citation-support", "translate_abstract"],
+            "processed_papers": 2
+        }
+        
+        result = self.runner.invoke(main.cli, [
+            '--config', self.config_file,
+            'run-integrated',
+            '--enable-translate-abstract',
+            '--auto-approve'
+        ])
+        
+        self.assertEqual(result.exit_code, 0)
+        
+        # integratedワークフローが呼ばれていることを確認
+        mock_workflow.assert_called_once()
+        mock_workflow_instance.execute.assert_called_once()
+        
+        # executeの呼び出し引数を確認してtranslate_abstractが有効になっているかチェック
+        call_args = mock_workflow_instance.execute.call_args
+        options = call_args[1] if call_args and len(call_args) > 1 else {}
+        # translate_abstractが有効になっていることを確認
+        self.assertTrue(options.get('enable_translate_abstract', False), 
+                       "translate_abstract should be enabled when --enable-translate-abstract is used")
+
+    @patch('main.IntegratedWorkflow')
+    @patch('main.IntegratedLogger')
+    def test_run_integrated_with_both_ai_features_enabled(self, mock_logger, mock_workflow):
+        """run-integratedでAI機能両方を有効化できることのテスト"""
+        # モックの設定
+        mock_logger_instance = Mock()
+        mock_workflow_instance = Mock()
+        
+        mock_logger.return_value = mock_logger_instance
+        mock_workflow.return_value = mock_workflow_instance
+        
+        # ワークフロー実行の成功をモック
+        mock_workflow_instance.execute.return_value = {
+            "status": "success",
+            "success": True,
+            "completed_steps": ["organize", "sync", "fetch", "ai-citation-support", "tagger", "translate_abstract"],
+            "processed_papers": 2
+        }
+        
+        result = self.runner.invoke(main.cli, [
+            '--config', self.config_file,
+            'run-integrated',
+            '--enable-tagger',
+            '--enable-translate-abstract',
+            '--auto-approve'
+        ])
+        
+        self.assertEqual(result.exit_code, 0)
+        
+        # integratedワークフローが呼ばれていることを確認
+        mock_workflow.assert_called_once()
+        mock_workflow_instance.execute.assert_called_once()
+        
+        # executeの呼び出し引数を確認して両方が有効になっているかチェック
+        call_args = mock_workflow_instance.execute.call_args
+        options = call_args[1] if call_args and len(call_args) > 1 else {}
+        # 両方が有効になっていることを確認
+        self.assertTrue(options.get('enable_tagger', False), 
+                       "tagger should be enabled when --enable-tagger is used")
+        self.assertTrue(options.get('enable_translate_abstract', False), 
+                       "translate_abstract should be enabled when --enable-translate-abstract is used")
+
 
 class TestUtilityCommands(TestMainCLI):
     """ユーティリティコマンドのテスト"""

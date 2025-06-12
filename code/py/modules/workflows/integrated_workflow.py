@@ -26,6 +26,10 @@ from .citation_workflow import CitationWorkflow
 
 from ..ai_citation_support import AIMappingWorkflow
 
+# AI機能ワークフローのインポートを追加
+from ..ai_tagging import TaggerWorkflow
+from ..abstract_translation import TranslateAbstractWorkflow
+
 
 class IntegratedWorkflow:
     """
@@ -38,8 +42,8 @@ class IntegratedWorkflow:
     - 効率的な重複処理回避
     """
     
-    # 処理順序の定義
-    PROCESS_ORDER = ['organize', 'sync', 'fetch', 'ai-citation-support', 'final-sync']
+    # 処理順序の定義（仕様書v3.1に従い、AI機能を追加）
+    PROCESS_ORDER = ['organize', 'sync', 'fetch', 'ai-citation-support', 'tagger', 'translate_abstract', 'final-sync']
     
     # デフォルト設定
     DEFAULT_WORKSPACE_PATH = "/home/user/ManuscriptsManager"
@@ -61,8 +65,11 @@ class IntegratedWorkflow:
         self.organize_workflow = OrganizationWorkflow(config_manager, logger)
         self.sync_workflow = SyncCheckWorkflow(config_manager, logger)
         self.fetch_workflow = CitationWorkflow(config_manager, logger)
-
         self.ai_citation_support_workflow = AIMappingWorkflow(config_manager, logger)
+        
+        # AI機能ワークフローの初期化
+        self.tagger_workflow = TaggerWorkflow(config_manager, logger)
+        self.translate_abstract_workflow = TranslateAbstractWorkflow(config_manager, logger)
         
         self.logger.info("IntegratedWorkflow v3.0 initialized successfully")
     
@@ -199,6 +206,8 @@ class IntegratedWorkflow:
             'sync': 1,       # 1秒/論文  
             'fetch': 15,     # 15秒/論文
             'ai-citation-support': 5,     # 5秒/論文
+            'tagger': 5,      # 5秒/論文
+            'translate_abstract': 5,       # 5秒/論文
             'final-sync': 1               # 1秒/論文
         }
         
@@ -283,6 +292,21 @@ class IntegratedWorkflow:
                     plan['execution_plan'][step] = {
                         'status': 'skipped',
                         'reason': 'User requested skip'
+                    }
+                    continue
+                
+                # AI機能の条件チェック
+                if step == 'tagger' and not options.get('enable_tagger', False):
+                    plan['execution_plan'][step] = {
+                        'status': 'skipped',
+                        'reason': 'Tagger not enabled (use --enable-tagger to enable)'
+                    }
+                    continue
+                
+                if step == 'translate_abstract' and not options.get('enable_translate_abstract', False):
+                    plan['execution_plan'][step] = {
+                        'status': 'skipped',
+                        'reason': 'Abstract translation not enabled (use --enable-translate-abstract to enable)'
                     }
                     continue
                 
@@ -374,7 +398,9 @@ class IntegratedWorkflow:
         2. sync: 同期チェック
         3. fetch: 引用文献取得
         4. ai-citation-support: AI理解支援統合
-        5. final-sync: 最終同期チェック
+        5. tagger: タグ付け
+        6. translate_abstract: 要約翻訳
+        7. final-sync: 最終同期チェック
         
         Args:
             paths: 解決済みパス辞書
@@ -491,6 +517,34 @@ class IntegratedWorkflow:
                 success, result = self.fetch_workflow.execute(**step_options)
             elif step == 'ai-citation-support':
                 success, result = self._execute_ai_citation_support_step(papers, paths, **step_options)
+            elif step == 'tagger':
+                if options.get('enable_tagger', False):
+                    step_options.update({
+                        'clippings_dir': paths['clippings_dir'],
+                        'papers': papers
+                    })
+                    success, result = self.tagger_workflow.process_papers(papers, **step_options)
+                else:
+                    self.logger.info("Tagger disabled, skipping")
+                    return {
+                        'success': True,
+                        'processed_papers': papers,
+                        'details': {'status': 'skipped', 'message': 'Tagger disabled by user'}
+                    }
+            elif step == 'translate_abstract':
+                if options.get('enable_translate_abstract', False):
+                    step_options.update({
+                        'clippings_dir': paths['clippings_dir'],
+                        'papers': papers
+                    })
+                    success, result = self.translate_abstract_workflow.process_papers(papers, **step_options)
+                else:
+                    self.logger.info("Abstract translation disabled, skipping")
+                    return {
+                        'success': True,
+                        'processed_papers': papers,
+                        'details': {'status': 'skipped', 'message': 'Abstract translation disabled by user'}
+                    }
             elif step == 'final-sync':
                 # final-syncは通常のsyncと同じ処理を実行
                 success, result = self.sync_workflow.execute(**step_options)

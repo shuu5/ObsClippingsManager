@@ -507,6 +507,12 @@ def sync_check(ctx: Dict[str, Any],
 @click.option('--disable-enrichment',
               is_flag=True,
               help='Disable automatic metadata enrichment (not recommended)')
+@click.option('--enable-tagger',
+              is_flag=True,
+              help='Enable AI tagging functionality for automatic tag generation')
+@click.option('--enable-translate-abstract',
+              is_flag=True,
+              help='Enable AI abstract translation functionality for Japanese translation')
 @click.option('--auto-approve', '-y',
               is_flag=True,
               help='Automatically approve all operations')
@@ -523,6 +529,8 @@ def run_integrated(ctx: Dict[str, Any],
                   sync_first: bool,
                   fetch_citations: bool,
                   disable_enrichment: bool,
+                  enable_tagger: bool,
+                  enable_translate_abstract: bool,
                   auto_approve: bool):
     """
     統合ワークフローを実行 (v4.0対応)
@@ -556,7 +564,9 @@ def run_integrated(ctx: Dict[str, Any],
             'enable_ai_citation_support': enable_ai_citation_support,
             'sync_first': sync_first,
             'fetch_citations': fetch_citations,
-            'enable_enrichment': not disable_enrichment  # デフォルト有効、--disable-enrichmentで無効化
+            'enable_enrichment': not disable_enrichment,  # デフォルト有効、--disable-enrichmentで無効化
+            'enable_tagger': enable_tagger,
+            'enable_translate_abstract': enable_translate_abstract
         }
         
         # プラン表示モード
