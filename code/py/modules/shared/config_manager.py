@@ -87,17 +87,7 @@ DEFAULT_INTEGRATED_CONFIG = {
         "doi_required_warning": True
     },
     
-    # Citation Parser設定
-    "citation_parser": {
-        "default_pattern_type": "all",
-        "default_output_format": "unified",
-        "enable_link_extraction": False,
-        "expand_ranges": True,
-        "max_file_size_mb": 10,
-        "output_encoding": "utf-8",
-        "pattern_config_file": "modules/citation_parser/patterns.yaml",
-        "processing_timeout": 60
-    }
+
 }
 
 # バリデーションルール
@@ -142,15 +132,7 @@ VALIDATION_RULES = {
         "doi_required_warning": {"required": False, "type": "bool"}
     },
     
-    "citation_parser": {
-        "default_pattern_type": {"required": False, "type": "choice", "choices": ["basic", "advanced", "all"]},
-        "default_output_format": {"required": False, "type": "choice", "choices": ["unified", "table", "json"]},
-        "enable_link_extraction": {"required": False, "type": "bool"},
-        "expand_ranges": {"required": False, "type": "bool"},
-        "max_file_size_mb": {"required": False, "type": "int", "min": 1, "max": 100},
-        "output_encoding": {"required": False, "type": "choice", "choices": ["utf-8", "ascii", "latin-1"]},
-        "processing_timeout": {"required": False, "type": "int", "min": 10, "max": 300}
-    }
+
 }
 
 
@@ -366,12 +348,7 @@ class ConfigManager:
             "dry_run": self.config["common"]["dry_run"]
         }
     
-    def get_citation_parser_config(self) -> Dict[str, Any]:
-        """Citation Parser用設定を取得"""
-        return {
-            **self.config.get("citation_parser", {}),
-            "dry_run": self.config["common"]["dry_run"]
-        }
+
     
     def get_all_configs(self) -> Dict[str, Dict[str, Any]]:
         """すべての設定セクションを取得"""
@@ -379,6 +356,5 @@ class ConfigManager:
             "common": self.get_common_config(),
             "citation_fetcher": self.get_citation_fetcher_config(),
             "rename_mkdir": self.get_rename_mkdir_config(),
-            "sync_check": self.get_sync_check_config(),
-            "citation_parser": self.get_citation_parser_config()
+            "sync_check": self.get_sync_check_config()
         } 

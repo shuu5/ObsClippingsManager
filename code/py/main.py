@@ -20,7 +20,7 @@ sys.path.insert(0, str(project_root))
 from modules.shared.config_manager import ConfigManager
 from modules.shared.logger import IntegratedLogger
 from modules.workflows.workflow_manager import WorkflowManager, WorkflowType, create_workflow_execution_summary
-# from modules.workflows.citation_parser_workflow import CitationParserWorkflow  # Deprecated in v3.0
+
 from modules.workflows.enhanced_integrated_workflow import EnhancedIntegratedWorkflow
 from modules.workflows.integrated_workflow import IntegratedWorkflow
 from modules.shared.exceptions import ObsClippingsError, ConfigError
@@ -744,7 +744,7 @@ def ai_mapping(ctx: Dict[str, Any],
 
 @cli.command()
 @click.option('--workflow-type', '-w',
-              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'citation_parser', 'ai_mapping', 'integrated'], case_sensitive=False),
+              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'ai_mapping', 'integrated'], case_sensitive=False),
               help='Validate specific workflow configuration')
 @pass_context
 def validate_config(ctx: Dict[str, Any], workflow_type: Optional[str]):
@@ -798,7 +798,7 @@ def validate_config(ctx: Dict[str, Any], workflow_type: Optional[str]):
               default=10,
               help='Number of recent executions to show')
 @click.option('--workflow-type', '-w',
-              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'citation_parser', 'ai_mapping', 'integrated'], case_sensitive=False),
+              type=click.Choice(['citation_fetching', 'file_organization', 'sync_check', 'ai_mapping', 'integrated'], case_sensitive=False),
               help='Filter by workflow type')
 @pass_context
 def show_history(ctx: Dict[str, Any], limit: int, workflow_type: Optional[str]):

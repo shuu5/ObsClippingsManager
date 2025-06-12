@@ -25,7 +25,7 @@ class EnhancedIntegratedWorkflow:
     """
     
     # 処理順序の定義
-    PROCESS_ORDER = ['organize', 'sync', 'fetch', 'parse']
+    PROCESS_ORDER = ['organize', 'sync', 'fetch']
     
     def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger):
         """
@@ -58,8 +58,7 @@ class EnhancedIntegratedWorkflow:
             analysis = {
                 'needs_organize': [],
                 'needs_sync': [],
-                'needs_fetch': [],
-                'needs_parse': []
+                'needs_fetch': []
             }
             
             # BibTeXファイルから論文リストを取得
@@ -76,9 +75,6 @@ class EnhancedIntegratedWorkflow:
             analysis['needs_fetch'] = self.status_manager.get_papers_needing_processing(
                 clippings_dir, 'fetch', include_failed=True
             )
-            analysis['needs_parse'] = self.status_manager.get_papers_needing_processing(
-                clippings_dir, 'parse', include_failed=True
-            )
             
             # BibTeXにあるが状態管理に記録されていない論文も追加
             existing_papers = set()
@@ -91,7 +87,6 @@ class EnhancedIntegratedWorkflow:
                 analysis['needs_organize'].extend(missing_papers)
                 analysis['needs_sync'].extend(missing_papers)
                 analysis['needs_fetch'].extend(missing_papers)
-                analysis['needs_parse'].extend(missing_papers)
             
             total_work = sum(len(papers) for papers in analysis.values())
             self.logger.info(f"Status analysis completed: {total_work} processing tasks identified")
@@ -268,8 +263,7 @@ class EnhancedIntegratedWorkflow:
             workflow_type_map = {
                 'organize': WorkflowType.FILE_ORGANIZATION,
                 'sync': WorkflowType.SYNC_CHECK,
-                'fetch': WorkflowType.CITATION_FETCHING,
-                'parse': WorkflowType.CITATION_PARSER
+                'fetch': WorkflowType.CITATION_FETCHING
             }
             
             if process_type not in workflow_type_map:
@@ -296,9 +290,6 @@ class EnhancedIntegratedWorkflow:
                     'target_papers': papers,
                     'use_sync_integration': True
                 })
-            elif process_type == 'parse':
-                # parse処理は論文単位では実行できないため、全体実行
-                pass
             
             self.logger.info(f"Executing {process_type} with bibtex_file={bibtex_file}, clippings_dir={clippings_dir}")
             

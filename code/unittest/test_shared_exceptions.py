@@ -169,58 +169,7 @@ class TestWorkflowErrors(unittest.TestCase):
         self.assertIsInstance(error, ObsClippingsError)
 
 
-class TestCitationParserErrors(unittest.TestCase):
-    """引用パーサーエラーのテスト"""
-    
-    def test_citation_parser_error_basic(self):
-        """基本的な引用パーサーエラーテスト"""
-        message = "Citation parsing failed"
-        error = CitationParserError(message)
-        
-        self.assertEqual(str(error), message)
-        self.assertIsInstance(error, WorkflowError)
-        self.assertIsInstance(error, ObsClippingsError)
-    
-    def test_invalid_citation_pattern_error(self):
-        """無効引用パターンエラーのテスト"""
-        message = "Invalid citation pattern"
-        pattern = "[invalid"
-        position = 10
-        
-        error = InvalidCitationPatternError(
-            message,
-            pattern=pattern,
-            position=position
-        )
-        
-        self.assertEqual(str(error), message)
-        self.assertEqual(error.pattern, pattern)
-        self.assertEqual(error.position, position)
-        self.assertIsInstance(error, CitationParserError)
-    
-    def test_pattern_detection_error(self):
-        """パターン検出エラーのテスト"""
-        message = "Pattern detection failed"
-        error = PatternDetectionError(message)
-        
-        self.assertEqual(str(error), message)
-        self.assertIsInstance(error, CitationParserError)
-    
-    def test_format_conversion_error(self):
-        """フォーマット変換エラーのテスト"""
-        message = "Format conversion failed"
-        error = FormatConversionError(message)
-        
-        self.assertEqual(str(error), message)
-        self.assertIsInstance(error, CitationParserError)
-    
-    def test_link_extraction_error(self):
-        """リンク抽出エラーのテスト"""
-        message = "Link extraction failed"
-        error = LinkExtractionError(message)
-        
-        self.assertEqual(str(error), message)
-        self.assertIsInstance(error, CitationParserError)
+
 
 
 class TestExceptionInteraction(unittest.TestCase):
@@ -249,8 +198,7 @@ class TestExceptionInteraction(unittest.TestCase):
             FileOperationError("File error"),
             ValidationError("Validation error"),
             WorkflowError("Workflow error"),
-            SyncCheckError("Sync check error"),
-            CitationParserError("Citation parser error")
+            SyncCheckError("Sync check error")
         ]
         
         # すべてが基底例外から継承されていることを確認

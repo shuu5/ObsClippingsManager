@@ -2,7 +2,7 @@
 AI理解支援引用文献統合データ構造 v4.0
 
 完全な引用文献情報を管理するためのデータ構造を定義します。
-enhanced_citation_parser_specification.md v4.0準拠
+ai_tagging_translation_specification.md v4.0準拠
 """
 
 from dataclasses import dataclass, field
@@ -15,7 +15,7 @@ class CitationInfo:
     """
     引用文献情報（完全な論文情報）
     
-    enhanced_citation_parser_specification.md v4.0に準拠
+    ai_tagging_translation_specification.md v4.0に準拠
     """
     citation_key: str = ""           # BibTeX citation_key
     title: str = ""                  # 論文タイトル
@@ -50,7 +50,7 @@ class CitationMapping:
     """
     引用番号と完全な論文情報のマッピング
     
-    enhanced_citation_parser_specification.md v4.0に準拠
+    ai_tagging_translation_specification.md v4.0に準拠
     """
     index_map: Dict[int, CitationInfo] = field(default_factory=dict)  # 引用番号 → 完全な文献情報
     total_citations: int = 0                 # 総引用数
@@ -58,18 +58,6 @@ class CitationMapping:
     references_file: str = ""                # 元のBibTeXファイル
     mapping_version: str = "2.0"             # マッピングバージョン
     is_self_contained: bool = False          # 自己完結フラグ
-
-    def to_yaml_dict(self) -> Dict[str, Any]:
-        """YAML出力用の辞書形式に変換（deprecated - 新しいYAML構造では使用しない）"""
-        # 新しいYAML構造では citations と citation_metadata を直接作成するため
-        # このメソッドは互換性のためにのみ保持
-        return {
-            'index_map': {str(k): v.citation_key if hasattr(v, 'citation_key') else str(v) for k, v in self.index_map.items()},
-            'total_citations': self.total_citations,
-            'last_updated': self.last_updated,
-            'references_file': self.references_file,
-            'mapping_version': self.mapping_version
-        }
 
 
 # AIReadableDocumentは削除されました

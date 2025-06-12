@@ -12,7 +12,7 @@ from datetime import datetime
 from .citation_workflow import CitationWorkflow
 from .organization_workflow import OrganizationWorkflow
 from .sync_check_workflow import SyncCheckWorkflow
-# from .citation_parser_workflow import CitationParserWorkflow  # Deprecated in v3.0
+
 from ..ai_citation_support.ai_mapping_workflow import AIMappingWorkflow
 
 
@@ -21,7 +21,7 @@ class WorkflowType(Enum):
     CITATION_FETCHING = "citation_fetching"
     FILE_ORGANIZATION = "file_organization"
     SYNC_CHECK = "sync_check"
-    # CITATION_PARSER = "citation_parser"  # Deprecated in v3.0
+    
     AI_MAPPING = "ai_mapping"
     INTEGRATED = "integrated"
 
@@ -42,7 +42,7 @@ class WorkflowManager:
         self.citation_workflow = CitationWorkflow(config_manager, logger)
         self.organization_workflow = OrganizationWorkflow(config_manager, logger)
         self.sync_check_workflow = SyncCheckWorkflow(config_manager, logger)
-        # self.citation_parser_workflow = CitationParserWorkflow(config_manager, logger)  # Deprecated in v3.0
+
         self.ai_mapping_workflow = AIMappingWorkflow(config_manager)
         
         # 実行履歴
@@ -83,8 +83,8 @@ class WorkflowManager:
             elif workflow_type == WorkflowType.SYNC_CHECK:
                 success, results = self._execute_sync_check_workflow(options)
                 
-            # elif workflow_type == WorkflowType.CITATION_PARSER:  # Deprecated in v3.0
-            #     success, results = self._execute_citation_parser_workflow(options)
+
+            
                 
             elif workflow_type == WorkflowType.AI_MAPPING:
                 success, results = self._execute_ai_mapping_workflow(options)
@@ -174,18 +174,6 @@ class WorkflowManager:
         self.logger.info("Executing sync check workflow")
         return self.sync_check_workflow.execute(**options)
     
-    # def _execute_citation_parser_workflow(self, options: Dict[str, Any]) -> Tuple[bool, Dict[str, Any]]:  # Deprecated in v3.0
-    #     """
-    #     Citation Parser Workflowの実行
-    #     
-    #     Args:
-    #         options: 実行オプション
-    #         
-    #     Returns:
-    #         実行結果
-    #     """
-    #     self.logger.info("Executing citation parser workflow")
-    #     return self.citation_parser_workflow.execute(**options)
     
     def _execute_ai_mapping_workflow(self, options: Dict[str, Any]) -> Tuple[bool, Dict[str, Any]]:
         """

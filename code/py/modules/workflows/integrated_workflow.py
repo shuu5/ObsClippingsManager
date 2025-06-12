@@ -22,7 +22,7 @@ from ..shared.exceptions import ObsClippingsError
 from .organization_workflow import OrganizationWorkflow
 from .sync_check_workflow import SyncCheckWorkflow
 from .citation_workflow import CitationWorkflow
-# from .citation_parser_workflow import CitationParserWorkflow  # Deprecated in v3.0
+
 
 from ..ai_citation_support import AIMappingWorkflow
 
@@ -61,7 +61,7 @@ class IntegratedWorkflow:
         self.organize_workflow = OrganizationWorkflow(config_manager, logger)
         self.sync_workflow = SyncCheckWorkflow(config_manager, logger)
         self.fetch_workflow = CitationWorkflow(config_manager, logger)
-        # self.parse_workflow = CitationParserWorkflow(config_manager, logger)  # Deprecated in v3.0
+
         self.ai_citation_support_workflow = AIMappingWorkflow(config_manager, logger)
         
         self.logger.info("IntegratedWorkflow v3.0 initialized successfully")

@@ -50,14 +50,15 @@ class TestDataStructures(unittest.TestCase):
             total_citations=2
         )
         
-        yaml_dict = mapping.to_yaml_dict()
-        self.assertIn('references_file', yaml_dict)
-        self.assertIn('index_map', yaml_dict)
-        self.assertEqual(yaml_dict['total_citations'], 2)
+        # to_yaml_dictメソッドは削除されたため、直接属性をテスト
+        self.assertEqual(mapping.references_file, "/test/references.bib")
+        self.assertEqual(mapping.total_citations, 2)
+        self.assertIn(1, mapping.index_map)
+        self.assertIn(2, mapping.index_map)
         
-        # 基本構造確認（from_yaml_dictメソッドは新しいYAML構造では不要）
-        self.assertEqual(yaml_dict['index_map']['1'], "smith2023")
-        self.assertEqual(yaml_dict['index_map']['2'], "doe2024")
+        # CitationInfoオブジェクトの確認
+        self.assertEqual(mapping.index_map[1].citation_key, "smith2023")
+        self.assertEqual(mapping.index_map[2].citation_key, "doe2024")
     
     def test_citation_info_reference_line(self):
         """CitationInfoのReference Line生成テスト"""

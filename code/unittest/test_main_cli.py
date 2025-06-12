@@ -345,82 +345,7 @@ class TestSyncCheckCommand(TestMainCLI):
         self.assertFalse(options.get('sort_by_year'))
 
 
-class TestParseCitationsCommand(TestMainCLI):
-    """parse-citationsコマンドのテスト"""
-    
-    @patch('main.CitationParserWorkflow')
-    @patch('main.IntegratedLogger')
-    @patch('main.ConfigManager')
-    def test_parse_citations_basic(self, mock_config, mock_logger, mock_parser):
-        """基本的な引用文献解析のテスト"""
-        # モックの設定
-        mock_config_instance = Mock()
-        mock_logger_instance = Mock()
-        mock_parser_instance = Mock()
-        
-        mock_config.return_value = mock_config_instance
-        mock_logger.return_value = mock_logger_instance
-        mock_parser.return_value = mock_parser_instance
-        
-        # ワークフロー実行の成功をモック
-        mock_parser_instance.execute.return_value = (True, {
-            "converted_citations": 3,
-            "processed_content": "Test output"
-        })
-        
-        result = self.runner.invoke(main.cli, [
-            '--config', self.config_file,
-            'parse-citations',
-            '--input-file', self.markdown_file,
-            '--pattern-type', 'all',
-            '--output-format', 'unified'
-        ])
-        
-        self.assertEqual(result.exit_code, 0)
-        mock_parser_instance.execute.assert_called_once()
-    
-    @patch('main.CitationParserWorkflow')
-    @patch('main.IntegratedLogger')
-    @patch('main.ConfigManager')
-    def test_parse_citations_with_output_file(self, mock_config, mock_logger, mock_parser):
-        """出力ファイル指定時の引用文献解析テスト"""
-        # モックの設定
-        mock_config_instance = Mock()
-        mock_logger_instance = Mock()
-        mock_parser_instance = Mock()
-        
-        mock_config.return_value = mock_config_instance
-        mock_logger.return_value = mock_logger_instance
-        mock_parser.return_value = mock_parser_instance
-        
-        # ワークフロー実行の成功をモック
-        mock_parser_instance.execute.return_value = (True, {
-            "converted_citations": 3,
-            "processed_content": "Test output"
-        })
-        
-        output_file = os.path.join(self.temp_dir, "output.md")
-        
-        result = self.runner.invoke(main.cli, [
-            '--config', self.config_file,
-            'parse-citations',
-            '--input-file', self.markdown_file,
-            '--output-file', output_file,
-            '--pattern-type', 'basic',
-            '--output-format', 'table',
-            '--enable-link-extraction'
-        ])
-        
-        self.assertEqual(result.exit_code, 0)
-        mock_parser_instance.execute.assert_called_once()
-        
-        # オプションが正しく渡されることを確認
-        call_args = mock_parser_instance.execute.call_args
-        kwargs = call_args[1] if len(call_args) > 1 else call_args[0]
-        self.assertEqual(kwargs.get('output_file'), output_file)
-        self.assertEqual(kwargs.get('pattern_type'), 'basic')
-        self.assertEqual(kwargs.get('output_format'), 'table')
-        self.assertTrue(kwargs.get('enable_link_extraction'))
+
 
 
 class TestIntegratedCommand(TestMainCLI):
@@ -458,37 +383,7 @@ class TestIntegratedCommand(TestMainCLI):
         self.assertEqual(result.exit_code, 0)
         mock_workflow_instance.execute.assert_called_once()
     
-    @patch('main.WorkflowManager')
-    @patch('main.IntegratedLogger')
-    @patch('main.ConfigManager')
-    def test_run_integrated_with_citation_parser(self, mock_config, mock_logger, mock_workflow):
-        """引用文献解析を含む統合ワークフローのテスト"""
-        # モックの設定
-        mock_config_instance = Mock()
-        mock_logger_instance = Mock()
-        mock_workflow_instance = Mock()
-        
-        mock_config.return_value = mock_config_instance
-        mock_logger.return_value = mock_logger_instance
-        mock_workflow.return_value = mock_workflow_instance
-        
-        # ワークフロー実行の成功をモック
-        mock_workflow_instance.execute.return_value = (True, {
-            "citation_parser": {"converted_citations": 3},
-            "citation_fetching": {"processed_papers": 1}
-        })
-        
-        result = self.runner.invoke(main.cli, [
-            '--config', self.config_file,
-            'run-integrated',
-            '--include-citation-parser',
-            '--citation-parser-input', self.markdown_file,
-            '--fetch-citations',
-            '--continue-on-failure'
-        ])
-        
-        self.assertEqual(result.exit_code, 0)
-        mock_workflow_instance.execute.assert_called_once()
+
     
     @patch('main.WorkflowManager')
     @patch('main.IntegratedLogger')
