@@ -1,10 +1,10 @@
-# AI Tagging & Translation機能仕様書 v3.1
+# AI Tagging & Translation機能仕様書 v3.2
 
 ## 概要
-Claude API 3.5 Sonnetを活用したAI論文理解支援機能として、自動タグ生成（Tagger）と要約翻訳（Abstract Translation）機能を提供。論文の分類・検索性向上と日本語での理解促進を実現します。
+Claude API 3.5 Haiku (claude-3-5-haiku-20241022) を活用したAI論文理解支援機能として、自動タグ生成（Tagger）と要約翻訳（Abstract Translation）機能を提供。論文の分類・検索性向上と日本語での理解促進を実現します。
 
 ## 基本原理
-- **Claude 3.5 Sonnet**による高品質な論文理解
+- **Claude 3.5 Haiku**による高品質で高速な論文理解
 - **バッチ処理**による効率的な大量処理
 - **並列処理**による処理時間短縮
 - **状態管理**による処理済みファイルのスキップ
@@ -146,7 +146,7 @@ class ClaudeAPIClient:
     def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger):
         self.config_manager = config_manager
         self.logger = logger.get_logger('ClaudeAPIClient')
-        self.model = "claude-3-5-sonnet-20241022"
+        self.model = "claude-3-5-haiku-20241022"
         
     async def generate_tags_batch(self, papers_content: List[str]) -> List[List[str]]:
         """バッチタグ生成"""
@@ -197,22 +197,22 @@ Original Abstract:
 ```yaml
 ai_generation:
   tagger:
-    batch_size: 5
+    batch_size: 8                # Haikuの高速処理により増加
     parallel_processing: true
     tag_count_range: [10, 20]
     retry_attempts: 3
-    request_delay: 1.0
+    request_delay: 0.5           # Haikuの高速応答により短縮
   translate_abstract:
-    batch_size: 3
+    batch_size: 5                # Haikuの高速処理により増加
     parallel_processing: true
     retry_attempts: 3
-    request_delay: 1.5
+    request_delay: 0.8           # Haikuの高速応答により短縮
 ```
 
 ### API設定
 ```yaml
 claude_api:
-  model: "claude-3-5-sonnet-20241022"
+  model: "claude-3-5-haiku-20241022"
   api_key: "your-api-key"
   timeout: 30
   max_retries: 3
@@ -276,4 +276,4 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
 
 ---
 
-**AI Tagging & Translation機能仕様書バージョン**: 3.1.0 
+**AI Tagging & Translation機能仕様書バージョン**: 3.2.0 

@@ -8,12 +8,20 @@ dependencies = [
     "anthropic>=0.52.2",
     "beautifulsoup4>=4.13.4",
     "bibtexparser>=1.4.3",
+    "en-core-web-sm",
+    "fuzzywuzzy[speedup]>=0.18.0",
     "lxml>=5.4.0",
     "markdownify>=1.1.0",
     "markitdown>=0.1.2",
     "metapub>=0.5.12",
+    "python-levenshtein>=0.25.0",
     "pyyaml>=6.0.2",
     "requests>=2.32.3",
+    "scipdf",
     "selenium>=4.33.0",
     "webdriver-manager>=4.0.2",
 ]
+
+[tool.uv.sources]
+scipdf = { git = "https://github.com/titipata/scipdf_parser.git" }
+en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl" }
