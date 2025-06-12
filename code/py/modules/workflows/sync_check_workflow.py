@@ -8,6 +8,8 @@ BibTeXファイルとClippingsディレクトリの双方向整合性をチェ�
 from typing import Dict, List, Any, Tuple, Optional
 from pathlib import Path
 import click
+import os
+from datetime import datetime, timezone
 
 from ..shared.exceptions import (
     SyncCheckError, BibTeXParsingError, ClippingsAccessError, DOIProcessingError
@@ -362,3 +364,130 @@ class SyncCheckWorkflow:
         }
         
         return statistics
+    
+    def create_missing_directories(self, missing_papers: List[Dict], options: Dict) -> Dict[str, Any]:
+        """
+        不足している論文のディレクトリとMarkdownファイルを作成
+        
+        Args:
+            missing_papers: 不足論文の情報リスト
+            options: 実行オプション
+            
+        Returns:
+            Dict[str, Any]: 作成結果の詳細
+        """
+        result = {
+            'created_directories': [],
+            'created_files': [],
+            'creation_errors': [],
+            'dry_run': options.get('dry_run', False)
+        }
+        
+        if not missing_papers:
+            self.logger.info("No missing directories to create")
+            return result
+        
+        dry_run = options.get('dry_run', False)
+        clippings_path = Path(self.current_clippings_dir)
+        
+        for paper in missing_papers:
+            citation_key = paper['citation_key']
+            try:
+                # ディレクトリ作成
+                paper_dir = clippings_path / citation_key
+                
+                if dry_run:
+                    self.logger.info(f"[DRY RUN] Would create directory: {paper_dir}")
+                    result['created_directories'].append(str(paper_dir))
+                else:
+                    paper_dir.mkdir(parents=True, exist_ok=True)
+                    result['created_directories'].append(str(paper_dir))
+                    self.logger.info(f"Created directory: {paper_dir}")
+                
+                # Markdownファイル作成
+                markdown_file = paper_dir / f"{citation_key}.md"
+                
+                if dry_run:
+                    self.logger.info(f"[DRY RUN] Would create file: {markdown_file}")
+                    result['created_files'].append(str(markdown_file))
+                else:
+                    # Markdownファイルの内容を生成
+                    markdown_content = self._generate_markdown_content(paper)
+                    
+                    with open(markdown_file, 'w', encoding='utf-8') as f:
+                        f.write(markdown_content)
+                    
+                    result['created_files'].append(str(markdown_file))
+                    self.logger.info(f"Created markdown file: {markdown_file}")
+                
+            except Exception as e:
+                error_msg = f"Failed to create directory/file for {citation_key}: {e}"
+                result['creation_errors'].append(error_msg)
+                self.logger.error(error_msg)
+        
+        # 結果報告
+        if not dry_run:
+            click.echo(f"\n📁 Created {len(result['created_directories'])} directories and {len(result['created_files'])} markdown files")
+            if result['creation_errors']:
+                click.echo(f"❌ {len(result['creation_errors'])} creation errors occurred")
+        else:
+            click.echo(f"\n📁 [DRY RUN] Would create {len(result['created_directories'])} directories and {len(result['created_files'])} markdown files")
+        
+        return result
+    
+    def _generate_markdown_content(self, paper: Dict[str, str]) -> str:
+        """
+        論文のMarkdownファイル内容を生成
+        
+        Args:
+            paper: 論文情報辞書
+            
+        Returns:
+            str: Markdownファイルの内容
+        """
+        citation_key = paper['citation_key']
+        title = paper.get('title', 'Unknown Title')
+        authors = paper.get('authors', 'Unknown Authors')
+        year = paper.get('year', 'Unknown Year')
+        doi = paper.get('doi', '')
+        
+        # DOIクリーニング
+        doi_clean = doi.strip().replace('\n', '').replace('\r', '') if doi else ''
+        
+        # YAMLヘッダーの生成
+        yaml_header = f"""---
+obsclippings_metadata:
+  citation_key: "{citation_key}"
+  doi: "{doi_clean}"
+  processing_status:
+    organize: "completed"
+    sync: "pending"
+    fetch: "pending"
+    ai-citation-support: "pending"
+    tagger: "pending"
+    translate_abstract: "pending"
+    final-sync: "pending"
+  last_updated: "{datetime.now(timezone.utc).isoformat()}"
+  workflow_version: "3.1"
+---
+
+# {title}
+
+**Authors:** {authors}  
+**Year:** {year}  
+**DOI:** {doi_clean}
+
+## Abstract
+
+[論文のアブストラクトがここに追加されます]
+
+## Notes
+
+[研究ノートがここに追加されます]
+
+## Citations
+
+[引用情報がここに追加されます]
+"""
+        
+        return yaml_header

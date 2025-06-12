@@ -12,6 +12,7 @@ __author__ = "ObsClippingsManager Team"
 from .bibtex_parser import BibTeXParser, parse_bibtex_file, normalize_title, extract_doi_from_entry
 from .config_manager import ConfigManager, DEFAULT_INTEGRATED_CONFIG
 from .logger import IntegratedLogger
+from .claude_api_client import ClaudeAPIClient
 from .utils import (
     safe_file_operation, 
     create_directory_if_not_exists, 
@@ -36,6 +37,7 @@ __all__ = [
     'BibTeXParser',
     'ConfigManager',
     'IntegratedLogger',
+    'ClaudeAPIClient',
     'ProgressTracker',
     
     # Functions

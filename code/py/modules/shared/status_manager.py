@@ -45,7 +45,7 @@ class StatusManager:
     """
     
     # 処理タイプ定義
-    PROCESS_TYPES = ['organize', 'sync', 'fetch', 'ai-citation-support', 'final-sync']
+    PROCESS_TYPES = ['organize', 'sync', 'fetch', 'ai-citation-support', 'tagger', 'translate_abstract', 'final-sync']
     
     def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger):
         """
@@ -181,6 +181,8 @@ class StatusManager:
                     'sync': ProcessStatus.PENDING.value,
                     'fetch': ProcessStatus.PENDING.value,
                     'ai-citation-support': ProcessStatus.PENDING.value,
+                    'tagger': ProcessStatus.PENDING.value,
+                    'translate_abstract': ProcessStatus.PENDING.value,
                     'final-sync': ProcessStatus.PENDING.value
                 },
                 'last_updated': datetime.now(timezone.utc).isoformat(),

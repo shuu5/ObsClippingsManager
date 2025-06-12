@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from modules.ai_tagging.claude_api_client import ClaudeAPIClient  # 共通APIクライアント使用
 from modules.shared.config_manager import ConfigManager
 from modules.shared.logger import IntegratedLogger
+from modules.shared.claude_api_client import ClaudeAPIClient
 from modules.shared.exceptions import ObsClippingsError
 from modules.shared.utils import read_yaml_header, update_yaml_header
 
@@ -138,7 +138,7 @@ class TranslateAbstractWorkflow:
     
     def extract_abstract(self, paper_content: str) -> str:
         """
-        論文からabstract部分を抽出
+        論文からabstract部分を抽出（section parsing機能連携対応）
         
         Args:
             paper_content: 論文の全内容
@@ -147,11 +147,12 @@ class TranslateAbstractWorkflow:
             抽出されたabstract内容
         """
         try:
-            # YAMLヘッダー部分を除去
+            # YAMLヘッダー部分を解析してsection情報をチェック
             lines = paper_content.split('\n')
+            yaml_section = []
             content_start = 0
             
-            # YAML frontmatterをスキップ
+            # YAML frontmatterを抽出
             if lines and lines[0].strip() == '---':
                 yaml_end = False
                 for i, line in enumerate(lines[1:], 1):
@@ -159,10 +160,26 @@ class TranslateAbstractWorkflow:
                         content_start = i + 1
                         yaml_end = True
                         break
-                if not yaml_end:
-                    content_start = 0
+                    yaml_section.append(line)
+                
+                if yaml_end and yaml_section:
+                    try:
+                        # YAMLヘッダーを解析
+                        import yaml
+                        yaml_header = yaml.safe_load('\n'.join(yaml_section))
+                        
+                        # section parsing結果からabstractを抽出
+                        if yaml_header and 'paper_structure' in yaml_header:
+                            abstract_content = self._extract_abstract_from_sections(
+                                yaml_header['paper_structure'], lines[content_start:]
+                            )
+                            if abstract_content:
+                                self.logger.info("Abstract extracted using section parsing information")
+                                return abstract_content.strip()
+                    except Exception as e:
+                        self.logger.debug(f"Failed to parse YAML header for section info: {e}")
             
-            # コンテンツ部分を結合
+            # フォールバック: 従来の正規表現ベースの抽出
             content_lines = lines[content_start:]
             content = '\n'.join(content_lines)
             
@@ -186,6 +203,41 @@ class TranslateAbstractWorkflow:
             
         except Exception as e:
             self.logger.error(f"Failed to extract abstract: {e}")
+            return ""
+    
+    def _extract_abstract_from_sections(self, paper_structure: Dict[str, Any], content_lines: List[str]) -> str:
+        """
+        セクション構造情報からabstractを抽出
+        
+        Args:
+            paper_structure: 論文構造情報
+            content_lines: Markdown本文の行リスト
+            
+        Returns:
+            抽出されたabstract内容
+        """
+        try:
+            sections = paper_structure.get('sections', [])
+            
+            for section in sections:
+                if section.get('section_type') == 'abstract':
+                    start_line = section.get('start_line', 1) - 1  # 0-indexed
+                    end_line = section.get('end_line', len(content_lines))
+                    
+                    # セクション範囲のコンテンツを抽出
+                    if start_line >= 0 and end_line <= len(content_lines):
+                        abstract_lines = content_lines[start_line:end_line]
+                        abstract_content = '\n'.join(abstract_lines).strip()
+                        
+                        # セクションタイトル行を除去
+                        abstract_content = re.sub(r'^#+\s*[Aa]bstract\s*\n?', '', abstract_content)
+                        
+                        return abstract_content
+            
+            return ""
+            
+        except Exception as e:
+            self.logger.error(f"Failed to extract abstract from sections: {e}")
             return ""
     
     def process_single_paper(self, paper_file: str) -> Dict[str, Any]:

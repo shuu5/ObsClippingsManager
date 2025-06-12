@@ -26,7 +26,7 @@
 
 ### 処理フロー v3.1
 ```
-organize → sync → fetch (with automatic metadata enrichment) → ai-citation-support → tagger → translate_abstract → final-sync
+organize → sync → fetch (with automatic metadata enrichment) → section-parsing → ai-citation-support → enhanced-tagger → enhanced-translate → ochiai-format → final-sync
 ```
 
 ### メタデータ自動補完システム
@@ -59,15 +59,19 @@ bibtex_file: "{workspace_path}/CurrentManuscript.bib"
 clippings_dir: "{workspace_path}/Clippings"
 output_dir: "{workspace_path}/Clippings"
 
-# AI機能設定（デフォルト無効）
+# AI機能設定（デフォルト有効）
 ai_generation:
   tagger:
-    enabled: false
-    model: "claude-3-5-sonnet-20241022"
+    enabled: true
+    model: "claude-3-5-haiku-20241022"
     batch_size: 5
   translate_abstract:
-    enabled: false
-    model: "claude-3-5-sonnet-20241022"
+    enabled: true
+    model: "claude-3-5-haiku-20241022"
+    batch_size: 3
+  ochiai_format:
+    enabled: true
+    model: "claude-3-5-haiku-20241022"
     batch_size: 3
 ```
 
@@ -92,9 +96,11 @@ class IntegratedWorkflow:
         self.organize_workflow = OrganizationWorkflow(config_manager, logger)
         self.sync_workflow = SyncCheckWorkflow(config_manager, logger)
         self.fetch_workflow = CitationWorkflow(config_manager, logger)
+        self.section_parser_workflow = SectionParserWorkflow(config_manager, logger)
         self.ai_citation_support_workflow = AICitationSupportWorkflow(config_manager, logger)
         self.tagger_workflow = TaggerWorkflow(config_manager, logger)
         self.translate_abstract_workflow = TranslateAbstractWorkflow(config_manager, logger)
+        self.ochiai_format_workflow = OchiaiFormatWorkflow(config_manager, logger)
     
     def execute(self, **options) -> Dict[str, Any]:
         """統合ワークフロー実行"""

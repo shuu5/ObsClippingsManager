@@ -13,16 +13,16 @@ from .exceptions import ConfigError, ValidationError
 
 # デフォルト設定
 DEFAULT_INTEGRATED_CONFIG = {
-    # 共通設定
+    # 共通設定 - 仕様書v3.1に従いデフォルトワークスペースを設定
     "common": {
-        "workspace_path": "",
-        "bibtex_file": "TestManuscripts/CurrentManuscript.bib",
-        "clippings_dir": "TestManuscripts/Clippings",
-        "output_dir": "TestManuscripts/References",
+        "workspace_path": "/home/user/ManuscriptsManager",
+        "bibtex_file": "{workspace_path}/CurrentManuscript.bib",
+        "clippings_dir": "{workspace_path}/Clippings",
+        "output_dir": "{workspace_path}/Clippings",
         "log_level": "INFO",
         "log_file": "obsclippings.log",
         "backup_enabled": True,
-        "backup_dir": "TestManuscripts/backups",
+        "backup_dir": "{workspace_path}/backups",
         "dry_run": False,
         "verbose": False
     },
@@ -87,20 +87,25 @@ DEFAULT_INTEGRATED_CONFIG = {
         "doi_required_warning": True
     },
     
-    # AI機能設定（v3.1）
+    # AI機能設定（v3.1） - デフォルト有効
     "ai_generation": {
         "claude_api_key": "",
         "tagger": {
             "enabled": True,
-            "model": "claude-3-5-sonnet-20241022",
+            "model": "claude-3-5-haiku-20241022",
             "batch_size": 5,
             "tag_count_range": [10, 20]
         },
         "translate_abstract": {
             "enabled": True,
-            "model": "claude-3-5-sonnet-20241022",
+            "model": "claude-3-5-haiku-20241022",
             "batch_size": 3,
             "preserve_formatting": True
+        },
+        "ochiai_format": {
+            "enabled": True,
+            "model": "claude-3-5-haiku-20241022",
+            "batch_size": 3
         }
     }
 
@@ -156,7 +161,10 @@ VALIDATION_RULES = {
         "tagger.batch_size": {"required": False, "type": "int", "min": 1, "max": 10},
         "translate_abstract.enabled": {"required": False, "type": "bool"},
         "translate_abstract.model": {"required": False, "type": "str"},
-        "translate_abstract.batch_size": {"required": False, "type": "int", "min": 1, "max": 10}
+        "translate_abstract.batch_size": {"required": False, "type": "int", "min": 1, "max": 10},
+        "ochiai_format.enabled": {"required": False, "type": "bool"},
+        "ochiai_format.model": {"required": False, "type": "str"},
+        "ochiai_format.batch_size": {"required": False, "type": "int", "min": 1, "max": 10}
     }
 
 }

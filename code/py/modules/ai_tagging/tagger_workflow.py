@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from .claude_api_client import ClaudeAPIClient
 from modules.shared.config_manager import ConfigManager
 from modules.shared.logger import IntegratedLogger
+from modules.shared.claude_api_client import ClaudeAPIClient
 from modules.shared.exceptions import ObsClippingsError
 from modules.shared.utils import read_yaml_header, update_yaml_header
 
@@ -106,7 +106,7 @@ class TaggerWorkflow:
     
     def generate_tags_single(self, paper_file: str) -> List[str]:
         """
-        単一論文のタグ生成
+        単一論文のタグ生成（section parsing機能連携対応）
         
         Args:
             paper_file: 論文ファイルパス
@@ -119,14 +119,108 @@ class TaggerWorkflow:
             with open(paper_file, 'r', encoding='utf-8') as f:
                 content = f.read()
             
+            # section parsing結果を活用したコンテンツ抽出
+            enhanced_content = self._extract_enhanced_content(content)
+            
             # Claude APIでタグ生成
-            tags = self.claude_client.generate_tags_single(content)
+            tags = self.claude_client.generate_tags_single(enhanced_content)
             
             return tags
             
         except Exception as e:
             self.logger.error(f"Tag generation failed for {paper_file}: {e}")
             raise
+    
+    def _extract_enhanced_content(self, paper_content: str) -> str:
+        """
+        セクション情報を活用した重要部分抽出
+        
+        Args:
+            paper_content: 論文の全内容
+            
+        Returns:
+            タグ生成に最適化されたコンテンツ
+        """
+        try:
+            # YAMLヘッダー部分を解析してsection情報をチェック
+            lines = paper_content.split('\n')
+            yaml_section = []
+            content_start = 0
+            
+            # YAML frontmatterを抽出
+            if lines and lines[0].strip() == '---':
+                yaml_end = False
+                for i, line in enumerate(lines[1:], 1):
+                    if line.strip() == '---':
+                        content_start = i + 1
+                        yaml_end = True
+                        break
+                    yaml_section.append(line)
+                
+                if yaml_end and yaml_section:
+                    try:
+                        # YAMLヘッダーを解析
+                        import yaml
+                        yaml_header = yaml.safe_load('\n'.join(yaml_section))
+                        
+                        # section parsing結果から重要セクションを抽出
+                        if yaml_header and 'paper_structure' in yaml_header:
+                            enhanced_content = self._extract_key_sections_content(
+                                yaml_header['paper_structure'], lines[content_start:]
+                            )
+                            if enhanced_content:
+                                self.logger.info("Using section-based content for tag generation")
+                                return enhanced_content
+                    except Exception as e:
+                        self.logger.debug(f"Failed to parse section info for tag generation: {e}")
+            
+            # フォールバック: 従来の全文使用
+            content_lines = lines[content_start:]
+            return '\n'.join(content_lines)
+            
+        except Exception as e:
+            self.logger.error(f"Failed to extract enhanced content: {e}")
+            return paper_content
+    
+    def _extract_key_sections_content(self, paper_structure: Dict[str, Any], content_lines: List[str]) -> str:
+        """
+        タグ生成に重要なセクション（Introduction + Results + Discussion）を抽出
+        
+        Args:
+            paper_structure: 論文構造情報
+            content_lines: Markdown本文の行リスト
+            
+        Returns:
+            重要セクションの結合コンテンツ
+        """
+        try:
+            sections = paper_structure.get('sections', [])
+            key_section_types = ['abstract', 'introduction', 'results', 'discussion']
+            extracted_parts = []
+            
+            for section in sections:
+                section_type = section.get('section_type', 'unknown')
+                if section_type in key_section_types:
+                    start_line = section.get('start_line', 1) - 1  # 0-indexed
+                    end_line = section.get('end_line', len(content_lines))
+                    
+                    if start_line >= 0 and end_line <= len(content_lines):
+                        section_lines = content_lines[start_line:end_line]
+                        section_content = '\n'.join(section_lines).strip()
+                        
+                        # セクションタイトルを保持してコンテキストを明確化
+                        extracted_parts.append(f"## {section.get('title', section_type.title())}\n{section_content}")
+            
+            if extracted_parts:
+                combined_content = '\n\n'.join(extracted_parts)
+                self.logger.debug(f"Extracted {len(key_section_types)} key sections for tag generation")
+                return combined_content
+            
+            return ""
+            
+        except Exception as e:
+            self.logger.error(f"Failed to extract key sections: {e}")
+            return ""
     
     def process_single_paper(self, paper_file: str) -> Dict[str, Any]:
         """

@@ -61,8 +61,8 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated --show-plan
 # 強制再処理
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --force-reprocess
 
-# AI機能有効化
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-tagger --enable-translate-abstract --enable-section-parsing --enable-ochiai-format
+# AI機能無効化（明示的に無効化したい場合）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --disable-tagger --disable-translate-abstract --disable-section-parsing --disable-ochiai-format
 
 # ワークスペース変更
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace "/path/to/workspace"
@@ -80,7 +80,7 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
 ### デフォルト設定
 - **workspace_path**: `/home/user/ManuscriptsManager`（単一設定で全パス自動導出）
 - **引数なし実行**: 完全なデフォルト動作
-- **AI機能**: デフォルト無効（明示的有効化が必要）
+- **AI機能**: デフォルト有効（Claude 3.5 Haiku 使用）
 
 ### 設定優先順位
 1. **コマンドライン引数** (最高優先度)

@@ -29,6 +29,8 @@ from ..ai_citation_support import AIMappingWorkflow
 # AI機能ワークフローのインポートを追加
 from ..ai_tagging import TaggerWorkflow
 from ..abstract_translation import TranslateAbstractWorkflow
+from ..section_parsing import SectionParserWorkflow
+from ..ochiai_format import OchiaiFormatWorkflow
 
 
 class IntegratedWorkflow:
@@ -42,8 +44,8 @@ class IntegratedWorkflow:
     - 効率的な重複処理回避
     """
     
-    # 処理順序の定義（仕様書v3.1に従い、AI機能を追加）
-    PROCESS_ORDER = ['organize', 'sync', 'fetch', 'ai-citation-support', 'tagger', 'translate_abstract', 'final-sync']
+    # 処理順序の定義（仕様書v3.1統合ワークフロー仕様に準拠）
+    PROCESS_ORDER = ['organize', 'sync', 'fetch', 'section-parsing', 'ai-citation-support', 'enhanced-tagger', 'enhanced-translate', 'ochiai-format', 'final-sync']
     
     # デフォルト設定
     DEFAULT_WORKSPACE_PATH = "/home/user/ManuscriptsManager"
@@ -68,8 +70,10 @@ class IntegratedWorkflow:
         self.ai_citation_support_workflow = AIMappingWorkflow(config_manager, logger)
         
         # AI機能ワークフローの初期化
+        self.section_parser_workflow = SectionParserWorkflow(config_manager, logger)
         self.tagger_workflow = TaggerWorkflow(config_manager, logger)
         self.translate_abstract_workflow = TranslateAbstractWorkflow(config_manager, logger)
+        self.ochiai_format_workflow = OchiaiFormatWorkflow(config_manager, logger)
         
         self.logger.info("IntegratedWorkflow v3.0 initialized successfully")
     
@@ -142,30 +146,67 @@ class IntegratedWorkflow:
     
     def _determine_target_papers(self, paths: Dict[str, str], papers_option: Optional[str]) -> List[str]:
         """
-        対象論文の決定
+        対象論文の決定（エッジケース処理を含む）
         
         Args:
             paths: 解決済みパス辞書
             papers_option: 指定論文（カンマ区切り文字列）
             
         Returns:
-            対象論文のcitation keyリスト
+            対象論文のcitation keyリスト（BibTeXとMarkdownの両方に存在する論文のみ）
         """
-        if papers_option:
-            # 特定論文が指定されている場合
-            target_papers = [paper.strip() for paper in papers_option.split(',')]
-            self.logger.info(f"Target papers specified: {target_papers}")
-            return target_papers
-        
-        # BibTeXファイルから全論文を取得
         try:
-            entries = self.bibtex_parser.parse_file(paths['bibtex_file'])
-            all_papers = list(entries.keys())
-            self.logger.info(f"Found {len(all_papers)} papers in BibTeX file")
-            return all_papers
+            # 整合性チェック実行
+            consistency = self.status_manager.check_consistency(
+                paths['bibtex_file'], 
+                paths['clippings_dir']
+            )
+            
+            # エッジケース検出時の警告表示
+            if not consistency['consistent']:
+                self._log_edge_cases(consistency['edge_case_details'])
+            
+            # BibTeXとMarkdownの両方に存在する論文のみを処理対象とする
+            valid_papers = consistency['valid_papers']
+            
+            if papers_option:
+                # 特定論文が指定されている場合、valid_papersとの交集合を取る
+                specified_papers = [paper.strip() for paper in papers_option.split(',')]
+                target_papers = [p for p in specified_papers if p in valid_papers]
+                self.logger.info(f"Target papers specified: {specified_papers}")
+                self.logger.info(f"Valid target papers (both BibTeX and Markdown exist): {target_papers}")
+                return target_papers
+            else:
+                self.logger.info(f"Found {len(valid_papers)} valid papers (both BibTeX and Markdown exist)")
+                return valid_papers
+                
         except Exception as e:
-            self.logger.error(f"Failed to parse BibTeX file: {e}")
+            self.logger.error(f"Failed to determine target papers: {e}")
             return []
+    
+    def _log_edge_cases(self, edge_case_details: Dict[str, Any]) -> None:
+        """
+        エッジケースの詳細をログに出力
+        
+        Args:
+            edge_case_details: エッジケースの詳細情報
+        """
+        missing_in_clippings = edge_case_details.get('missing_in_clippings', [])
+        orphaned_in_clippings = edge_case_details.get('orphaned_in_clippings', [])
+        
+        if missing_in_clippings:
+            self.logger.warning("Missing markdown files for:")
+            for entry in missing_in_clippings:
+                citation_key = entry.get('citation_key', 'unknown')
+                doi = entry.get('doi', 'No DOI')
+                self.logger.warning(f"  - {citation_key} (DOI: {doi})")
+        
+        if orphaned_in_clippings:
+            self.logger.warning("Orphaned markdown files:")
+            for entry in orphaned_in_clippings:
+                file_path = entry.get('file_path', 'unknown')
+                citation_key = entry.get('citation_key', 'unknown')
+                self.logger.warning(f"  - {citation_key} ({file_path})")
     
     def _parse_skip_steps(self, skip_steps_option: str) -> List[str]:
         """
@@ -518,12 +559,17 @@ class IntegratedWorkflow:
             if step == 'organize':
                 success, result = self.organize_workflow.execute(**step_options)
             elif step == 'sync':
-                success, result = self.sync_workflow.execute(**step_options)
+                # syncステップを拡張：同期チェック後、不足ディレクトリを自動作成
+                success, result = self._execute_sync_step_with_directory_creation(paths, **step_options)
             elif step == 'fetch':
                 success, result = self.fetch_workflow.execute(**step_options)
             elif step == 'ai-citation-support':
-                success, result = self._execute_ai_citation_support_step(papers, paths, **step_options)
-            elif step == 'tagger':
+                success, result = self.ai_citation_support_workflow.execute(**step_options)
+            elif step == 'section-parsing':
+                success, result = self.section_parser_workflow.process_papers(
+                    paths['clippings_dir'], papers, **step_options
+                )
+            elif step == 'enhanced-tagger':
                 # ConfigManagerからデフォルト設定を取得し、コマンドラインオプションで上書き
                 default_enabled = self.config_manager.get_config_value("ai_generation.tagger.enabled", True)
                 # CLIオプションが明示的に設定されていない場合は、デフォルト設定を使用
@@ -537,13 +583,13 @@ class IntegratedWorkflow:
                     success = tagger_result.get('success', False)
                     result = tagger_result
                 else:
-                    self.logger.info("Tagger disabled, skipping")
+                    self.logger.info("Enhanced tagger disabled, skipping")
                     return {
                         'success': True,
                         'processed_papers': papers,
-                        'details': {'status': 'skipped', 'message': 'Tagger disabled by user'}
+                        'details': {'status': 'skipped', 'message': 'Enhanced tagger disabled by user'}
                     }
-            elif step == 'translate_abstract':
+            elif step == 'enhanced-translate':
                 # ConfigManagerからデフォルト設定を取得し、コマンドラインオプションで上書き
                 default_enabled = self.config_manager.get_config_value("ai_generation.translate_abstract.enabled", True)
                 # CLIオプションが明示的に設定されていない場合は、デフォルト設定を使用
@@ -557,11 +603,31 @@ class IntegratedWorkflow:
                     success = translate_result.get('success', False)
                     result = translate_result
                 else:
-                    self.logger.info("Abstract translation disabled, skipping")
+                    self.logger.info("Enhanced abstract translation disabled, skipping")
                     return {
                         'success': True,
                         'processed_papers': papers,
-                        'details': {'status': 'skipped', 'message': 'Abstract translation disabled by user'}
+                        'details': {'status': 'skipped', 'message': 'Enhanced abstract translation disabled by user'}
+                    }
+            elif step == 'ochiai-format':
+                # ConfigManagerからデフォルト設定を取得し、コマンドラインオプションで上書き
+                default_enabled = self.config_manager.get_config_value("ai_generation.ochiai_format.enabled", True)
+                # CLIオプションが明示的に設定されていない場合は、デフォルト設定を使用
+                is_enabled = options.get('enable_ochiai_format', default_enabled)
+                
+                if is_enabled:
+                    ochiai_result = self.ochiai_format_workflow.process_papers(
+                        clippings_dir=paths['clippings_dir'],
+                        target_papers=papers
+                    )
+                    success = ochiai_result.get('success', False)
+                    result = ochiai_result
+                else:
+                    self.logger.info("Ochiai format disabled, skipping")
+                    return {
+                        'success': True,
+                        'processed_papers': papers,
+                        'details': {'status': 'skipped', 'message': 'Ochiai format disabled by user'}
                     }
             elif step == 'final-sync':
                 # final-syncは通常のsyncと同じ処理を実行
@@ -707,4 +773,62 @@ class IntegratedWorkflow:
                 'message': str(e),
                 'processed_papers': 0,
                 'total_papers': len(papers)
+            }
+
+    def _execute_sync_step_with_directory_creation(self, paths: Dict[str, str], **options) -> Tuple[bool, Dict[str, Any]]:
+        """
+        syncステップを拡張：同期チェック後、不足ディレクトリを自動作成
+        
+        Args:
+            paths: 解決済みパス辞書
+            **options: 実行オプション
+            
+        Returns:
+            (成功フラグ, 結果辞書)
+        """
+        try:
+            self.logger.info("Executing sync step with directory creation")
+            
+            # 1. 標準のsyncステップ実行（同期チェック）
+            success, sync_result = self.sync_workflow.execute(**options)
+            
+            if not success:
+                self.logger.error("Sync step failed")
+                return False, sync_result
+            
+            # 2. 不足している論文のディレクトリとMarkdownファイルを作成
+            missing_papers = sync_result.get('missing_in_clippings', [])
+            
+            if missing_papers:
+                self.logger.info(f"Creating directories and markdown files for {len(missing_papers)} missing papers")
+                
+                # SyncCheckWorkflowのcreate_missing_directoriesメソッドを使用
+                creation_result = self.sync_workflow.create_missing_directories(missing_papers, options)
+                
+                # 結果をマージ
+                sync_result['directory_creation'] = creation_result
+                
+                if creation_result['creation_errors']:
+                    self.logger.warning(f"{len(creation_result['creation_errors'])} creation errors occurred")
+                    # 部分的失敗として扱う
+                    sync_result['status'] = 'partial_success'
+                else:
+                    self.logger.info(f"Successfully created {len(creation_result['created_directories'])} directories")
+            else:
+                self.logger.info("No missing directories to create")
+                sync_result['directory_creation'] = {
+                    'created_directories': [],
+                    'created_files': [],
+                    'creation_errors': []
+                }
+            
+            self.logger.info("Extended sync step completed successfully")
+            return True, sync_result
+            
+        except Exception as e:
+            self.logger.error(f"Extended sync step execution failed: {e}")
+            return False, {
+                'status': 'error',
+                'message': str(e),
+                'error': str(e)
             } 
