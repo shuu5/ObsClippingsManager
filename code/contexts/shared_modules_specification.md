@@ -1,18 +1,17 @@
-# 共有モジュール仕様書 v3.0
+# 共有モジュール仕様書 v3.1
 
 ## 概要
-ObsClippingsManager v3.0の共有モジュールは、全システムで使用される基盤機能を提供します。統一設定管理、ログシステム、BibTeX解析、例外処理などの重要な機能を独立したモジュールとして実装し、システム全体の一貫性を保証します。
+ObsClippingsManager v3.1の共有モジュールは、全システムで使用される基盤機能を提供し、システム全体の一貫性を保証します。
 
 ## モジュール構成
-
-### 共有モジュール一覧
 ```
 modules/shared/
 ├── config_manager.py      # 統一設定管理システム
 ├── logger.py             # 統合ログシステム
 ├── bibtex_parser.py      # BibTeX解析エンジン
 ├── utils.py              # 共通ユーティリティ
-└── exceptions.py         # 階層的例外管理
+├── exceptions.py         # 階層的例外管理
+└── claude_api_client.py  # Claude API統合クライアント
 ```
 
 ## ConfigManager - 統一設定管理
@@ -38,18 +37,19 @@ api_settings:
   max_retries: 3
   timeout: 30
 
-# 処理設定
-processing:
-  similarity_threshold: 0.8
-  auto_approve: false
-
-# AI理解支援設定（v3.0新機能）
-ai_citation_support:
-  enabled: false                    # デフォルトは無効
-  complete_mapping: true            # 完全統合マッピング作成
-  update_yaml_header: true          # YAMLヘッダー更新
-  backup_original: true             # 元ファイルバックアップ
-  include_abstracts: true           # 要約情報の含有
+# AI機能設定
+ai_generation:
+  claude_api_key: "your-api-key"
+  tagger:
+    enabled: false
+    model: "claude-3-5-sonnet-20241022"
+    batch_size: 5
+    tag_count_range: [10, 20]
+  translate_abstract:
+    enabled: false
+    model: "claude-3-5-sonnet-20241022"
+    batch_size: 3
+    preserve_formatting: true
 ```
 
 ### 主要メソッド
@@ -114,9 +114,7 @@ class BibTeXParser:
         "author": "Smith, John and Jones, Mary",
         "year": "2023",
         "doi": "10.1000/example.doi",
-        "journal": "Example Journal",
-        "volume": "42",
-        "pages": "123-145"
+        "journal": "Example Journal"
     }
 }
 ```
@@ -177,133 +175,88 @@ class FileOperationError(ObsClippingsManagerError):
 ```
 
 ### エラーハンドリング戦略
+- **階層的処理**: 具体的なエラーから汎用的なエラーへの段階的処理
+- **ログ記録**: 全例外の適切なログ出力
+- **ユーザー通知**: わかりやすいエラーメッセージの提供
+- **復旧処理**: 可能な場合の自動復旧実行
+
+## ClaudeAPIClient - Claude API統合クライアント（v3.1新機能）
+
+### 基本機能
+- **API通信**: Claude 3.5 Sonnetとの統合通信
+- **バッチ処理**: 複数リクエストの並列処理
+- **エラーハンドリング**: API制限・ネットワークエラーの適切な処理
+- **レート制限**: API呼び出し頻度制御
+
+### 主要メソッド
 ```python
-def handle_exception(exception: Exception, logger: logging.Logger, 
-                    context: str = "") -> Dict[str, Any]:
-    """
-    統一例外処理
-    
-    Returns:
-        {
-            "status": "error",
-            "error_type": "ConfigurationError",
-            "message": "設定ファイルが見つかりません",
-            "context": "config initialization"
-        }
-    """
+class ClaudeAPIClient:
+    def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger)
+    async def generate_tags_batch(self, papers_content: List[str]) -> List[List[str]]
+    async def translate_abstracts_batch(self, abstracts: List[str]) -> List[str]
+    def handle_api_errors(self, error: Exception) -> Dict[str, Any]
 ```
 
-## 実装例
-
-### 設定初期化
+### 設定項目
 ```python
-# 基本初期化
+{
+    "model": "claude-3-5-sonnet-20241022",
+    "api_key": "your-claude-api-key",
+    "request_delay": 1.0,
+    "max_retries": 3,
+    "timeout": 30,
+    "batch_size": 5
+}
+```
+
+## 使用パターン
+
+### 基本的な初期化
+```python
+from modules.shared.config_manager import ConfigManager
+from modules.shared.logger import IntegratedLogger
+from modules.shared.bibtex_parser import BibTeXParser
+
+# 基本設定
 config_manager = ConfigManager()
-logger = IntegratedLogger(log_level='info', verbose=True)
-
-# パス解決
-paths = config_manager.resolve_paths(workspace_path="/home/user/Project")
-# → {
-#     'workspace_path': '/home/user/Project',
-#     'bibtex_file': '/home/user/Project/CurrentManuscript.bib',
-#     'clippings_dir': '/home/user/Project/Clippings',
-#     'output_dir': '/home/user/Project/Clippings'
-# }
-```
-
-### BibTeX解析
-```python
-# BibTeX解析
+logger = IntegratedLogger()
 bibtex_parser = BibTeXParser(logger.get_logger('BibTeXParser'))
-entries = bibtex_parser.parse_file(paths['bibtex_file'])
-
-# 特定エントリ取得
-smith_entry = bibtex_parser.get_entry_by_key(paths['bibtex_file'], 'smith2023test')
-doi = bibtex_parser.extract_doi_from_entry(smith_entry)
 ```
 
-### ログ出力
-```python
-# モジュール別ログ
-workflow_logger = logger.get_logger('IntegratedWorkflow')
-status_logger = logger.get_logger('StatusManager')
-
-workflow_logger.info("Starting workflow execution")
-status_logger.debug(f"Loading statuses from {paths['clippings_dir']}")
-```
-
-### エラーハンドリング
+### エラーハンドリング例
 ```python
 try:
-    entries = bibtex_parser.parse_file(invalid_file)
+    # 何らかの処理
+    result = process_something()
 except BibTeXParsingError as e:
-    error_info = handle_exception(e, logger.get_logger('ErrorHandler'), 
-                                 "BibTeX file parsing")
-    return {"status": "error", "details": error_info}
+    logger.error(f"BibTeX parsing failed: {e}")
+    # BibTeX特有の処理
+except FileOperationError as e:
+    logger.error(f"File operation failed: {e}")
+    # ファイル操作特有の処理
+except ObsClippingsManagerError as e:
+    logger.error(f"General error: {e}")
+    # 汎用エラー処理
 ```
 
-## 依存関係
+## 設計原則
 
-### 必須パッケージ
-```txt
-pyyaml>=6.0               # YAML設定ファイル処理
-bibtexparser>=1.4.0       # BibTeX解析
-fuzzywuzzy>=0.18.0        # 文字列類似度計算
-python-levenshtein>=0.12.0 # 高速文字列比較
-```
+### 単一責任原則
+- 各モジュールは明確に定義された単一の責任を持つ
+- 機能の重複を避け、保守性を向上
 
-### 内部依存関係
-- **ConfigManager**: 基盤クラス（他への依存なし）
-- **IntegratedLogger**: 基盤クラス（他への依存なし）
-- **BibTeXParser**: IntegratedLogger に依存
-- **Utils**: 独立（他への依存なし）
-- **Exceptions**: 独立（他への依存なし）
+### 依存性の最小化
+- モジュール間の依存関係を最小限に抑制
+- 変更の影響範囲を制限
 
-## テスト仕様
+### 設定の一元化
+- 全設定をConfigManagerで一元管理
+- 環境による設定切り替えの容易性確保
 
-### テストカバレッジ
-```python
-# test_shared_modules.py
-class TestConfigManager(unittest.TestCase):
-    def test_path_resolution()
-    def test_setting_hierarchy()
-    def test_configuration_validation()
-
-class TestIntegratedLogger(unittest.TestCase):
-    def test_log_level_control()
-    def test_file_output()
-    def test_module_separation()
-
-class TestBibTeXParser(unittest.TestCase):
-    def test_file_parsing()
-    def test_entry_extraction()
-    def test_metadata_normalization()
-
-class TestUtils(unittest.TestCase):
-    def test_file_operations()
-    def test_string_processing()
-    def test_doi_handling()
-
-class TestExceptions(unittest.TestCase):
-    def test_exception_hierarchy()
-    def test_error_handling()
-```
-
-## 使用ガイドライン
-
-### 新機能実装時
-1. **ConfigManager**: 新しい設定項目の追加
-2. **IntegratedLogger**: モジュール別ログの設定
-3. **BibTeXParser**: 必要に応じて解析機能拡張
-4. **Utils**: 共通処理の関数化
-5. **Exceptions**: 適切な例外クラスの定義
-
-### パフォーマンス考慮
-- **設定読み込み**: 初期化時の一度のみ
-- **ログ出力**: レベル別フィルタリング
-- **BibTeX解析**: キャッシュ機能の活用
-- **ファイル操作**: 効率的なI/O処理
+### ログの統一
+- 全モジュールでIntegratedLoggerを使用
+- 一貫したログフォーマットでデバッグ効率向上
 
 ---
 
-**共有モジュール仕様書バージョン**: 3.0.0 
+**共有モジュール仕様書バージョン**: 3.1.0 

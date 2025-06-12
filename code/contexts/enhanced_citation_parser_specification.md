@@ -1,4 +1,4 @@
-# AI理解支援引用文献パーサー機能仕様書 v3.0
+# AI理解支援引用文献パーサー機能仕様書 v3.1
 
 ## 概要
 references.bibの内容をそのまま順序通りにYAMLヘッダーに統合し、AIが直接Markdownファイルを読むだけで引用文献を理解できるシンプルな自己完結型システム。
@@ -11,9 +11,8 @@ references.bibの内容をそのまま順序通りにYAMLヘッダーに統合�
 - プレースホルダー生成なし
 - total_citationsはBibTeXエントリー数と一致
 
-## 機能詳細仕様
+## YAMLヘッダー統合形式
 
-### YAMLヘッダー統合形式
 ```yaml
 ---
 citation_key: smith2023test
@@ -28,30 +27,27 @@ citations:
     citation_key: smith2023test
     doi: 10.1158/0008-5472.CAN-23-0123
     journal: Cancer Research
-    pages: '1234-1245'
     title: Novel Method for Cancer Cell Analysis
-    volume: '83'
     year: 2023
   2:
     authors: Jones
     citation_key: jones2022biomarkers
     doi: 10.1038/s41591-022-0456-7
     journal: Nature Medicine
-    pages: '567-578'
     title: Advanced Biomarker Techniques in Oncology
-    volume: '28'
     year: 2022
 last_updated: '2025-01-15T10:30:00.654321+00:00'
 processing_status:
-  ai-citation-support: completed
-  fetch: completed
   organize: completed
   sync: completed
-workflow_version: '3.0'
+  fetch: completed
+  ai-citation-support: completed
+workflow_version: '3.1'
 ---
 ```
 
-### 実装クラス
+## 実装クラス
+
 ```python
 class CitationMappingEngine:
     """シンプル引用マッピングエンジン"""
@@ -82,8 +78,7 @@ class CitationMappingEngine:
 
 #### AI理解支援機能有効化（統合ワークフロー）
 ```bash
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --enable-ai-citation-support
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated
 ```
 
 #### 個別実行（デバッグ用）
@@ -143,10 +138,13 @@ def test_duplicate_handling():
 ## 使用例
 
 ```bash
-# AI理解支援機能を有効化した統合ワークフロー実行
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --enable-ai-citation-support
+# AI理解支援機能有効化の統合ワークフロー実行
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated
 
 # 結果: YAMLヘッダーのcitationsフィールドに
 #       references.bibの全エントリーが順序通り統合
 ```
+
+---
+
+**AI理解支援引用文献パーサー機能仕様書バージョン**: 3.1.0

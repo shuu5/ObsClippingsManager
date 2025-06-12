@@ -12,10 +12,11 @@ alwaysApply: true
 ## 🛠️ 基本環境
 
 - **Python環境**: uvで管理 - 必ずuvを使用
-- **実行ディレクトリ**: 必ずルートディレクトリ(`/home/user/proj/ObsClippingsManager`)から実行
+- **実行ディレクトリ**: すべてのコマンドは必ずルートディレクトリに移動してから実行(`cd /home/user/proj/ObsClippingsManager`)
 - **ブランチ**: 常にmainブランチで開発
 - **開発方針**: TDDアプローチ必須
 - **プロジェクト概要**: [README.md](mdc:README.md) を必ず参照してから開発を進めて
+- **ドキュメント**: [README.md](mdc:README.md)や仕様書はAIが理解しやすい簡潔でシンプルかつ整合性がとれた文書として常にアップデートして
 
 ## 🔄 開発フロー（必須手順）
 
