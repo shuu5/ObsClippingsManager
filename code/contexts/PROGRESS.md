@@ -8,15 +8,15 @@
 
 ### フェーズ1: プロジェクト基盤構築
 #### 1.1 プロジェクト構造初期化
-- [ ] 1.1.1 ディレクトリ構造作成（code/py/modules/以下）
-- [ ] 1.1.2 __init__.py ファイル作成
-- [ ] 1.1.3 依存関係管理（pyproject.toml, requirements.txt）
-- [ ] 1.1.4 基本設定ファイル構造（config/config.yaml）
+- [完了] 1.1.1 ディレクトリ構造作成（code/py/modules/以下）
+- [完了] 1.1.2 __init__.py ファイル作成
+- [完了] 1.1.3 依存関係管理（pyproject.toml, requirements.txt）
+- [完了] 1.1.4 基本設定ファイル構造（config/config.yaml）
 
 #### 1.2 テスト環境基盤
-- [ ] 1.2.1 ユニットテスト基盤構築（code/unittest/）
-- [ ] 1.2.2 テストユーティリティ作成
-- [ ] 1.2.3 統合テスト基盤構築（code/scripts/test_run.sh）
+- [完了] 1.2.1 ユニットテスト基盤構築（code/unittest/）
+- [完了] 1.2.2 テストユーティリティ作成
+- [進行中] 1.2.3 統合テスト基盤構築（code/scripts/test_run.sh）
 - [ ] 1.2.4 テストデータ管理システム
 
 ### フェーズ2: 共通基盤モジュール（shared）

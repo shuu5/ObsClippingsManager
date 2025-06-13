@@ -1,0 +1,43 @@
+# ObsClippingsManager Configuration File
+# Version: 3.2.0
+
+# Workspace Settings
+workspace_path: "/home/user/ManuscriptsManager"
+
+# Automatically derived paths:
+# bibtex_file: "{workspace_path}/CurrentManuscript.bib"
+# clippings_dir: "{workspace_path}/Clippings"
+# output_dir: "{workspace_path}/Clippings"
+
+# API Settings
+api_settings:
+  request_delay: 1.0
+  max_retries: 3
+  timeout: 30
+
+# AI Function Settings
+ai_generation:
+  default_model: "claude-3-5-haiku-20241022"
+  api_key_env: "ANTHROPIC_API_KEY"  # Read from .env file
+
+# Logging Settings
+logging:
+  log_file: "logs/obsclippings.log"
+  log_level: "INFO"
+  max_file_size: "10MB"
+  backup_count: 5
+
+# Error Handling Settings
+error_handling:
+  enabled: true
+  capture_context: true
+  auto_retry_on_transient_errors: true
+  max_retry_attempts: 3
+  retry_delay_seconds: 2
+
+# Backup Settings
+backup_settings:
+  enabled: true
+  auto_backup_before_processing: true
+  backup_location: "backups/"
+  retention_days: 30 
