@@ -6,7 +6,13 @@ ObsClippingsManager Exception Hierarchy
 - 基底例外クラス: ObsClippingsManagerError
 - 専用例外クラス群
 - エラーハンドリングユーティリティ
+- リトライ機構
 """
+
+import time
+import random
+from functools import wraps
+from typing import Tuple, Type, Union, Optional
 
 
 class ObsClippingsManagerError(Exception):
@@ -101,6 +107,148 @@ class BibTeXError(ObsClippingsManagerError):
     BibTeXファイル解析、citation_key抽出、形式検証エラー等で使用。
     """
     pass
+
+
+# リトライ機構
+
+def retry_on_error(
+    max_attempts: int = 3,
+    delay: float = 1.0,
+    backoff_factor: float = 1.5,
+    jitter: bool = True,
+    retry_exceptions: Tuple[Type[Exception], ...] = (APIError, ProcessingError)
+):
+    """
+    リトライデコレーター
+    
+    指定した例外が発生した場合に、指数バックオフ戦略でリトライを実行する。
+    
+    Args:
+        max_attempts (int): 最大試行回数（デフォルト: 3）
+        delay (float): 初期遅延時間（秒）（デフォルト: 1.0）
+        backoff_factor (float): 遅延時間の増加率（デフォルト: 1.5）
+        jitter (bool): ランダムなジッターを追加するか（デフォルト: True）
+        retry_exceptions (Tuple[Type[Exception], ...]): リトライ対象の例外タイプ
+    
+    Returns:
+        decorator: リトライ機能付きのデコレーター
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            attempt = 1
+            current_delay = delay
+            
+            while attempt <= max_attempts:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    # リトライ対象外の例外は即座に再発生
+                    if not isinstance(e, retry_exceptions):
+                        raise
+                    
+                    # 最大試行回数に達した場合は例外を再発生
+                    if attempt >= max_attempts:
+                        raise
+                    
+                    # リトライ前の遅延
+                    sleep_time = current_delay
+                    if jitter:
+                        # ±20%のランダムジッターを追加
+                        jitter_factor = 1.0 + (random.random() - 0.5) * 0.4
+                        sleep_time *= jitter_factor
+                    
+                    time.sleep(sleep_time)
+                    
+                    # 次回の遅延時間を計算（指数バックオフ）
+                    current_delay *= backoff_factor
+                    attempt += 1
+            
+            # 論理的にここには到達しないが、念のため
+            raise ProcessingError(
+                f"Retry mechanism failed after {max_attempts} attempts",
+                error_code="RETRY_EXHAUSTED"
+            )
+        
+        return wrapper
+    return decorator
+
+
+def get_retry_config_from_settings(config_manager=None):
+    """
+    設定管理システムからリトライ設定を取得
+    
+    Args:
+        config_manager: ConfigManagerインスタンス
+        
+    Returns:
+        dict: リトライ設定辞書
+    """
+    default_config = {
+        'max_attempts': 3,
+        'delay': 1.0,
+        'backoff_factor': 1.5,
+        'jitter': True,
+        'retry_exceptions': (APIError, ProcessingError)
+    }
+    
+    if config_manager is None:
+        return default_config
+    
+    try:
+        # 設定管理システムからリトライ設定を取得
+        retry_config = config_manager.get_setting('retry', default_config)
+        
+        # 例外タイプの文字列を実際のクラスに変換
+        if 'retry_exceptions' in retry_config:
+            exception_names = retry_config['retry_exceptions']
+            if isinstance(exception_names, (list, tuple)):
+                exception_classes = []
+                exception_map = {
+                    'APIError': APIError,
+                    'ProcessingError': ProcessingError,
+                    'FileSystemError': FileSystemError,
+                    'ValidationError': ValidationError,
+                    'ConfigurationError': ConfigurationError
+                }
+                
+                for name in exception_names:
+                    if name in exception_map:
+                        exception_classes.append(exception_map[name])
+                
+                retry_config['retry_exceptions'] = tuple(exception_classes)
+        
+        return retry_config
+    except Exception:
+        # 設定取得に失敗した場合はデフォルト設定を返す
+        return default_config
+
+
+def smart_retry(config_manager=None):
+    """
+    設定管理システム統合リトライデコレーター
+    
+    ConfigManagerから設定を動的に取得してリトライを実行する。
+    
+    Args:
+        config_manager: ConfigManagerインスタンス
+        
+    Returns:
+        decorator: 設定連携リトライデコレーター
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            config = get_retry_config_from_settings(config_manager)
+            
+            # retry_on_errorデコレーターを動的に適用
+            retry_decorator = retry_on_error(**config)
+            retried_func = retry_decorator(func)
+            
+            return retried_func(*args, **kwargs)
+        
+        return wrapper
+    return decorator
 
 
 # エラーハンドリングユーティリティ
