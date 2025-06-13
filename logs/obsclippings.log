@@ -1,0 +1,66 @@
+2025-06-13 12:55:31,857 [INFO] root: Log level changed to: DEBUG
+2025-06-13 12:56:46,672 [INFO] root: Log level changed to: DEBUG
+2025-06-13 12:56:46,672 [INFO] test_environment_manager: TestEnvironmentManager initialized
+2025-06-13 12:56:46,673 [INFO] test_data_manager: TestDataManager initialized
+2025-06-13 12:56:46,673 [INFO] workflow_validator: WorkflowValidator initialized
+2025-06-13 12:56:46,673 [INFO] result_analyzer: ResultAnalyzer initialized
+2025-06-13 12:56:46,673 [INFO] integrated_test_runner: IntegratedTestRunner initialized
+2025-06-13 12:56:46,673 [INFO] integrated_test_runner: Starting regression test for modules: []
+2025-06-13 12:56:46,673 [INFO] test_environment_manager: Creating isolated environment for session: integration_test_20250613_125646_57a0f64d
+2025-06-13 12:56:46,677 [INFO] test_environment_manager: Isolated environment created: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125646_57a0f64d
+2025-06-13 12:56:46,677 [INFO] test_data_manager: Setting up test data for workspace: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125646_57a0f64d
+2025-06-13 12:56:46,677 [INFO] test_data_manager: Creating backup of original data
+2025-06-13 12:56:46,678 [INFO] test_data_manager: Original data backup completed
+2025-06-13 12:56:46,678 [INFO] test_data_manager: Copying test data from master
+2025-06-13 12:56:46,679 [INFO] test_data_manager: Copied CurrentManuscript.bib
+2025-06-13 12:56:46,684 [INFO] test_data_manager: Copied Clippings directory
+2025-06-13 12:56:46,684 [INFO] test_data_manager: Test data copy completed
+2025-06-13 12:56:46,684 [INFO] test_data_manager: Validating test data
+2025-06-13 12:56:46,685 [INFO] test_data_manager: Test data validation passed
+2025-06-13 12:56:46,686 [INFO] test_data_manager: Test data setup completed
+2025-06-13 12:56:46,686 [INFO] integrated_test_runner: Executing regression workflow for []
+2025-06-13 12:56:46,686 [INFO] workflow_validator: Validating processing results in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125646_57a0f64d
+2025-06-13 12:56:46,686 [INFO] workflow_validator: Validating YAML headers in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125646_57a0f64d/Clippings
+2025-06-13 12:56:46,688 [INFO] workflow_validator: YAML header validation: 3/3 files valid
+2025-06-13 12:56:46,688 [INFO] workflow_validator: Validating file structure in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125646_57a0f64d
+2025-06-13 12:56:46,688 [INFO] workflow_validator: File structure validation: PASSED
+2025-06-13 12:56:46,688 [INFO] workflow_validator: Validating citation data
+2025-06-13 12:56:46,688 [INFO] workflow_validator: Citation data validation: PASSED
+2025-06-13 12:56:46,688 [INFO] workflow_validator: Validation completed: PASSED
+2025-06-13 12:56:46,688 [INFO] test_environment_manager: Cleaning up environment: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125646_57a0f64d
+2025-06-13 12:56:46,689 [INFO] test_environment_manager: Environment cleanup completed: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125646_57a0f64d
+2025-06-13 12:56:46,689 [INFO] integrated_test_runner: Regression test completed successfully: integration_test_20250613_125646_57a0f64d
+2025-06-13 12:57:00,811 [INFO] root: Log level changed to: DEBUG
+2025-06-13 12:57:00,812 [INFO] test_environment_manager: TestEnvironmentManager initialized
+2025-06-13 12:57:00,812 [INFO] test_data_manager: TestDataManager initialized
+2025-06-13 12:57:00,812 [INFO] workflow_validator: WorkflowValidator initialized
+2025-06-13 12:57:00,812 [INFO] result_analyzer: ResultAnalyzer initialized
+2025-06-13 12:57:00,812 [INFO] integrated_test_runner: IntegratedTestRunner initialized
+2025-06-13 12:57:00,812 [INFO] integrated_test_runner: Starting full integration test
+2025-06-13 12:57:00,812 [INFO] test_environment_manager: Creating isolated environment for session: integration_test_20250613_125700_8ad4edb3
+2025-06-13 12:57:00,814 [INFO] test_environment_manager: Isolated environment created: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125700_8ad4edb3
+2025-06-13 12:57:00,814 [INFO] test_data_manager: Setting up test data for workspace: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125700_8ad4edb3
+2025-06-13 12:57:00,815 [INFO] test_data_manager: Creating backup of original data
+2025-06-13 12:57:00,815 [INFO] test_data_manager: Original data backup completed
+2025-06-13 12:57:00,816 [INFO] test_data_manager: Copying test data from master
+2025-06-13 12:57:00,816 [INFO] test_data_manager: Copied CurrentManuscript.bib
+2025-06-13 12:57:00,817 [INFO] test_data_manager: Copied Clippings directory
+2025-06-13 12:57:00,817 [INFO] test_data_manager: Test data copy completed
+2025-06-13 12:57:00,817 [INFO] test_data_manager: Validating test data
+2025-06-13 12:57:00,817 [INFO] test_data_manager: Test data validation passed
+2025-06-13 12:57:00,817 [INFO] test_data_manager: Test data setup completed
+2025-06-13 12:57:00,817 [INFO] integrated_test_runner: Executing integrated workflow in /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125700_8ad4edb3
+2025-06-13 12:57:00,817 [INFO] workflow_validator: Validating processing results in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125700_8ad4edb3
+2025-06-13 12:57:00,817 [INFO] workflow_validator: Validating YAML headers in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125700_8ad4edb3/Clippings
+2025-06-13 12:57:00,819 [INFO] workflow_validator: YAML header validation: 3/3 files valid
+2025-06-13 12:57:00,819 [INFO] workflow_validator: Validating file structure in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125700_8ad4edb3
+2025-06-13 12:57:00,819 [INFO] workflow_validator: File structure validation: PASSED
+2025-06-13 12:57:00,820 [INFO] workflow_validator: Validating citation data
+2025-06-13 12:57:00,820 [INFO] workflow_validator: Citation data validation: PASSED
+2025-06-13 12:57:00,820 [INFO] workflow_validator: Validation completed: PASSED
+2025-06-13 12:57:00,820 [INFO] result_analyzer: Analyzing test results
+2025-06-13 12:57:00,823 [INFO] result_analyzer: Detailed report generated: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125700_8ad4edb3/reports/test_analysis_report.json
+2025-06-13 12:57:00,824 [INFO] result_analyzer: Test result analysis completed
+2025-06-13 12:57:00,824 [INFO] test_environment_manager: Cleaning up environment: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125700_8ad4edb3
+2025-06-13 12:57:00,825 [INFO] test_environment_manager: Environment cleanup completed: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_125700_8ad4edb3
+2025-06-13 12:57:00,825 [INFO] integrated_test_runner: Full integration test completed successfully: integration_test_20250613_125700_8ad4edb3

@@ -29,7 +29,7 @@ class IntegratedTestRunner:
             logger: ログ出力オブジェクト
         """
         self.config_manager = config_manager
-        self.logger = logger
+        self.logger = logger.get_logger("integrated_test_runner")
         
         # 依存クラスのインスタンス化
         self.test_env_manager = TestEnvironmentManager(config_manager, logger)

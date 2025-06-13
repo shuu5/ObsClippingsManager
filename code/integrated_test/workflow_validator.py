@@ -20,7 +20,7 @@ class WorkflowValidator:
             logger: ログ出力オブジェクト
         """
         self.config_manager = config_manager
-        self.logger = logger
+        self.logger = logger.get_logger("workflow_validator")
         
         self.logger.info("WorkflowValidator initialized")
     

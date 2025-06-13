@@ -20,7 +20,7 @@ class TestDataManager:
             logger: ログ出力オブジェクト
         """
         self.config_manager = config_manager
-        self.logger = logger
+        self.logger = logger.get_logger("test_data_manager")
         
         # 設定値の取得
         self.config = config_manager.get_config().get('integrated_testing', {})

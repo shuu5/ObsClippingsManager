@@ -15,7 +15,7 @@ if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
 from code.py.modules.shared.config_manager import ConfigManager
-from code.py.modules.shared.logger import IntegratedLogger
+from code.py.modules.shared.integrated_logger import IntegratedLogger
 from code.integrated_test.integrated_test_runner import IntegratedTestRunner
 
 
