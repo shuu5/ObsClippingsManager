@@ -397,3 +397,661 @@ class StatusChecker:
                 validation_result['valid'] = False
         
         return validation_result 
+
+    def get_advanced_skip_conditions(
+        self,
+        file_path: Union[str, Path],
+        operation: str,
+        check_dependencies: bool = False,
+        check_workflow_stage: bool = False,
+        check_custom_rules: bool = False
+    ) -> Dict[str, Any]:
+        """
+        高度なスキップ条件判定
+        
+        Args:
+            file_path: Markdownファイルパス
+            operation: 処理操作名
+            check_dependencies: 依存関係チェック有効化
+            check_workflow_stage: ワークフロー段階チェック有効化
+            check_custom_rules: カスタムルールチェック有効化
+            
+        Returns:
+            Dict[str, Any]: 高度なスキップ条件の詳細
+        """
+        try:
+            file_path = Path(file_path)
+            
+            conditions = {
+                'can_proceed': True,
+                'skip_reasons': [],
+                'dependency_violations': [],
+                'workflow_stage_compatible': True,
+                'custom_skip_rules': [],
+                'custom_skip_applied': False
+            }
+            
+            if not file_path.exists():
+                conditions['can_proceed'] = False
+                conditions['skip_reasons'].append("ファイルが存在しません")
+                return conditions
+            
+            # YAMLヘッダー取得
+            yaml_header, _ = self.yaml_processor.parse_yaml_header(file_path)
+            if not yaml_header:
+                conditions['skip_reasons'].append("YAMLヘッダーが存在しません")
+                return conditions
+            
+            processing_status = yaml_header.get('processing_status', {})
+            
+            # 依存関係チェック
+            if check_dependencies:
+                dependency_result = self._check_operation_dependencies(
+                    processing_status, operation
+                )
+                conditions['dependency_violations'] = dependency_result['violations']
+                if dependency_result['violations']:
+                    conditions['can_proceed'] = False
+                    conditions['skip_reasons'].extend([
+                        f"依存関係違反: {violation}" 
+                        for violation in dependency_result['violations']
+                    ])
+            
+            # ワークフロー段階チェック
+            if check_workflow_stage:
+                workflow_stage = yaml_header.get('workflow_stage', 'unknown')
+                stage_compatible = self._check_workflow_stage_compatibility(
+                    workflow_stage, operation
+                )
+                conditions['workflow_stage_compatible'] = stage_compatible
+                if not stage_compatible:
+                    conditions['can_proceed'] = False
+                    conditions['skip_reasons'].append(
+                        f"ワークフロー段階 '{workflow_stage}' と操作 '{operation}' が非互換"
+                    )
+            
+            # カスタムルールチェック
+            if check_custom_rules:
+                skip_rules = yaml_header.get('skip_rules', {})
+                custom_rules = skip_rules.get(operation, [])
+                conditions['custom_skip_rules'] = custom_rules
+                if custom_rules:
+                    conditions['custom_skip_applied'] = True
+                    conditions['can_proceed'] = False
+                    conditions['skip_reasons'].append(
+                        f"カスタムスキップルールが適用: {', '.join(custom_rules)}"
+                    )
+            
+            return conditions
+            
+        except Exception as e:
+            self.logger.get_logger().error(
+                f"高度スキップ条件判定エラー: {file_path}: {str(e)}"
+            )
+            return {
+                'can_proceed': False,
+                'skip_reasons': [f"エラー: {str(e)}"],
+                'dependency_violations': [],
+                'workflow_stage_compatible': False,
+                'custom_skip_rules': [],
+                'custom_skip_applied': False
+            }
+    
+    def get_skip_condition_priority(
+        self,
+        file_path: Union[str, Path],
+        operation: str
+    ) -> Dict[str, Any]:
+        """
+        スキップ条件の優先度処理
+        
+        Args:
+            file_path: Markdownファイルパス
+            operation: 処理操作名
+            
+        Returns:
+            Dict[str, Any]: 優先度処理結果
+        """
+        try:
+            file_path = Path(file_path)
+            
+            result = {
+                'final_decision': 'skip',
+                'priority_reason': '',
+                'conditions_evaluated': []
+            }
+            
+            if not file_path.exists():
+                result['final_decision'] = 'skip'
+                result['priority_reason'] = "ファイルが存在しません"
+                return result
+            
+            # YAMLヘッダー取得
+            yaml_header, _ = self.yaml_processor.parse_yaml_header(file_path)
+            if not yaml_header:
+                result['final_decision'] = 'process'
+                result['priority_reason'] = "YAMLヘッダーが存在しないため処理が必要"
+                return result
+            
+            processing_status = yaml_header.get('processing_status', {})
+            current_status = processing_status.get(operation, 'pending')
+            status_enum = ProcessingStatus.from_string(current_status)
+            
+            # 1. 強制再処理フラグチェック（最高優先度）
+            priority_settings = yaml_header.get('priority_settings', {})
+            force_key = f'force_reprocess_{operation}'
+            if priority_settings.get(force_key, False):
+                result['final_decision'] = 'process'
+                result['priority_reason'] = f"強制再処理フラグが設定: {force_key}"
+                result['conditions_evaluated'].append('force_reprocess_flag')
+                return result
+            
+            # 2. 操作固有の優先度ルール
+            if operation in ['organize', 'sync']:
+                # 基盤操作は高優先度
+                if status_enum in [ProcessingStatus.PENDING, ProcessingStatus.FAILED]:
+                    result['final_decision'] = 'process'
+                    result['priority_reason'] = f"基盤操作 '{operation}' の {status_enum.to_string()} 状態"
+                    result['conditions_evaluated'].append('foundation_operation_priority')
+                    return result
+            
+            # 3. 通常の状態ベース判定
+            if status_enum == ProcessingStatus.COMPLETED:
+                if self.check_modification_time and self.check_modification_time_changed(file_path):
+                    result['final_decision'] = 'process'
+                    result['priority_reason'] = "ファイルが変更されているため再処理が必要"
+                    result['conditions_evaluated'].append('modification_time_check')
+                else:
+                    result['final_decision'] = 'skip'
+                    result['priority_reason'] = "完了済みで変更なし"
+                    result['conditions_evaluated'].append('completed_unchanged')
+            else:
+                result['final_decision'] = 'process'
+                result['priority_reason'] = f"状態が {status_enum.to_string()}"
+                result['conditions_evaluated'].append('status_based_decision')
+            
+            return result
+            
+        except Exception as e:
+            self.logger.get_logger().error(
+                f"優先度処理エラー: {file_path}: {str(e)}"
+            )
+            return {
+                'final_decision': 'process',  # エラー時は安全側に倒す
+                'priority_reason': f"エラー: {str(e)}",
+                'conditions_evaluated': ['error_fallback']
+            }
+    
+    def analyze_batch_skip_conditions(
+        self,
+        file_paths: List[Union[str, Path]],
+        operation: str
+    ) -> Dict[str, Any]:
+        """
+        バッチファイルのスキップ条件分析
+        
+        Args:
+            file_paths: Markdownファイルパスのリスト
+            operation: 処理操作名
+            
+        Returns:
+            Dict[str, Any]: バッチ分析結果
+        """
+        try:
+            analysis = {
+                'total_files': len(file_paths),
+                'skip_breakdown': {
+                    'can_skip': 0,
+                    'need_processing': 0,
+                    'errors': 0
+                },
+                'processing_recommendations': [],
+                'efficiency_metrics': {
+                    'skip_rate': 0.0,
+                    'estimated_time_saved': 0.0
+                }
+            }
+            
+            for file_path in file_paths:
+                try:
+                    file_path = Path(file_path)
+                    
+                    # 優先度処理で最終判定
+                    priority_result = self.get_skip_condition_priority(file_path, operation)
+                    
+                    if priority_result['final_decision'] == 'skip':
+                        analysis['skip_breakdown']['can_skip'] += 1
+                    else:
+                        analysis['skip_breakdown']['need_processing'] += 1
+                        analysis['processing_recommendations'].append({
+                            'file': str(file_path),
+                            'reason': priority_result['priority_reason']
+                        })
+                    
+                except Exception as e:
+                    analysis['skip_breakdown']['errors'] += 1
+                    self.logger.get_logger().warning(
+                        f"バッチ分析エラー {file_path}: {str(e)}"
+                    )
+            
+            # 効率性メトリクス計算
+            if analysis['total_files'] > 0:
+                analysis['efficiency_metrics']['skip_rate'] = (
+                    analysis['skip_breakdown']['can_skip'] / analysis['total_files']
+                ) * 100
+                
+                # 簡易的な時間節約推定（1ファイル = 30秒と仮定）
+                analysis['efficiency_metrics']['estimated_time_saved'] = (
+                    analysis['skip_breakdown']['can_skip'] * 30
+                )
+            
+            return analysis
+            
+        except Exception as e:
+            self.logger.get_logger().error(f"バッチ分析エラー: {str(e)}")
+            return {
+                'total_files': len(file_paths),
+                'skip_breakdown': {'can_skip': 0, 'need_processing': 0, 'errors': len(file_paths)},
+                'processing_recommendations': [],
+                'efficiency_metrics': {'skip_rate': 0.0, 'estimated_time_saved': 0.0}
+            }
+    
+    def _check_operation_dependencies(
+        self,
+        processing_status: Dict[str, str],
+        operation: str
+    ) -> Dict[str, Any]:
+        """
+        操作の依存関係チェック
+        
+        Args:
+            processing_status: 処理状態辞書
+            operation: 処理操作名
+            
+        Returns:
+            Dict[str, Any]: 依存関係チェック結果
+        """
+        # 操作の依存関係定義
+        dependencies = {
+            'sync': ['organize'],  # syncはorganizeに依存
+            'enhance': ['organize', 'sync'],  # enhanceはorganizeとsyncに依存
+            'ai_processing': ['organize', 'sync'],  # AI処理はorganizeとsyncに依存
+            'summarize': ['enhance'],  # 要約はenhanceに依存
+        }
+        
+        result = {
+            'has_dependencies': operation in dependencies,
+            'required_operations': dependencies.get(operation, []),
+            'violations': []
+        }
+        
+        if operation not in dependencies:
+            return result
+        
+        # 依存操作の状態チェック
+        for required_op in dependencies[operation]:
+            required_status = processing_status.get(required_op, 'pending')
+            if ProcessingStatus.from_string(required_status) != ProcessingStatus.COMPLETED:
+                result['violations'].append(
+                    f"必要な操作 '{required_op}' が未完了: {required_status}"
+                )
+        
+        return result
+    
+    def _check_workflow_stage_compatibility(
+        self,
+        workflow_stage: str,
+        operation: str
+    ) -> bool:
+        """
+        ワークフロー段階と操作の互換性チェック
+        
+        Args:
+            workflow_stage: ワークフロー段階
+            operation: 処理操作名
+            
+        Returns:
+            bool: 互換性がある場合True
+        """
+        # ワークフロー段階と操作の互換性マッピング
+        stage_operations = {
+            'organization': ['organize', 'sync'],
+            'enhancement': ['enhance', 'ai_processing'],
+            'analysis': ['summarize', 'report'],
+            'completion': []  # 完了段階では新規操作なし
+        }
+        
+        # unknownまたは未定義の段階では全操作を許可
+        if workflow_stage in ['unknown', '']:
+            return True
+        
+        # 段階に対応する操作をチェック
+        allowed_operations = stage_operations.get(workflow_stage, [])
+        return operation in allowed_operations
+
+    def get_force_execution_control(
+        self,
+        file_path: Union[str, Path],
+        operation: str,
+        force_config: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        強制実行制御機能
+        
+        Args:
+            file_path: Markdownファイルパス
+            operation: 処理操作名
+            force_config: 強制実行設定
+            
+        Returns:
+            Dict[str, Any]: 強制実行制御結果
+        """
+        try:
+            file_path = Path(file_path)
+            
+            result = {
+                'should_force': False,
+                'force_reasons': [],
+                'safety_warnings': [],
+                'backup_required': False,
+                'confirmation_required': False
+            }
+            
+            if not file_path.exists():
+                result['force_reasons'].append("ファイルが存在しません")
+                return result
+            
+            # YAMLヘッダー取得
+            yaml_header, _ = self.yaml_processor.parse_yaml_header(file_path)
+            if not yaml_header:
+                result['should_force'] = True
+                result['force_reasons'].append("YAMLヘッダーが存在しないため強制実行")
+                return result
+            
+            # グローバル強制実行チェック
+            if force_config.get('force_all_operations', False):
+                result['should_force'] = True
+                result['force_reasons'].append("グローバル強制実行が有効")
+                
+                # 設定から理由を追加
+                config_reasons = force_config.get('force_reasons', [])
+                result['force_reasons'].extend(config_reasons)
+            
+            # 選択的操作強制実行チェック
+            elif force_config.get('force_operations', []):
+                force_operations = force_config['force_operations']
+                if operation in force_operations:
+                    result['should_force'] = True
+                    result['force_reasons'].append(f"操作 '{operation}' が強制実行対象")
+            
+            # 安全性チェック
+            if force_config.get('enable_safety_checks', False):
+                safety_flags = yaml_header.get('safety_flags', {})
+                
+                if safety_flags.get('critical_data', False):
+                    result['safety_warnings'].append('critical_data')
+                    result['confirmation_required'] = True
+                
+                if safety_flags.get('backup_required', False) or force_config.get('require_backup', False):
+                    result['backup_required'] = True
+            
+            # 依存関係チェック
+            if force_config.get('respect_dependencies', True) and result['should_force']:
+                processing_status = yaml_header.get('processing_status', {})
+                dependency_result = self._check_operation_dependencies(
+                    processing_status, operation
+                )
+                
+                if dependency_result['violations']:
+                    result['safety_warnings'].append('dependency_violations')
+                    result['force_reasons'].append("依存関係違反を無視して強制実行")
+            
+            return result
+            
+        except Exception as e:
+            self.logger.get_logger().error(
+                f"強制実行制御エラー: {file_path}: {str(e)}"
+            )
+            return {
+                'should_force': False,
+                'force_reasons': [f"エラー: {str(e)}"],
+                'safety_warnings': ['error'],
+                'backup_required': True,
+                'confirmation_required': True
+            }
+    
+    def analyze_force_execution_impact(
+        self,
+        file_paths: List[Union[str, Path]],
+        force_config: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        強制実行影響分析（ドライラン）
+        
+        Args:
+            file_paths: Markdownファイルパスのリスト
+            force_config: 強制実行設定
+            
+        Returns:
+            Dict[str, Any]: 影響分析結果
+        """
+        try:
+            analysis = {
+                'affected_files': 0,
+                'operations_to_force': [],
+                'estimated_impact': {
+                    'total_operations': 0,
+                    'critical_operations': 0,
+                    'backup_required_count': 0
+                },
+                'safety_concerns': [],
+                'execution_plan': []
+            }
+            
+            for file_path in file_paths:
+                try:
+                    file_path = Path(file_path)
+                    
+                    if not file_path.exists():
+                        continue
+                    
+                    # 強制実行対象かチェック
+                    operations_to_check = force_config.get('force_operations', [])
+                    if force_config.get('force_all_operations', False):
+                        operations_to_check = ['organize', 'sync', 'enhance', 'ai_processing']
+                    
+                    file_operations = []
+                    for operation in operations_to_check:
+                        force_result = self.get_force_execution_control(
+                            file_path, operation, force_config
+                        )
+                        
+                        if force_result['should_force']:
+                            file_operations.append(operation)
+                            analysis['estimated_impact']['total_operations'] += 1
+                            
+                            if force_result['safety_warnings']:
+                                analysis['estimated_impact']['critical_operations'] += 1
+                                analysis['safety_concerns'].extend(force_result['safety_warnings'])
+                            
+                            if force_result['backup_required']:
+                                analysis['estimated_impact']['backup_required_count'] += 1
+                    
+                    if file_operations:
+                        analysis['affected_files'] += 1
+                        analysis['operations_to_force'].extend(file_operations)
+                        analysis['execution_plan'].append({
+                            'file': str(file_path),
+                            'operations': file_operations
+                        })
+                    
+                except Exception as e:
+                    self.logger.get_logger().warning(
+                        f"影響分析エラー {file_path}: {str(e)}"
+                    )
+            
+            # 重複削除
+            analysis['operations_to_force'] = list(set(analysis['operations_to_force']))
+            analysis['safety_concerns'] = list(set(analysis['safety_concerns']))
+            
+            return analysis
+            
+        except Exception as e:
+            self.logger.get_logger().error(f"強制実行影響分析エラー: {str(e)}")
+            return {
+                'affected_files': 0,
+                'operations_to_force': [],
+                'estimated_impact': {'total_operations': 0, 'critical_operations': 0, 'backup_required_count': 0},
+                'safety_concerns': ['analysis_error'],
+                'execution_plan': []
+            }
+    
+    def create_batch_force_execution_plan(
+        self,
+        file_paths: List[Union[str, Path]],
+        force_config: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        バッチ強制実行計画作成
+        
+        Args:
+            file_paths: Markdownファイルパスのリスト
+            force_config: 強制実行設定
+            
+        Returns:
+            Dict[str, Any]: バッチ実行計画
+        """
+        try:
+            plan = {
+                'execution_batches': [],
+                'total_operations': 0,
+                'estimated_duration': 0,
+                'batch_configuration': {
+                    'batch_size': force_config.get('batch_size', 10),
+                    'parallel_execution': force_config.get('parallel_execution', False),
+                    'stop_on_error': force_config.get('stop_on_error', True)
+                }
+            }
+            
+            # 影響分析を実行
+            impact_analysis = self.analyze_force_execution_impact(file_paths, force_config)
+            plan['total_operations'] = impact_analysis['estimated_impact']['total_operations']
+            
+            # バッチに分割
+            batch_size = plan['batch_configuration']['batch_size']
+            execution_items = impact_analysis['execution_plan']
+            
+            for i in range(0, len(execution_items), batch_size):
+                batch = execution_items[i:i + batch_size]
+                batch_operations = sum(len(item['operations']) for item in batch)
+                
+                plan['execution_batches'].append({
+                    'batch_id': len(plan['execution_batches']) + 1,
+                    'files': [item['file'] for item in batch],
+                    'operations_count': batch_operations,
+                    'estimated_time': batch_operations * 30  # 30秒/操作と仮定
+                })
+            
+            # 総推定時間計算
+            if plan['batch_configuration']['parallel_execution']:
+                # 並列実行の場合は最大バッチ時間
+                plan['estimated_duration'] = max(
+                    (batch['estimated_time'] for batch in plan['execution_batches']),
+                    default=0
+                )
+            else:
+                # シーケンシャル実行の場合は合計時間
+                plan['estimated_duration'] = sum(
+                    batch['estimated_time'] for batch in plan['execution_batches']
+                )
+            
+            return plan
+            
+        except Exception as e:
+            self.logger.get_logger().error(f"バッチ実行計画作成エラー: {str(e)}")
+            return {
+                'execution_batches': [],
+                'total_operations': 0,
+                'estimated_duration': 0,
+                'batch_configuration': {},
+                'error': str(e)
+            }
+    
+    def create_force_execution_rollback_plan(
+        self,
+        file_path: Union[str, Path],
+        force_config: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        強制実行ロールバック計画作成
+        
+        Args:
+            file_path: Markdownファイルパス
+            force_config: 強制実行設定
+            
+        Returns:
+            Dict[str, Any]: ロールバック計画
+        """
+        try:
+            file_path = Path(file_path)
+            
+            plan = {
+                'snapshot_required': False,
+                'rollback_steps': [],
+                'recovery_operations': [],
+                'rollback_points': []
+            }
+            
+            if not file_path.exists():
+                return plan
+            
+            # ロールバック機能が有効かチェック
+            if not force_config.get('enable_rollback', False):
+                return plan
+            
+            # YAMLヘッダー取得
+            yaml_header, _ = self.yaml_processor.parse_yaml_header(file_path)
+            if yaml_header:
+                processing_status = yaml_header.get('processing_status', {})
+                
+                # 現在の状態をスナップショットポイントとして記録
+                plan['snapshot_required'] = True
+                plan['rollback_points'].append({
+                    'timestamp': datetime.now().isoformat(),
+                    'processing_status': processing_status.copy(),
+                    'workflow_version': yaml_header.get('workflow_version', '3.2')
+                })
+            
+            # スナップショット作成設定
+            if force_config.get('create_snapshots', False):
+                plan['rollback_steps'].append({
+                    'step': 'create_file_backup',
+                    'description': 'ファイルのバックアップを作成',
+                    'target': str(file_path)
+                })
+            
+            # 状態復旧操作
+            plan['recovery_operations'] = [
+                'restore_processing_status',
+                'revert_yaml_header',
+                'validate_file_integrity'
+            ]
+            
+            # 最大ロールバックポイント数チェック
+            max_rollback_points = force_config.get('max_rollback_points', 3)
+            if len(plan['rollback_points']) > max_rollback_points:
+                plan['rollback_points'] = plan['rollback_points'][-max_rollback_points:]
+            
+            return plan
+            
+        except Exception as e:
+            self.logger.get_logger().error(
+                f"ロールバック計画作成エラー: {file_path}: {str(e)}"
+            )
+            return {
+                'snapshot_required': True,  # エラー時は安全側に倒す
+                'rollback_steps': [],
+                'recovery_operations': ['emergency_recovery'],
+                'rollback_points': [],
+                'error': str(e)
+            } 
