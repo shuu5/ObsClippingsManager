@@ -35,9 +35,11 @@ class TestIntegratedLogger(unittest.TestCase):
     
     def test_integrated_logger_import(self):
         """IntegratedLoggerクラスのインポートテスト"""
-        with self.assertRaises(ImportError):
-            # まだ実装されていないため、ImportError が発生することを確認
-            from modules.shared.integrated_logger import IntegratedLogger
+        try:
+            from code.py.modules.shared.integrated_logger import IntegratedLogger
+            self.assertTrue(True, "IntegratedLogger successfully imported")
+        except ImportError:
+            self.fail("IntegratedLogger should be importable")
 
 class TestBibTeXParser(unittest.TestCase):
     """BibTeXParserクラスのテスト"""
