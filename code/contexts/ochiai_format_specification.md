@@ -1,7 +1,7 @@
-# 落合フォーマット要約機能仕様書 v3.2
+# 落合フォーマット要約機能仕様書
 
 ## 概要
-学術論文の内容を6つの構造化された質問に答える形で要約し、研究者向けのA4一枚程度の簡潔な論文理解を提供する機能。Claude 3.5 Haiku (claude-3-5-haiku-20241022) を活用して日本語での学術的要約を自動生成します。
+学術論文の内容を6つの構造化された質問に答える形で要約し、研究者向けのA4一枚程度の簡潔な論文理解を提供する機能。Claude 3.5 Haikuを活用して日本語での学術的要約を自動生成します。
 
 ## 落合フォーマット仕様
 
@@ -140,51 +140,16 @@ JSON形式で回答してください：
 }
 ```
 
-### セクション分割機能連携版プロンプト
-```
-以下の学術論文の各セクション内容を、落合フォーマットの6つの質問に答える形で要約してください。
-
-【論文情報】
-タイトル: {title}
-著者: {authors}
-ジャーナル: {journal}
-
-【セクション別内容】
-Abstract: {abstract_content}
-Introduction: {introduction_content}
-Methods: {methods_content}
-Results: {results_content}
-Discussion: {discussion_content}
-References: {references_list}
-
-【要約ルール】
-1. 各項目3-5文程度で簡潔に
-2. 具体的で実用的な内容
-3. 学術的で自然な日本語
-4. 「次に読むべき論文」は参考文献から3本選出
-
-JSON形式で回答してください：
-{
-  "what_is_this": "...",
-  "what_is_superior": "...",
-  "technical_key": "...",
-  "validation_method": "...",
-  "discussion_points": "...",
-  "next_papers": "..."
-}
-```
-
 ## 設定項目
 
 ```yaml
 ochiai_format:
-  batch_size: 3                  # バッチサイズ（Haikuの高速処理により増加）
+  batch_size: 3                  # バッチサイズ（Haikuの高速処理により最適化）
   parallel_processing: true      # Haikuの効率性を活用
   retry_attempts: 3
   request_delay: 1.0             # Haikuの高速応答により短縮
   max_content_length: 10000      # 論文内容最大文字数制限
   enable_section_integration: true  # セクション分割機能との連携
-  model: "claude-3-5-haiku-20241022"  # 使用モデル
 ```
 
 ## セクション分割機能との連携
@@ -219,40 +184,17 @@ ochiai_format:
 
 ## 使用例
 
-### 基本実行
+### 統合ワークフローでの使用（推奨）
+```bash
+# デフォルト実行（落合フォーマット含む）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated
+
+# 落合フォーマット無効化
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --disable-ochiai-format
+```
+
+### 個別実行（デバッグ用）
 ```bash
 # 単独実行
 PYTHONPATH=code/py uv run python code/py/main.py ochiai-format
-
-# 統合ワークフローでの実行
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-ochiai-format
-```
-
-### 生成結果の確認
-```python
-def display_ochiai_format(paper_path: str):
-    """落合フォーマット要約の表示"""
-    with open(paper_path, 'r') as f:
-        content = f.read()
-        yaml_header = yaml.safe_load(content.split('---')[1])
-        
-    ochiai = yaml_header['ochiai_format']['questions']
-    
-    questions = [
-        ("どんなもの？", ochiai['what_is_this']),
-        ("先行研究と比べてどこがすごい？", ochiai['what_is_superior']),
-        ("技術や手法のキモはどこ？", ochiai['technical_key']),
-        ("どうやって有効だと検証した？", ochiai['validation_method']),
-        ("議論はある？", ochiai['discussion_points']),
-        ("次に読むべき論文は？", ochiai['next_papers'])
-    ]
-    
-    for question, answer in questions:
-        print(f"## {question}")
-        print(answer)
-        print()
-```
-
----
-
-**落合フォーマット要約機能仕様書バージョン**: 3.2.0 
+``` 

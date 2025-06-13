@@ -1,21 +1,21 @@
-# 統合ワークフロー仕様書 v3.1
+# 統合ワークフロー仕様書
 
 ## 概要
-統合ワークフロー（Integrated Workflow）は、ObsClippingsManager v3.1の中核機能。すべての処理を`run-integrated`コマンド一つで完結させるシンプルかつ効率的なシステム。状態管理により重複処理を自動回避し、デフォルト設定での引数なし実行を実現。
+統合ワークフロー（Integrated Workflow）は、ObsClippingsManagerの中核機能。すべての処理を`run-integrated`コマンド一つで完結させるシンプルかつ効率的なシステム。状態管理により重複処理を自動回避し、デフォルト設定での引数なし実行を実現。
 
 ## 基本原理
 
 ### 単一コマンド統合
 - **すべての機能**を`run-integrated`に集約
-- **引数なし実行**でデフォルト動作
+- **引数なし実行**でデフォルト動作（AI機能含む）
 - **個別設定**は必要時のみ
-- **AI理解支援**をオプションで追加
+- **AI理解支援**をデフォルトで有効化
 
 ### 状態管理による効率化
 - **YAMLヘッダー**による処理状態追跡
 - **自動スキップ**で完了済み処理を回避
 - **失敗再実行**で必要な処理のみ実施
-- **AI機能処理状態**の追跡
+- **AI機能処理状態**の詳細追跡
 
 ### 統一ディレクトリ設定
 - **workspace_path**一つでの全パス管理
@@ -24,9 +24,9 @@
 
 ## システム構成
 
-### 処理フロー v3.1
+### 処理フロー
 ```
-organize → sync → fetch (with automatic metadata enrichment) → section-parsing → ai-citation-support → enhanced-tagger → enhanced-translate → ochiai-format → final-sync
+organize → sync → fetch → section-parsing → ai-citation-support → enhanced-tagger → enhanced-translate → ochiai-format → final-sync
 ```
 
 ### メタデータ自動補完システム
@@ -61,18 +61,18 @@ output_dir: "{workspace_path}/Clippings"
 
 # AI機能設定（デフォルト有効）
 ai_generation:
+  default_model: "claude-3-5-haiku-20241022"
   tagger:
     enabled: true
-    model: "claude-3-5-haiku-20241022"
-    batch_size: 5
+    batch_size: 8
   translate_abstract:
     enabled: true
-    model: "claude-3-5-haiku-20241022"
-    batch_size: 3
+    batch_size: 5
   ochiai_format:
     enabled: true
-    model: "claude-3-5-haiku-20241022"
     batch_size: 3
+  section_parsing:
+    enabled: true
 ```
 
 ### 設定優先順位
@@ -82,35 +82,8 @@ ai_generation:
 
 ## IntegratedWorkflow クラス
 
-### クラス設計
-```python
-class IntegratedWorkflow:
-    """統合ワークフロー実行エンジン"""
-    
-    def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger):
-        self.config_manager = config_manager
-        self.logger = logger.get_logger('IntegratedWorkflow')
-        self.status_manager = StatusManager(config_manager, logger)
-        
-        # 各モジュールの初期化
-        self.organize_workflow = OrganizationWorkflow(config_manager, logger)
-        self.sync_workflow = SyncCheckWorkflow(config_manager, logger)
-        self.fetch_workflow = CitationWorkflow(config_manager, logger)
-        self.section_parser_workflow = SectionParserWorkflow(config_manager, logger)
-        self.ai_citation_support_workflow = AICitationSupportWorkflow(config_manager, logger)
-        self.tagger_workflow = TaggerWorkflow(config_manager, logger)
-        self.translate_abstract_workflow = TranslateAbstractWorkflow(config_manager, logger)
-        self.ochiai_format_workflow = OchiaiFormatWorkflow(config_manager, logger)
-    
-    def execute(self, **options) -> Dict[str, Any]:
-        """統合ワークフロー実行"""
-    
-    def show_execution_plan(self, **options) -> Dict[str, Any]:
-        """実行計画表示（実行なし）"""
-    
-    def force_reprocess(self, **options) -> Dict[str, Any]:
-        """強制再処理実行"""
-```
+### クラス設計概要
+統合ワークフローを管理する中核クラス。各モジュールを初期化し、順次実行を制御します。
 
 ### 主要処理フロー
 1. **パス解決**: workspace_pathから全パス自動導出
@@ -119,7 +92,7 @@ class IntegratedWorkflow:
 4. **ステップ実行**: 順次処理（前段階完了後に次段階）
 5. **状態更新**: 各ステップ完了時の状態記録
 
-## エッジケース処理仕様 v3.1
+## エッジケース処理仕様
 
 ### 概要
 BibTeXファイルとClippingsディレクトリ間の不整合ケースに対する処理方針を定義します。
@@ -139,31 +112,7 @@ BibTeXファイルとClippingsディレクトリ間の不整合ケースに対�
 - **表示内容**: ファイルパス、Citation key（ファイル名から推定）
 
 ### 処理対象論文の決定
-```python
-def _determine_target_papers(self, paths: Dict[str, str], options: Dict[str, Any]) -> List[str]:
-    """
-    エッジケースを除外した処理対象論文リストを生成
-    """
-    # 整合性チェック実行
-    consistency = self.status_manager.check_consistency(
-        paths['bibtex_file'], 
-        paths['clippings_dir']
-    )
-    
-    # エッジケース検出時の警告表示
-    if not consistency['consistent']:
-        self._log_edge_cases(consistency['edge_case_details'])
-    
-    # BibTeXとMarkdownの両方に存在する論文のみを処理対象とする
-    valid_papers = consistency['valid_papers']
-    
-    # ユーザー指定がある場合はフィルタリング
-    if options.get('papers'):
-        specified_papers = [p.strip() for p in options['papers'].split(',')]
-        valid_papers = [p for p in valid_papers if p in specified_papers]
-    
-    return valid_papers
-```
+エッジケースを除外した処理対象論文リストを生成します。
 
 ### 実行結果への影響
 ```python
@@ -219,7 +168,7 @@ Orphaned markdown files:
 
 ### 基本実行
 ```bash
-# デフォルト実行（推奨）
+# デフォルト実行（推奨・AI機能含む）
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated
 
 # 実行計画確認
@@ -229,16 +178,13 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated --show-plan
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --force-reprocess
 ```
 
-### AI機能有効化
+### AI機能制御
 ```bash
-# タグ生成有効化
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-tagger
+# AI機能無効化
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --disable-ai-features
 
-# 要約翻訳有効化
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-translate-abstract
-
-# 両方有効化
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-tagger --enable-translate-abstract
+# 特定AI機能のみ無効化
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --disable-tagger --disable-translate-abstract
 ```
 
 ### カスタム設定
@@ -248,144 +194,4 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace "/pa
 
 # 特定論文のみ処理
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --papers "paper1,paper2,paper3"
-
-# 特定ステップのスキップ
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --skip-steps "sync,final-sync"
 ```
-
-## 実行結果例
-
-### 正常実行
-```json
-{
-    'status': 'success',
-    'executed_steps': ['organize', 'sync', 'fetch', 'ai-citation-support', 'final-sync'],
-    'skipped_steps': ['tagger', 'translate_abstract'],
-    'failed_steps': [],
-    'total_papers_processed': 10,
-    'execution_time': 45.2
-}
-```
-
-### 部分的成功（AI機能有効化時）
-```json
-{
-    'status': 'success',
-    'executed_steps': ['organize', 'sync', 'fetch', 'ai-citation-support', 'tagger', 'translate_abstract', 'final-sync'],
-    'skipped_steps': [],
-    'failed_steps': [],
-    'total_papers_processed': 8,
-    'steps_details': {
-        'organize': {'processed': 2, 'skipped': 3},
-        'tagger': {'generated_tags': 156, 'papers': 8},
-        'translate_abstract': {'translated': 7, 'failed': 1}
-    },
-    'execution_time': 78.5
-}
-```
-
-## エラーハンドリング
-
-### 想定エラー
-- **設定エラー**: 不正なパス・ファイル不存在
-- **整合性エラー**: BibTeX-Clippings不整合
-- **ネットワークエラー**: API通信失敗
-- **処理エラー**: ステップ実行失敗
-
-### エラー対応
-- **設定エラー**: 詳細なエラーメッセージと修正方法の提示
-- **整合性エラー**: エッジケース処理で継続実行
-- **ネットワークエラー**: リトライ処理と適切なログ記録
-- **処理エラー**: 状態管理による再実行サポート
-
-## パフォーマンス仕様
-
-### 処理時間目標
-- **設定検証**: < 1秒
-- **エッジケース検出**: < 2秒  
-- **論文処理**: 10論文/分（AI機能無効時）
-- **AI処理**: 5論文/分（AI機能有効時）
-
-### リソース制約
-- **メモリ使用量**: 100MB以下
-- **API制限**: レート制限の適切な管理
-- **ディスク容量**: 一時ファイルの適切な削除
-
-## 9. 統合テストシステム v3.1.0
-
-### 9.1 テストシステム概要
-
-**ユニットテスト vs 統合テスト**:
-- **ユニットテスト**: 個別モジュールの単体テスト (`code/unittest/`)
-- **統合テスト**: マスターテストデータを使用したエンドツーエンドテスト
-
-### 9.2 マスターテストデータ構造
-
-```
-code/test_data_master/           # 固定マスターデータ（Git管理）
-├── CurrentManuscript.bib        # 5つのBibTeXエントリ
-└── Clippings/                   # 3つのMarkdownファイル
-    ├── Keratin_Profiling_*.md   # 対応エントリ: takenakaW2023J
-    ├── KRT13_promotes_*.md      # 対応エントリ: zhangQ2023A
-    └── KRT13_is_upregulated_*.md # orphaned（BibTeXに未対応）
-
-TestManuscripts/                 # 実行環境（自動生成・Git除外）
-├── CurrentManuscript.bib        # masterからコピー
-└── Clippings/                   # masterからコピー
-```
-
-### 9.3 エッジケーステストケース
-
-**意図的不整合データ**:
-1. `missing_in_clippings`: BibTeXにあるがClippingsにないエントリ（2件）
-2. `orphaned_in_clippings`: ClippingsにあるがBibTeXにないファイル（1件）
-3. `matching_entries`: 正常に対応するペア（2件）
-
-### 9.4 統合テストスクリプト仕様
-
-**スクリプト**: `code/scripts/test_run.sh`
-
-**主要機能**:
-- マスターデータからテスト環境自動構築
-- 統合ワークフロー実行（複数モード対応）
-- テスト結果自動確認・表示
-- 一貫したテスト環境保証
-
-**実行モード**:
-```bash
-# 基本実行
-./code/scripts/test_run.sh
-
-# 環境リセット後実行
-./code/scripts/test_run.sh --reset --run
-
-# ドライラン
-./code/scripts/test_run.sh --dry-run
-
-# デバッグモード
-./code/scripts/test_run.sh --debug
-
-# 実行計画表示
-./code/scripts/test_run.sh --plan
-```
-
-### 9.5 テスト結果検証
-
-**自動確認項目**:
-1. ファイル構造整合性
-2. YAML状態管理正確性
-3. エッジケース処理妥当性
-4. AI機能動作確認（タグ生成・翻訳）
-
-**期待される結果**:
-- `matching_entries`: 完全処理（fetch, organize, ai-support完了）
-- `missing_in_clippings`: 情報表示のみ（処理スキップ）
-- `orphaned_in_clippings`: ファイル情報表示のみ（処理スキップ）
-
----
-
-このシステムにより、開発者は常に同一条件で統合テストを実行でき、システムの品質を確保できます。
-
----
-
-**統合ワークフロー仕様書バージョン**: 3.1.0

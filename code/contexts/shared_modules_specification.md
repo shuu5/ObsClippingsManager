@@ -1,7 +1,7 @@
-# 共有モジュール仕様書 v3.1
+# 共有モジュール仕様書
 
 ## 概要
-ObsClippingsManager v3.1の共有モジュールは、全システムで使用される基盤機能を提供し、システム全体の一貫性を保証します。
+ObsClippingsManagerの共有モジュールは、全システムで使用される基盤機能を提供し、システム全体の一貫性を保証します。
 
 ## モジュール構成
 ```
@@ -20,6 +20,7 @@ modules/shared/
 - **ワークスペース統一管理**: 単一パス設定での全パス自動導出
 - **設定階層**: コマンドライン引数 > 設定ファイル > デフォルト値
 - **設定検証**: 実行前の設定妥当性チェック
+- **AI機能統合**: Claude 3.5 Haiku統一設定
 
 ### 設定構造
 ```yaml
@@ -37,29 +38,23 @@ api_settings:
   max_retries: 3
   timeout: 30
 
-# AI機能設定
+# AI機能設定（デフォルト有効）
 ai_generation:
+  default_model: "claude-3-5-haiku-20241022"
   claude_api_key: "your-api-key"
   tagger:
-    enabled: false
-    model: "claude-3-5-sonnet-20241022"
-    batch_size: 5
+    enabled: true
+    batch_size: 8
     tag_count_range: [10, 20]
   translate_abstract:
-    enabled: false
-    model: "claude-3-5-sonnet-20241022"
-    batch_size: 3
+    enabled: true
+    batch_size: 5
     preserve_formatting: true
-```
-
-### 主要メソッド
-```python
-class ConfigManager:
-    def __init__(self, config_file: str = None)
-    def get_setting(self, key: str, default: Any = None) -> Any
-    def resolve_paths(self, workspace_path: str = None, **overrides) -> Dict[str, str]
-    def validate_configuration(self, paths: Dict[str, str]) -> Dict[str, Any]
-    def merge_options(self, **options) -> Dict[str, Any]
+  ochiai_format:
+    enabled: true
+    batch_size: 3
+  section_parsing:
+    enabled: true
 ```
 
 ## IntegratedLogger - 統合ログシステム
@@ -69,16 +64,6 @@ class ConfigManager:
 - **ファイル出力**: ログファイルへの永続化
 - **レベル制御**: debug/info/warning/error
 - **モジュール分離**: モジュール別ログ出力
-
-### ログ設定
-```python
-class IntegratedLogger:
-    def __init__(self, log_level: str = 'info', verbose: bool = False, 
-                 log_file: str = None)
-    def get_logger(self, module_name: str) -> logging.Logger
-    def set_log_level(self, level: str)
-    def configure_file_output(self, log_file: str)
-```
 
 ### ログフォーマット
 ```
@@ -94,17 +79,6 @@ class IntegratedLogger:
 - **エントリ抽出**: 個別論文エントリの取得
 - **メタデータ正規化**: タイトル、DOI等の正規化
 - **エラーハンドリング**: 構文エラーの適切な処理
-
-### 主要メソッド
-```python
-class BibTeXParser:
-    def __init__(self, logger: logging.Logger)
-    def parse_file(self, bibtex_file: str) -> Dict[str, Dict[str, str]]
-    def extract_citation_keys(self, bibtex_file: str) -> List[str]
-    def get_entry_by_key(self, bibtex_file: str, citation_key: str) -> Dict[str, str]
-    def normalize_title(self, title: str) -> str
-    def extract_doi_from_entry(self, entry: Dict[str, str]) -> str
-```
 
 ### 解析結果形式
 ```python
@@ -122,28 +96,13 @@ class BibTeXParser:
 ## Utils - 共通ユーティリティ
 
 ### ファイルシステム操作
-```python
-def ensure_directory(path: str) -> bool
-def safe_file_move(src: str, dst: str) -> bool
-def get_file_hash(file_path: str) -> str
-def find_files_by_pattern(directory: str, pattern: str) -> List[str]
-```
+安全なファイル操作、パス正規化、ディレクトリ管理機能を提供します。
 
 ### 文字列処理
-```python
-def normalize_filename(filename: str) -> str
-def sanitize_path(path: str) -> str
-def calculate_similarity(text1: str, text2: str) -> float
-def extract_year_from_string(text: str) -> str
-```
+ファイル名正規化、類似度計算、DOI処理等の汎用文字列操作機能を提供します。
 
 ### DOI処理
-```python
-def normalize_doi(doi: str) -> str
-def validate_doi_format(doi: str) -> bool
-def extract_doi_from_text(text: str) -> str
-def doi_to_url(doi: str) -> str
-```
+DOI形式の正規化、検証、URL変換等のDOI関連ユーティリティを提供します。
 
 ## Exceptions - 階層的例外管理
 
@@ -180,34 +139,61 @@ class FileOperationError(ObsClippingsManagerError):
 - **ユーザー通知**: わかりやすいエラーメッセージの提供
 - **復旧処理**: 可能な場合の自動復旧実行
 
-## ClaudeAPIClient - Claude API統合クライアント（v3.1新機能）
+## ClaudeAPIClient - Claude API統合クライアント
 
 ### 基本機能
-- **API通信**: Claude 3.5 Sonnetとの統合通信
+- **API通信**: Claude 3.5 Haikuとの統合通信
 - **バッチ処理**: 複数リクエストの並列処理
 - **エラーハンドリング**: API制限・ネットワークエラーの適切な処理
 - **レート制限**: API呼び出し頻度制御
 
-### 主要メソッド
-```python
-class ClaudeAPIClient:
-    def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger)
-    async def generate_tags_batch(self, papers_content: List[str]) -> List[List[str]]
-    async def translate_abstracts_batch(self, abstracts: List[str]) -> List[str]
-    def handle_api_errors(self, error: Exception) -> Dict[str, Any]
-```
+### 統一AI技術スタック
+- **モデル**: Claude 3.5 Haiku
+- **バッチサイズ最適化**: Haikuの高速処理特性を活用
+- **並列処理**: 効率的な大量処理実現
 
 ### 設定項目
 ```python
 {
-    "model": "claude-3-5-sonnet-20241022",
+    "model": "claude-3-5-haiku-20241022",
     "api_key": "your-claude-api-key",
-    "request_delay": 1.0,
+    "request_delay": 0.5,  # Haikuの高速応答に最適化
     "max_retries": 3,
     "timeout": 30,
-    "batch_size": 5
+    "batch_size": 8  # Haikuの効率性を活用
 }
 ```
+
+## ワークフロークラス実装
+
+### 基本設計パターン
+各機能モジュールは以下の統一パターンで実装されます：
+
+#### 共通インターフェース
+```python
+class BaseWorkflow:
+    """ワークフロー基底クラス"""
+    
+    def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger):
+        self.config_manager = config_manager
+        self.logger = logger.get_logger(self.__class__.__name__)
+        
+    def process_papers(self, clippings_dir: str, target_papers: List[str] = None) -> Dict[str, Any]:
+        """論文の一括処理"""
+        
+    def process_single_paper(self, paper_path: str) -> Any:
+        """単一論文の処理"""
+```
+
+#### 具体的ワークフロー実装例
+- **OrganizationWorkflow**: ファイル整理
+- **SyncCheckWorkflow**: 同期チェック
+- **CitationWorkflow**: 引用文献取得
+- **SectionParserWorkflow**: セクション分割
+- **AICitationSupportWorkflow**: AI理解支援
+- **TaggerWorkflow**: タグ生成
+- **TranslateAbstractWorkflow**: 要約翻訳
+- **OchiaiFormatWorkflow**: 落合フォーマット要約
 
 ## 使用パターン
 
@@ -249,14 +235,7 @@ except ObsClippingsManagerError as e:
 - モジュール間の依存関係を最小限に抑制
 - 変更の影響範囲を制限
 
-### 設定の一元化
-- 全設定をConfigManagerで一元管理
-- 環境による設定切り替えの容易性確保
-
-### ログの統一
-- 全モジュールでIntegratedLoggerを使用
-- 一貫したログフォーマットでデバッグ効率向上
-
----
-
-**共有モジュール仕様書バージョン**: 3.1.0 
+### AI機能統合
+- Claude 3.5 Haiku統一による一貫したAI処理
+- バッチ処理最適化による効率的実行
+- エラーハンドリング統一による安定性確保 

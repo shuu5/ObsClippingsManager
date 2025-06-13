@@ -499,14 +499,34 @@ class IntegratedWorkflow:
                     continue
                 
                 # 処理が必要な論文を特定
-                papers_needing_processing = self.status_manager.get_papers_needing_processing(
-                    paths['clippings_dir'], step, target_papers
-                )
-                
-                if not papers_needing_processing:
-                    self.logger.info(f"Step {step}: All papers already processed")
-                    results['skipped_steps'].append(step)
-                    continue
+                if step == 'organize':
+                    # organizeステップ特別処理：未整理ファイルがあれば実行
+                    papers_needing_processing = self.status_manager.get_papers_needing_processing(
+                        paths['clippings_dir'], step, target_papers
+                    )
+                    # target_papersが空でも、未整理ファイルがあれば処理を実行
+                    if not papers_needing_processing:
+                        # 未整理ファイルの存在を直接チェック
+                        from pathlib import Path
+                        clippings_path = Path(paths['clippings_dir'])
+                        unorganized_files = [f for f in clippings_path.glob("*.md") if f.is_file()]
+                        if unorganized_files:
+                            # 未整理ファイルがある場合は、空リストでもorganizeステップを実行
+                            papers_needing_processing = []
+                            self.logger.info(f"Found {len(unorganized_files)} unorganized files, executing organize step")
+                        else:
+                            self.logger.info(f"Step {step}: All papers already processed")
+                            results['skipped_steps'].append(step)
+                            continue
+                else:
+                    papers_needing_processing = self.status_manager.get_papers_needing_processing(
+                        paths['clippings_dir'], step, target_papers
+                    )
+                    
+                    if not papers_needing_processing:
+                        self.logger.info(f"Step {step}: All papers already processed")
+                        results['skipped_steps'].append(step)
+                        continue
                 
                 # ステップ実行
                 self.logger.info(f"Executing step: {step} for {len(papers_needing_processing)} papers")
@@ -529,6 +549,16 @@ class IntegratedWorkflow:
                 if step_result.get('success', False):
                     results['completed_steps'].append(step)
                     results['processed_papers'] += len(papers_needing_processing)
+                    
+                    # organizeステップ完了後は、後続ステップのためにtarget_papersを更新
+                    if step == 'organize' and not target_papers:
+                        # 整理後のディレクトリから実際の論文リストを取得
+                        if os.path.exists(paths['clippings_dir']):
+                            target_papers = [
+                                d for d in os.listdir(paths['clippings_dir'])
+                                if os.path.isdir(os.path.join(paths['clippings_dir'], d))
+                            ]
+                            self.logger.info(f"Updated target_papers after organize step: {target_papers}")
                 else:
                     results['failed_steps'].append(step)
                     # 依存関係により後続ステップは実行しない
@@ -651,10 +681,25 @@ class IntegratedWorkflow:
             
             # 成功時は状態を更新
             if success and not options.get('dry_run', False):
-                for paper in papers:
-                    self.status_manager.update_status(
-                        paths['clippings_dir'], paper, step, ProcessStatus.COMPLETED
-                    )
+                # organizeステップの場合は、実際に整理された論文のリストを取得
+                if step == 'organize' and not papers:
+                    # 整理後にディレクトリから実際の論文リストを取得
+                    organized_papers = []
+                    if os.path.exists(paths['clippings_dir']):
+                        organized_papers = [
+                            d for d in os.listdir(paths['clippings_dir'])
+                            if os.path.isdir(os.path.join(paths['clippings_dir'], d))
+                        ]
+                    for paper in organized_papers:
+                        self.status_manager.update_status(
+                            paths['clippings_dir'], paper, step, ProcessStatus.COMPLETED
+                        )
+                else:
+                    # その他のステップは通常通り
+                    for paper in papers:
+                        self.status_manager.update_status(
+                            paths['clippings_dir'], paper, step, ProcessStatus.COMPLETED
+                        )
             
             return {
                 'success': success,

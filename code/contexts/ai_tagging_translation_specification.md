@@ -1,17 +1,18 @@
-# AI Tagging & Translation機能仕様書 v3.2
+# AI Tagging & Translation機能仕様書
 
 ## 概要
-Claude API 3.5 Haiku (claude-3-5-haiku-20241022) を活用したAI論文理解支援機能として、自動タグ生成（Tagger）と要約翻訳（Abstract Translation）機能を提供。論文の分類・検索性向上と日本語での理解促進を実現します。
+Claude 3.5 Haikuを活用したAI論文理解支援機能として、自動タグ生成（Tagger）と要約翻訳（Abstract Translation）機能を提供。論文の分類・検索性向上と日本語での理解促進を実現します。
 
 ## 基本原理
 - **Claude 3.5 Haiku**による高品質で高速な論文理解
 - **バッチ処理**による効率的な大量処理
 - **並列処理**による処理時間短縮
 - **状態管理**による処理済みファイルのスキップ
+- **デフォルト有効**: 統合ワークフローでの自動実行
 
 ## 処理統合
-- run-integratedワークフローに統合
-- ai-citation-support → tagger → translate_abstract → final-sync の順序
+- run-integratedワークフローにデフォルト統合
+- ai-citation-support → tagger → translate_abstract → ochiai_format → final-sync の順序
 - 各ステップの独立性保持
 
 ## AI Tagging機能（Tagger）
@@ -51,49 +52,6 @@ tags:
   - apoptosis
 ```
 
-### 実装仕様
-
-#### TaggerWorkflow クラス
-```python
-class TaggerWorkflow:
-    """AI論文タグ生成ワークフロー"""
-    
-    def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger):
-        self.config_manager = config_manager
-        self.logger = logger.get_logger('TaggerWorkflow')
-        self.claude_client = ClaudeAPIClient(config_manager, logger)
-        
-    def process_papers(self, clippings_dir: str, target_papers: List[str] = None, 
-                      batch_size: int = 5, parallel: bool = True) -> Dict[str, Any]:
-        """論文の一括タグ生成処理"""
-        
-    def generate_tags_single(self, paper_path: str) -> List[str]:
-        """単一論文のタグ生成"""
-        
-    def validate_tags(self, tags: List[str]) -> List[str]:
-        """生成タグの検証・正規化"""
-```
-
-#### バッチ処理設計
-```python
-def process_batch(self, paper_batch: List[str]) -> Dict[str, List[str]]:
-    """
-    複数論文の並列タグ生成処理
-    
-    Args:
-        paper_batch: 処理対象論文パスのリスト
-    
-    Returns:
-        {paper_path: [tags], ...}
-    
-    処理フロー:
-    1. 各論文の内容抽出
-    2. Claude APIに並列リクエスト
-    3. レスポンス結果の検証・正規化
-    4. YAMLヘッダーへの統合
-    """
-```
-
 ## Abstract Translation機能
 
 ### 概要
@@ -113,50 +71,10 @@ abstract_japanese: |
   診断精度の向上を達成した。
 ```
 
-### 実装仕様
+## 実装仕様
 
-#### TranslateAbstractWorkflow クラス
-```python
-class TranslateAbstractWorkflow:
-    """AI要約翻訳ワークフロー"""
-    
-    def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger):
-        self.config_manager = config_manager
-        self.logger = logger.get_logger('TranslateAbstractWorkflow')
-        self.claude_client = ClaudeAPIClient(config_manager, logger)
-        
-    def process_papers(self, clippings_dir: str, target_papers: List[str] = None,
-                      batch_size: int = 3, parallel: bool = True) -> Dict[str, Any]:
-        """論文の一括要約翻訳処理"""
-        
-    def translate_abstract_single(self, paper_path: str) -> str:
-        """単一論文の要約翻訳"""
-        
-    def extract_abstract(self, paper_content: str) -> str:
-        """論文からabstract部分を抽出"""
-```
-
-## Claude API Client設計
-
-### 基本クラス構造
-```python
-class ClaudeAPIClient:
-    """Claude API統合クライアント"""
-    
-    def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger):
-        self.config_manager = config_manager
-        self.logger = logger.get_logger('ClaudeAPIClient')
-        self.model = "claude-3-5-haiku-20241022"
-        
-    async def generate_tags_batch(self, papers_content: List[str]) -> List[List[str]]:
-        """バッチタグ生成"""
-        
-    async def translate_abstracts_batch(self, abstracts: List[str]) -> List[str]:
-        """バッチ要約翻訳"""
-        
-    def handle_api_errors(self, error: Exception) -> Dict[str, Any]:
-        """API エラーハンドリング"""
-```
+### ワークフロークラス
+各機能は独立したワークフロークラスとして実装されます。
 
 ### プロンプト設計
 
@@ -196,14 +114,17 @@ Original Abstract:
 ### バッチ処理設定
 ```yaml
 ai_generation:
+  default_model: "claude-3-5-haiku-20241022"
   tagger:
-    batch_size: 8                # Haikuの高速処理により増加
+    enabled: true
+    batch_size: 8                # Haikuの高速処理により最適化
     parallel_processing: true
     tag_count_range: [10, 20]
     retry_attempts: 3
     request_delay: 0.5           # Haikuの高速応答により短縮
   translate_abstract:
-    batch_size: 5                # Haikuの高速処理により増加
+    enabled: true
+    batch_size: 5                # Haikuの高速処理により最適化
     parallel_processing: true
     retry_attempts: 3
     request_delay: 0.8           # Haikuの高速応答により短縮
@@ -233,47 +154,33 @@ claude_api:
 
 ## 使用例
 
-### 基本的な使用方法
-```python
-# ワークフロー初期化
-tagger_workflow = TaggerWorkflow(config_manager, logger)
-translate_workflow = TranslateAbstractWorkflow(config_manager, logger)
+### 統合ワークフローでの使用（推奨）
+```bash
+# デフォルト実行（AI機能含む）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated
 
-# タグ生成
-tag_results = tagger_workflow.process_papers(
-    clippings_dir="/path/to/clippings",
-    target_papers=["smith2023test"],
-    batch_size=5
-)
-
-# 要約翻訳
-translation_results = translate_workflow.process_papers(
-    clippings_dir="/path/to/clippings",
-    target_papers=["smith2023test"],
-    batch_size=3
-)
+# AI機能無効化
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --disable-ai-features
 ```
 
-### 統合実行
+### 個別実行（デバッグ用）
 ```bash
-# AI機能を有効化した統合ワークフロー実行
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated \
-    --enable-tagger \
-    --enable-translate-abstract
+# タグ生成のみ
+PYTHONPATH=code/py uv run python code/py/main.py tagger
+
+# 翻訳のみ
+PYTHONPATH=code/py uv run python code/py/main.py translate-abstract
 ```
 
 ## 品質保証
 
-### タグ品質管理
-- **一貫性チェック**: 類似論文での共通タグ確認
-- **完全性チェック**: 重要カテゴリの漏れ確認
-- **正確性チェック**: 遺伝子名・専門用語の確認
+### 自動検証項目
+- タグ数の適切性（10-20個）
+- タグ形式の正確性（スネークケース）
+- 翻訳の完全性（極端な短縮の回避）
+- 日本語エンコーディングの正確性
 
-### 翻訳品質管理
-- **自然性チェック**: 日本語として自然な文章
-- **正確性チェック**: 原文との意味一致確認
-- **専門用語チェック**: 学術分野での適切な翻訳
-
----
-
-**AI Tagging & Translation機能仕様書バージョン**: 3.2.0 
+### 手動確認推奨項目
+- 専門用語の翻訳正確性
+- 学術的表現の適切性
+- 論文内容との整合性 

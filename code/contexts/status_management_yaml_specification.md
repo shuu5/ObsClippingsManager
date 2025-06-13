@@ -1,4 +1,4 @@
-# 状態管理システム仕様書 v3.1
+# 状態管理システム仕様書
 
 ## 概要
 各論文の処理状態をMarkdownファイルのYAMLヘッダーに記録し、効率的な重複処理回避を実現します。Zoteroによる自動BibTeX再生成の影響を受けない永続的な状態管理を提供します。
@@ -15,9 +15,11 @@
 - **organize**: ファイル整理状態
 - **sync**: 同期チェック状態
 - **fetch**: 引用文献取得状態
+- **section-parsing**: セクション分割処理状態
 - **ai-citation-support**: AI理解支援統合状態
 - **tagger**: タグ生成状態
 - **translate_abstract**: 要約翻訳状態
+- **ochiai_format**: 落合フォーマット要約状態
 
 ### 状態値定義
 - **"pending"**: 処理が必要（初期状態・失敗後）
@@ -30,6 +32,16 @@
 ```yaml
 ---
 citation_key: smith2023test
+paper_structure:
+  parsed_at: '2025-01-15T10:30:00.123456'
+  total_sections: 5
+  sections:
+    - title: "Abstract"
+      level: 2
+      section_type: "abstract"
+      start_line: 15
+      end_line: 25
+      word_count: 250
 citation_metadata:
   last_updated: '2025-01-15T10:30:00.123456'
   mapping_version: '2.0'
@@ -61,15 +73,34 @@ abstract_japanese: |
   本研究では、がん研究における先進的なバイオマーカー技術について報告する。
   KRT13およびEGFR遺伝子の発現パターンを機械学習アルゴリズムを用いて解析し、
   診断精度の向上を達成した。
+ochiai_format:
+  generated_at: '2025-01-15T11:00:00.123456'
+  questions:
+    what_is_this: |
+      KRT13タンパク質の発現パターンを機械学習で解析し、
+      がん診断精度を95%まで向上させた新しいバイオマーカー技術。
+    what_is_superior: |
+      既存手法と比較してAI画像解析による客観的定量評価を実現。
+    technical_key: |
+      深層学習ベースのCNNを用いたKRT13発現パターンの定量化。
+    validation_method: |
+      500例の組織サンプルによる後向き研究。
+    discussion_points: |
+      サンプル数制限により一般化性能に課題。
+    next_papers: |
+      1. Jones et al. (2022) - KRT13分子メカニズム
+      2. Davis et al. (2023) - 他がん種での類似手法
 last_updated: '2025-01-15T10:30:00.654321+00:00'
 processing_status:
   organize: completed
   sync: completed
   fetch: completed
+  section_parsing: completed
   ai-citation-support: completed
   tagger: completed
   translate_abstract: completed
-workflow_version: '3.1'
+  ochiai_format: completed
+workflow_version: '3.2'
 ---
 ```
 
@@ -81,30 +112,22 @@ workflow_version: '3.1'
 - **last_updated**: 状態最終更新日時（ISO 8601形式、自動生成）
 - **workflow_version**: 使用ワークフローバージョン（自動生成）
 
+#### 構造解析フィールド
+- **paper_structure**: セクション分割処理結果
+
 #### AI理解支援機能フィールド
-- **citations**: references.bibから統合された引用文献情報（{引用番号: CitationInfo}形式）
+- **citations**: references.bibから統合された引用文献情報
 - **citation_metadata**: 引用情報のメタデータ（総数、更新日時、ソース、バージョン）
 
 #### AI生成機能フィールド
-- **tags**: 論文内容に基づく自動生成タグ（Array[String]、英語・スネークケース、10-20個程度）
-- **abstract_japanese**: 論文abstractの日本語翻訳（YAML multi-line string、`|` 記法使用）
+- **tags**: 論文内容に基づく自動生成タグ
+- **abstract_japanese**: 論文abstractの日本語翻訳
+- **ochiai_format**: 落合フォーマット6項目要約
 
 ## StatusManager クラス設計
 
 ### クラス概要
-```python
-class StatusManager:
-    """YAMLヘッダーベースの状態管理システム"""
-    
-    def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger)
-    
-    # 主要メソッド
-    def load_md_statuses(self, clippings_dir: str) -> Dict[str, Dict[str, ProcessStatus]]
-    def update_status(self, clippings_dir: str, citation_key: str, step: str, status: ProcessStatus) -> bool
-    def get_papers_needing_processing(self, clippings_dir: str, step: str, target_papers: List[str] = None) -> List[str]
-    def reset_statuses(self, clippings_dir: str, target_papers: List[str] = None) -> bool
-    def check_consistency(self, bibtex_file: str, clippings_dir: str) -> Dict[str, Any]
-```
+YAMLヘッダーベースの状態管理システムの中核クラス。
 
 ### 主要メソッド機能
 
@@ -161,19 +184,6 @@ class ProcessStatus(Enum):
 2. **失敗時**: 状態を"failed"に更新
 3. **ログ記録**: 処理結果の詳細をログに記録
 
-## YAML操作実装
-
-### ヘッダー読み込み・更新
-```python
-def read_yaml_header(md_file: str) -> Dict[str, Any]:
-    """Markdownファイルからヘッダーを読み込み"""
-    # YAML frontmatter抽出・解析処理
-
-def update_yaml_header(md_file: str, updates: Dict[str, Any]) -> bool:
-    """Markdownファイルのヘッダーを更新"""
-    # ヘッダー更新・ファイル書き込み処理
-```
-
 ## エッジケース処理における状態管理
 
 ### 処理対象の限定
@@ -191,56 +201,12 @@ def update_yaml_header(md_file: str, updates: Dict[str, Any]) -> bool:
    - **ログ**: WARNING レベルで記録
 
 ### check_consistency() の拡張
-```python
-def check_consistency(self, bibtex_file: str, clippings_dir: str) -> Dict[str, Any]:
-    """
-    整合性チェック（エッジケース詳細情報付き）
-    
-    Returns:
-        {
-            "consistent": bool,
-            "missing_in_clippings": List[str],           # BibTeXにあるがMDなし
-            "orphaned_in_clippings": List[str],          # MDにあるがBibTeXなし  
-            "valid_papers": List[str],                   # 両方に存在（処理対象）
-            "total_papers": int,                         # BibTeX内論文総数
-            "total_clippings": int,                      # MD ファイル総数
-            "edge_case_details": {
-                "missing_count": int,
-                "orphaned_count": int,
-                "missing_with_doi": List[Dict[str, str]], # DOI情報付き
-                "orphaned_file_paths": List[str]          # ファイルパス情報
-            }
-        }
-    """
-    # エッジケース特定・詳細情報収集処理
-```
+詳細な整合性チェック結果を返します。
 
 ### ワークフローとの連携
 
 #### エッジケース除外処理
-```python
-def get_papers_needing_processing(self, clippings_dir: str, step: str, target_papers: List[str] = None) -> List[str]:
-    """
-    処理が必要な論文リストを取得（エッジケース除外済み）
-    
-    Args:
-        target_papers: 事前にエッジケースが除外された有効な論文リスト（必須）
-    """
-    if target_papers is None:
-        raise ValueError("target_papers must be provided after edge case filtering")
-    
-    # 指定された有効な論文の中から、処理が必要なもののみを抽出
-    all_statuses = self.load_md_statuses(clippings_dir)
-    
-    papers_needing_processing = []
-    for paper in target_papers:
-        if paper in all_statuses:
-            current_status = all_statuses[paper].get(step, ProcessStatus.PENDING)
-            if current_status in [ProcessStatus.PENDING, ProcessStatus.FAILED]:
-                papers_needing_processing.append(paper)
-    
-    return papers_needing_processing
-```
+処理が必要な論文リストを取得する際、事前にエッジケースが除外された有効な論文リストを必須とします。
 
 ## エラーハンドリング
 
@@ -249,24 +215,46 @@ def get_papers_needing_processing(self, clippings_dir: str, step: str, target_pa
 - **不正値**: 不正な状態値は"pending"にリセット
 - **形式エラー**: YAML形式エラーの場合は新規作成
 
-### ファイル操作エラー
-- **ファイル未存在**: 新規Markdownファイルとして作成
-- **権限エラー**: エラーログ記録後処理継続
-- **ディスク容量不足**: 処理停止とエラー通知
+### YAML操作安全性
+- **バックアップ**: 更新前の自動バックアップ作成
+- **原子性**: 更新操作の原子性保証
+- **エンコーディング**: UTF-8エンコーディングの一貫性
 
-## 設計方針
+## データ構造定義
 
-### エッジケース処理の原則
-1. **安全性優先**: 不完全なデータでの処理は行わない
-2. **情報提供**: 問題の詳細を明確に報告
-3. **処理継続**: 一部の問題で全体が停止しない
-4. **ユーザビリティ**: DOIリンク等で問題解決を支援
+### Section
+```python
+@dataclass
+class Section:
+    title: str                 # セクションタイトル 
+    level: int                # 見出しレベル (2=##, 3=###, 4=####)
+    content: str              # セクション本文
+    start_line: int           # 開始行番号
+    end_line: int            # 終了行番号
+    word_count: int          # 文字数
+    subsections: List['Section']  # 子セクション
+    section_type: str        # abstract, introduction, results等
+```
 
-### 状態管理の責任範囲
-- **対象**: BibTeXとMarkdownファイルの両方に存在する論文のみ
-- **除外**: エッジケースは状態管理対象外（上位レイヤーで処理）
-- **報告**: エッジケース検出と詳細情報提供は責任範囲内
+### PaperStructure
+```python
+@dataclass  
+class PaperStructure:
+    sections: List[Section]   # トップレベルセクション
+    total_sections: int      # 総セクション数
+    section_types_found: List[str]  # 発見されたセクションタイプ
+    parsed_at: str           # 解析日時
+```
 
----
-
-**状態管理システム仕様書バージョン**: 3.1.0 
+### OchiaiFormat
+```python
+@dataclass
+class OchiaiFormat:
+    what_is_this: str            # どんなもの？
+    what_is_superior: str        # 先行研究と比べてどこがすごい？
+    technical_key: str           # 技術や手法のキモはどこ？
+    validation_method: str       # どうやって有効だと検証した？
+    discussion_points: str       # 議論はある？
+    next_papers: str            # 次に読むべき論文は？
+    generated_at: str           # 生成日時
+```

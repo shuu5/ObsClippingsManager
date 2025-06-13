@@ -1,4 +1,4 @@
-# AI理解支援引用文献パーサー機能仕様書 v3.1
+# AI理解支援引用文献パーサー機能仕様書
 
 ## 概要
 references.bibの内容をそのまま順序通りにYAMLヘッダーに統合し、AIが直接Markdownファイルを読むだけで引用文献を理解できるシンプルな自己完結型システム。
@@ -10,6 +10,7 @@ references.bibの内容をそのまま順序通りにYAMLヘッダーに統合�
 - 重複エントリーも含めて全て処理
 - プレースホルダー生成なし
 - total_citationsはBibTeXエントリー数と一致
+- **デフォルト有効**: 統合ワークフローでの自動実行
 
 ## YAMLヘッダー統合形式
 
@@ -36,28 +37,19 @@ citations:
     journal: Nature Medicine
     title: Advanced Biomarker Techniques in Oncology
     year: 2022
-last_updated: '2025-01-15T10:30:00.654321+00:00'
 processing_status:
-  organize: completed
-  sync: completed
-  fetch: completed
   ai-citation-support: completed
-workflow_version: '3.1'
+workflow_version: '3.2'
 ---
 ```
 
-## 実装クラス
+## 実装仕様
 
-```python
-class CitationMappingEngine:
-    """シンプル引用マッピングエンジン"""
-    
-    def create_citation_mapping(self, markdown_file: str, references_bib: str = None) -> CitationMapping:
-        """references.bibから引用情報を順序通り読み込みマッピング作成"""
-        
-    def update_yaml_header(self, markdown_file: str, mapping: CitationMapping) -> bool:
-        """YAMLヘッダーのcitationsフィールドに引用情報を追加・更新"""
-```
+### ワークフロークラス
+AI理解支援引用文献パーサー機能は独立したワークフロークラスとして実装されます。
+
+### データ構造
+詳細なデータ構造定義は状態管理システム仕様書を参照してください。
 
 ## マッピングルール
 
@@ -72,79 +64,29 @@ class CitationMappingEngine:
 - `citations` の最大キー = `total_citations`
 - 欠番なし（1からtotal_citationsまで連続）
 
-## コマンドライン仕様
+## 使用例
 
-### 基本コマンド
-
-#### AI理解支援機能有効化（統合ワークフロー）
+### 統合ワークフローでの使用（推奨）
 ```bash
+# デフォルト実行（AI理解支援機能含む）
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated
+
+# AI理解支援機能無効化
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --disable-ai-citation-support
 ```
 
-#### 個別実行（デバッグ用）
+### 個別実行（デバッグ用）
 ```bash
+# 単独実行
 PYTHONPATH=code/py uv run python code/py/main.py parse-citations \
     --input paper.md \
     --references references.bib
 ```
 
-## データ構造
-
-### CitationMapping
-```python
-@dataclass
-class CitationMapping:
-    index_map: Dict[int, CitationInfo]   # 引用番号 → 文献情報
-    total_citations: int                 # 総引用数（BibTeXエントリー数）
-    last_updated: str                    # 最終更新時刻
-    references_file: str                 # 元のBibTeXファイルパス
-    mapping_version: str                 # マッピングバージョン
-```
-
-### CitationInfo
-```python
-@dataclass  
-class CitationInfo:
-    citation_key: str                    # BibTeX citation_key
-    title: str                           # 論文タイトル
-    authors: str                         # 著者情報
-    year: int                            # 発行年
-    journal: str                         # ジャーナル名
-    volume: str                          # 巻号情報
-    pages: str                           # ページ情報
-    doi: str                             # DOI
-    url: str                             # URL（オプション）
-```
-
 ## テスト仕様
 
 ### マッピング作成テスト
-```python
-def test_simple_mapping_creation():
-    mapping = engine.create_citation_mapping("test_paper.md", "test_references.bib")
-    assert mapping.total_citations == len(bib_entries)
-    assert len(mapping.index_map) == mapping.total_citations
-    assert 1 in mapping.index_map
-```
+マッピング機能の正確性とデータ一貫性を検証します。
 
 ### 重複処理テスト
-```python
-def test_duplicate_handling():
-    # 重複を含むBibTeXファイルでも全エントリーを処理
-    mapping = engine.create_citation_mapping("test_paper.md", "duplicates.bib")
-    assert mapping.total_citations == total_bib_entries  # 重複含む
-```
-
-## 使用例
-
-```bash
-# AI理解支援機能有効化の統合ワークフロー実行
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated
-
-# 結果: YAMLヘッダーのcitationsフィールドに
-#       references.bibの全エントリーが順序通り統合
-```
-
----
-
-**AI理解支援引用文献パーサー機能仕様書バージョン**: 3.1.0
+重複を含むBibTeXファイルでも全エントリーを正確に処理することを確認します。

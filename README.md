@@ -8,8 +8,10 @@
 1. **引用文献自動取得** - CrossRef/OpenCitations API
 2. **ファイル自動整理** - Citation keyベースのディレクトリ構造
 3. **同期チェック** - BibTeX ↔ Clippings整合性確認
-4. **AI理解支援** - YAMLヘッダーに引用文献情報統合（タグ生成・抄録翻訳）
-5. **状態管理** - 処理完了済み項目の自動スキップ
+4. **論文セクション分割** - Markdownの見出し構造による自動セクション解析
+5. **AI理解支援** - YAMLヘッダーに引用文献情報統合
+6. **AI論文解析** - Claude 3.5 Haikuによるタグ生成・翻訳・要約
+7. **状態管理** - 処理完了済み項目の自動スキップ
 
 ### アーキテクチャ
 ```
@@ -52,8 +54,8 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated
 # カスタムワークスペース指定
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --workspace "/path/to/workspace"
 
-# AI機能有効化
-PYTHONPATH=code/py uv run python code/py/main.py run-integrated --enable-tagger --enable-translate-abstract
+# AI機能無効化（必要な場合）
+PYTHONPATH=code/py uv run python code/py/main.py run-integrated --disable-ai-features
 ```
 
 ### 3. 実行オプション
@@ -107,6 +109,11 @@ citations:
 ### 2層テスト構成
 1. **ユニットテスト**: 個別モジュールの単体テスト
 2. **統合テスト**: マスターテストデータによるエンドツーエンドテスト
+
+### テスト環境の安全性
+- **テスト専用ディレクトリ**: `/tmp/ObsClippingsManager_Test` での動作検証
+- **本番環境への影響回避**: テスト実行時の完全分離
+- **自動クリーンアップ**: テスト環境の自動削除
 
 ### ユニットテスト実行
 ```bash
