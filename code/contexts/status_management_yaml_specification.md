@@ -45,31 +45,132 @@ graph LR
 
 ## YAMLヘッダー形式
 
-### 入力
+### 入力（統一テンプレート - 初期化状態）
 ```yaml
 ---
+# === システムメタデータ ===
 citation_key: smith2023test
-# 初期状態または部分処理済み状態
+workflow_version: '3.2'
+last_updated: '2025-01-15T09:30:00.123456+00:00'
+created_at: '2025-01-15T09:00:00.123456+00:00'
+
+# === 処理状態管理セクション ===
 processing_status:
+  # 基本ワークフロー（部分完了状態）
   organize: completed
   sync: completed
   fetch: pending
+  
+  # AI機能ワークフロー（初期状態）
   section_parsing: pending
   ai_citation_support: pending
   tagger: pending
   translate_abstract: pending
   ochiai_format: pending
-last_updated: '2025-01-15T09:30:00.123456+00:00'
-workflow_version: '3.1'
+  
+  # 統合処理
+  final_sync: pending
+
+# === モジュール専用セクション（初期化状態） ===
+citation_metadata:
+  last_updated: null
+  mapping_version: null
+  source_bibtex: null
+  total_citations: 0
+
+citations: {}
+
+paper_structure:
+  parsed_at: null
+  total_sections: 0
+  sections: []
+  section_types_found: []
+
+ai_content:
+  tags:
+    generated_at: null
+    count: 0
+    keywords: []
+  abstract_japanese:
+    generated_at: null
+    content: null
+  ochiai_format:
+    generated_at: null
+    questions:
+      what_is_this: null
+      what_is_superior: null
+      technical_key: null
+      validation_method: null
+      discussion_points: null
+      next_papers: null
+
+execution_summary:
+  executed_at: null
+  total_execution_time: 0
+  steps_executed: []
+  steps_summary: {}
+  edge_cases: {}
+
+error_history: []
+backup_information:
+  last_backup_at: null
+  backup_location: null
+  recovery_available: false
 ---
 ```
 
-### 出力
+### 出力（全ワークフロー完了後）
 ```yaml
 ---
+# === システムメタデータ ===
 citation_key: smith2023test
+workflow_version: '3.2'
+last_updated: '2025-01-15T11:35:00.654321+00:00'
+created_at: '2025-01-15T09:00:00.123456+00:00'
+
+# === 処理状態管理セクション ===
+processing_status:
+  # 基本ワークフロー（全完了）
+  organize: completed
+  sync: completed
+  fetch: completed
+  
+  # AI機能ワークフロー（全完了）
+  section_parsing: completed
+  ai_citation_support: completed
+  tagger: completed
+  translate_abstract: completed
+  ochiai_format: completed
+  
+  # 統合処理（完了）
+  final_sync: completed
+
+# === Citation Management ===
+citation_metadata:
+  last_updated: '2025-01-15T10:30:00.123456'
+  mapping_version: '2.0'
+  source_bibtex: references.bib
+  total_citations: 2
+
+citations:
+  1:
+    citation_key: jones2022biomarkers
+    authors: Jones
+    title: Advanced Biomarker Techniques in Oncology
+    year: 2022
+    journal: Nature Medicine
+    doi: 10.1038/s41591-022-0456-7
+  2:
+    citation_key: davis2023neural
+    authors: Davis
+    title: Neural Networks in Medical Diagnosis
+    year: 2023
+    journal: Science
+    doi: 10.1126/science.abcd1234
+
+# === Paper Structure ===
 paper_structure:
-  parsed_at: '2025-01-15T10:30:00.123456'
+  parsed_at: '2025-01-15T10:35:00.123456'
   total_sections: 5
   sections:
     - title: "Abstract"
@@ -78,70 +179,64 @@ paper_structure:
       start_line: 15
       end_line: 25
       word_count: 250
-citation_metadata:
-  last_updated: '2025-01-15T10:30:00.123456'
-  mapping_version: '2.0'
-  source_bibtex: references.bib
-  total_citations: 2
-citations:
-  1:
-    authors: Jones
-    citation_key: jones2022biomarkers
-    doi: 10.1038/s41591-022-0456-7
-    journal: Nature Medicine
-    title: Advanced Biomarker Techniques in Oncology
-    year: 2022
-  2:
-    authors: Davis
-    citation_key: davis2023neural
-    doi: 10.1126/science.abcd1234
-    journal: Science
-    title: Neural Networks in Medical Diagnosis
-    year: 2023
-tags:
-  generated_at: '2025-01-15T11:15:00.123456'
-  count: 15
-  keywords:
-    - oncology
-    - biomarkers
-    - cancer_research
-    - machine_learning
-    - KRT13
-    - EGFR
-abstract_japanese:
-  generated_at: '2025-01-15T11:20:00.123456'
-  content: |
-    本研究では、がん研究における先進的なバイオマーカー技術について報告する。
-    KRT13およびEGFR遺伝子の発現パターンを機械学習アルゴリズムを用いて解析し、
-    診断精度の向上を達成した。
-ochiai_format:
-  generated_at: '2025-01-15T11:30:00.123456'
-  questions:
-    what_is_this: |
-      KRT13タンパク質の発現パターンを機械学習で解析し、
-      がん診断精度を95%まで向上させた新しいバイオマーカー技術。
-    what_is_superior: |
-      既存手法と比較してAI画像解析による客観的定量評価を実現。
-    technical_key: |
-      深層学習ベースのCNNを用いたKRT13発現パターンの定量化。
-    validation_method: |
-      500例の組織サンプルによる後向き研究。
-    discussion_points: |
-      サンプル数制限により一般化性能に課題。
-    next_papers: |
-      1. Jones et al. (2022) - KRT13分子メカニズム
-      2. Davis et al. (2023) - 他がん種での類似手法
-last_updated: '2025-01-15T11:35:00.654321+00:00'
-processing_status:
-  organize: completed
-  sync: completed
-  fetch: completed
-  section_parsing: completed
-  ai_citation_support: completed
-  tagger: completed
-  translate_abstract: completed
-  ochiai_format: completed
-workflow_version: '3.2'
+
+# === AI Generated Content ===
+ai_content:
+  tags:
+    generated_at: '2025-01-15T11:15:00.123456'
+    count: 15
+    keywords:
+      - oncology
+      - biomarkers
+      - cancer_research
+      - machine_learning
+      - KRT13
+      - EGFR
+  abstract_japanese:
+    generated_at: '2025-01-15T11:20:00.123456'
+    content: |
+      本研究では、がん研究における先進的なバイオマーカー技術について報告する。
+      KRT13およびEGFR遺伝子の発現パターンを機械学習アルゴリズムを用いて解析し、
+      診断精度の向上を達成した。
+  ochiai_format:
+    generated_at: '2025-01-15T11:30:00.123456'
+    questions:
+      what_is_this: |
+        KRT13タンパク質の発現パターンを機械学習で解析し、
+        がん診断精度を95%まで向上させた新しいバイオマーカー技術。
+      what_is_superior: |
+        既存手法と比較してAI画像解析による客観的定量評価を実現。
+      technical_key: |
+        深層学習ベースのCNNを用いたKRT13発現パターンの定量化。
+      validation_method: |
+        500例の組織サンプルによる後向き研究。
+      discussion_points: |
+        サンプル数制限により一般化性能に課題。
+      next_papers: |
+        1. Jones et al. (2022) - KRT13分子メカニズム
+        2. Davis et al. (2023) - 他がん種での類似手法
+
+# === 統合ワークフロー実行記録 ===
+execution_summary:
+  executed_at: '2025-01-15T12:00:00.123456'
+  total_execution_time: 180.5
+  steps_executed: ["organize", "sync", "fetch", "section_parsing", "ai_citation_support", "tagger", "translate_abstract", "ochiai_format", "final_sync"]
+  steps_summary:
+    organize:
+      status: completed
+      execution_time: 15.2
+    ai_citation_support:
+      status: completed
+      execution_time: 25.3
+  edge_cases:
+    missing_in_clippings: 2
+    orphaned_in_clippings: 1
+
+error_history: []
+backup_information:
+  last_backup_at: '2025-01-15T11:35:00.123456'
+  backup_location: 'backups/smith2023test_20250115_113500.md'
+  recovery_available: true
 ---
 ```
 

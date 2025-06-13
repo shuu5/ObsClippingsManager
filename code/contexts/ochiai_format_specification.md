@@ -42,12 +42,46 @@ graph LR
 
 ## YAMLヘッダー形式
 
-### 入力
+### 入力（tagger & translate_abstract処理後）
 ```yaml
 ---
+# === システムメタデータ ===
 citation_key: smith2023test
+workflow_version: '3.2'
+last_updated: '2025-01-15T11:20:00.123456+00:00'
+created_at: '2025-01-15T09:00:00.123456+00:00'
+
+# === 処理状態管理セクション ===
+processing_status:
+  organize: completed
+  sync: completed
+  fetch: completed
+  ai_citation_support: completed
+  section_parsing: completed
+  tagger: completed
+  translate_abstract: completed
+  ochiai_format: pending  # ← このモジュールで処理予定
+  final_sync: pending
+
+# === Citation Management（前段で設定済み） ===
+citation_metadata:
+  last_updated: '2025-01-15T10:30:00.123456'
+  mapping_version: '2.0'
+  source_bibtex: references.bib
+  total_citations: 2
+
+citations:
+  1:
+    citation_key: jones2022biomarkers
+    authors: Jones
+    title: Advanced Biomarker Techniques in Oncology
+    year: 2022
+    journal: Nature Medicine
+    doi: 10.1038/s41591-022-0456-7
+
+# === Paper Structure（前段で設定済み） ===
 paper_structure:
-  parsed_at: '2025-01-15T10:30:00.123456'
+  parsed_at: '2025-01-15T10:35:00.123456'
   total_sections: 5
   sections:
     - title: "Abstract"
@@ -62,30 +96,87 @@ paper_structure:
       start_line: 27
       end_line: 85
       word_count: 1200
-tags:
-  generated_at: '2025-01-15T11:15:00.123456'
-  count: 15
-  keywords:
-    - oncology
-    - biomarkers
-    - cancer_research
-    - machine_learning
-    - KRT13
-processing_status:
-  section_parsing: completed
-  ai_citation_support: completed
-  tagger: completed
-  translate_abstract: completed
-  ochiai_format: pending
+
+# === AI Generated Content（前段で一部設定済み） ===
+ai_content:
+  tags:
+    generated_at: '2025-01-15T11:15:00.123456'
+    count: 15
+    keywords:
+      - oncology
+      - biomarkers
+      - cancer_research
+      - machine_learning
+      - KRT13
+  abstract_japanese:
+    generated_at: '2025-01-15T11:20:00.123456'
+    content: |
+      本研究では、がん研究における先進的なバイオマーカー技術について報告する。
+  ochiai_format:  # ← このモジュールで処理予定
+    generated_at: null
+    questions:
+      what_is_this: null
+      what_is_superior: null
+      technical_key: null
+      validation_method: null
+      discussion_points: null
+      next_papers: null
+
+execution_summary:
+  executed_at: null
+  total_execution_time: 0
+  steps_executed: []
+  steps_summary: {}
+  edge_cases: {}
+
+error_history: []
+backup_information:
+  last_backup_at: null
+  backup_location: null
+  recovery_available: false
 ---
 ```
 
-### 出力
+### 出力（ochiai_formatモジュール処理後）
 ```yaml
 ---
+# === システムメタデータ ===
 citation_key: smith2023test
+workflow_version: '3.2'
+last_updated: '2025-01-15T11:30:00.123456+00:00'
+created_at: '2025-01-15T09:00:00.123456+00:00'
+
+# === 処理状態管理セクション ===
+processing_status:
+  organize: completed
+  sync: completed
+  fetch: completed
+  ai_citation_support: completed
+  section_parsing: completed
+  tagger: completed
+  translate_abstract: completed
+  ochiai_format: completed  # ← このモジュールで更新
+  final_sync: pending
+
+# === Citation Management（前段で設定済み、変更なし） ===
+citation_metadata:
+  last_updated: '2025-01-15T10:30:00.123456'
+  mapping_version: '2.0'
+  source_bibtex: references.bib
+  total_citations: 2
+
+citations:
+  1:
+    citation_key: jones2022biomarkers
+    authors: Jones
+    title: Advanced Biomarker Techniques in Oncology
+    year: 2022
+    journal: Nature Medicine
+    doi: 10.1038/s41591-022-0456-7
+
+# === Paper Structure（前段で設定済み、変更なし） ===
 paper_structure:
-  parsed_at: '2025-01-15T10:30:00.123456'
+  parsed_at: '2025-01-15T10:35:00.123456'
   total_sections: 5
   sections:
     - title: "Abstract"
@@ -94,47 +185,61 @@ paper_structure:
       start_line: 15
       end_line: 25
       word_count: 250
-tags:
-  generated_at: '2025-01-15T11:15:00.123456'
-  count: 15
-  keywords:
-    - oncology
-    - biomarkers
-    - cancer_research
-ochiai_format:
-  generated_at: '2025-01-15T11:30:00.123456'
-  questions:
-    what_is_this: |
-      KRT13タンパク質の発現パターンを機械学習で解析し、
-      がん診断精度を95%まで向上させた新しいバイオマーカー技術。
-      従来の組織診断と比較して診断時間を半分に短縮。
-    what_is_superior: |
-      既存の免疫組織化学的手法と比較して、AI画像解析による
-      客観的定量評価を実現。従来の主観的診断の限界を克服し、
-      診断者間のばらつきを大幅に削減した点が革新的。
-    technical_key: |
-      深層学習ベースのConvolutional Neural Networkを用いて、
-      KRT13タンパク質の発現パターンを定量化。Transfer learningと
-      data augmentationにより少数サンプルでの高精度学習を実現。
-    validation_method: |
-      500例の組織サンプルを用いた後向き研究。3名の病理医による
-      独立診断を gold standard とし、機械学習モデルの診断精度、
-      感度、特異度を統計学的に評価。Cross-validationで再現性確認。
-    discussion_points: |
-      サンプル数の制限により一般化性能に課題。異なる施設・機器での
-      検証が必要。また、稀な組織型への適用可能性は今後の検討課題。
-      コスト効果分析も実臨床導入には重要。
-    next_papers: |
-      1. Jones et al. (2022) - KRT13の分子メカニズム詳細
-      2. Davis et al. (2023) - 他のがん種での類似手法
-      3. Wilson et al. (2024) - AI診断の臨床実装ガイドライン
-processing_status:
-  section_parsing: completed
-  ai_citation_support: completed
-  tagger: completed
-  translate_abstract: completed
-  ochiai_format: completed
-workflow_version: '3.2'
+
+# === AI Generated Content（このモジュールで落合フォーマット完成） ===
+ai_content:
+  tags:
+    generated_at: '2025-01-15T11:15:00.123456'
+    count: 15
+    keywords:
+      - oncology
+      - biomarkers
+      - cancer_research
+  abstract_japanese:
+    generated_at: '2025-01-15T11:20:00.123456'
+    content: |
+      本研究では、がん研究における先進的なバイオマーカー技術について報告する。
+  ochiai_format:  # ← このモジュールで更新
+    generated_at: '2025-01-15T11:30:00.123456'
+    questions:
+      what_is_this: |
+        KRT13タンパク質の発現パターンを機械学習で解析し、
+        がん診断精度を95%まで向上させた新しいバイオマーカー技術。
+        従来の組織診断と比較して診断時間を半分に短縮。
+      what_is_superior: |
+        既存の免疫組織化学的手法と比較して、AI画像解析による
+        客観的定量評価を実現。従来の主観的診断の限界を克服し、
+        診断者間のばらつきを大幅に削減した点が革新的。
+      technical_key: |
+        深層学習ベースのConvolutional Neural Networkを用いて、
+        KRT13タンパク質の発現パターンを定量化。Transfer learningと
+        data augmentationにより少数サンプルでの高精度学習を実現。
+      validation_method: |
+        500例の組織サンプルを用いた後向き研究。3名の病理医による
+        独立診断を gold standard とし、機械学習モデルの診断精度、
+        感度、特異度を統計学的に評価。Cross-validationで再現性確認。
+      discussion_points: |
+        サンプル数の制限により一般化性能に課題。異なる施設・機器での
+        検証が必要。また、稀な組織型への適用可能性は今後の検討課題。
+        コスト効果分析も実臨床導入には重要。
+      next_papers: |
+        1. Jones et al. (2022) - KRT13の分子メカニズム詳細
+        2. Davis et al. (2023) - 他のがん種での類似手法
+        3. Wilson et al. (2024) - AI診断の臨床実装ガイドライン
+
+# === 他セクション（このモジュールでは変更なし） ===
+execution_summary:
+  executed_at: null
+  total_execution_time: 0
+  steps_executed: []
+  steps_summary: {}
+  edge_cases: {}
+
+error_history: []
+backup_information:
+  last_backup_at: null
+  backup_location: null
+  recovery_available: false
 ---
 ```
 

@@ -45,31 +45,67 @@ graph LR
 
 ## YAMLヘッダー形式
 
-### 入力
+### 入力（ワークスペース・実行パラメータ）
 ```yaml
 ---
-# 統合ワークフローは複数の論文を一括処理するため、
-# 個別論文のYAMLヘッダーは各ステップで更新されます
-workspace_status:
+# === ワークスペース設定 ===
+workspace_configuration:
   workspace_path: "/home/user/ManuscriptsManager"
   bibtex_file: "CurrentManuscript.bib"
   clippings_dir: "Clippings"
+  output_dir: "Clippings"
+
+# === 実行パラメータ ===
 execution_parameters:
   force_reprocess: false
   disable_ai_features: false
   target_papers: null
   show_plan: false
+  dry_run: false
+  
+# === システム情報 ===
+system_info:
+  workflow_version: '3.2'
+  execution_mode: 'integrated'
+  start_time: '2025-01-15T12:00:00.123456+00:00'
 ---
 ```
 
-### 出力
+### 出力（統合ワークフロー実行結果）
 ```yaml
 ---
-# 統合ワークフロー実行結果（各論文のYAMLヘッダーは個別に更新）
-execution_summary:
+# === ワークスペース設定（実行時確定） ===
+workspace_configuration:
+  workspace_path: "/home/user/ManuscriptsManager"
+  bibtex_file: "CurrentManuscript.bib"
+  clippings_dir: "Clippings"
+  output_dir: "Clippings"
+  resolved_paths:
+    bibtex_absolute: "/home/user/ManuscriptsManager/CurrentManuscript.bib"
+    clippings_absolute: "/home/user/ManuscriptsManager/Clippings"
+
+# === 実行パラメータ（確定値） ===
+execution_parameters:
+  force_reprocess: false
+  disable_ai_features: false
+  target_papers: ["smith2023test", "jones2022biomarkers", "davis2023neural"]
+  show_plan: false
+  dry_run: false
+
+# === システム情報 ===
+system_info:
+  workflow_version: '3.2'
+  execution_mode: 'integrated'
+  start_time: '2025-01-15T12:00:00.123456+00:00'
+  end_time: '2025-01-15T12:03:00.654321+00:00'
+
+# === 実行結果サマリー（統合ワークフロー専用） ===
+integrated_execution_summary:
   executed_at: '2025-01-15T12:00:00.123456'
   total_papers_processed: 3
   total_execution_time: 180.5
+  overall_status: 'completed'
+  
   steps_executed:
     - organize
     - sync
@@ -79,39 +115,76 @@ execution_summary:
     - tagger
     - translate_abstract
     - ochiai_format
-    - final-sync
+    - final_sync
+    
   steps_summary:
     organize:
       status: completed
       papers_processed: 3
       execution_time: 15.2
+      files_reorganized: 3
     sync:
       status: completed
       papers_processed: 3
       execution_time: 8.1
+      sync_operations: 6
     ai_citation_support:
       status: completed
       papers_processed: 3
       execution_time: 25.3
+      citations_processed: 8
     tagger:
       status: completed
       papers_processed: 3
       execution_time: 42.7
       ai_requests: 3
+      tags_generated: 45
     translate_abstract:
       status: completed
       papers_processed: 3
       execution_time: 38.9
       ai_requests: 3
+      translations_generated: 3
     ochiai_format:
       status: completed
       papers_processed: 3
       execution_time: 51.3
       ai_requests: 3
-edge_cases:
-  missing_in_clippings: 2
-  orphaned_in_clippings: 1
-workflow_version: '3.2'
+      summaries_generated: 3
+    final_sync:
+      status: completed
+      papers_processed: 3
+      execution_time: 12.0
+      final_validations: 3
+
+# === エッジケース処理結果 ===
+edge_cases_handling:
+  detected_issues:
+    missing_in_clippings: 2
+    orphaned_in_clippings: 1
+    yaml_repair_needed: 0
+  resolution_actions:
+    files_created: 2
+    files_moved: 0
+    headers_repaired: 0
+  post_resolution_status: 'resolved'
+
+# === エラー・警告記録 ===
+execution_log:
+  errors: []
+  warnings: 
+    - "smith2023test: Abstract section shorter than expected"
+  performance_metrics:
+    peak_memory_usage: "45.2 MB"
+    api_requests_total: 9
+    api_rate_limit_hits: 0
+
+# === バックアップ情報 ===
+backup_summary:
+  backups_created: 6
+  backup_location: "backups/integrated_20250115_120000/"
+  total_backup_size: "2.3 MB"
+  recovery_points_available: true
 ---
 ```
 

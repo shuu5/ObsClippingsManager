@@ -50,12 +50,46 @@ graph LR
 
 ## YAMLヘッダー形式
 
-### 入力
+### 入力（section_parsing処理後）
 ```yaml
 ---
+# === システムメタデータ ===
 citation_key: smith2023test
+workflow_version: '3.2'
+last_updated: '2025-01-15T10:35:00.123456+00:00'
+created_at: '2025-01-15T09:00:00.123456+00:00'
+
+# === 処理状態管理セクション ===
+processing_status:
+  organize: completed
+  sync: completed
+  fetch: completed
+  ai_citation_support: completed
+  section_parsing: completed
+  tagger: pending  # ← このモジュールで処理予定
+  translate_abstract: pending  # ← このモジュールで処理予定
+  ochiai_format: pending
+  final_sync: pending
+
+# === Citation Management（前段で設定済み） ===
+citation_metadata:
+  last_updated: '2025-01-15T10:30:00.123456'
+  mapping_version: '2.0'
+  source_bibtex: references.bib
+  total_citations: 2
+
+citations:
+  1:
+    citation_key: jones2022biomarkers
+    authors: Jones
+    title: Advanced Biomarker Techniques in Oncology
+    year: 2022
+    journal: Nature Medicine
+    doi: 10.1038/s41591-022-0456-7
+
+# === Paper Structure（前段で設定済み） ===
 paper_structure:
-  parsed_at: '2025-01-15T10:30:00.123456'
+  parsed_at: '2025-01-15T10:35:00.123456'
   total_sections: 5
   sections:
     - title: "Abstract"
@@ -64,20 +98,81 @@ paper_structure:
       start_line: 15
       end_line: 25
       word_count: 250
-processing_status:
-  section_parsing: completed
-  ai_citation_support: completed
-  tagger: pending
-  translate_abstract: pending
+
+# === AI Generated Content（このモジュールで処理予定） ===
+ai_content:
+  tags:
+    generated_at: null
+    count: 0
+    keywords: []
+  abstract_japanese:
+    generated_at: null
+    content: null
+  ochiai_format:
+    generated_at: null
+    questions:
+      what_is_this: null
+      what_is_superior: null
+      technical_key: null
+      validation_method: null
+      discussion_points: null
+      next_papers: null
+
+execution_summary:
+  executed_at: null
+  total_execution_time: 0
+  steps_executed: []
+  steps_summary: {}
+  edge_cases: {}
+
+error_history: []
+backup_information:
+  last_backup_at: null
+  backup_location: null
+  recovery_available: false
 ---
 ```
 
-### 出力
+### 出力（tagger & translate_abstractモジュール処理後）
 ```yaml
 ---
+# === システムメタデータ ===
 citation_key: smith2023test
+workflow_version: '3.2'
+last_updated: '2025-01-15T11:20:00.123456+00:00'
+created_at: '2025-01-15T09:00:00.123456+00:00'
+
+# === 処理状態管理セクション ===
+processing_status:
+  organize: completed
+  sync: completed
+  fetch: completed
+  ai_citation_support: completed
+  section_parsing: completed
+  tagger: completed  # ← このモジュールで更新
+  translate_abstract: completed  # ← このモジュールで更新
+  ochiai_format: pending
+  final_sync: pending
+
+# === Citation Management（前段で設定済み、変更なし） ===
+citation_metadata:
+  last_updated: '2025-01-15T10:30:00.123456'
+  mapping_version: '2.0'
+  source_bibtex: references.bib
+  total_citations: 2
+
+citations:
+  1:
+    citation_key: jones2022biomarkers
+    authors: Jones
+    title: Advanced Biomarker Techniques in Oncology
+    year: 2022
+    journal: Nature Medicine
+    doi: 10.1038/s41591-022-0456-7
+
+# === Paper Structure（前段で設定済み、変更なし） ===
 paper_structure:
-  parsed_at: '2025-01-15T10:30:00.123456'
+  parsed_at: '2025-01-15T10:35:00.123456'
   total_sections: 5
   sections:
     - title: "Abstract"
@@ -86,38 +181,58 @@ paper_structure:
       start_line: 15
       end_line: 25
       word_count: 250
-tags:
-  generated_at: '2025-01-15T11:15:00.123456'
-  count: 15
-  keywords:
-    - oncology
-    - biomarkers
-    - cancer_research
-    - machine_learning
-    - KRT13
-    - EGFR
-    - immunotherapy
-    - clinical_trials
-    - rna_seq
-    - apoptosis
-    - western_blot
-    - flow_cytometry
-    - breast_cancer
-    - prognosis
-    - survival_analysis
-abstract_japanese:
-  generated_at: '2025-01-15T11:20:00.123456'
-  content: |
-    本研究では、がん研究における先進的なバイオマーカー技術について報告する。
-    KRT13およびEGFR遺伝子の発現パターンを機械学習アルゴリズムを用いて解析し、
-    診断精度の向上を達成した。500例の組織サンプルを用いた後向き研究により、
-    従来の免疫組織化学的手法と比較して95%の診断精度を実現した。
-processing_status:
-  section_parsing: completed
-  ai_citation_support: completed
-  tagger: completed
-  translate_abstract: completed
-workflow_version: '3.2'
+
+# === AI Generated Content（このモジュールで更新） ===
+ai_content:
+  tags:
+    generated_at: '2025-01-15T11:15:00.123456'
+    count: 15
+    keywords:
+      - oncology
+      - biomarkers
+      - cancer_research
+      - machine_learning
+      - KRT13
+      - EGFR
+      - immunotherapy
+      - clinical_trials
+      - rna_seq
+      - apoptosis
+      - western_blot
+      - flow_cytometry
+      - breast_cancer
+      - prognosis
+      - survival_analysis
+  abstract_japanese:
+    generated_at: '2025-01-15T11:20:00.123456'
+    content: |
+      本研究では、がん研究における先進的なバイオマーカー技術について報告する。
+      KRT13およびEGFR遺伝子の発現パターンを機械学習アルゴリズムを用いて解析し、
+      診断精度の向上を達成した。500例の組織サンプルを用いた後向き研究により、
+      従来の免疫組織化学的手法と比較して95%の診断精度を実現した。
+  ochiai_format:
+    generated_at: null
+    questions:
+      what_is_this: null
+      what_is_superior: null
+      technical_key: null
+      validation_method: null
+      discussion_points: null
+      next_papers: null
+
+# === 他セクション（このモジュールでは変更なし） ===
+execution_summary:
+  executed_at: null
+  total_execution_time: 0
+  steps_executed: []
+  steps_summary: {}
+  edge_cases: {}
+
+error_history: []
+backup_information:
+  last_backup_at: null
+  backup_location: null
+  recovery_available: false
 ---
 ```
 

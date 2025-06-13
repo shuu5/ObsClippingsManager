@@ -42,33 +42,121 @@ graph LR
 
 ## YAMLヘッダー形式
 
-### 入力
+### 入力（ai_citation_support処理後）
 ```yaml
 ---
+# === システムメタデータ ===
 citation_key: smith2023test
+workflow_version: '3.2'
+last_updated: '2025-01-15T10:30:00.123456+00:00'
+created_at: '2025-01-15T09:00:00.123456+00:00'
+
+# === 処理状態管理セクション ===
+processing_status:
+  organize: completed
+  sync: completed
+  fetch: completed
+  ai_citation_support: completed
+  section_parsing: pending  # ← このモジュールで処理予定
+  tagger: pending
+  translate_abstract: pending
+  ochiai_format: pending
+  final_sync: pending
+
+# === Citation Management（前段で設定済み） ===
 citation_metadata:
   last_updated: '2025-01-15T10:30:00.123456'
   mapping_version: '2.0'
   source_bibtex: references.bib
   total_citations: 2
+
 citations:
   1:
-    authors: Jones
     citation_key: jones2022biomarkers
-    doi: 10.1038/s41591-022-0456-7
-    journal: Nature Medicine
+    authors: Jones
     title: Advanced Biomarker Techniques in Oncology
     year: 2022
-processing_status:
-  ai_citation_support: completed
-  section_parsing: pending
+    journal: Nature Medicine
+    doi: 10.1038/s41591-022-0456-7
+
+# === Paper Structure（このモジュールで処理予定） ===
+paper_structure:
+  parsed_at: null
+  total_sections: 0
+  sections: []
+  section_types_found: []
+
+ai_content:
+  tags:
+    generated_at: null
+    count: 0
+    keywords: []
+  abstract_japanese:
+    generated_at: null
+    content: null
+  ochiai_format:
+    generated_at: null
+    questions:
+      what_is_this: null
+      what_is_superior: null
+      technical_key: null
+      validation_method: null
+      discussion_points: null
+      next_papers: null
+
+execution_summary:
+  executed_at: null
+  total_execution_time: 0
+  steps_executed: []
+  steps_summary: {}
+  edge_cases: {}
+
+error_history: []
+backup_information:
+  last_backup_at: null
+  backup_location: null
+  recovery_available: false
 ---
 ```
 
-### 出力
+### 出力（section_parsingモジュール処理後）
 ```yaml
 ---
+# === システムメタデータ ===
 citation_key: smith2023test
+workflow_version: '3.2'
+last_updated: '2025-01-15T10:35:00.123456+00:00'
+created_at: '2025-01-15T09:00:00.123456+00:00'
+
+# === 処理状態管理セクション ===
+processing_status:
+  organize: completed
+  sync: completed
+  fetch: completed
+  ai_citation_support: completed
+  section_parsing: completed  # ← このモジュールで更新
+  tagger: pending
+  translate_abstract: pending
+  ochiai_format: pending
+  final_sync: pending
+
+# === Citation Management（前段で設定済み、変更なし） ===
+citation_metadata:
+  last_updated: '2025-01-15T10:30:00.123456'
+  mapping_version: '2.0'
+  source_bibtex: references.bib
+  total_citations: 2
+
+citations:
+  1:
+    citation_key: jones2022biomarkers
+    authors: Jones
+    title: Advanced Biomarker Techniques in Oncology
+    year: 2022
+    journal: Nature Medicine
+    doi: 10.1038/s41591-022-0456-7
+
+# === Paper Structure（このモジュールで更新） ===
 paper_structure:
   parsed_at: '2025-01-15T10:35:00.123456'
   total_sections: 5
@@ -110,23 +198,38 @@ paper_structure:
       end_line: 250
       word_count: 1800
   section_types_found: ["abstract", "introduction", "methods", "results", "discussion"]
-citation_metadata:
-  last_updated: '2025-01-15T10:30:00.123456'
-  mapping_version: '2.0'
-  source_bibtex: references.bib
-  total_citations: 2
-citations:
-  1:
-    authors: Jones
-    citation_key: jones2022biomarkers
-    doi: 10.1038/s41591-022-0456-7
-    journal: Nature Medicine
-    title: Advanced Biomarker Techniques in Oncology
-    year: 2022
-processing_status:
-  ai_citation_support: completed
-  section_parsing: completed
-workflow_version: '3.2'
+
+# === 他セクション（このモジュールでは変更なし） ===
+ai_content:
+  tags:
+    generated_at: null
+    count: 0
+    keywords: []
+  abstract_japanese:
+    generated_at: null
+    content: null
+  ochiai_format:
+    generated_at: null
+    questions:
+      what_is_this: null
+      what_is_superior: null
+      technical_key: null
+      validation_method: null
+      discussion_points: null
+      next_papers: null
+
+execution_summary:
+  executed_at: null
+  total_execution_time: 0
+  steps_executed: []
+  steps_summary: {}
+  edge_cases: {}
+
+error_history: []
+backup_information:
+  last_backup_at: null
+  backup_location: null
+  recovery_available: false
 ---
 ```
 
