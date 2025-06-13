@@ -35,6 +35,10 @@ class TestTestDataManager(unittest.TestCase):
         self.mock_config_manager = MagicMock()
         self.mock_logger = MagicMock()
         
+        # get_loggerメソッドのモック設定（テスト用ロガーを返すよう設定）
+        self.mock_test_logger = MagicMock()
+        self.mock_logger.get_logger.return_value = self.mock_test_logger
+        
         # デフォルト設定値
         self.mock_config_manager.get_config.return_value = {
             'integrated_testing': {
@@ -108,8 +112,13 @@ Test content here.
         
         # 初期化確認
         self.assertEqual(manager.config_manager, self.mock_config_manager)
-        self.assertEqual(manager.logger, self.mock_logger)
-        self.mock_logger.info.assert_called_with("TestDataManager initialized")
+        self.assertEqual(manager.logger, self.mock_test_logger)  # get_logger()の戻り値と比較
+        
+        # get_loggerが適切な引数で呼ばれていることを確認
+        self.mock_logger.get_logger.assert_called_with("test_data_manager")
+        
+        # 初期化ログが出力されていることを確認
+        self.mock_test_logger.info.assert_called_with("TestDataManager initialized")
     
     @unittest.skipIf(not IMPORTS_AVAILABLE, f"Import failed: {IMPORT_ERROR if not IMPORTS_AVAILABLE else ''}")
     def test_setup_test_data_method_exists(self):

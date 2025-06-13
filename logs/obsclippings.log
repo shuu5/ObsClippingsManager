@@ -130,3 +130,19 @@
 2025-06-13 14:05:59,421 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
 2025-06-13 14:05:59,424 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
 2025-06-13 14:05:59,425 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:11:26,370 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:11:26,372 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:11:26,378 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-13 14:11:26,384 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-13 14:11:26,390 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-13 14:11:26,390 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-13 14:11:26,395 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:11:26,396 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:13:51,315 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:13:51,317 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:13:51,323 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-13 14:13:51,327 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-13 14:13:51,332 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-13 14:13:51,332 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-13 14:13:51,336 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:13:51,337 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
