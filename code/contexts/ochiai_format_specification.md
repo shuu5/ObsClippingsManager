@@ -1,46 +1,108 @@
 # 落合フォーマット要約機能仕様書
 
 ## 概要
-学術論文の内容を6つの構造化された質問に答える形で要約し、研究者向けのA4一枚程度の簡潔な論文理解を提供する機能。Claude 3.5 Haikuを活用して日本語での学術的要約を自動生成します。
+- **責務**: 学術論文の落合フォーマット6項目要約を自動生成
+- **依存**: ai_citation_support → section_parsing → tagger → translate_abstract
+- **実行**: 統合ワークフローで自動実行
 
-## 落合フォーマット仕様
+## 処理フロー図
+```mermaid
+flowchart TD
+    A["入力データ"] --> B["落合フォーマット処理開始"]
+    B --> C["データ検証"]
+    C --> D["論文内容抽出"]
+    D --> E["AIプロンプト構築"]
+    E --> F["Claude API要約生成"]
+    F --> G["応答解析"]
+    G --> H["結果出力"]
+    H --> I["完了"]
+    
+    C -->|エラー| J["エラーハンドリング"]
+    F -->|API制限| K["レート制限処理"]
+    G -->|構造エラー| L["再試行"]
+    J --> M["失敗ログ記録"]
+    K --> F
+    L --> F
+```
 
-### 6つの質問項目
-1. **どんなもの？** - アブストラクトをさらに短くギュッとまとめた内容
-2. **先行研究と比べてどこがすごい？** - 課題と学術的価値
-3. **技術や手法のキモはどこ？** - 使用技術・手法の核心
-4. **どうやって有効だと検証した？** - 被験者・実験・データによる検証方法
-5. **議論はある？** - 結果解釈・研究限界・批判的視点
-6. **次に読むべき論文は？** - 参考文献から選出した推奨論文
-
-### 生成ルール
-- **簡潔性**: 各項目3-5文程度
-- **具体性**: 抽象的でなく具体的な内容
-- **日本語**: 学術的で自然な日本語表現
-- **構造化**: 6項目の明確な区分
-
-## データ構造
-
-### OchiaiFormat
-```python
-@dataclass
-class OchiaiFormat:
-    what_is_this: str            # どんなもの？
-    what_is_superior: str        # 先行研究と比べてどこがすごい？
-    technical_key: str           # 技術や手法のキモはどこ？
-    validation_method: str       # どうやって有効だと検証した？
-    discussion_points: str       # 議論はある？
-    next_papers: str            # 次に読むべき論文は？
-    generated_at: str           # 生成日時
+## モジュール関係図
+```mermaid
+graph LR
+    A["AI引用解析"] --> B["落合フォーマット"]
+    C["セクション分割"] --> B
+    D["AIタグ付け"] --> B
+    E["要約翻訳"] --> B
+    
+    F["設定ファイル"] -.-> B
+    G["ログシステム"] -.-> B
+    H["Claude API"] -.-> B
+    
+    B --> I["統合ワークフロー"]
 ```
 
 ## YAMLヘッダー形式
 
+### 入力
 ```yaml
 ---
 citation_key: smith2023test
+paper_structure:
+  parsed_at: '2025-01-15T10:30:00.123456'
+  total_sections: 5
+  sections:
+    - title: "Abstract"
+      level: 2
+      section_type: "abstract"
+      start_line: 15
+      end_line: 25
+      word_count: 250
+    - title: "Introduction"
+      level: 2
+      section_type: "introduction"
+      start_line: 27
+      end_line: 85
+      word_count: 1200
+tags:
+  generated_at: '2025-01-15T11:15:00.123456'
+  count: 15
+  keywords:
+    - oncology
+    - biomarkers
+    - cancer_research
+    - machine_learning
+    - KRT13
+processing_status:
+  section_parsing: completed
+  ai_citation_support: completed
+  tagger: completed
+  translate_abstract: completed
+  ochiai_format: pending
+---
+```
+
+### 出力
+```yaml
+---
+citation_key: smith2023test
+paper_structure:
+  parsed_at: '2025-01-15T10:30:00.123456'
+  total_sections: 5
+  sections:
+    - title: "Abstract"
+      level: 2
+      section_type: "abstract"
+      start_line: 15
+      end_line: 25
+      word_count: 250
+tags:
+  generated_at: '2025-01-15T11:15:00.123456'
+  count: 15
+  keywords:
+    - oncology
+    - biomarkers
+    - cancer_research
 ochiai_format:
-  generated_at: '2025-01-15T11:00:00.123456'
+  generated_at: '2025-01-15T11:30:00.123456'
   questions:
     what_is_this: |
       KRT13タンパク質の発現パターンを機械学習で解析し、
@@ -67,89 +129,94 @@ ochiai_format:
       2. Davis et al. (2023) - 他のがん種での類似手法
       3. Wilson et al. (2024) - AI診断の臨床実装ガイドライン
 processing_status:
+  section_parsing: completed
+  ai_citation_support: completed
+  tagger: completed
+  translate_abstract: completed
   ochiai_format: completed
 workflow_version: '3.2'
 ---
 ```
 
-## 実装クラス
-
-### OchiaiFormatWorkflow
+## 実装
 ```python
 class OchiaiFormatWorkflow:
-    """落合フォーマット要約生成ワークフロー"""
-    
-    def __init__(self, config_manager: ConfigManager, logger: IntegratedLogger):
+    def __init__(self, config_manager, logger):
         self.config_manager = config_manager
         self.logger = logger.get_logger('OchiaiFormatWorkflow')
         self.claude_client = ClaudeAPIClient(config_manager, logger)
         
-    def process_papers(self, clippings_dir: str, target_papers: List[str] = None, 
-                      batch_size: int = 2, parallel: bool = False) -> Dict[str, Any]:
+    def process_items(self, input_dir, target_items=None):
         """論文の一括落合フォーマット要約処理"""
+        status_manager = StatusManager(self.config_manager, self.logger)
+        papers_needing_processing = status_manager.get_papers_needing_processing(
+            input_dir, 'ochiai_format', target_items
+        )
         
-    def generate_ochiai_summary_single(self, paper_path: str) -> OchiaiFormat:
+        for paper_path in papers_needing_processing:
+            try:
+                ochiai_summary = self.generate_ochiai_summary_single(paper_path)
+                self.update_yaml_with_ochiai(paper_path, ochiai_summary)
+                status_manager.update_status(input_dir, paper_path, 'ochiai_format', 'completed')
+            except Exception as e:
+                self.logger.error(f"Failed to generate Ochiai format for {paper_path}: {e}")
+                status_manager.update_status(input_dir, paper_path, 'ochiai_format', 'failed')
+    
+    def generate_ochiai_summary_single(self, paper_path):
         """単一論文の落合フォーマット要約生成"""
+        paper_content = self.extract_paper_content(paper_path)
+        prompt = self._build_ochiai_prompt(paper_content)
+        response = self.claude_client.send_request(prompt)
+        return self._parse_ochiai_response(response)
         
-    def extract_paper_content(self, paper_path: str) -> Dict[str, str]:
-        """論文内容の抽出（セクション分割機能と連携可能）"""
+    def extract_paper_content(self, paper_path):
+        """論文内容の抽出（セクション分割機能と連携）"""
+        yaml_header, content = self._load_paper_with_yaml(paper_path)
         
-    def update_yaml_with_ochiai(self, paper_path: str, ochiai: OchiaiFormat) -> bool:
-        """YAMLヘッダーに落合フォーマットを記録"""
-        
-    def validate_ochiai_format(self, ochiai: OchiaiFormat) -> bool:
-        """生成された要約の品質検証"""
+        if 'paper_structure' in yaml_header:
+            # セクション分割済みの場合、重要セクションを抽出
+            return self._extract_important_sections(yaml_header, content)
+        else:
+            # セクション分割されていない場合、全文を使用
+            return content
 ```
 
-## Claude API プロンプト設計
-
-### 基本プロンプト
-```
-以下の学術論文の内容を、落合フォーマットの6つの質問に答える形で要約してください。
-
-【論文情報】
-タイトル: {title}
-著者: {authors}
-ジャーナル: {journal}
-
-【論文内容】
-{paper_content}
-
-【要約ルール】
-1. 各項目3-5文程度で簡潔に
-2. 具体的で実用的な内容
-3. 学術的で自然な日本語
-4. 「次に読むべき論文」は参考文献から3本選出
-
-【落合フォーマット6項目】
-1. どんなもの？
-2. 先行研究と比べてどこがすごい？
-3. 技術や手法のキモはどこ？
-4. どうやって有効だと検証した？
-5. 議論はある？
-6. 次に読むべき論文は？
-
-JSON形式で回答してください：
-{
-  "what_is_this": "...",
-  "what_is_superior": "...",
-  "technical_key": "...",
-  "validation_method": "...",
-  "discussion_points": "...",
-  "next_papers": "..."
-}
-```
-
-## 設定項目
-
+## 設定
 ```yaml
 ochiai_format:
-  batch_size: 3                  # バッチサイズ（Haikuの高速処理により最適化）
-  parallel_processing: true      # Haikuの効率性を活用
+  enabled: true
+  batch_size: 3
+  parallel_processing: true
   retry_attempts: 3
-  request_delay: 1.0             # Haikuの高速応答により短縮
-  max_content_length: 10000      # 論文内容最大文字数制限
-  enable_section_integration: true  # セクション分割機能との連携
+  request_delay: 1.0
+  max_content_length: 10000
+  enable_section_integration: true
+  error_handling:
+    validate_ochiai_structure: true
+    backup_on_generation_failure: true
+    handle_content_too_long: true
+    validate_japanese_output: true
+    fallback_to_simple_format: true
+  backup_strategy:
+    backup_before_ochiai_update: true
+    keep_generation_attempts: true
+    preserve_partial_results: true
+    backup_source_content: true
+```
+
+## データ構造
+
+### OchiaiFormat
+```python
+@dataclass
+class OchiaiFormat:
+    what_is_this: str            # どんなもの？
+    what_is_superior: str        # 先行研究と比べてどこがすごい？
+    technical_key: str           # 技術や手法のキモはどこ？
+    validation_method: str       # どうやって有効だと検証した？
+    discussion_points: str       # 議論はある？
+    next_papers: str            # 次に読むべき論文は？
+    generated_at: str           # 生成日時
 ```
 
 ## セクション分割機能との連携

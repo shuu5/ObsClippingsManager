@@ -1,7 +1,206 @@
 # 共有モジュール仕様書
 
 ## 概要
-ObsClippingsManagerの共有モジュールは、全システムで使用される基盤機能を提供し、システム全体の一貫性を保証します。
+- **責務**: 全システムで使用される基盤機能（設定管理、ログ、BibTeX解析、API通信等）
+- **依存**: なし（基盤モジュール）
+- **実行**: 全モジュールで共通利用
+
+## 処理フロー図
+```mermaid
+flowchart TD
+    A["システム開始"] --> B["共有モジュール初期化"]
+    B --> C["設定ファイル読み込み"]
+    C --> D["ロガー初期化"]
+    D --> E["API クライアント初期化"]
+    E --> F["BibTeX パーサー初期化"]
+    F --> G["システム準備完了"]
+    G --> H["他モジュールへサービス提供"]
+    
+    C -->|設定エラー| I["デフォルト設定適用"]
+    E -->|API設定エラー| J["API機能無効化"]
+    I --> D
+    J --> F
+```
+
+## モジュール関係図
+```mermaid
+graph LR
+    A["共有モジュール"] --> B["設定管理"]
+    A --> C["ログシステム"]
+    A --> D["BibTeX解析"]
+    A --> E["Claude API"]
+    A --> F["エラーハンドリング"]
+    A --> G["バックアップ"]
+    
+    H["全ワークフロー"] -.-> A
+    I["統合ワークフロー"] -.-> A
+    J["AI機能"] -.-> A
+```
+
+## YAMLヘッダー形式
+
+### 入力
+```yaml
+---
+# 共有モジュールは設定ベースで動作し、特定のYAMLヘッダー入力は必要ありません
+workspace_configuration:
+  workspace_path: "/home/user/ManuscriptsManager"
+  bibtex_file: "CurrentManuscript.bib"
+  clippings_dir: "Clippings"
+---
+```
+
+### 出力
+```yaml
+---
+# 共有モジュールは基盤機能のため、直接的なYAMLヘッダー出力は行いませんが、
+# 他のモジュールのYAMLヘッダー更新をサポートします
+configuration_loaded:
+  loaded_at: '2025-01-15T10:00:00.123456'
+  modules_initialized:
+    - config_manager
+    - logger
+    - bibtex_parser
+    - claude_api_client
+  api_clients_configured:
+    - claude_3_5_haiku
+system_status:
+  initialization: completed
+---
+```
+
+## 実装
+```python
+class ConfigManager:
+    def __init__(self, config_file="config/config.yaml"):
+        self.config_file = config_file
+        self.config = self._load_config()
+        
+    def _load_config(self):
+        """設定ファイルの読み込みとデフォルト値の適用"""
+        try:
+            with open(self.config_file, 'r', encoding='utf-8') as f:
+                config = yaml.safe_load(f) or {}
+        except FileNotFoundError:
+            config = {}
+            
+        # デフォルト値の適用
+        default_config = self._get_default_config()
+        return self._merge_configs(default_config, config)
+    
+    def get_workspace_path(self):
+        """ワークスペースパスの取得"""
+        return self.config.get('workspace_path', '/home/user/ManuscriptsManager')
+    
+    def get_bibtex_file(self):
+        """BibTeXファイルパスの自動導出"""
+        workspace = self.get_workspace_path()
+        return os.path.join(workspace, 'CurrentManuscript.bib')
+
+class IntegratedLogger:
+    def __init__(self, log_file="logs/obsclippings.log"):
+        self.log_file = log_file
+        self.loggers = {}
+        self._setup_logging()
+        
+    def get_logger(self, name):
+        """モジュール別ロガーの取得"""
+        if name not in self.loggers:
+            logger = logging.getLogger(name)
+            self.loggers[name] = logger
+        return self.loggers[name]
+    
+    def _setup_logging(self):
+        """ログ設定の初期化"""
+        os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+            handlers=[
+                logging.FileHandler(self.log_file, encoding='utf-8'),
+                logging.StreamHandler()
+            ]
+        )
+
+class BibTeXParser:
+    def __init__(self, logger):
+        self.logger = logger
+        
+    def parse_file(self, bibtex_file):
+        """BibTeXファイルの解析"""
+        try:
+            with open(bibtex_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # bibtexparserライブラリを使用した解析
+            parser = bibtexparser.bib_database.BibDatabase()
+            bib_db = bibtexparser.load(f, parser=parser)
+            
+            return {entry['ID']: entry for entry in bib_db.entries}
+        except Exception as e:
+            self.logger.error(f"Failed to parse BibTeX file {bibtex_file}: {e}")
+            return {}
+
+class ClaudeAPIClient:
+    def __init__(self, config_manager, logger):
+        self.config_manager = config_manager
+        self.logger = logger.get_logger('ClaudeAPIClient')
+        self.api_key = os.getenv('ANTHROPIC_API_KEY')
+        self.model = "claude-3-5-haiku-20241022"
+        
+    def send_request(self, prompt, max_retries=3):
+        """Claude APIへのリクエスト送信"""
+        for attempt in range(max_retries):
+            try:
+                response = self._make_api_call(prompt)
+                return response
+            except Exception as e:
+                self.logger.warning(f"API request failed (attempt {attempt + 1}): {e}")
+                if attempt == max_retries - 1:
+                    raise
+                time.sleep(2 ** attempt)  # 指数バックオフ
+```
+
+## 設定
+```yaml
+# 基本設定
+workspace_path: "/home/user/ManuscriptsManager"
+
+# API設定
+api_settings:
+  request_delay: 1.0
+  max_retries: 3
+  timeout: 30
+
+# AI機能設定
+ai_generation:
+  default_model: "claude-3-5-haiku-20241022"
+  api_key_env: "ANTHROPIC_API_KEY"  # .envファイルから読み込み
+
+# ログ設定
+logging:
+  log_file: "logs/obsclippings.log"
+  log_level: "INFO"
+  max_file_size: "10MB"
+  backup_count: 5
+
+# エラーハンドリング設定
+error_handling:
+  enabled: true
+  capture_context: true
+  auto_retry_on_transient_errors: true
+  max_retry_attempts: 3
+  retry_delay_seconds: 2
+
+# バックアップ設定
+backup_settings:
+  enabled: true
+  auto_backup_before_processing: true
+  backup_location: "backups/"
+  retention_days: 30
+  max_backup_size_mb: 1000
+  compress_old_backups: true
+```
 
 ## モジュール構成
 ```
@@ -41,7 +240,7 @@ api_settings:
 # AI機能設定（デフォルト有効）
 ai_generation:
   default_model: "claude-3-5-haiku-20241022"
-  claude_api_key: "your-api-key"
+  api_key_env: "ANTHROPIC_API_KEY"  # .envファイルから読み込み
   tagger:
     enabled: true
     batch_size: 8
@@ -97,6 +296,94 @@ ai_generation:
 
 ### ファイルシステム操作
 安全なファイル操作、パス正規化、ディレクトリ管理機能を提供します。
+
+## 統一例外管理システム
+
+### 標準例外クラス
+```python
+class ObsClippingsError(Exception):
+    """ObsClippingsManager基底例外クラス"""
+    def __init__(self, message, error_code=None, context=None):
+        super().__init__(message)
+        self.error_code = error_code
+        self.context = context or {}
+        self.timestamp = datetime.now().isoformat()
+
+class ProcessingError(ObsClippingsError):
+    """処理エラー（ファイル処理、データ変換等）"""
+    pass
+
+class APIError(ObsClippingsError):
+    """API関連エラー（Claude API、CrossRef等）"""
+    pass
+
+class ConfigurationError(ObsClippingsError):
+    """設定エラー（設定ファイル、環境変数等）"""
+    pass
+
+class ValidationError(ObsClippingsError):
+    """データ検証エラー（YAML形式、BibTeX形式等）"""
+    pass
+```
+
+### エラーハンドリング標準パターン
+```python
+def standard_error_handler(func):
+    """標準エラーハンドリングデコレータ"""
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except ObsClippingsError:
+            raise  # 既知のエラーは再送出
+        except Exception as e:
+            # 未知のエラーを標準形式に変換
+            raise ProcessingError(
+                f"Unexpected error in {func.__name__}: {str(e)}",
+                error_code="UNEXPECTED_ERROR",
+                context={"function": func.__name__, "args": args, "kwargs": kwargs}
+            )
+    return wrapper
+```
+
+## 統一バックアップシステム
+
+### BackupManager
+```python
+class BackupManager:
+    def __init__(self, config_manager, logger):
+        self.config_manager = config_manager
+        self.logger = logger.get_logger('BackupManager')
+        self.backup_settings = config_manager.get_backup_settings()
+        
+    def create_backup(self, file_path, backup_type="auto"):
+        """ファイルのバックアップを作成"""
+        try:
+            if not self.backup_settings.get('enabled', True):
+                return None
+                
+            backup_dir = self._get_backup_directory()
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = os.path.basename(file_path)
+            backup_path = os.path.join(backup_dir, f"{timestamp}_{backup_type}_{filename}")
+            
+            shutil.copy2(file_path, backup_path)
+            self.logger.info(f"Backup created: {backup_path}")
+            
+            # 古いバックアップの自動削除
+            self._cleanup_old_backups(backup_dir)
+            return backup_path
+            
+        except Exception as e:
+            raise ProcessingError(f"Failed to create backup for {file_path}: {e}")
+    
+    def restore_from_backup(self, original_path, backup_path):
+        """バックアップからファイルを復元"""
+        try:
+            shutil.copy2(backup_path, original_path)
+            self.logger.info(f"File restored from backup: {original_path}")
+        except Exception as e:
+            raise ProcessingError(f"Failed to restore from backup: {e}")
+```
 
 ### 文字列処理
 ファイル名正規化、類似度計算、DOI処理等の汎用文字列操作機能を提供します。

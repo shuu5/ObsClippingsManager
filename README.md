@@ -1,4 +1,4 @@
-# ObsClippingsManager v3.2.0
+# ObsClippingsManager v3.2.0 - 統合仕様書
 
 学術研究における文献管理とMarkdownファイル整理を自動化する統合システム。**シンプル設定**と**状態管理による重複処理回避**が特徴。
 
@@ -26,14 +26,22 @@ code/py/
     └── workflows/              # 統合ワークフロー
 ```
 
-## 🔗 技術仕様書
+## 🔗 個別モジュール仕様書
 
 詳細仕様は以下を参照：
-- **[ObsClippingsManager.md](code/contexts/ObsClippingsManager.md)** - システム全体概要・設計思想
-- **[integrated_workflow_specification.md](code/contexts/integrated_workflow_specification.md)** - 統合ワークフロー・統合テストシステム
-- **[status_management_yaml_specification.md](code/contexts/status_management_yaml_specification.md)** - 状態管理・YAMLフォーマット
-- **[shared_modules_specification.md](code/contexts/shared_modules_specification.md)** - 共有モジュール
-- **[enhanced_citation_parser_specification.md](code/contexts/enhanced_citation_parser_specification.md)** - AI理解支援機能
+
+### コア機能
+- **[統合ワークフロー](code/contexts/integrated_workflow_specification.md)** - 全処理ステップを単一コマンドで実行
+- **[状態管理システム](code/contexts/status_management_yaml_specification.md)** - YAMLヘッダーベースの状態管理
+- **[共有モジュール](code/contexts/shared_modules_specification.md)** - 基盤機能・設定管理
+
+### AI機能
+- **[論文セクション分割](code/contexts/section_parsing_specification.md)** - Markdownセクション構造解析
+- **[AI理解支援引用文献パーサー](code/contexts/enhanced_citation_parser_specification.md)** - 引用文献統合機能
+- **[AI タグ・翻訳](code/contexts/ai_tagging_translation_specification.md)** - 自動タグ生成・要約翻訳
+- **[落合フォーマット要約](code/contexts/ochiai_format_specification.md)** - 6項目構造化要約
+
+
 
 ## ⚡ クイックスタート
 
@@ -75,6 +83,26 @@ PYTHONPATH=code/py uv run python code/py/main.py run-integrated --disable-ai-fea
 
 ## 🔧 設定
 
+### 環境変数設定（.env）
+```bash
+# API Keys
+ANTHROPIC_API_KEY=your-anthropic-api-key-here
+
+# Workspace Configuration
+WORKSPACE_PATH=/home/user/ManuscriptsManager
+
+# Error Handling Configuration
+ERROR_HANDLING_ENABLED=true
+MAX_RETRY_ATTEMPTS=3
+RETRY_DELAY_SECONDS=2
+
+# Backup Configuration
+BACKUP_ENABLED=true
+BACKUP_LOCATION=backups/
+BACKUP_RETENTION_DAYS=30
+AUTO_BACKUP_BEFORE_PROCESSING=true
+```
+
 ### デフォルト設定（config/config.yaml）
 ```yaml
 workspace_path: "/home/user/ManuscriptsManager"
@@ -83,6 +111,18 @@ workspace_path: "/home/user/ManuscriptsManager"
 # bibtex_file: "{workspace_path}/CurrentManuscript.bib"
 # clippings_dir: "{workspace_path}/Clippings"
 # output_dir: "{workspace_path}/Clippings"
+
+# エラーハンドリング設定
+error_handling:
+  enabled: true
+  auto_retry_on_transient_errors: true
+  max_retry_attempts: 3
+
+# バックアップ設定
+backup_settings:
+  enabled: true
+  auto_backup_before_processing: true
+  retention_days: 30
 ```
 
 ### YAML状態管理フォーマット
@@ -93,8 +133,8 @@ processing_status:
   organize: completed
   sync: completed
   fetch: completed
-  ai-citation-support: completed
-workflow_version: '3.1'
+  ai_citation_support: completed
+workflow_version: '3.2'
 last_updated: '2025-01-15T10:30:00Z'
 citations:
   1:
@@ -212,11 +252,58 @@ pyyaml>=5.4.0             # YAML処理
 3. 状態管理システムに処理状態追加
 4. ユニットテスト作成・実行
 5. 統合テスト実行・確認
-6. 仕様書更新
+6. **仕様書作成**: `code/contexts/[モジュール名]_specification.md`（統一テンプレート準拠）
+
+## 📋 仕様書構築ルール準拠
+
+このプロジェクトの仕様書は以下のルールに従って構築されています：
+
+### 統一テンプレート
+各モジュール仕様書は以下の構成に準拠：
+```markdown
+# [モジュール名] 仕様書
+
+## 概要
+- **責務**: [具体的機能]
+- **依存**: [他モジュールとの関係]
+- **実行**: 統合ワークフローで自動実行
+
+## YAMLヘッダー形式
+
+### 入力
+```yaml
+---
+[具体的入力例]
+---
+```
+
+### 出力
+```yaml
+---
+[具体的出力例]
+---
+```
+
+## 実装
+```python
+[実装クラス例]
+```
+
+## 設定
+```yaml
+[設定例]
+```
+```
+
+### 必須要件
+- **YAMLヘッダー形式遵守**: 入力・出力の具体例記載
+- **processing_status記録**: 各ステップの状態管理
+- **具体的データ例**: 抽象的でなく実際の値使用
+- **実装セクション**: クラス構造の明示
 
 ---
 
-**重要**: 開発時は必ずTDD（Test-Driven Development）に従い、ユニットテスト・統合テスト両方の成功を維持してください。 
+**重要**: 開発時は必ずTDD（Test-Driven Development）に従い、ユニットテスト・統合テスト両方の成功を維持してください。仕様書更新時は統一テンプレートに準拠し、YAMLヘッダー形式と具体的データ例を適切に記載してください。
 
 ## テスト
 

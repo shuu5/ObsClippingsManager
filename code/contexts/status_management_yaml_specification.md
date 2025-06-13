@@ -1,7 +1,279 @@
 # 状態管理システム仕様書
 
 ## 概要
-各論文の処理状態をMarkdownファイルのYAMLヘッダーに記録し、効率的な重複処理回避を実現します。Zoteroによる自動BibTeX再生成の影響を受けない永続的な状態管理を提供します。
+- **責務**: 各論文の処理状態をYAMLヘッダーで管理し重複処理回避を実現
+- **依存**: 全ワークフロー（状態管理基盤）
+- **実行**: 統合ワークフローで自動実行
+
+## 処理フロー図
+```mermaid
+flowchart TD
+    A["入力データ"] --> B["状態管理処理開始"]
+    B --> C["データ検証"]
+    C --> D["現在状態読み込み"]
+    D --> E["処理必要性判定"]
+    E --> F["ステップ実行"]
+    F --> G["状態更新"]
+    G --> H["バックアップ作成"]
+    H --> I["結果出力"]
+    I --> J["完了"]
+    
+    C -->|エラー| K["エラーハンドリング"]
+    D -->|YAML不正| L["YAML修復"]
+    G -->|更新失敗| M["バックアップ復元"]
+    K --> N["失敗ログ記録"]
+    L --> D
+    M --> G
+```
+
+## モジュール関係図
+```mermaid
+graph LR
+    A["全ワークフロー"] --> B["状態管理"]
+    
+    C["設定ファイル"] -.-> B
+    D["ログシステム"] -.-> B
+    E["バックアップシステム"] -.-> B
+    
+    B --> F["AI引用解析"]
+    B --> G["セクション分割"]
+    B --> H["AIタグ付け"]
+    B --> I["要約翻訳"]
+    B --> J["落合フォーマット"]
+    B --> K["統合ワークフロー"]
+```
+
+## YAMLヘッダー形式
+
+### 入力
+```yaml
+---
+citation_key: smith2023test
+# 初期状態または部分処理済み状態
+processing_status:
+  organize: completed
+  sync: completed
+  fetch: pending
+  section_parsing: pending
+  ai_citation_support: pending
+  tagger: pending
+  translate_abstract: pending
+  ochiai_format: pending
+last_updated: '2025-01-15T09:30:00.123456+00:00'
+workflow_version: '3.1'
+---
+```
+
+### 出力
+```yaml
+---
+citation_key: smith2023test
+paper_structure:
+  parsed_at: '2025-01-15T10:30:00.123456'
+  total_sections: 5
+  sections:
+    - title: "Abstract"
+      level: 2
+      section_type: "abstract"
+      start_line: 15
+      end_line: 25
+      word_count: 250
+citation_metadata:
+  last_updated: '2025-01-15T10:30:00.123456'
+  mapping_version: '2.0'
+  source_bibtex: references.bib
+  total_citations: 2
+citations:
+  1:
+    authors: Jones
+    citation_key: jones2022biomarkers
+    doi: 10.1038/s41591-022-0456-7
+    journal: Nature Medicine
+    title: Advanced Biomarker Techniques in Oncology
+    year: 2022
+  2:
+    authors: Davis
+    citation_key: davis2023neural
+    doi: 10.1126/science.abcd1234
+    journal: Science
+    title: Neural Networks in Medical Diagnosis
+    year: 2023
+tags:
+  generated_at: '2025-01-15T11:15:00.123456'
+  count: 15
+  keywords:
+    - oncology
+    - biomarkers
+    - cancer_research
+    - machine_learning
+    - KRT13
+    - EGFR
+abstract_japanese:
+  generated_at: '2025-01-15T11:20:00.123456'
+  content: |
+    本研究では、がん研究における先進的なバイオマーカー技術について報告する。
+    KRT13およびEGFR遺伝子の発現パターンを機械学習アルゴリズムを用いて解析し、
+    診断精度の向上を達成した。
+ochiai_format:
+  generated_at: '2025-01-15T11:30:00.123456'
+  questions:
+    what_is_this: |
+      KRT13タンパク質の発現パターンを機械学習で解析し、
+      がん診断精度を95%まで向上させた新しいバイオマーカー技術。
+    what_is_superior: |
+      既存手法と比較してAI画像解析による客観的定量評価を実現。
+    technical_key: |
+      深層学習ベースのCNNを用いたKRT13発現パターンの定量化。
+    validation_method: |
+      500例の組織サンプルによる後向き研究。
+    discussion_points: |
+      サンプル数制限により一般化性能に課題。
+    next_papers: |
+      1. Jones et al. (2022) - KRT13分子メカニズム
+      2. Davis et al. (2023) - 他がん種での類似手法
+last_updated: '2025-01-15T11:35:00.654321+00:00'
+processing_status:
+  organize: completed
+  sync: completed
+  fetch: completed
+  section_parsing: completed
+  ai_citation_support: completed
+  tagger: completed
+  translate_abstract: completed
+  ochiai_format: completed
+workflow_version: '3.2'
+---
+```
+
+## 実装
+```python
+class StatusManager:
+    def __init__(self, config_manager, logger):
+        self.config_manager = config_manager
+        self.logger = logger.get_logger('StatusManager')
+        
+    def load_md_statuses(self, clippings_dir):
+        """全論文の状態を読み込み"""
+        statuses = {}
+        
+        for md_file in glob.glob(os.path.join(clippings_dir, "**/*.md"), recursive=True):
+            try:
+                yaml_header, _ = self._parse_markdown_with_yaml(md_file)
+                citation_key = yaml_header.get('citation_key')
+                processing_status = yaml_header.get('processing_status', {})
+                
+                if citation_key:
+                    statuses[citation_key] = {
+                        step: ProcessStatus.from_string(status) 
+                        for step, status in processing_status.items()
+                    }
+            except Exception as e:
+                self.logger.warning(f"Failed to load status from {md_file}: {e}")
+                
+        return statuses
+    
+    def update_status(self, clippings_dir, citation_key, step, status):
+        """特定論文の特定ステップの状態を更新"""
+        md_file = self._find_markdown_file(clippings_dir, citation_key)
+        if not md_file:
+            raise ProcessingError(f"Markdown file not found for {citation_key}", 
+                                error_code="FILE_NOT_FOUND")
+            
+        try:
+            # 更新前バックアップ作成
+            if self.config_manager.get('status_management.backup_strategy.backup_before_status_update', True):
+                self.backup_manager.create_backup(md_file, backup_type="status_update")
+            
+            yaml_header, content = self._parse_markdown_with_yaml(md_file)
+            
+            # YAML検証
+            if self.config_manager.get('status_management.error_handling.validate_yaml_before_update', True):
+                self._validate_yaml_structure(yaml_header)
+            
+            # processing_statusを更新
+            if 'processing_status' not in yaml_header:
+                yaml_header['processing_status'] = {}
+            yaml_header['processing_status'][step] = status
+            
+            # メタデータ更新
+            yaml_header['last_updated'] = datetime.now().isoformat()
+            yaml_header['workflow_version'] = '3.2'
+            
+            # ファイルに書き戻し
+            self._write_markdown_with_yaml(md_file, yaml_header, content)
+            return True
+            
+        except ValidationError as e:
+            # YAML構造エラー：バックアップ作成後修復試行
+            if self.config_manager.get('status_management.error_handling.create_backup_on_yaml_error', True):
+                self.backup_manager.create_backup(md_file, backup_type="yaml_error")
+            
+            if self.config_manager.get('status_management.error_handling.auto_repair_corrupted_headers', True):
+                return self._attempt_yaml_repair(md_file, citation_key, step, status)
+            raise
+            
+        except Exception as e:
+            # 一般的なエラー：バックアップからの復旧試行
+            if self.config_manager.get('status_management.error_handling.fallback_to_backup_on_failure', True):
+                return self._attempt_backup_recovery(md_file, citation_key, step, status)
+            
+            raise ProcessingError(f"Failed to update status for {citation_key}: {e}",
+                                error_code="STATUS_UPDATE_FAILED",
+                                context={"file": md_file, "step": step, "status": status})
+    
+    def get_papers_needing_processing(self, clippings_dir, step, target_papers):
+        """指定ステップで処理が必要な論文リストを取得"""
+        if not target_papers:
+            return []
+            
+        papers_needing_processing = []
+        statuses = self.load_md_statuses(clippings_dir)
+        
+        for citation_key in target_papers:
+            current_status = statuses.get(citation_key, {}).get(step, ProcessStatus.PENDING)
+            if current_status in [ProcessStatus.PENDING, ProcessStatus.FAILED]:
+                papers_needing_processing.append(
+                    self._find_markdown_file(clippings_dir, citation_key)
+                )
+                
+        return papers_needing_processing
+
+class ProcessStatus(Enum):
+    PENDING = "pending"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    
+    @classmethod
+    def from_string(cls, status):
+        """文字列からProcessStatusへ変換"""
+        try:
+            return cls(status)
+        except ValueError:
+            return cls.PENDING
+    
+    def to_string(self):
+        """ProcessStatusから文字列へ変換"""
+        return self.value
+```
+
+## 設定
+```yaml
+status_management:
+  enabled: true
+  auto_backup: true
+  backup_retention_days: 30
+  yaml_validation: true
+  status_consistency_check: true
+  error_handling:
+    validate_yaml_before_update: true
+    create_backup_on_yaml_error: true
+    auto_repair_corrupted_headers: true
+    fallback_to_backup_on_failure: true
+  backup_strategy:
+    backup_before_status_update: true
+    incremental_backups: true
+    compress_old_status_backups: true
+```
 
 ## 基本原理
 
@@ -15,8 +287,8 @@
 - **organize**: ファイル整理状態
 - **sync**: 同期チェック状態
 - **fetch**: 引用文献取得状態
-- **section-parsing**: セクション分割処理状態
-- **ai-citation-support**: AI理解支援統合状態
+- **section_parsing**: セクション分割処理状態
+- **ai_citation_support**: AI理解支援統合状態
 - **tagger**: タグ生成状態
 - **translate_abstract**: 要約翻訳状態
 - **ochiai_format**: 落合フォーマット要約状態
@@ -96,7 +368,7 @@ processing_status:
   sync: completed
   fetch: completed
   section_parsing: completed
-  ai-citation-support: completed
+  ai_citation_support: completed
   tagger: completed
   translate_abstract: completed
   ochiai_format: completed

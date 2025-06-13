@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # システム仕様書構築ルール
 
 ## AI開発アシスタント向け仕様書ガイドライン
@@ -126,4 +131,5 @@ workflow_version: [自動生成] 'X.Y'
 ---
 
 **重要**: 実装変更時は仕様書同期更新必須、YAMLヘッダー整合性最優先
+
 

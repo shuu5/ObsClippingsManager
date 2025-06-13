@@ -1,7 +1,302 @@
 # 統合ワークフロー仕様書
 
 ## 概要
-統合ワークフロー（Integrated Workflow）は、ObsClippingsManagerの中核機能。すべての処理を`run-integrated`コマンド一つで完結させるシンプルかつ効率的なシステム。状態管理により重複処理を自動回避し、デフォルト設定での引数なし実行を実現。
+- **責務**: 全処理ステップを単一コマンドで実行する統合システム
+- **依存**: 全モジュール（統合制御）
+- **実行**: デフォルト有効（AI機能含む）
+
+## 処理フロー図
+```mermaid
+flowchart TD
+    A["入力データ"] --> B["統合ワークフロー開始"]
+    B --> C["設定・パス解決"]
+    C --> D["エッジケース検出"]
+    D --> E["処理対象論文決定"]
+    E --> F["基本ワークフロー実行"]
+    F --> G["AI機能有効性確認"]
+    G -->|有効| H["AI機能実行"]
+    G -->|無効| I["最終同期"]
+    H --> I
+    I --> J["結果出力"]
+    J --> K["完了"]
+    
+    F -->|エラー| L["エラーハンドリング"]
+    H -->|API制限| M["レート制限処理"]
+    L --> N["バックアップ作成"]
+    M --> H
+```
+
+## モジュール関係図
+```mermaid
+graph LR
+    A["統合ワークフロー"] --> B["基本機能"]
+    A --> C["AI引用解析"]
+    A --> D["セクション分割"]
+    A --> E["AIタグ付け"]
+    A --> F["要約翻訳"]
+    A --> G["落合フォーマット"]
+    A --> H["状態管理"]
+    
+    I["設定ファイル"] -.-> A
+    J["ログシステム"] -.-> A
+    K["バックアップシステム"] -.-> A
+    L["Claude API"] -.-> A
+```
+
+## YAMLヘッダー形式
+
+### 入力
+```yaml
+---
+# 統合ワークフローは複数の論文を一括処理するため、
+# 個別論文のYAMLヘッダーは各ステップで更新されます
+workspace_status:
+  workspace_path: "/home/user/ManuscriptsManager"
+  bibtex_file: "CurrentManuscript.bib"
+  clippings_dir: "Clippings"
+execution_parameters:
+  force_reprocess: false
+  disable_ai_features: false
+  target_papers: null
+  show_plan: false
+---
+```
+
+### 出力
+```yaml
+---
+# 統合ワークフロー実行結果（各論文のYAMLヘッダーは個別に更新）
+execution_summary:
+  executed_at: '2025-01-15T12:00:00.123456'
+  total_papers_processed: 3
+  total_execution_time: 180.5
+  steps_executed:
+    - organize
+    - sync
+    - fetch
+    - section_parsing
+    - ai_citation_support
+    - tagger
+    - translate_abstract
+    - ochiai_format
+    - final-sync
+  steps_summary:
+    organize:
+      status: completed
+      papers_processed: 3
+      execution_time: 15.2
+    sync:
+      status: completed
+      papers_processed: 3
+      execution_time: 8.1
+    ai_citation_support:
+      status: completed
+      papers_processed: 3
+      execution_time: 25.3
+    tagger:
+      status: completed
+      papers_processed: 3
+      execution_time: 42.7
+      ai_requests: 3
+    translate_abstract:
+      status: completed
+      papers_processed: 3
+      execution_time: 38.9
+      ai_requests: 3
+    ochiai_format:
+      status: completed
+      papers_processed: 3
+      execution_time: 51.3
+      ai_requests: 3
+edge_cases:
+  missing_in_clippings: 2
+  orphaned_in_clippings: 1
+workflow_version: '3.2'
+---
+```
+
+## 実装
+```python
+class IntegratedWorkflow:
+    def __init__(self, config_manager, logger):
+        self.config_manager = config_manager
+        self.logger = logger.get_logger('IntegratedWorkflow')
+        self.status_manager = StatusManager(config_manager, logger)
+        
+        # 各ワークフローモジュールを初期化
+        self.organize_workflow = OrganizeWorkflow(config_manager, logger)
+        self.sync_workflow = SyncWorkflow(config_manager, logger)
+        self.fetch_workflow = FetchWorkflow(config_manager, logger)
+        self.section_parsing_workflow = SectionParsingWorkflow(config_manager, logger)
+        self.ai_citation_support_workflow = AICitationSupportWorkflow(config_manager, logger)
+        self.tagger_workflow = TaggerWorkflow(config_manager, logger)
+        self.translate_workflow = TranslateAbstractWorkflow(config_manager, logger)
+        self.ochiai_workflow = OchiaiFormatWorkflow(config_manager, logger)
+        
+    def execute_integrated_workflow(self, force_reprocess=False, disable_ai_features=False, 
+                                  target_papers=None, show_plan=False):
+        """統合ワークフローの実行"""
+        start_time = time.time()
+        execution_results = {
+            'status': 'running',
+            'executed_steps': [],
+            'skipped_steps': [],
+            'failed_steps': [],
+            'total_papers_processed': 0,
+            'execution_time': 0,
+            'edge_cases': {}
+        }
+        
+        try:
+            # 1. 設定とパスの解決
+            workspace_path = self.config_manager.get_workspace_path()
+            bibtex_file = self.config_manager.get_bibtex_file()
+            clippings_dir = self.config_manager.get_clippings_dir()
+            
+            # 2. エッジケース検出と処理対象論文決定
+            valid_papers, edge_cases = self._detect_edge_cases_and_get_valid_papers(
+                bibtex_file, clippings_dir
+            )
+            execution_results['edge_cases'] = edge_cases
+            execution_results['total_papers_processed'] = len(valid_papers)
+            
+            if show_plan:
+                self._show_execution_plan(valid_papers, disable_ai_features)
+                return execution_results
+            
+            # 3. 順次ワークフロー実行
+            workflow_steps = [
+                ('organize', self.organize_workflow),
+                ('sync', self.sync_workflow),
+                ('fetch', self.fetch_workflow),
+                ('section_parsing', self.section_parsing_workflow),
+                ('ai_citation_support', self.ai_citation_support_workflow),
+            ]
+            
+            # AI機能ステップ（無効化されていない場合のみ）
+            if not disable_ai_features:
+                ai_steps = [
+                    ('tagger', self.tagger_workflow),
+                    ('translate_abstract', self.translate_workflow),
+                    ('ochiai_format', self.ochiai_workflow),
+                ]
+                workflow_steps.extend(ai_steps)
+            
+            # 最終同期
+            workflow_steps.append(('final-sync', self.sync_workflow))
+            
+            # 各ステップを順次実行
+            for step_name, workflow in workflow_steps:
+                step_start_time = time.time()
+                
+                try:
+                    # ステップ開始前バックアップ作成
+                    if self.config_manager.get('integrated_workflow.backup_strategy.create_checkpoint_backups', True):
+                        self._create_checkpoint_backup(clippings_dir, step_name)
+                    
+                    self.logger.info(f"Starting step: {step_name}")
+                    workflow.process_items(clippings_dir, valid_papers)
+                    
+                    step_execution_time = time.time() - step_start_time
+                    execution_results['executed_steps'].append({
+                        'name': step_name,
+                        'status': 'completed',
+                        'execution_time': step_execution_time
+                    })
+                    
+                except (ProcessingError, APIError, ValidationError) as e:
+                    # 既知のエラー：標準的な処理
+                    self.logger.error(f"Step {step_name} failed with known error: {e}")
+                    
+                    # 失敗時バックアップ作成
+                    if self.config_manager.get('integrated_workflow.error_handling.auto_backup_on_failure', True):
+                        self._create_failure_backup(clippings_dir, step_name, str(e))
+                    
+                    execution_results['failed_steps'].append({
+                        'name': step_name,
+                        'error': str(e),
+                        'error_type': type(e).__name__,
+                        'error_code': getattr(e, 'error_code', None)
+                    })
+                    
+                    # 重要でないエラーは継続、重要なエラーは中断
+                    if isinstance(e, (APIError, ConfigurationError)):
+                        break  # 重要なエラーで中断
+                    
+                except Exception as e:
+                    # 未知のエラー：標準例外に変換
+                    error = ProcessingError(
+                        f"Unexpected error in step {step_name}: {str(e)}",
+                        error_code="UNEXPECTED_STEP_ERROR",
+                        context={"step": step_name, "execution_time": time.time() - step_start_time}
+                    )
+                    self.logger.error(f"Step {step_name} failed with unexpected error: {error}")
+                    
+                    execution_results['failed_steps'].append({
+                        'name': step_name,
+                        'error': str(error),
+                        'error_type': 'ProcessingError',
+                        'error_code': error.error_code
+                    })
+                    break
+            
+            execution_results['status'] = 'completed'
+            
+        except Exception as e:
+            self.logger.error(f"Integrated workflow failed: {e}")
+            execution_results['status'] = 'failed'
+            execution_results['error'] = str(e)
+        
+        finally:
+            execution_results['execution_time'] = time.time() - start_time
+            
+        return execution_results
+    
+    def _detect_edge_cases_and_get_valid_papers(self, bibtex_file, clippings_dir):
+        """エッジケース検出と有効論文リスト取得"""
+        # BibTeXエントリー取得
+        bibtex_entries = self.bibtex_parser.parse_file(bibtex_file)
+        bibtex_keys = set(bibtex_entries.keys())
+        
+        # Clippingsディレクトリの論文取得
+        clippings_keys = set()
+        for md_file in glob.glob(os.path.join(clippings_dir, "**/*.md"), recursive=True):
+            citation_key = self._extract_citation_key_from_path(md_file)
+            if citation_key:
+                clippings_keys.add(citation_key)
+        
+        # エッジケース検出
+        missing_in_clippings = bibtex_keys - clippings_keys
+        orphaned_in_clippings = clippings_keys - bibtex_keys
+        valid_papers = bibtex_keys.intersection(clippings_keys)
+        
+        edge_cases = {
+            'missing_in_clippings': list(missing_in_clippings),
+            'orphaned_in_clippings': list(orphaned_in_clippings)
+        }
+        
+        return list(valid_papers), edge_cases
+```
+
+## 設定
+```yaml
+integrated_workflow:
+  enabled: true
+  default_ai_features: true
+  auto_edge_case_detection: true
+  parallel_processing: false
+  execution_timeout: 3600
+  step_timeout: 600
+  error_handling:
+    auto_backup_on_failure: true
+    retry_failed_steps: true
+    max_retry_attempts: 3
+    rollback_on_critical_failure: true
+  backup_strategy:
+    create_checkpoint_backups: true
+    backup_frequency: "before_each_step"
+    keep_execution_logs: true
+```
 
 ## 基本原理
 
@@ -26,7 +321,7 @@
 
 ### 処理フロー
 ```
-organize → sync → fetch → section-parsing → ai-citation-support → enhanced-tagger → enhanced-translate → ochiai-format → final-sync
+organize → sync → fetch → section_parsing → ai_citation_support → enhanced-tagger → enhanced-translate → ochiai-format → final-sync
 ```
 
 ### メタデータ自動補完システム

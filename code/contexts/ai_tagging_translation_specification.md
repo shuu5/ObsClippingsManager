@@ -1,61 +1,236 @@
 # AI Tagging & Translation機能仕様書
 
 ## 概要
-Claude 3.5 Haikuを活用したAI論文理解支援機能として、自動タグ生成（Tagger）と要約翻訳（Abstract Translation）機能を提供。論文の分類・検索性向上と日本語での理解促進を実現します。
+- **責務**: Claude 3.5 Haikuを活用した論文の自動タグ生成と要約翻訳機能
+- **依存**: ai_citation_support → section_parsing
+- **実行**: 統合ワークフローで自動実行
 
-## 基本原理
-- **Claude 3.5 Haiku**による高品質で高速な論文理解
-- **バッチ処理**による効率的な大量処理
-- **並列処理**による処理時間短縮
-- **状態管理**による処理済みファイルのスキップ
-- **デフォルト有効**: 統合ワークフローでの自動実行
+## 処理フロー図
+```mermaid
+flowchart TD
+    A["入力データ"] --> B["AI Tagging処理開始"]
+    B --> C["データ検証"]
+    C --> D["論文内容抽出"]
+    D --> E["タグ生成プロンプト構築"]
+    E --> F["Claude API タグ生成"]
+    F --> G["タグ応答解析"]
+    G --> H["翻訳処理開始"]
+    H --> I["要約翻訳プロンプト構築"]
+    I --> J["Claude API 翻訳生成"]
+    J --> K["翻訳応答解析"]
+    K --> L["結果出力"]
+    L --> M["完了"]
+    
+    C -->|エラー| N["エラーハンドリング"]
+    F -->|API制限| O["レート制限処理"]
+    G -->|構造エラー| P["再試行"]
+    N --> Q["失敗ログ記録"]
+    O --> F
+    P --> F
+```
 
-## 処理統合
-- run-integratedワークフローにデフォルト統合
-- ai-citation-support → tagger → translate_abstract → ochiai_format → final-sync の順序
-- 各ステップの独立性保持
+## モジュール関係図
+```mermaid
+graph LR
+    A["AI引用解析"] --> B["AIタグ付け"]
+    C["セクション分割"] --> B
+    
+    B --> D["要約翻訳"]
+    
+    E["設定ファイル"] -.-> B
+    E -.-> D
+    F["ログシステム"] -.-> B
+    F -.-> D
+    G["Claude API"] -.-> B
+    G -.-> D
+    
+    B --> H["統合ワークフロー"]
+    D --> H
+```
 
-## AI Tagging機能（Tagger）
+## YAMLヘッダー形式
 
-### 概要
-論文内容を解析し、関連するトピック・技術・遺伝子名などを自動抽出してタグ化する機能。
+### 入力
+```yaml
+---
+citation_key: smith2023test
+paper_structure:
+  parsed_at: '2025-01-15T10:30:00.123456'
+  total_sections: 5
+  sections:
+    - title: "Abstract"
+      level: 2
+      section_type: "abstract"
+      start_line: 15
+      end_line: 25
+      word_count: 250
+processing_status:
+  section_parsing: completed
+  ai_citation_support: completed
+  tagger: pending
+  translate_abstract: pending
+---
+```
+
+### 出力
+```yaml
+---
+citation_key: smith2023test
+paper_structure:
+  parsed_at: '2025-01-15T10:30:00.123456'
+  total_sections: 5
+  sections:
+    - title: "Abstract"
+      level: 2
+      section_type: "abstract"
+      start_line: 15
+      end_line: 25
+      word_count: 250
+tags:
+  generated_at: '2025-01-15T11:15:00.123456'
+  count: 15
+  keywords:
+    - oncology
+    - biomarkers
+    - cancer_research
+    - machine_learning
+    - KRT13
+    - EGFR
+    - immunotherapy
+    - clinical_trials
+    - rna_seq
+    - apoptosis
+    - western_blot
+    - flow_cytometry
+    - breast_cancer
+    - prognosis
+    - survival_analysis
+abstract_japanese:
+  generated_at: '2025-01-15T11:20:00.123456'
+  content: |
+    本研究では、がん研究における先進的なバイオマーカー技術について報告する。
+    KRT13およびEGFR遺伝子の発現パターンを機械学習アルゴリズムを用いて解析し、
+    診断精度の向上を達成した。500例の組織サンプルを用いた後向き研究により、
+    従来の免疫組織化学的手法と比較して95%の診断精度を実現した。
+processing_status:
+  section_parsing: completed
+  ai_citation_support: completed
+  tagger: completed
+  translate_abstract: completed
+workflow_version: '3.2'
+---
+```
+
+## 実装
+```python
+class TaggerWorkflow:
+    def __init__(self, config_manager, logger):
+        self.config_manager = config_manager
+        self.logger = logger.get_logger('TaggerWorkflow')
+        self.claude_client = ClaudeAPIClient(config_manager, logger)
+        
+    def process_items(self, input_dir, target_items=None):
+        """論文の一括タグ生成処理"""
+        status_manager = StatusManager(self.config_manager, self.logger)
+        papers_needing_processing = status_manager.get_papers_needing_processing(
+            input_dir, 'tagger', target_items
+        )
+        
+        for paper_path in papers_needing_processing:
+            try:
+                tags = self.generate_tags_single(paper_path)
+                self.update_yaml_with_tags(paper_path, tags)
+                status_manager.update_status(input_dir, paper_path, 'tagger', 'completed')
+            except Exception as e:
+                self.logger.error(f"Failed to generate tags for {paper_path}: {e}")
+                status_manager.update_status(input_dir, paper_path, 'tagger', 'failed')
+
+class TranslateAbstractWorkflow:
+    def __init__(self, config_manager, logger):
+        self.config_manager = config_manager
+        self.logger = logger.get_logger('TranslateAbstractWorkflow')
+        self.claude_client = ClaudeAPIClient(config_manager, logger)
+        
+    def process_items(self, input_dir, target_items=None):
+        """論文の一括要約翻訳処理"""
+        status_manager = StatusManager(self.config_manager, self.logger)
+        papers_needing_processing = status_manager.get_papers_needing_processing(
+            input_dir, 'translate_abstract', target_items
+        )
+        
+        for paper_path in papers_needing_processing:
+            try:
+                translation = self.translate_abstract_single(paper_path)
+                self.update_yaml_with_translation(paper_path, translation)
+                status_manager.update_status(input_dir, paper_path, 'translate_abstract', 'completed')
+            except Exception as e:
+                self.logger.error(f"Failed to translate abstract for {paper_path}: {e}")
+                status_manager.update_status(input_dir, paper_path, 'translate_abstract', 'failed')
+```
+
+## 設定
+```yaml
+ai_generation:
+  default_model: "claude-3-5-haiku-20241022"
+  tagger:
+    enabled: true
+    batch_size: 8
+    parallel_processing: true
+    tag_count_range: [10, 20]
+    retry_attempts: 3
+    request_delay: 0.5
+    error_handling:
+      validate_tag_format: true
+      backup_on_generation_failure: true
+      fallback_to_manual_tags: false
+      rate_limit_handling: true
+    backup_strategy:
+      backup_before_tag_update: true
+      keep_generation_history: true
+      preserve_manual_tags: true
+  translate_abstract:
+    enabled: true
+    batch_size: 5
+    parallel_processing: true
+    retry_attempts: 3
+    request_delay: 0.8
+    error_handling:
+      validate_translation_quality: true
+      backup_on_translation_failure: true
+      preserve_original_on_error: true
+      handle_encoding_errors: true
+    backup_strategy:
+      backup_before_translation: true
+      keep_translation_versions: true
+      preserve_original_abstract: true
+```
+
+## タグ生成機能
 
 ### タグ生成ルール
-
-#### 命名規則
 - **言語**: 英語のみ
 - **形式**: スネークケース（例: machine_learning, cancer_research）
 - **遺伝子名**: Gene symbol形式（例: KRT13, EGFR, TP53）
 - **数量**: 10-20個程度
 - **内容**: 論文理解に重要なキーワード
 
-#### タグカテゴリ
-1. **研究分野**: oncology, neuroscience, immunology
-2. **技術手法**: machine_learning, crispr_cas9, rna_seq
-3. **遺伝子/タンパク質**: KRT13, EGFR, TP53, BRCA1
-4. **疾患**: alzheimer_disease, breast_cancer, diabetes
-5. **生物学的プロセス**: apoptosis, cell_cycle, immune_response
-6. **実験手法**: western_blot, flow_cytometry, mass_spectrometry
+### プロンプト設計
+```
+以下の学術論文の内容を分析し、10-20個のタグを生成してください。
 
-### YAMLヘッダー統合形式
-```yaml
-tags:
-  - oncology
-  - biomarkers
-  - cancer_research
-  - machine_learning
-  - KRT13
-  - EGFR
-  - immunotherapy
-  - clinical_trials
-  - rna_seq
-  - apoptosis
+ルール:
+- 英語でのタグ生成
+- スネークケース形式（例: machine_learning）
+- 遺伝子名はgene symbol（例: KRT13, EGFR）
+- 論文理解に重要なキーワードを抽出
+
+論文内容:
+{paper_content}
+
+生成されたタグ（JSON配列形式で返答）:
 ```
 
-## Abstract Translation機能
-
-### 概要
-論文のabstract部分を自然な日本語に翻訳し、日本語での理解を促進する機能。
+## 要約翻訳機能
 
 ### 翻訳品質要件
 - **自然性**: 学術論文として適切な日本語表現
@@ -63,12 +238,17 @@ tags:
 - **一貫性**: 同一論文内での用語統一
 - **完全性**: 原文の情報量保持
 
-### YAMLヘッダー統合形式
-```yaml
-abstract_japanese: |
-  本研究では、がん研究における先進的なバイオマーカー技術について報告する。
-  KRT13およびEGFR遺伝子の発現パターンを機械学習アルゴリズムを用いて解析し、
-  診断精度の向上を達成した。
+### プロンプト設計
+```
+以下の学術論文のabstractを自然で正確な日本語に翻訳してください。
+
+要件:
+- 学術論文として適切な日本語表現
+- 専門用語の正確な翻訳
+- 原文の情報量を保持
+
+Original Abstract:
+{abstract_content}
 ```
 
 ## 実装仕様
