@@ -23,9 +23,12 @@ class TestConfigManager(unittest.TestCase):
     
     def test_config_manager_import(self):
         """ConfigManagerクラスのインポートテスト"""
-        with self.assertRaises(ImportError):
-            # まだ実装されていないため、ImportError が発生することを確認
-            from modules.shared.config_manager import ConfigManager
+        try:
+            # ConfigManagerが正常にインポートできることを確認
+            from code.py.modules.shared.config_manager import ConfigManager
+            self.assertTrue(True, "ConfigManager successfully imported")
+        except ImportError:
+            self.fail("ConfigManager should be importable")
 
 class TestIntegratedLogger(unittest.TestCase):
     """IntegratedLoggerクラスのテスト"""
