@@ -198,9 +198,41 @@ class TestConfigManager(unittest.TestCase):
         self.assertEqual(config['citation_fetcher']['timeout'], 60)
         
         # デフォルト値も保持されていることを確認
-        self.assertIn('bibtex_file', config['common'])
-        self.assertIn('output_dir', config['common'])
-    
+        # ConfigManagerは不完全な設定でもデフォルト値でマージするため正常に動作
+        config_manager = ConfigManager(config_file=str(self.config_file))
+        common_config = config_manager.get_common_config()
+        self.assertIn('bibtex_file', common_config)
+        self.assertIn('clippings_dir', common_config)
+
+    def test_get_method(self):
+        """getメソッドのテスト（get_config_valueのエイリアス機能）"""
+        config_manager = ConfigManager()
+        
+        # ネストしたキーでの値取得
+        log_level = config_manager.get('common.log_level')
+        self.assertIsInstance(log_level, str)
+        
+        # get_config_valueと同じ結果を返すことを確認
+        log_level_via_get_config_value = config_manager.get_config_value('common.log_level')
+        self.assertEqual(log_level, log_level_via_get_config_value)
+        
+        # デフォルト値の取得
+        nonexistent = config_manager.get('nonexistent.key', default="default_value")
+        self.assertEqual(nonexistent, "default_value")
+        
+        # get_config_valueと同じデフォルト値動作を確認
+        nonexistent_via_get_config_value = config_manager.get_config_value('nonexistent.key', default="default_value")
+        self.assertEqual(nonexistent, nonexistent_via_get_config_value)
+        
+        # 存在しないキーでNoneが返されることを確認
+        none_result = config_manager.get('nonexistent.key')
+        self.assertIsNone(none_result)
+        
+        # ドット記法でない場合の動作確認
+        common_section = config_manager.get('common')
+        self.assertIsInstance(common_section, dict)
+        self.assertIn('log_level', common_section)
+
     def test_required_sections_validation(self):
         """必須セクションの検証テスト"""
         # 必須セクションが欠けた設定を作成

@@ -328,6 +328,18 @@ class ConfigManager:
                 
         return value
         
+    def get(self, key_path: str, default: Any = None) -> Any:
+        """設定値を取得（get_config_valueのエイリアス）
+        
+        Args:
+            key_path: ドット記法による設定キーパス（例: 'common.log_level'）
+            default: 見つからない場合のデフォルト値
+            
+        Returns:
+            設定値またはデフォルト値
+        """
+        return self.get_config_value(key_path, default)
+        
     def update_config(self, updates: Dict[str, Any]) -> None:
         """設定を更新"""
         def update_nested(target_dict: Dict[str, Any], update_dict: Dict[str, Any]) -> None:
