@@ -146,3 +146,134 @@
 2025-06-13 14:13:51,332 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
 2025-06-13 14:13:51,336 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
 2025-06-13 14:13:51,337 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:21:04,284 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:21:04,286 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:21:04,291 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-13 14:21:04,295 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-13 14:21:04,300 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-13 14:21:04,300 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-13 14:21:04,303 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:21:04,304 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:23:27,934 [INFO] test_environment_manager: TestEnvironmentManager initialized
+2025-06-13 14:23:27,935 [INFO] test_data_manager: TestDataManager initialized
+2025-06-13 14:23:27,935 [INFO] workflow_validator: WorkflowValidator initialized
+2025-06-13 14:23:27,935 [INFO] result_analyzer: ResultAnalyzer initialized
+2025-06-13 14:23:27,935 [INFO] integrated_test_runner: IntegratedTestRunner initialized
+2025-06-13 14:23:27,935 [INFO] integrated_test_runner: Starting full integration test
+2025-06-13 14:23:27,935 [INFO] test_environment_manager: Creating isolated environment for session: integration_test_20250613_142327_b8ccf8ad
+2025-06-13 14:23:27,936 [INFO] test_environment_manager: Isolated environment created: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142327_b8ccf8ad
+2025-06-13 14:23:27,936 [INFO] test_data_manager: Setting up test data for workspace: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142327_b8ccf8ad
+2025-06-13 14:23:27,937 [INFO] test_data_manager: Creating backup of original data
+2025-06-13 14:23:27,937 [INFO] test_data_manager: Original data backup completed
+2025-06-13 14:23:27,937 [INFO] test_data_manager: Copying test data from master
+2025-06-13 14:23:27,938 [INFO] test_data_manager: Copied CurrentManuscript.bib
+2025-06-13 14:23:27,940 [INFO] test_data_manager: Copied Clippings directory
+2025-06-13 14:23:27,940 [INFO] test_data_manager: Test data copy completed
+2025-06-13 14:23:27,940 [INFO] test_data_manager: Validating test data
+2025-06-13 14:23:27,941 [INFO] test_data_manager: Test data validation passed
+2025-06-13 14:23:27,941 [INFO] test_data_manager: Test data setup completed
+2025-06-13 14:23:27,941 [INFO] integrated_test_runner: Executing integrated workflow in /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142327_b8ccf8ad
+2025-06-13 14:23:27,941 [INFO] workflow_validator: Validating processing results in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142327_b8ccf8ad
+2025-06-13 14:23:27,941 [INFO] workflow_validator: Validating YAML headers in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142327_b8ccf8ad/Clippings
+2025-06-13 14:23:27,942 [INFO] workflow_validator: YAML header validation: 3/3 files valid
+2025-06-13 14:23:27,942 [INFO] workflow_validator: Validating file structure in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142327_b8ccf8ad
+2025-06-13 14:23:27,942 [INFO] workflow_validator: File structure validation: PASSED
+2025-06-13 14:23:27,942 [INFO] workflow_validator: Validating citation data
+2025-06-13 14:23:27,943 [INFO] workflow_validator: Citation data validation: PASSED
+2025-06-13 14:23:27,943 [INFO] workflow_validator: Validation completed: PASSED
+2025-06-13 14:23:27,943 [INFO] result_analyzer: Analyzing test results
+2025-06-13 14:23:27,945 [INFO] result_analyzer: Detailed report generated: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142327_b8ccf8ad/reports/test_analysis_report.json
+2025-06-13 14:23:27,945 [INFO] result_analyzer: Test result analysis completed
+2025-06-13 14:23:27,946 [INFO] test_environment_manager: Cleaning up environment: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142327_b8ccf8ad
+2025-06-13 14:23:27,948 [INFO] test_environment_manager: Environment cleanup completed: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142327_b8ccf8ad
+2025-06-13 14:23:27,949 [INFO] integrated_test_runner: Full integration test completed successfully: integration_test_20250613_142327_b8ccf8ad
+2025-06-13 14:23:33,433 [INFO] test_environment_manager: TestEnvironmentManager initialized
+2025-06-13 14:23:33,433 [INFO] test_data_manager: TestDataManager initialized
+2025-06-13 14:23:33,433 [INFO] workflow_validator: WorkflowValidator initialized
+2025-06-13 14:23:33,433 [INFO] result_analyzer: ResultAnalyzer initialized
+2025-06-13 14:23:33,433 [INFO] integrated_test_runner: IntegratedTestRunner initialized
+2025-06-13 14:23:33,433 [INFO] integrated_test_runner: Starting full integration test
+2025-06-13 14:23:33,433 [INFO] test_environment_manager: Creating isolated environment for session: integration_test_20250613_142333_0f9e2d52
+2025-06-13 14:23:33,439 [INFO] test_environment_manager: Isolated environment created: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142333_0f9e2d52
+2025-06-13 14:23:33,439 [INFO] test_data_manager: Setting up test data for workspace: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142333_0f9e2d52
+2025-06-13 14:23:33,439 [INFO] test_data_manager: Creating backup of original data
+2025-06-13 14:23:33,440 [INFO] test_data_manager: Original data backup completed
+2025-06-13 14:23:33,440 [INFO] test_data_manager: Copying test data from master
+2025-06-13 14:23:33,440 [INFO] test_data_manager: Copied CurrentManuscript.bib
+2025-06-13 14:23:33,441 [INFO] test_data_manager: Copied Clippings directory
+2025-06-13 14:23:33,442 [INFO] test_data_manager: Test data copy completed
+2025-06-13 14:23:33,442 [INFO] test_data_manager: Validating test data
+2025-06-13 14:23:33,442 [INFO] test_data_manager: Test data validation passed
+2025-06-13 14:23:33,442 [INFO] test_data_manager: Test data setup completed
+2025-06-13 14:23:33,442 [INFO] integrated_test_runner: Executing integrated workflow in /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142333_0f9e2d52
+2025-06-13 14:23:33,442 [INFO] workflow_validator: Validating processing results in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142333_0f9e2d52
+2025-06-13 14:23:33,442 [INFO] workflow_validator: Validating YAML headers in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142333_0f9e2d52/Clippings
+2025-06-13 14:23:33,443 [INFO] workflow_validator: YAML header validation: 3/3 files valid
+2025-06-13 14:23:33,444 [INFO] workflow_validator: Validating file structure in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142333_0f9e2d52
+2025-06-13 14:23:33,444 [INFO] workflow_validator: File structure validation: PASSED
+2025-06-13 14:23:33,444 [INFO] workflow_validator: Validating citation data
+2025-06-13 14:23:33,444 [INFO] workflow_validator: Citation data validation: PASSED
+2025-06-13 14:23:33,444 [INFO] workflow_validator: Validation completed: PASSED
+2025-06-13 14:23:33,444 [INFO] result_analyzer: Analyzing test results
+2025-06-13 14:23:33,446 [INFO] result_analyzer: Detailed report generated: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142333_0f9e2d52/reports/test_analysis_report.json
+2025-06-13 14:23:33,446 [INFO] result_analyzer: Test result analysis completed
+2025-06-13 14:23:33,446 [INFO] test_environment_manager: Cleaning up environment: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142333_0f9e2d52
+2025-06-13 14:23:33,447 [INFO] test_environment_manager: Environment cleanup completed: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142333_0f9e2d52
+2025-06-13 14:23:33,447 [INFO] integrated_test_runner: Full integration test completed successfully: integration_test_20250613_142333_0f9e2d52
+2025-06-13 14:25:06,642 [INFO] test_environment_manager: TestEnvironmentManager initialized
+2025-06-13 14:25:06,642 [INFO] test_data_manager: TestDataManager initialized
+2025-06-13 14:25:06,642 [INFO] workflow_validator: WorkflowValidator initialized
+2025-06-13 14:25:06,643 [INFO] result_analyzer: ResultAnalyzer initialized
+2025-06-13 14:25:06,643 [INFO] integrated_test_runner: IntegratedTestRunner initialized
+2025-06-13 14:25:06,643 [INFO] integrated_test_runner: Starting full integration test
+2025-06-13 14:25:06,643 [INFO] test_environment_manager: Creating isolated environment for session: integration_test_20250613_142506_f0a71438
+2025-06-13 14:25:06,644 [INFO] test_environment_manager: Isolated environment created: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142506_f0a71438
+2025-06-13 14:25:06,644 [INFO] test_data_manager: Setting up test data for workspace: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142506_f0a71438
+2025-06-13 14:25:06,645 [INFO] test_data_manager: Creating backup of original data
+2025-06-13 14:25:06,646 [INFO] test_data_manager: Original data backup completed
+2025-06-13 14:25:06,646 [INFO] test_data_manager: Copying test data from master
+2025-06-13 14:25:06,649 [INFO] test_data_manager: Copied CurrentManuscript.bib
+2025-06-13 14:25:06,652 [INFO] test_data_manager: Copied Clippings directory
+2025-06-13 14:25:06,653 [INFO] test_data_manager: Test data copy completed
+2025-06-13 14:25:06,653 [INFO] test_data_manager: Validating test data
+2025-06-13 14:25:06,654 [INFO] test_data_manager: Test data validation passed
+2025-06-13 14:25:06,654 [INFO] test_data_manager: Test data setup completed
+2025-06-13 14:25:06,654 [INFO] integrated_test_runner: Executing integrated workflow in /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142506_f0a71438
+2025-06-13 14:25:06,654 [INFO] workflow_validator: Validating processing results in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142506_f0a71438
+2025-06-13 14:25:06,654 [INFO] workflow_validator: Validating YAML headers in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142506_f0a71438/Clippings
+2025-06-13 14:25:06,657 [INFO] workflow_validator: YAML header validation: 3/3 files valid
+2025-06-13 14:25:06,657 [INFO] workflow_validator: Validating file structure in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142506_f0a71438
+2025-06-13 14:25:06,658 [INFO] workflow_validator: File structure validation: PASSED
+2025-06-13 14:25:06,658 [INFO] workflow_validator: Validating citation data
+2025-06-13 14:25:06,658 [INFO] workflow_validator: Citation data validation: PASSED
+2025-06-13 14:25:06,658 [INFO] workflow_validator: Validation completed: PASSED
+2025-06-13 14:25:06,658 [INFO] result_analyzer: Analyzing test results
+2025-06-13 14:25:06,660 [INFO] result_analyzer: Detailed report generated: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142506_f0a71438/reports/test_analysis_report.json
+2025-06-13 14:25:06,660 [INFO] result_analyzer: Test result analysis completed
+2025-06-13 14:25:06,660 [INFO] test_environment_manager: Cleaning up environment: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142506_f0a71438
+2025-06-13 14:25:06,660 [INFO] test_environment_manager: Environment cleanup completed: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250613_142506_f0a71438
+2025-06-13 14:25:06,660 [INFO] integrated_test_runner: Full integration test completed successfully: integration_test_20250613_142506_f0a71438
+2025-06-13 14:25:27,678 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:25:27,678 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:25:27,684 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-13 14:25:27,689 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-13 14:25:27,694 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-13 14:25:27,694 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-13 14:25:27,697 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:25:27,699 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:26:56,559 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:26:56,561 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:26:56,567 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-13 14:26:56,574 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-13 14:26:56,579 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-13 14:26:56,579 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-13 14:26:56,587 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:26:56,589 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:28:41,090 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:28:41,092 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-13 14:28:41,098 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-13 14:28:41,105 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-13 14:28:41,110 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-13 14:28:41,111 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-13 14:28:41,115 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-13 14:28:41,116 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML

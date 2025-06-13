@@ -11,7 +11,7 @@ alwaysApply: false
 
 ## 📋 基本方針
 
-- **対象**: `code/contexts/*.md`, `README.md`
+- **対象**: `code/contexts/*.md`, [README.md](mdc:README.md)
 - **更新**: 実装変更時は必ず仕様書も同期更新
 - **データ管理**: YAMLヘッダーベースの状態管理
 - **品質**: 簡潔・具体例・一貫性
@@ -19,7 +19,7 @@ alwaysApply: false
 ## 🏗️ 仕様書構成
 
 ### 1. 統合仕様書（Master）
-`README.md`として配置。システム全体概要を記述。
+[README.md](mdc:README.md)として配置。システム全体概要を記述。
 
 ### 2. 個別モジュール仕様書
 `code/contexts/[モジュール名]_specification.md`として配置。
