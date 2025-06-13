@@ -35,6 +35,9 @@ code/py/
 - **[状態管理システム](code/contexts/status_management_yaml_specification.md)** - YAMLヘッダーベースの状態管理
 - **[共有モジュール](code/contexts/shared_modules_specification.md)** - 基盤機能・設定管理
 
+### テストシステム
+- **[統合テストシステム](code/contexts/integrated_testing_specification.md)** - Python統一テスト実行・品質保証・エンドツーエンド検証
+
 ### AI機能
 - **[論文セクション分割](code/contexts/section_parsing_specification.md)** - Markdownセクション構造解析
 - **[AI理解支援引用文献パーサー](code/contexts/enhanced_citation_parser_specification.md)** - 引用文献統合機能
@@ -166,20 +169,20 @@ uv run python -m unittest code.unittest.test_[module_name]
 
 ### 統合テスト実行（推奨）
 ```bash
-# 標準統合テスト
-./code/scripts/test_run.sh
+# 完全統合テスト（Python統一実行）
+uv run python code/scripts/run_integrated_test.py --test-type full
 
 # 環境リセット後実行
-./code/scripts/test_run.sh --reset --run
+uv run python code/scripts/run_integrated_test.py --reset-environment
 
-# ドライラン実行（安全確認）
-./code/scripts/test_run.sh --dry-run
+# 特定モジュールテスト
+uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules ai_features
+
+# AI機能無効化テスト（API制限時）
+uv run python code/scripts/run_integrated_test.py --disable-ai-features
 
 # デバッグモード実行
-./code/scripts/test_run.sh --debug
-
-# 実行計画表示
-./code/scripts/test_run.sh --plan
+uv run python code/scripts/run_integrated_test.py --verbose --keep-environment
 ```
 
 ### テストデータ構造
@@ -201,7 +204,7 @@ TestManuscripts/                # 実行環境（自動生成・Git除外）
 uv run code/unittest/run_all_tests.py
 
 # 2. 統合テスト実行（推奨）
-./code/scripts/test_run.sh --reset --debug
+uv run python code/scripts/run_integrated_test.py --test-type full
 
 # 3. 本番前確認
 PYTHONPATH=code/py uv run python code/py/main.py run-integrated --dry-run
