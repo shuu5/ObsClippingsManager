@@ -23,6 +23,9 @@
 ### 初期化テンプレート（空論文用）
 ```yaml
 ---
+# === Obsidian互換タグ（最上位必須） ===
+tags: []
+
 # === システムメタデータ（ルートレベル）===
 citation_key: null                    # 必須：論文識別子
 workflow_version: '3.2'              # 必須：システムバージョン
@@ -65,12 +68,6 @@ paper_structure:
 
 # AI Generated Content（AI生成コンテンツ）
 ai_content:
-  # タグ生成
-  tags:
-    generated_at: null
-    count: 0
-    keywords: []
-  
   # 要約翻訳
   abstract_japanese:
     generated_at: null
@@ -153,13 +150,16 @@ processing_status:
 
 ### 4. **AI機能（TaggerWorkflow, TranslateWorkflow, OchiaiWorkflow）**
 ```yaml
+# tagsは最上位レベルで更新（obsidian互換）
+tags:
+  - oncology
+  - biomarkers
+  - cancer_research
+  - stem_cell
+  - prostate_cancer
+
 # ai_content 配下の該当セクションのみ更新
 ai_content:
-  tags:
-    generated_at: "2025-01-15T11:15:00.123456"
-    count: 15
-    keywords: ["oncology", "biomarkers", ...]
-  
   abstract_japanese:
     generated_at: "2025-01-15T11:20:00.123456"
     content: "本研究では..."

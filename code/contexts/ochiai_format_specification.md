@@ -102,17 +102,16 @@ paper_structure:
       end_line: 85
       word_count: 1200
 
+# === Obsidian互換タグ（最上位、前段で設定済み） ===
+tags:
+  - oncology
+  - biomarkers
+  - cancer_research
+  - machine_learning
+  - KRT13
+
 # === AI Generated Content（前段で一部設定済み） ===
 ai_content:
-  tags:
-    generated_at: '2025-01-15T11:15:00.123456'
-    count: 15
-    keywords:
-      - oncology
-      - biomarkers
-      - cancer_research
-      - machine_learning
-      - KRT13
   abstract_japanese:
     generated_at: '2025-01-15T11:20:00.123456'
     content: |
@@ -191,15 +190,14 @@ paper_structure:
       end_line: 25
       word_count: 250
 
+# === Obsidian互換タグ（最上位、前段で設定済み） ===
+tags:
+  - oncology
+  - biomarkers
+  - cancer_research
+
 # === AI Generated Content（このモジュールで落合フォーマット完成） ===
 ai_content:
-  tags:
-    generated_at: '2025-01-15T11:15:00.123456'
-    count: 15
-    keywords:
-      - oncology
-      - biomarkers
-      - cancer_research
   abstract_japanese:
     generated_at: '2025-01-15T11:20:00.123456'
     content: |

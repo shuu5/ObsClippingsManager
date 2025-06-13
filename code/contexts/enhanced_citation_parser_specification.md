@@ -77,6 +77,9 @@ citation_metadata:
 
 citations: {}
 
+# === Obsidian互換タグ（最上位必須） ===
+tags: []
+
 paper_structure:
   parsed_at: null
   total_sections: 0
@@ -84,10 +87,6 @@ paper_structure:
   section_types_found: []
 
 ai_content:
-  tags:
-    generated_at: null
-    count: 0
-    keywords: []
   abstract_japanese:
     generated_at: null
     content: null
@@ -160,6 +159,9 @@ citations:
     journal: Nature Medicine
     doi: 10.1038/s41591-022-0456-7
 
+# === Obsidian互換タグ（最上位必須） ===
+tags: []
+
 # === 他セクション（このモジュールでは変更なし） ===
 paper_structure:
   parsed_at: null
@@ -168,10 +170,6 @@ paper_structure:
   section_types_found: []
 
 ai_content:
-  tags:
-    generated_at: null
-    count: 0
-    keywords: []
   abstract_japanese:
     generated_at: null
     content: null

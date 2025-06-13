@@ -92,11 +92,10 @@ paper_structure:
   sections: []
   section_types_found: []
 
+# === Obsidian互換タグ（最上位必須） ===
+tags: []
+
 ai_content:
-  tags:
-    generated_at: null
-    count: 0
-    keywords: []
   abstract_japanese:
     generated_at: null
     content: null
@@ -186,18 +185,17 @@ paper_structure:
       end_line: 25
       word_count: 250
 
+# === Obsidian互換タグ（最上位で更新） ===
+tags:
+  - oncology
+  - biomarkers
+  - cancer_research
+  - machine_learning
+  - KRT13
+  - EGFR
+
 # === AI Generated Content ===
 ai_content:
-  tags:
-    generated_at: '2025-01-15T11:15:00.123456'
-    count: 15
-    keywords:
-      - oncology
-      - biomarkers
-      - cancer_research
-      - machine_learning
-      - KRT13
-      - EGFR
   abstract_japanese:
     generated_at: '2025-01-15T11:20:00.123456'
     content: |
