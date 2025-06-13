@@ -31,10 +31,13 @@ class TestMainCLI(unittest.TestCase):
         self.runner = CliRunner()
         self.temp_dir = tempfile.mkdtemp()
         
+        # テスト用Clippingsディレクトリパス設定
+        self.clippings_dir = os.path.join(self.temp_dir, "clippings")
+        
         # テスト用設定ファイル作成
         self.config_file = os.path.join(self.temp_dir, "test_config.json")
         with open(self.config_file, 'w', encoding='utf-8') as f:
-            f.write('{"common": {"bibtex_file": "test.bib", "clippings_dir": "clippings"}}')
+            f.write(f'{{"common": {{"bibtex_file": "test.bib", "clippings_dir": "{self.clippings_dir}"}}}}')
         
         # テスト用BibTeXファイル作成
         self.bibtex_file = os.path.join(self.temp_dir, "test.bib")
@@ -42,7 +45,6 @@ class TestMainCLI(unittest.TestCase):
             f.write('@article{test2023,\n  title={Test Paper},\n  author={Test, Author},\n  doi={10.1000/test}\n}')
         
         # テスト用Clippingsディレクトリ作成
-        self.clippings_dir = os.path.join(self.temp_dir, "clippings")
         os.makedirs(self.clippings_dir, exist_ok=True)
         
         # テスト用Markdownファイル作成

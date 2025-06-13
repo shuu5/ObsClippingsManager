@@ -498,70 +498,91 @@ class StatusManager:
     def check_status_consistency(self, bibtex_file: str, 
                                clippings_dir: str) -> Dict[str, Any]:
         """
-        BibTeX ↔ Clippings間の整合性チェック
+        BibTeX ↔ Clippings間の整合性チェック（integrated_workflow.py互換形式）
         
         Args:
             bibtex_file: BibTeXファイルパス
             clippings_dir: Clippingsディレクトリパス
             
         Returns:
-            Dict: 整合性チェック結果
+            Dict: 整合性チェック結果（consistent, valid_papers, edge_case_details含む）
         """
         try:
-            result = {
-                'missing_directories': [],
-                'orphaned_directories': [],
-                'status_inconsistencies': []
-            }
-            
             # BibTeX内の論文を取得
             bib_papers = set()
+            bib_entries = {}
             if os.path.exists(bibtex_file):
-                entries = self.bibtex_parser.parse_file(bibtex_file)
-                bib_papers = set(entries.keys())
+                bib_entries = self.bibtex_parser.parse_file(bibtex_file)
+                bib_papers = set(bib_entries.keys())
             
             # Clippingsディレクトリ内の論文を取得
             clippings_papers = set()
             if os.path.exists(clippings_dir):
-                clippings_papers = {
-                    d for d in os.listdir(clippings_dir)
-                    if os.path.isdir(os.path.join(clippings_dir, d))
-                }
+                # .mdファイル形式を考慮
+                for item in os.listdir(clippings_dir):
+                    if item.endswith('.md'):
+                        # ファイル形式の場合は拡張子を除去
+                        citation_key = item[:-3]
+                        clippings_papers.add(citation_key)
+                    elif os.path.isdir(os.path.join(clippings_dir, item)):
+                        # ディレクトリ形式の場合はそのまま
+                        clippings_papers.add(item)
             
-            # BibTeXにあるがClippingsにないディレクトリ
-            result['missing_directories'] = list(bib_papers - clippings_papers)
+            # 両方に存在する論文（有効な論文）
+            valid_papers = list(bib_papers & clippings_papers)
             
-            # ClippingsにあるがBibTeXにないディレクトリ
-            result['orphaned_directories'] = list(clippings_papers - bib_papers)
+            # エッジケース詳細
+            missing_in_clippings = []
+            orphaned_in_clippings = []
             
-            # 状態の矛盾チェック（organize完了だがディレクトリがない等）
-            statuses = self.load_md_statuses(clippings_dir)
-            for citation_key, paper_statuses in statuses.items():
-                organize_status = paper_statuses.get('organize', ProcessStatus.PENDING)
+            # BibTeXにあるがClippingsにない論文
+            for citation_key in bib_papers - clippings_papers:
+                entry_info = bib_entries.get(citation_key, {})
+                missing_in_clippings.append({
+                    'citation_key': citation_key,
+                    'title': entry_info.get('title', 'Unknown Title'),
+                    'doi': entry_info.get('doi', 'No DOI')
+                })
+            
+            # ClippingsにあるがBibTeXにない論文
+            for citation_key in clippings_papers - bib_papers:
+                # ファイルパスを特定
+                md_file_path = os.path.join(clippings_dir, f"{citation_key}.md")
+                if not os.path.exists(md_file_path):
+                    # ディレクトリ形式の場合
+                    md_file_path = os.path.join(clippings_dir, citation_key, f"{citation_key}.md")
                 
-                if organize_status == ProcessStatus.COMPLETED:
-                    if citation_key not in clippings_papers:
-                        result['status_inconsistencies'].append({
-                            'citation_key': citation_key,
-                            'issue': 'organize_completed_but_no_directory',
-                            'description': f'Organize completed but {citation_key}/ directory missing'
-                        })
+                orphaned_in_clippings.append({
+                    'citation_key': citation_key,
+                    'file_path': md_file_path
+                })
             
-            total_issues = (
-                len(result['missing_directories']) +
-                len(result['orphaned_directories']) +
-                len(result['status_inconsistencies'])
-            )
+            # 整合性の判定
+            consistent = len(missing_in_clippings) == 0 and len(orphaned_in_clippings) == 0
             
-            self.logger.info(f"Status consistency check completed: {total_issues} issues found")
+            result = {
+                'consistent': consistent,
+                'valid_papers': valid_papers,
+                'edge_case_details': {
+                    'missing_in_clippings': missing_in_clippings,
+                    'orphaned_in_clippings': orphaned_in_clippings
+                }
+            }
+            
+            total_issues = len(missing_in_clippings) + len(orphaned_in_clippings)
+            
+            self.logger.info(f"Status consistency check completed: {total_issues} issues found, {len(valid_papers)} valid papers")
             return result
             
         except Exception as e:
             self.logger.error(f"Status consistency check failed: {e}")
             return {
-                'missing_directories': [],
-                'orphaned_directories': [],
-                'status_inconsistencies': [],
+                'consistent': False,
+                'valid_papers': [],
+                'edge_case_details': {
+                    'missing_in_clippings': [],
+                    'orphaned_in_clippings': []
+                },
                 'error': str(e)
             }
     

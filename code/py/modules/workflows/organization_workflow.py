@@ -8,6 +8,9 @@ BibTeX解析からMarkdownファイル検索、ファイル照合、整理実行
 import logging
 from typing import Dict, List, Any, Tuple, Optional
 from pathlib import Path
+import os
+import sys
+import tempfile
 
 from ..shared.bibtex_parser import BibTeXParser
 from ..shared.utils import ProgressTracker, confirm_action
@@ -39,7 +42,7 @@ class OrganizationWorkflow:
         )
         self.markdown_manager = MarkdownManager(
             clippings_dir=self.config.get('clippings_dir'),
-            backup_dir=self.config.get('backup_dir', './backups/')
+            backup_dir=self.config.get('backup_dir', (os.path.join(tempfile.gettempdir(), 'ObsClippingsManager_Test', 'backups') if ('unittest' in sys.modules or 'pytest' in sys.modules) else './backups/'))
         )
         self.directory_organizer = DirectoryOrganizer(
             base_dir=self.config.get('clippings_dir')

@@ -1,8 +1,3 @@
----
-description: 
-globs: 
-alwaysApply: true
----
 # ObsClippingsManager 開発ルール
 
 ## AI開発アシスタント向けガイドライン
@@ -97,4 +92,3 @@ uv run python -m unittest [テストクラス]
 ---
 
 **重要**: TDD必須、テスト100%成功維持
-

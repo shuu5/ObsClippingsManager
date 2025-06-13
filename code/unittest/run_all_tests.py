@@ -7,6 +7,7 @@ ObsClippingsManager 単体テストランナー
 
 import unittest
 import sys
+import os
 from pathlib import Path
 import logging
 
@@ -23,7 +24,6 @@ import test_shared_utils
 import test_shared_logger
 import test_shared_exceptions
 import test_citation_fetcher
-
 import test_workflow_manager
 import test_rename_mkdir_citation_key
 import test_ai_citation_support
@@ -31,12 +31,14 @@ import test_ai_tagging
 import test_abstract_translation
 import test_main_cli
 
-
 def run_all_tests():
     """全テストを実行する"""
     
     # ログレベルを設定（テスト中のノイズを減らす）
-    logging.basicConfig(level=logging.WARNING)
+    logging.basicConfig(
+        level=logging.WARNING,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
     
     # テストスイートを作成
     test_suite = unittest.TestSuite()
@@ -49,7 +51,6 @@ def run_all_tests():
         test_shared_logger,
         test_shared_exceptions,
         test_citation_fetcher,
-        
         test_workflow_manager,
         test_rename_mkdir_citation_key,
         test_ai_citation_support,
@@ -59,10 +60,15 @@ def run_all_tests():
     ]
     
     for module in test_modules:
-        # モジュール内のすべてのテストクラスを自動検出
-        loader = unittest.TestLoader()
-        suite = loader.loadTestsFromModule(module)
-        test_suite.addTest(suite)
+        try:
+            # モジュール内のすべてのテストクラスを自動検出
+            loader = unittest.TestLoader()
+            suite = loader.loadTestsFromModule(module)
+            test_suite.addTest(suite)
+            print(f"✅ モジュール {module.__name__} のテストを追加しました")
+        except Exception as e:
+            print(f"❌ モジュール {module.__name__} のテスト追加に失敗: {str(e)}")
+            raise
     
     # テストランナーを作成して実行
     runner = unittest.TextTestRunner(
@@ -72,44 +78,54 @@ def run_all_tests():
         failfast=False
     )
     
-    print("=" * 70)
+    print("\n" + "=" * 70)
     print("ObsClippingsManager 単体テスト実行開始")
     print("=" * 70)
     
     # テスト実行
-    result = runner.run(test_suite)
-    
-    # 結果サマリー
-    print("\n" + "=" * 70)
-    print("テスト実行結果サマリー")
-    print("=" * 70)
-    
-    print(f"実行テスト数: {result.testsRun}")
-    print(f"成功: {result.testsRun - len(result.failures) - len(result.errors)}")
-    print(f"失敗: {len(result.failures)}")
-    print(f"エラー: {len(result.errors)}")
-    print(f"スキップ: {len(result.skipped) if hasattr(result, 'skipped') else 0}")
-    
-    # 失敗の詳細
-    if result.failures:
-        print("\n失敗したテスト:")
-        for test, traceback in result.failures:
-            print(f"  - {test}")
-    
-    # エラーの詳細
-    if result.errors:
-        print("\nエラーが発生したテスト:")
-        for test, traceback in result.errors:
-            print(f"  - {test}")
-    
-    # 全体的な成功/失敗判定
-    if result.wasSuccessful():
-        print("\n✅ すべてのテストが正常に完了しました！")
-        return 0
-    else:
-        print("\n❌ 一部のテストが失敗しました。")
+    try:
+        result = runner.run(test_suite)
+        
+        # 結果サマリー
+        print("\n" + "=" * 70)
+        print("テスト実行結果サマリー")
+        print("=" * 70)
+        
+        print(f"実行テスト数: {result.testsRun}")
+        print(f"成功: {result.testsRun - len(result.failures) - len(result.errors)}")
+        print(f"失敗: {len(result.failures)}")
+        print(f"エラー: {len(result.errors)}")
+        print(f"スキップ: {len(result.skipped) if hasattr(result, 'skipped') else 0}")
+        
+        # 失敗の詳細
+        if result.failures:
+            print("\n失敗したテスト:")
+            for test, traceback in result.failures:
+                print(f"\n❌ {test}")
+                print("-" * 50)
+                print(traceback)
+        
+        # エラーの詳細
+        if result.errors:
+            print("\nエラーが発生したテスト:")
+            for test, traceback in result.errors:
+                print(f"\n❌ {test}")
+                print("-" * 50)
+                print(traceback)
+        
+        # 全体的な成功/失敗判定
+        if result.wasSuccessful():
+            print("\n✅ すべてのテストが正常に完了しました！")
+            return 0
+        else:
+            print("\n❌ 一部のテストが失敗しました。")
+            return 1
+            
+    except Exception as e:
+        print(f"\n❌ テスト実行中に予期せぬエラーが発生しました: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
         return 1
-
 
 def run_specific_module_tests(module_name: str):
     """特定のモジュールのテストのみを実行する"""
@@ -119,7 +135,6 @@ def run_specific_module_tests(module_name: str):
         'bibtex': test_shared_bibtex_parser,
         'utils': test_shared_utils,
         'citation': test_citation_fetcher,
-
         'workflow': test_workflow_manager,
         'rename_mkdir_citation_key': test_rename_mkdir_citation_key,
         'ai_citation_support': test_ai_citation_support,
@@ -133,17 +148,31 @@ def run_specific_module_tests(module_name: str):
         print(f"利用可能なモジュール: {', '.join(module_mapping.keys())}")
         return 1
     
-    # 指定されたモジュールのテストを実行
-    loader = unittest.TestLoader()
-    suite = loader.loadTestsFromModule(module_mapping[module_name])
-    
-    runner = unittest.TextTestRunner(verbosity=2)
-    result = runner.run(suite)
-    
-    return 0 if result.wasSuccessful() else 1
-
+    try:
+        # 指定されたモジュールのテストを実行
+        loader = unittest.TestLoader()
+        suite = loader.loadTestsFromModule(module_mapping[module_name])
+        
+        runner = unittest.TextTestRunner(verbosity=2)
+        result = runner.run(suite)
+        
+        if result.wasSuccessful():
+            print(f"\n✅ モジュール {module_name} のテストが正常に完了しました！")
+            return 0
+        else:
+            print(f"\n❌ モジュール {module_name} のテストが失敗しました。")
+            return 1
+            
+    except Exception as e:
+        print(f"\n❌ モジュール {module_name} のテスト実行中にエラーが発生しました: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
+        return 1
 
 if __name__ == '__main__':
+    # 現在のディレクトリをプロジェクトルートに設定
+    os.chdir(project_root)
+    
     if len(sys.argv) > 1:
         # 特定のモジュールテストを実行
         module_name = sys.argv[1]

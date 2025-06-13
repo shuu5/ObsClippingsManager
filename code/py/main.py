@@ -58,17 +58,32 @@ def cli(ctx: Dict[str, Any], config: str, log_level: str, dry_run: bool, verbose
     """
     try:
         # 設定管理の初期化
-        config_manager = ConfigManager(config_file=config)
+        try:
+            config_manager = ConfigManager(config_file=config)
+        except ConfigError as e:
+            click.echo(f"❌ Initialization failed: {str(e)}", err=True)
+            sys.exit(1)
+        except Exception as e:
+            click.echo(f"❌ Initialization failed: {str(e)}", err=True)
+            sys.exit(1)
         
         # ロガーの初期化
-        logger = IntegratedLogger(
-            log_level=log_level,
-            console_output=True,
-            log_file="logs/obsclippings.log"
-        )
+        try:
+            logger = IntegratedLogger(
+                log_level=log_level,
+                console_output=True,
+                log_file="logs/obsclippings.log"
+            )
+        except Exception as e:
+            click.echo(f"❌ Initialization failed: {str(e)}", err=True)
+            sys.exit(1)
         
         # ワークフロー管理の初期化
-        workflow_manager = WorkflowManager(config_manager, logger)
+        try:
+            workflow_manager = WorkflowManager(config_manager, logger)
+        except Exception as e:
+            click.echo(f"❌ Initialization failed: {str(e)}", err=True)
+            sys.exit(1)
         
         # CLIコンテキストに共有オブジェクトを保存
         ctx['config_manager'] = config_manager
@@ -84,14 +99,13 @@ def cli(ctx: Dict[str, Any], config: str, log_level: str, dry_run: bool, verbose
                 click.echo("✓ Dry run mode enabled")
         
         # コマンドが指定されていない場合（テスト用）
-        # ctxはClick Contextオブジェクトにアクセスする必要があります
         click_ctx = click.get_current_context()
         if click_ctx.invoked_subcommand is None:
             if verbose:
                 click.echo("✓ CLI initialization completed successfully")
         
     except Exception as e:
-        click.echo(f"❌ Initialization failed: {e}", err=True)
+        click.echo(f"❌ Initialization failed: {str(e)}", err=True)
         sys.exit(1)
 
 

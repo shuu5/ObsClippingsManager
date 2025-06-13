@@ -59,6 +59,8 @@ class TestIntegratedWorkflowV3(unittest.TestCase):
         
         # 設定管理の初期化
         self.config_manager = ConfigManager()
+        # workspace_pathを明示的に設定してテンプレート置換を実行
+        self.config_manager.update_workspace_path(self.workspace_path)
         self.logger = IntegratedLogger()
         
         # IntegratedWorkflow初期化

@@ -7,6 +7,8 @@ from unittest.mock import Mock, patch, MagicMock
 import tempfile
 from pathlib import Path
 import sys
+import os
+import shutil
 
 # テスト対象モジュールをインポートするためのパス設定
 project_root = Path(__file__).parent.parent.parent
@@ -24,6 +26,9 @@ class TestWorkflowManager(unittest.TestCase):
     
     def setUp(self):
         """テストセットアップ"""
+        # 一時ディレクトリを作成
+        self.temp_dir = tempfile.mkdtemp()
+        
         # モックの設定
         self.mock_config_manager = Mock()
         self.mock_logger = Mock()
@@ -38,7 +43,8 @@ class TestWorkflowManager(unittest.TestCase):
         
         self.mock_config_manager.get_rename_mkdir_config.return_value = {
             'bibtex_file': 'test.bib',
-            'clippings_dir': './clippings/',
+            'clippings_dir': os.path.join(self.temp_dir, 'clippings'),
+            'backup_dir': os.path.join(self.temp_dir, 'backups'),
             'similarity_threshold': 0.8,
             'backup_enabled': True
         }
@@ -52,6 +58,12 @@ class TestWorkflowManager(unittest.TestCase):
                 self.mock_config_manager, 
                 self.mock_logger
             )
+    
+    def tearDown(self):
+        """テストクリーンアップ"""
+        # 一時ディレクトリを削除
+        if hasattr(self, 'temp_dir') and os.path.exists(self.temp_dir):
+            shutil.rmtree(self.temp_dir)
     
     def test_execute_citation_workflow_success(self):
         """Citation Workflow実行成功のテスト"""
@@ -457,7 +469,8 @@ class TestWorkflowIntegration(unittest.TestCase):
         }
         mock_config_manager.get_rename_mkdir_config.return_value = {
             'bibtex_file': 'test.bib',
-            'clippings_dir': './clippings/'
+            'clippings_dir': os.path.join(self.temp_dir, 'clippings'),
+            'backup_dir': os.path.join(self.temp_dir, 'backups')
         }
         
         mock_logger = Mock()

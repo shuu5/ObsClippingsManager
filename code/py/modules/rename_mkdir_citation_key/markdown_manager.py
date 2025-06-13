@@ -10,6 +10,7 @@ import logging
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 from datetime import datetime
+import sys
 
 from ..shared.utils import (
     safe_file_operation, 
@@ -24,19 +25,31 @@ from .exceptions import DirectoryOperationError
 class MarkdownManager:
     """Markdownファイル管理クラス"""
     
-    def __init__(self, clippings_dir: str, backup_dir: str = "./backups/"):
+    def __init__(self, clippings_dir: str, backup_dir: str = None):
         """
         Args:
             clippings_dir: Clippingsディレクトリパス
             backup_dir: バックアップディレクトリパス
         """
         self.clippings_dir = Path(clippings_dir)
+        if backup_dir is None:
+            if 'unittest' in sys.modules or 'pytest' in sys.modules:
+                import tempfile
+                temp_dir = tempfile.gettempdir()
+                backup_dir = os.path.join(temp_dir, 'ObsClippingsManager_Test', 'backups')
+            else:
+                backup_dir = "./backups/"
         self.backup_dir = Path(backup_dir)
         self.logger = logging.getLogger("ObsClippingsManager.RenameMkDir.MarkdownManager")
         
-        # ディレクトリが存在しない場合は作成
-        self.clippings_dir.mkdir(parents=True, exist_ok=True)
-        if backup_dir:
+        # {workspace_path}テンプレート文字列が含まれている場合はディレクトリ作成をスキップ
+        if "{workspace_path}" in str(self.clippings_dir):
+            self.logger.warning(f"Skipping clippings directory creation: template string detected in path: {self.clippings_dir}")
+        else:
+            # ディレクトリが存在しない場合は作成
+            self.clippings_dir.mkdir(parents=True, exist_ok=True)
+        
+        if "{workspace_path}" not in str(self.backup_dir):
             self.backup_dir.mkdir(parents=True, exist_ok=True)
     
     def get_markdown_files(self, root_only: bool = True) -> List[str]:
@@ -139,6 +152,11 @@ class MarkdownManager:
         destination_path = destination_dir / f"{citation_key}.md"
         
         try:
+            # {workspace_path}テンプレート文字列チェック
+            if "{workspace_path}" in str(destination_dir):
+                self.logger.warning(f"Skipping directory creation: template string detected in path: {destination_dir}")
+                return False
+            
             # ディレクトリ作成
             destination_dir.mkdir(parents=True, exist_ok=True)
             

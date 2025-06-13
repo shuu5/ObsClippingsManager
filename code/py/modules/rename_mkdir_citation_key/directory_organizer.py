@@ -27,6 +27,11 @@ class DirectoryOrganizer:
         self.base_dir = Path(base_dir)
         self.logger = logging.getLogger("ObsClippingsManager.RenameMkDir.DirectoryOrganizer")
         
+        # {workspace_path}テンプレート文字列が含まれている場合はディレクトリ作成をスキップ
+        if "{workspace_path}" in str(self.base_dir):
+            self.logger.warning(f"Skipping directory creation: template string detected in path: {self.base_dir}")
+            return
+        
         # ベースディレクトリが存在しない場合は作成
         self.base_dir.mkdir(parents=True, exist_ok=True)
     
