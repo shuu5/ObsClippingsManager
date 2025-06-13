@@ -13,5 +13,8 @@ requests>=2.25.0          # HTTP requests for APIs
 # Data validation (optional but recommended)
 pydantic>=1.8.0           # Configuration validation
 
+# System monitoring for integrated testing
+psutil>=5.8.0             # System and process utilities
+
 # Path handling (for older Python versions)
 pathlib2>=2.3.7; python_version < "3.4" 

@@ -17,7 +17,7 @@
 - [完了] 1.2.1 ユニットテスト基盤構築（code/unittest/）
 - [完了] 1.2.2 テストユーティリティ作成
 - [完了] 1.2.3 統合テスト仕様書作成（integrated_testing_specification.md）
-- [ ] 1.2.4 統合テストシステム実装（code/integrated_test/, code/scripts/）
+- [完了] 1.2.4 統合テストシステム実装（code/integrated_test/, code/scripts/）
 - [ ] 1.2.5 テストデータ管理システム
 
 ### フェーズ2: 共通基盤モジュール（shared）
