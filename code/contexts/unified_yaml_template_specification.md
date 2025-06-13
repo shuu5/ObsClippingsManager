@@ -1,9 +1,9 @@
-# 統一YAMLテンプレート仕様書
+# YAML Template Manager 仕様書
 
 ## 概要
 - **責務**: 全モジュールが準拠すべきマスターYAML構造の定義と初期化テンプレート提供
-- **依存**: なし（基盤仕様）
-- **実行**: 各モジュール処理前に初期化実行
+- **依存**: 共有モジュール（ConfigManager, IntegratedLogger）
+- **実行**: 統合ワークフローで自動実行
 
 ## 設計原則
 
@@ -196,7 +196,7 @@ execution_summary:
 
 ### 1. **テンプレート初期化クラス**
 ```python
-class YAMLTemplateManager:
+class YAMLTemplateManagerWorkflow:
     def __init__(self, config_manager, logger):
         self.config_manager = config_manager
         self.logger = logger.get_logger('YAMLTemplateManager')

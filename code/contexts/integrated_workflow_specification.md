@@ -2,7 +2,7 @@
 
 ## 概要
 - **責務**: 全処理ステップを単一コマンドで実行する統合システム
-- **依存**: 全モジュール（統合制御）
+- **依存**: yaml_template_manager → 共有モジュール → 個別ワークフロー
 - **実行**: デフォルト有効（AI機能含む）
 
 ## 処理フロー図
@@ -10,37 +10,49 @@
 flowchart TD
     A["入力データ"] --> B["統合ワークフロー開始"]
     B --> C["設定・パス解決"]
-    C --> D["エッジケース検出"]
-    D --> E["処理対象論文決定"]
-    E --> F["基本ワークフロー実行"]
-    F --> G["AI機能有効性確認"]
-    G -->|有効| H["AI機能実行"]
-    G -->|無効| I["最終同期"]
-    H --> I
-    I --> J["結果出力"]
-    J --> K["完了"]
+    C --> D["yaml_template_manager初期化"]
+    D --> E["エッジケース検出"]
+    E --> F["処理対象論文決定"]
+    F --> G["基本ワークフロー実行"]
+    G --> H["AI機能有効性確認"]
+    H -->|有効| I["AI機能実行"]
+    H -->|無効| J["最終同期"]
+    I --> J
+    J --> K["結果出力"]
+    K --> L["完了"]
     
-    F -->|エラー| L["エラーハンドリング"]
-    H -->|API制限| M["レート制限処理"]
-    L --> N["バックアップ作成"]
-    M --> H
+    D -->|YAML不正| M["YAML修復処理"]
+    G -->|エラー| N["エラーハンドリング"]
+    I -->|API制限| O["レート制限処理"]
+    M --> E
+    N --> P["バックアップ作成"]
+    O --> I
 ```
 
 ## モジュール関係図
 ```mermaid
 graph LR
-    A["統合ワークフロー"] --> B["基本機能"]
-    A --> C["AI引用解析"]
-    A --> D["セクション分割"]
-    A --> E["AIタグ付け"]
-    A --> F["要約翻訳"]
-    A --> G["落合フォーマット"]
-    A --> H["状態管理"]
+    A["統合ワークフロー"] --> B["yaml_template_manager"]
+    A --> C["基本機能"]
+    A --> D["AI引用解析"]
+    A --> E["セクション分割"]
+    A --> F["AIタグ付け"]
+    A --> G["要約翻訳"]
+    A --> H["落合フォーマット"]
+    A --> I["状態管理"]
     
-    I["設定ファイル"] -.-> A
-    J["ログシステム"] -.-> A
-    K["バックアップシステム"] -.-> A
-    L["Claude API"] -.-> A
+    B --> C
+    B --> D
+    B --> E
+    B --> F
+    B --> G
+    B --> H
+    B --> I
+    
+    J["設定ファイル"] -.-> A
+    K["ログシステム"] -.-> A
+    L["バックアップシステム"] -.-> A
+    M["Claude API"] -.-> A
 ```
 
 ## YAMLヘッダー形式
@@ -194,6 +206,11 @@ class IntegratedWorkflow:
     def __init__(self, config_manager, logger):
         self.config_manager = config_manager
         self.logger = logger.get_logger('IntegratedWorkflow')
+        
+        # YAML Template Manager
+        self.template_manager = YAMLTemplateManager(config_manager, logger)
+        
+        # 状態管理システム
         self.status_manager = StatusManager(config_manager, logger)
         
         # 各ワークフローモジュールを初期化

@@ -2,42 +2,47 @@
 
 ## 概要
 - **責務**: 学術論文の落合フォーマット6項目要約を自動生成
-- **依存**: ai_citation_support → section_parsing → tagger → translate_abstract
+- **依存**: yaml_template_manager → ai_citation_support → section_parsing → tagger → translate_abstract
 - **実行**: 統合ワークフローで自動実行
 
 ## 処理フロー図
 ```mermaid
 flowchart TD
     A["入力データ"] --> B["落合フォーマット処理開始"]
-    B --> C["データ検証"]
-    C --> D["論文内容抽出"]
-    D --> E["AIプロンプト構築"]
-    E --> F["Claude API要約生成"]
-    F --> G["応答解析"]
-    G --> H["結果出力"]
-    H --> I["完了"]
+    B --> C["yaml_template_manager構造確認"]
+    C --> D["データ検証"]
+    D --> E["論文内容抽出"]
+    E --> F["AIプロンプト構築"]
+    F --> G["Claude API要約生成"]
+    G --> H["応答解析"]
+    H --> I["YAML ai_content.ochiai_format セクション更新"]
+    I --> J["結果出力"]
+    J --> K["完了"]
     
-    C -->|エラー| J["エラーハンドリング"]
-    F -->|API制限| K["レート制限処理"]
-    G -->|構造エラー| L["再試行"]
-    J --> M["失敗ログ記録"]
-    K --> F
-    L --> F
+    C -->|構造不正| L["統一テンプレート修復"]
+    D -->|エラー| M["エラーハンドリング"]
+    G -->|API制限| N["レート制限処理"]
+    H -->|構造エラー| O["再試行"]
+    L --> D
+    M --> P["失敗ログ記録"]
+    N --> G
+    O --> G
 ```
 
 ## モジュール関係図
 ```mermaid
 graph LR
-    A["AI引用解析"] --> B["落合フォーマット"]
-    C["セクション分割"] --> B
-    D["AIタグ付け"] --> B
-    E["要約翻訳"] --> B
+    A["yaml_template_manager"] --> B["落合フォーマット"]
+    C["AI引用解析"] --> B
+    D["セクション分割"] --> B
+    E["AIタグ付け"] --> B
+    F["要約翻訳"] --> B
     
-    F["設定ファイル"] -.-> B
-    G["ログシステム"] -.-> B
-    H["Claude API"] -.-> B
+    G["設定ファイル"] -.-> B
+    H["ログシステム"] -.-> B
+    I["Claude API"] -.-> B
     
-    B --> I["統合ワークフロー"]
+    B --> J["統合ワークフロー"]
 ```
 
 ## YAMLヘッダー形式
