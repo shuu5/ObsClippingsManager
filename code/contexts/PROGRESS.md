@@ -115,7 +115,7 @@ code/py/modules/
 ```
 
 #### 2.2 ステップ2: sync（同期チェック）
-- [ ] 2.2.1 SyncCheckerクラス設計・テスト作成
+- [進行中] 2.2.1 SyncCheckerクラス設計・テスト作成
 - [ ] 2.2.2 BibTeX ↔ Clippings整合性チェック実装
 - [ ] 2.2.3 エッジケース検出機能実装
 - [ ] 2.2.4 不整合レポート生成機能実装
@@ -129,6 +129,13 @@ code/py/modules/
   ```
 
 #### 2.3 ステップ3: fetch（引用文献取得）
+- [完了] 2.3.0 **fetch機能仕様書作成** (`code/contexts/citation_fetcher_specification.md`)
+  - 三段階フォールバックAPI戦略仕様（CrossRef → Semantic Scholar → OpenCitations）
+  - レート制限管理（10req/sec, 1req/sec, 5req/sec）
+  - 品質閾値システム（0.8, 0.7, 0.5）
+  - references.bib生成仕様
+  - YAMLヘッダー統合仕様
+  - API統計・エラーハンドリング仕様
 - [ ] 2.3.1 BibTexParserクラス機能拡張（DOI抽出）
 - [ ] 2.3.2 CitationFetcherクラス再設計・テスト作成
 - [ ] 2.3.3 CrossRef API連携実装（10req/sec、品質閾値0.8）
