@@ -72,10 +72,10 @@
 - [完了] 4.1.4 BibTeX検証・修復機能
 
 #### 4.2 API連携
-- [進行中] 4.2.1 CitationFetcherクラス設計・テスト作成
-- [ ] 4.2.2 CrossRef API連携実装
-- [ ] 4.2.3 OpenCitations API連携実装
-- [ ] 4.2.4 API レート制限・エラーハンドリング
+- [完了] 4.2.1 CitationFetcherクラス設計・テスト作成
+- [完了] 4.2.2 CrossRef API連携実装
+- [完了] 4.2.3 OpenCitations API連携実装
+- [完了] 4.2.4 API レート制限・エラーハンドリング
 
 #### 4.3 引用データ処理
 - [ ] 4.3.1 引用文献データ正規化機能
