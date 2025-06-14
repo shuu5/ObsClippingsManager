@@ -1359,3 +1359,224 @@
 2025-06-14 00:15:26,665 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
 2025-06-14 00:15:26,668 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
 2025-06-14 00:15:26,669 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 00:17:06,253 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,253 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,254 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 00:17:06,257 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 00:17:06,258 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 00:17:06,262 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 00:17:06,263 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 00:17:06,265 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,265 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,267 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,268 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,269 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,269 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,272 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,272 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,276 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,276 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,278 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,278 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,278 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 00:17:06,280 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,280 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,281 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 00:17:06,284 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,284 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,286 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,286 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,289 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,289 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,293 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,293 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,294 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 00:17:06,298 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 00:17:06,301 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,301 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,303 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,303 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,305 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,305 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:17:06,344 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,345 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 00:17:06,349 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 00:17:06,354 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 00:17:06,359 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 00:17:06,359 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 00:17:06,362 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:17:06,363 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 00:18:52,113 [INFO] test_environment_manager: TestEnvironmentManager initialized
+2025-06-14 00:18:52,114 [INFO] test_data_manager: TestDataManager initialized
+2025-06-14 00:18:52,114 [INFO] workflow_validator: WorkflowValidator initialized
+2025-06-14 00:18:52,114 [INFO] result_analyzer: ResultAnalyzer initialized
+2025-06-14 00:18:52,114 [INFO] integrated_test_runner: IntegratedTestRunner initialized
+2025-06-14 00:18:52,114 [INFO] integrated_test_runner: Starting full integration test
+2025-06-14 00:18:52,114 [INFO] test_environment_manager: Creating isolated environment for session: integration_test_20250614_001852_dc11257b
+2025-06-14 00:18:52,116 [INFO] test_environment_manager: Isolated environment created: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250614_001852_dc11257b
+2025-06-14 00:18:52,116 [INFO] test_data_manager: Setting up test data for workspace: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250614_001852_dc11257b
+2025-06-14 00:18:52,116 [INFO] test_data_manager: Creating backup of original data
+2025-06-14 00:18:52,116 [INFO] test_data_manager: Original data backup completed
+2025-06-14 00:18:52,117 [INFO] test_data_manager: Copying test data from master
+2025-06-14 00:18:52,117 [INFO] test_data_manager: Copied CurrentManuscript.bib
+2025-06-14 00:18:52,120 [INFO] test_data_manager: Copied Clippings directory
+2025-06-14 00:18:52,120 [INFO] test_data_manager: Test data copy completed
+2025-06-14 00:18:52,120 [INFO] test_data_manager: Validating test data
+2025-06-14 00:18:52,121 [INFO] test_data_manager: Test data validation passed
+2025-06-14 00:18:52,121 [INFO] test_data_manager: Test data setup completed
+2025-06-14 00:18:52,121 [INFO] integrated_test_runner: Executing integrated workflow in /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250614_001852_dc11257b
+2025-06-14 00:18:52,121 [INFO] workflow_validator: Validating processing results in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250614_001852_dc11257b
+2025-06-14 00:18:52,121 [INFO] workflow_validator: Validating YAML headers in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250614_001852_dc11257b/Clippings
+2025-06-14 00:18:52,122 [INFO] workflow_validator: YAML header validation: 3/3 files valid
+2025-06-14 00:18:52,123 [INFO] workflow_validator: Validating file structure in: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250614_001852_dc11257b
+2025-06-14 00:18:52,123 [INFO] workflow_validator: File structure validation: PASSED
+2025-06-14 00:18:52,123 [INFO] workflow_validator: Validating citation data
+2025-06-14 00:18:52,123 [INFO] workflow_validator: Citation data validation: PASSED
+2025-06-14 00:18:52,123 [INFO] workflow_validator: Validation completed: PASSED
+2025-06-14 00:18:52,123 [INFO] result_analyzer: Analyzing test results
+2025-06-14 00:18:52,124 [INFO] result_analyzer: Detailed report generated: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250614_001852_dc11257b/reports/test_analysis_report.json
+2025-06-14 00:18:52,124 [INFO] result_analyzer: Test result analysis completed
+2025-06-14 00:18:52,125 [INFO] test_environment_manager: Cleaning up environment: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250614_001852_dc11257b
+2025-06-14 00:18:52,125 [INFO] test_environment_manager: Environment cleanup completed: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250614_001852_dc11257b
+2025-06-14 00:18:52,126 [INFO] integrated_test_runner: Full integration test completed successfully: integration_test_20250614_001852_dc11257b
+2025-06-14 00:19:38,035 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,035 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,036 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 00:19:38,040 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 00:19:38,041 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 00:19:38,046 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 00:19:38,046 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 00:19:38,049 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,049 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,051 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,051 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,054 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,054 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,056 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,056 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,059 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,059 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,061 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,061 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,061 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 00:19:38,064 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,064 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,064 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 00:19:38,067 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,067 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,069 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,070 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,072 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,072 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,076 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,076 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,077 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 00:19:38,082 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 00:19:38,085 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,085 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,087 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,088 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,090 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,090 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:19:38,131 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,132 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 00:19:38,137 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 00:19:38,141 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 00:19:38,146 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 00:19:38,146 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 00:19:38,149 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:19:38,150 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 00:21:41,819 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,819 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,821 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 00:21:41,845 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 00:21:41,846 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 00:21:41,851 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 00:21:41,852 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 00:21:41,856 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,856 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,859 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,859 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,862 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,862 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,865 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,865 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,868 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,868 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,871 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,872 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,872 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 00:21:41,874 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,875 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,875 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 00:21:41,877 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,877 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,880 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,881 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,884 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,884 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,888 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,888 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,889 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 00:21:41,895 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 00:21:41,897 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,897 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,900 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,901 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,903 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,903 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 00:21:41,954 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,955 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 00:21:41,962 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 00:21:41,967 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 00:21:41,972 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 00:21:41,973 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 00:21:41,976 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 00:21:41,977 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 01:12:34,301 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,302 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,303 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 01:12:34,307 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 01:12:34,309 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 01:12:34,312 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 01:12:34,313 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 01:12:34,316 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,316 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,318 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,318 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,321 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,321 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,323 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,323 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,325 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,325 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,327 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,327 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,327 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 01:12:34,329 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,329 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,329 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 01:12:34,331 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,331 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,334 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,334 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,336 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,336 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,339 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,339 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,340 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 01:12:34,345 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 01:12:34,347 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,347 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,349 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,350 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,352 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,352 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 01:12:34,394 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,395 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 01:12:34,400 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 01:12:34,405 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 01:12:34,409 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 01:12:34,410 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 01:12:34,417 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 01:12:34,419 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
