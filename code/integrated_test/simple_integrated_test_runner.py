@@ -150,6 +150,46 @@ class SimpleIntegratedTestRunner:
                 self.logger.error(traceback.format_exc())
             
             # 他の実装済み機能があれば順次追加
+            # sync機能（SyncChecker）
+            try:
+                self.logger.info("Attempting to import SyncChecker")
+                from code.py.modules.sync_checker.sync_checker import SyncChecker
+                self.logger.info("SyncChecker imported successfully")
+                
+                sync_checker = SyncChecker(self.config_manager, self.integrated_logger)
+                self.logger.info("SyncChecker initialized")
+                
+                if bibtex_file.exists() and clippings_dir.exists():
+                    self.logger.info("Starting sync consistency check")
+                    sync_result = sync_checker.check_workspace_consistency(
+                        str(workspace_path),
+                        str(bibtex_file),
+                        str(clippings_dir)
+                    )
+                    self.logger.info(f"Sync consistency check completed: {sync_result.get('consistency_status')}")
+                    modules_executed.append('sync_checker')
+                    
+                    # DOIリンク表示
+                    missing_papers = sync_result.get('missing_markdown_files', [])
+                    orphaned_papers = sync_result.get('orphaned_markdown_files', [])
+                    if missing_papers or orphaned_papers:
+                        sync_checker.display_doi_links(missing_papers, orphaned_papers)
+                    
+                    # 自動修正の実行（設定で有効な場合）
+                    if sync_result.get('issues_detected', 0) > 0:
+                        self.logger.info("Attempting auto-fix for detected issues")
+                        fix_result = sync_checker.auto_fix_minor_inconsistencies(sync_result)
+                        if fix_result.get('auto_fix_successful', False):
+                            corrections_applied = len(fix_result.get('corrections_applied', []))
+                            self.logger.info(f"Auto-fix completed: {corrections_applied} corrections applied")
+                
+            except ImportError as e:
+                self.logger.warning(f"SyncChecker ImportError: {e}")
+            except Exception as e:
+                self.logger.error(f"Error in sync processing: {e}")
+                import traceback
+                self.logger.error(traceback.format_exc())
+            
             # TODO: 新しいモジュールが実装されたら追加
             
             return {

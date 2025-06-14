@@ -115,27 +115,44 @@ code/py/modules/
 ```
 
 #### 2.2 ステップ2: sync（同期チェック）
-- [進行中] 2.2.1 SyncCheckerクラス設計・テスト作成
-- [ ] 2.2.2 BibTeX ↔ Clippings整合性チェック実装
-- [ ] 2.2.3 エッジケース検出機能実装
-- [ ] 2.2.4 不整合レポート生成機能実装
-- [ ] 2.2.5 自動修正提案機能実装
-- [ ] 2.2.6 ユニットテスト実行・全テスト成功確認
-- [ ] 2.2.7 **sync機能統合テスト実行**
+- [完了] 2.2.1 SyncCheckerクラス設計・テスト作成
+- [完了] 2.2.2 BibTeX ↔ Clippings整合性チェック実装
+- [完了] 2.2.3 エッジケース検出機能実装
+- [完了] 2.2.4 不整合レポート生成機能実装
+- [完了] 2.2.5 自動修正提案機能実装
+- [完了] 2.2.6 ユニットテスト実行・全テスト成功確認
+- [完了] 2.2.7 **DOIリンク表示機能追加**
+  - 不足Markdown（BibTeXにあるがMarkdownなし）のDOIリンク表示
+  - 孤立Markdown（MarkdownにあるがBibTeXなし）のDOIリンク表示
+  - ターミナル表示の視覚的改善（ボックス形式）
+  - 推奨アクション表示機能
+  
+  **実装完了**: 
+  - `display_doi_links()` メソッド追加
+  - 統合ワークフローに組み込み完了
+  - 3つの新規テストケース追加
+  - 美しいボックス形式でのDOIリンク表示確認済み
+- [完了] 2.2.8 **sync機能統合テスト実行**
   ```bash
   # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
   uv run python code/scripts/run_integrated_test.py
   ```
+  
+  **テスト結果**:
+  - 不足Markdownファイル: 2件（lennartzM2023APMIS, liQ2016Oncotarget）
+  - 孤立Markdownファイル: 1件（Keratin Profiling by Single-Cell...）正しく検出
+  - citation_keyマッチング問題を修正完了
+  
+  **問題修正**:
+  - SyncCheckerの`_find_markdown_files`メソッドを修正
+  - ディレクトリ名ではなくYAMLヘッダーからcitation_keyを読み取るよう改善
+  - ピリオド→アンダースコア変換による誤検出を解決
+  - Clippingsディレクトリ直下の孤立ファイル検索機能を追加
+  
+  **検証結果**: sync機能が正確に動作し、不足・孤立Markdownファイルを完全に検出
 
 #### 2.3 ステップ3: fetch（引用文献取得）
-- [完了] 2.3.0 **fetch機能仕様書作成** (`code/contexts/citation_fetcher_specification.md`)
-  - 三段階フォールバックAPI戦略仕様（CrossRef → Semantic Scholar → OpenCitations）
-  - レート制限管理（10req/sec, 1req/sec, 5req/sec）
-  - 品質閾値システム（0.8, 0.7, 0.5）
-  - references.bib生成仕様
-  - YAMLヘッダー統合仕様
-  - API統計・エラーハンドリング仕様
 - [ ] 2.3.1 BibTexParserクラス機能拡張（DOI抽出）
 - [ ] 2.3.2 CitationFetcherクラス再設計・テスト作成
 - [ ] 2.3.3 CrossRef API連携実装（10req/sec、品質閾値0.8）

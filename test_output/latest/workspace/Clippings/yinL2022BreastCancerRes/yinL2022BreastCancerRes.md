@@ -2,10 +2,17 @@
 citation_key: yinL2022BreastCancerRes
 created: 2025-06-09
 doi: 10.1186/s13058-022-01502-6
-last_updated: '2025-06-14T16:14:10.037357'
+last_updated: '2025-06-14T17:09:14.556653'
 processing_status:
   organize: completed
+  sync: completed
 source: https://breast-cancer-research.biomedcentral.com/articles/10.1186/s13058-022-01502-6
+sync_metadata:
+  auto_corrections_applied: 0
+  checked_at: '2025-06-14T17:09:14.600738'
+  consistency_status: validated
+  corrections_applied: []
+  issues_detected: 0
 title: KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobin/c-Myc
   signaling pathway
 workflow_version: '3.2'

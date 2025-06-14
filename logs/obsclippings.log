@@ -2437,3 +2437,847 @@ TypeError: BackupManager.__init__() takes from 1 to 2 positional arguments but 3
 2025-06-14 16:14:10,047 [WARNING] integrated_test: Missing markdown files: 2
 2025-06-14 16:14:10,047 [WARNING] integrated_test: Orphaned markdown files: 1
 2025-06-14 16:14:10,048 [INFO] integrated_test: 統合テスト完了
+2025-06-14 16:16:41,567 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,568 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,570 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:16:41,576 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 16:16:41,578 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:16:41,584 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 16:16:41,585 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 16:16:41,588 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,588 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,592 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,593 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,598 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,598 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,604 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,605 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,608 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,608 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,611 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,611 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,612 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:16:41,615 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,616 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,616 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:16:41,618 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,619 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,623 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,624 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,628 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,629 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,632 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,633 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,635 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:16:41,642 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 16:16:41,645 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,645 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,647 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,647 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,651 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,652 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:16:41,714 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,715 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:16:41,720 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 16:16:41,727 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 16:16:41,734 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 16:16:41,734 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 16:16:41,738 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:16:41,740 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:39:52,791 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,791 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,792 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:39:52,798 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 16:39:52,800 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:39:52,808 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 16:39:52,809 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 16:39:52,813 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,813 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,818 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,818 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,821 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,821 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,824 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,824 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,828 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,829 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,831 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,831 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,831 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:39:52,834 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,834 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,834 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:39:52,839 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,840 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,845 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,846 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,850 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,850 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,858 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,858 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,859 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:39:52,863 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 16:39:52,868 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,868 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,875 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,875 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,882 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,882 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:39:52,953 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,954 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:39:52,959 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 16:39:52,968 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 16:39:52,976 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 16:39:52,977 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 16:39:52,982 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:39:52,982 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:46:10,718 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,720 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,723 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:46:10,728 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 16:46:10,730 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:46:10,735 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 16:46:10,736 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 16:46:10,740 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,740 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,743 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,743 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,747 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,747 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,751 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,751 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,755 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,755 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,757 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,758 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,758 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:46:10,761 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,761 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,761 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:46:10,765 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,765 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,769 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,769 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,773 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,773 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,777 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,778 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,784 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:46:10,790 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 16:46:10,793 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,793 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,797 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,797 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,802 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,802 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:46:10,868 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,870 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:46:10,876 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 16:46:10,881 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 16:46:10,888 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 16:46:10,888 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 16:46:10,891 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:10,892 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:46:49,118 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 16:46:49,253 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 16:46:49,257 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:46:49,257 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 16:46:49,257 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 16:46:49,258 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 16:46:49,258 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 16:46:49,258 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 16:46:49,277 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:46:49,277 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 16:46:49,279 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 16:46:49,279 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 16:46:49,279 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 16:46:49,289 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 16:46:49,289 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 16:46:49,295 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 16:46:49,296 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 16:46:49,296 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 16:46:49,296 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 16:46:49,296 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 16:46:49,296 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}, {'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.016647}
+2025-06-14 16:46:49,296 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 16:46:49,296 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 16:46:49,298 [INFO] integrated_test: 統合テスト完了
+2025-06-14 16:47:32,615 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 16:47:32,758 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 16:47:32,764 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:47:32,764 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 16:47:32,764 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 16:47:32,765 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 16:47:32,765 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 16:47:32,765 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 16:47:32,781 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:47:32,782 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 16:47:32,784 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 16:47:32,785 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 16:47:32,785 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 16:47:32,800 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 16:47:32,800 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 16:47:32,807 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 16:47:32,808 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 16:47:32,808 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 16:47:32,808 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 16:47:32,809 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 16:47:32,809 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}, {'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.023706}
+2025-06-14 16:47:32,809 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 16:47:32,809 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 16:47:32,810 [INFO] integrated_test: 統合テスト完了
+2025-06-14 16:48:21,618 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 16:48:21,765 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 16:48:21,771 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:48:21,772 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 16:48:21,772 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 16:48:21,773 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 16:48:21,773 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 16:48:21,773 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 16:48:21,792 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:48:21,792 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 16:48:21,795 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 16:48:21,795 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 16:48:21,795 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 16:48:21,808 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 16:48:21,808 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 16:48:21,814 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 16:48:21,815 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 16:48:21,815 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 16:48:21,815 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 16:48:21,815 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 16:48:21,815 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}, {'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.019739}
+2025-06-14 16:48:21,816 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 16:48:21,816 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 16:48:21,817 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-14 16:48:21,818 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-14 16:48:21,821 [ERROR] integrated_test: Error in sync processing: 'IntegratedLogger' object has no attribute 'debug'
+2025-06-14 16:48:21,823 [ERROR] integrated_test: Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 90, in _run_integrated_workflow
+    from code.py.modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
+ModuleNotFoundError: No module named 'code.py.modules.integrated_workflow'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 159, in _run_integrated_workflow
+    sync_checker = SyncChecker(self.config_manager, self.integrated_logger)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/proj/ObsClippingsManager/code/py/modules/sync_checker/sync_checker.py", line 71, in __init__
+    self.bibtex_parser = BibTeXParser(logger)
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/proj/ObsClippingsManager/code/py/modules/shared_modules/bibtex_parser.py", line 53, in __init__
+    self.logger.debug("BibTeXParser initialized successfully")
+    ^^^^^^^^^^^^^^^^^
+AttributeError: 'IntegratedLogger' object has no attribute 'debug'
+
+2025-06-14 16:48:21,825 [INFO] integrated_test: 統合テスト完了
+2025-06-14 16:48:49,485 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 16:48:49,606 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 16:48:49,611 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:48:49,612 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 16:48:49,612 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 16:48:49,612 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 16:48:49,612 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 16:48:49,612 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 16:48:49,626 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:48:49,626 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 16:48:49,628 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 16:48:49,629 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 16:48:49,629 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 16:48:49,637 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 16:48:49,638 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 16:48:49,643 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 16:48:49,643 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 16:48:49,643 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 16:48:49,643 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 16:48:49,643 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 16:48:49,643 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.014512}
+2025-06-14 16:48:49,644 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 16:48:49,644 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 16:48:49,644 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-14 16:48:49,648 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-14 16:48:49,650 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:48:49,650 [ERROR] integrated_test: Error in sync processing: 'ConfigManager' object has no attribute 'get'
+2025-06-14 16:48:49,652 [ERROR] integrated_test: Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 90, in _run_integrated_workflow
+    from code.py.modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
+ModuleNotFoundError: No module named 'code.py.modules.integrated_workflow'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 159, in _run_integrated_workflow
+    sync_checker = SyncChecker(self.config_manager, self.integrated_logger)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/proj/ObsClippingsManager/code/py/modules/sync_checker/sync_checker.py", line 76, in __init__
+    self.sync_config = self.config_manager.get('sync_checker', {
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ConfigManager' object has no attribute 'get'
+
+2025-06-14 16:48:49,653 [INFO] integrated_test: 統合テスト完了
+2025-06-14 16:49:24,164 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 16:49:24,333 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 16:49:24,339 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:24,339 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 16:49:24,339 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 16:49:24,340 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 16:49:24,340 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 16:49:24,340 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 16:49:24,360 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:49:24,361 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 16:49:24,365 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 16:49:24,365 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 16:49:24,365 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 16:49:24,371 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 16:49:24,372 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 16:49:24,378 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 16:49:24,379 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 16:49:24,379 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 16:49:24,379 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 16:49:24,380 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 16:49:24,380 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.014281}
+2025-06-14 16:49:24,381 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 16:49:24,381 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 16:49:24,381 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-14 16:49:24,387 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-14 16:49:24,390 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:24,390 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-14 16:49:24,390 [INFO] integrated_test: SyncChecker initialized
+2025-06-14 16:49:24,390 [INFO] integrated_test: Starting sync consistency check
+2025-06-14 16:49:24,390 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-14 16:49:24,410 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:49:24,410 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-14 16:49:24,410 [INFO] SyncChecker: Found 2 organized markdown files
+2025-06-14 16:49:24,418 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-14 16:49:24,418 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-14 16:49:24,418 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-14 16:49:24,419 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-14 16:49:24,419 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-14 16:49:24,419 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-14 16:49:24,419 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-14 16:49:24,422 [INFO] integrated_test: 統合テスト完了
+2025-06-14 16:49:52,505 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,506 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,507 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:49:52,514 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 16:49:52,516 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:49:52,521 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 16:49:52,523 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 16:49:52,525 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,526 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,529 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,529 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,533 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,534 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,537 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,537 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,540 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,540 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,545 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,545 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,545 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:49:52,549 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,550 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,550 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:49:52,554 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,554 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,558 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,559 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,562 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,563 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,567 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,568 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,571 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:49:52,578 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 16:49:52,581 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,581 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,584 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,584 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,587 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,588 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:49:52,651 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,653 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:49:52,660 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 16:49:52,667 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 16:49:52,674 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 16:49:52,674 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 16:49:52,679 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:49:52,681 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:50:46,391 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,392 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,395 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:50:46,401 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 16:50:46,403 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:50:46,410 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 16:50:46,411 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 16:50:46,418 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,418 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,421 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,422 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,426 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,426 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,429 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,429 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,432 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,432 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,435 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,435 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,435 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:50:46,439 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,439 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,439 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:50:46,443 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,443 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,448 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,448 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,454 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,454 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,457 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,458 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,458 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:50:46,465 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 16:50:46,471 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,472 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,475 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,476 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,479 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,480 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:50:46,543 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,544 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:50:46,552 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 16:50:46,559 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 16:50:46,565 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 16:50:46,565 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 16:50:46,571 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:50:46,573 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:51:59,209 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 16:51:59,395 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 16:51:59,400 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:51:59,401 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 16:51:59,401 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 16:51:59,401 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 16:51:59,401 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 16:51:59,401 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 16:51:59,428 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:51:59,428 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 16:51:59,432 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 16:51:59,433 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 16:51:59,433 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 16:51:59,442 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 16:51:59,442 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 16:51:59,450 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 16:51:59,450 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 16:51:59,450 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 16:51:59,450 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 16:51:59,451 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 16:51:59,451 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.0178}
+2025-06-14 16:51:59,451 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 16:51:59,451 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 16:51:59,451 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-14 16:51:59,452 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-14 16:51:59,455 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:51:59,456 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-14 16:51:59,456 [INFO] integrated_test: SyncChecker initialized
+2025-06-14 16:51:59,456 [INFO] integrated_test: Starting sync consistency check
+2025-06-14 16:51:59,456 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-14 16:51:59,481 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:51:59,481 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-14 16:51:59,481 [INFO] SyncChecker: Found 2 organized markdown files
+2025-06-14 16:51:59,490 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-14 16:51:59,490 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-14 16:51:59,491 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-14 16:51:59,492 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-14 16:51:59,492 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-14 16:51:59,492 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-14 16:51:59,492 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-14 16:51:59,494 [INFO] integrated_test: 統合テスト完了
+2025-06-14 16:56:56,349 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 16:56:56,495 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 16:56:56,502 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:56:56,503 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 16:56:56,503 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 16:56:56,503 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 16:56:56,503 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 16:56:56,503 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 16:56:56,526 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:56:56,527 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 16:56:56,531 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 16:56:56,531 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 16:56:56,531 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 16:56:56,540 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 16:56:56,541 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 16:56:56,551 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 16:56:56,551 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 16:56:56,551 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 16:56:56,551 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 16:56:56,552 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 16:56:56,552 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}, {'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.020432}
+2025-06-14 16:56:56,553 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 16:56:56,554 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 16:56:56,554 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-14 16:56:56,556 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-14 16:56:56,561 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:56:56,561 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-14 16:56:56,561 [INFO] integrated_test: SyncChecker initialized
+2025-06-14 16:56:56,561 [INFO] integrated_test: Starting sync consistency check
+2025-06-14 16:56:56,561 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-14 16:56:56,580 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:56:56,580 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-14 16:56:56,580 [INFO] SyncChecker: Found 2 organized markdown files
+2025-06-14 16:56:56,586 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-14 16:56:56,586 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-14 16:56:56,589 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-14 16:56:56,589 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-14 16:56:56,589 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-14 16:56:56,589 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-14 16:56:56,589 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-14 16:56:56,592 [INFO] integrated_test: 統合テスト完了
+2025-06-14 16:57:52,867 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,868 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,874 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:57:52,882 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 16:57:52,883 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:57:52,888 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 16:57:52,889 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 16:57:52,893 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,893 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,897 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,897 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,901 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,901 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,904 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,904 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,908 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,908 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,910 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,911 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,911 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:57:52,914 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,914 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,914 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 16:57:52,917 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,917 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,922 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,923 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,926 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,926 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,930 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,930 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,931 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 16:57:52,939 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 16:57:52,944 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,944 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,948 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,948 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:52,950 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:52,951 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 16:57:53,008 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:53,009 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:57:53,015 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 16:57:53,023 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 16:57:53,030 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 16:57:53,030 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 16:57:53,034 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:57:53,035 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 16:58:07,594 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 16:58:07,720 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 16:58:07,725 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:58:07,725 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 16:58:07,725 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 16:58:07,726 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 16:58:07,726 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 16:58:07,726 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 16:58:07,743 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:58:07,743 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 16:58:07,746 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 16:58:07,746 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 16:58:07,746 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 16:58:07,755 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 16:58:07,756 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 16:58:07,761 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 16:58:07,761 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 16:58:07,761 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 16:58:07,761 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 16:58:07,761 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 16:58:07,761 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}, {'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.014785}
+2025-06-14 16:58:07,762 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 16:58:07,762 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 16:58:07,762 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-14 16:58:07,763 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-14 16:58:07,765 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 16:58:07,765 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-14 16:58:07,765 [INFO] integrated_test: SyncChecker initialized
+2025-06-14 16:58:07,765 [INFO] integrated_test: Starting sync consistency check
+2025-06-14 16:58:07,765 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-14 16:58:07,780 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 16:58:07,780 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-14 16:58:07,781 [INFO] SyncChecker: Found 2 organized markdown files
+2025-06-14 16:58:07,786 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-14 16:58:07,786 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-14 16:58:07,787 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-14 16:58:07,787 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-14 16:58:07,787 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-14 16:58:07,787 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-14 16:58:07,787 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-14 16:58:07,788 [INFO] integrated_test: 統合テスト完了
+2025-06-14 17:01:49,982 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 17:01:50,177 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 17:01:50,181 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:01:50,181 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 17:01:50,181 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 17:01:50,182 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 17:01:50,182 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 17:01:50,182 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 17:01:50,205 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 17:01:50,206 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 17:01:50,209 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 17:01:50,209 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 17:01:50,210 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 17:01:50,220 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 17:01:50,220 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 17:01:50,227 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 17:01:50,228 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 17:01:50,228 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 17:01:50,228 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 17:01:50,228 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 17:01:50,228 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.018506}
+2025-06-14 17:01:50,228 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 17:01:50,229 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 17:01:50,229 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-14 17:01:50,231 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-14 17:01:50,237 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:01:50,238 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-14 17:01:50,239 [INFO] integrated_test: SyncChecker initialized
+2025-06-14 17:01:50,239 [INFO] integrated_test: Starting sync consistency check
+2025-06-14 17:01:50,239 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-14 17:01:50,259 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 17:01:50,260 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-14 17:01:50,260 [INFO] SyncChecker: Found 2 organized markdown files
+2025-06-14 17:01:50,271 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-14 17:01:50,271 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-14 17:01:50,273 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-14 17:01:50,274 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-14 17:01:50,274 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-14 17:01:50,274 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-14 17:01:50,274 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-14 17:01:50,275 [INFO] integrated_test: 統合テスト完了
+2025-06-14 17:04:36,391 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,392 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,394 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 17:04:36,399 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 17:04:36,400 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 17:04:36,413 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 17:04:36,414 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 17:04:36,418 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,418 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,422 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,423 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,427 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,427 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,430 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,431 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,434 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,434 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,437 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,437 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,437 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 17:04:36,440 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,441 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,441 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 17:04:36,443 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,444 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,448 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,448 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,452 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,452 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,458 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,458 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,459 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 17:04:36,464 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 17:04:36,468 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,469 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,472 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,473 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,476 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,477 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:04:36,539 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,542 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 17:04:36,549 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 17:04:36,555 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 17:04:36,561 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 17:04:36,561 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 17:04:36,567 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:36,568 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 17:04:49,908 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 17:04:50,044 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 17:04:50,047 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:50,048 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 17:04:50,048 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 17:04:50,048 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 17:04:50,048 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 17:04:50,048 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 17:04:50,070 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 17:04:50,070 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 17:04:50,072 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 17:04:50,073 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 17:04:50,073 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 17:04:50,082 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 17:04:50,082 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 17:04:50,089 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 17:04:50,090 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 17:04:50,090 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 17:04:50,090 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 17:04:50,090 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 17:04:50,090 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}, {'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.017192}
+2025-06-14 17:04:50,090 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 17:04:50,091 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 17:04:50,091 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-14 17:04:50,093 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-14 17:04:50,097 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:04:50,097 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-14 17:04:50,097 [INFO] integrated_test: SyncChecker initialized
+2025-06-14 17:04:50,097 [INFO] integrated_test: Starting sync consistency check
+2025-06-14 17:04:50,097 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-14 17:04:50,115 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 17:04:50,115 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-14 17:04:50,118 [INFO] SyncChecker: Found 2 organized markdown files
+2025-06-14 17:04:50,133 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-14 17:04:50,134 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-14 17:04:50,134 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-14 17:04:50,134 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-14 17:04:50,134 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-14 17:04:50,134 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-14 17:04:50,134 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-14 17:04:50,135 [INFO] integrated_test: 統合テスト完了
+2025-06-14 17:08:22,141 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,141 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,143 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 17:08:22,150 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-14 17:08:22,152 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 17:08:22,158 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-14 17:08:22,158 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-14 17:08:22,162 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,162 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,165 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,165 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,168 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,168 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,172 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,172 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,175 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,175 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,179 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,179 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,179 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 17:08:22,182 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,182 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,182 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-14 17:08:22,185 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,186 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,188 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,189 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,192 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,193 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,196 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,196 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,197 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-14 17:08:22,203 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-14 17:08:22,207 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,207 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,212 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,212 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,215 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,215 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-14 17:08:22,263 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,265 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 17:08:22,269 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-14 17:08:22,276 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-14 17:08:22,282 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-14 17:08:22,282 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-14 17:08:22,286 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:22,287 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-14 17:08:33,977 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 17:08:34,125 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 17:08:34,129 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:34,129 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 17:08:34,130 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 17:08:34,130 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 17:08:34,130 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 17:08:34,130 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 17:08:34,158 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 17:08:34,158 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 17:08:34,161 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 17:08:34,161 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 17:08:34,161 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 17:08:34,172 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 17:08:34,173 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 17:08:34,177 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 17:08:34,177 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 17:08:34,177 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 17:08:34,177 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 17:08:34,177 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 17:08:34,177 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.016443}
+2025-06-14 17:08:34,178 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 17:08:34,178 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 17:08:34,178 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-14 17:08:34,180 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-14 17:08:34,184 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:08:34,185 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-14 17:08:34,185 [INFO] integrated_test: SyncChecker initialized
+2025-06-14 17:08:34,185 [INFO] integrated_test: Starting sync consistency check
+2025-06-14 17:08:34,186 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-14 17:08:34,208 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 17:08:34,209 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-14 17:08:34,213 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-14 17:08:34,213 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-14 17:08:34,228 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-14 17:08:34,229 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-14 17:08:34,231 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-14 17:08:34,231 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-14 17:08:34,231 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-14 17:08:34,231 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-14 17:08:34,231 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-14 17:08:34,233 [INFO] integrated_test: 統合テスト完了
+2025-06-14 17:09:14,390 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-14 17:09:14,523 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-14 17:09:14,529 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:09:14,530 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 17:09:14,530 [INFO] integrated_test: FileOrganizer initialized
+2025-06-14 17:09:14,530 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-14 17:09:14,530 [INFO] integrated_test: Starting organize_workspace
+2025-06-14 17:09:14,530 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-14 17:09:14,550 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 17:09:14,550 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-14 17:09:14,553 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-14 17:09:14,553 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-14 17:09:14,554 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-14 17:09:14,562 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-14 17:09:14,562 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-14 17:09:14,568 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-14 17:09:14,568 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-14 17:09:14,568 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-14 17:09:14,568 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-14 17:09:14,568 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-14 17:09:14,568 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.014296}
+2025-06-14 17:09:14,568 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-14 17:09:14,568 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-14 17:09:14,569 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-14 17:09:14,569 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-14 17:09:14,573 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 17:09:14,573 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-14 17:09:14,573 [INFO] integrated_test: SyncChecker initialized
+2025-06-14 17:09:14,573 [INFO] integrated_test: Starting sync consistency check
+2025-06-14 17:09:14,573 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-14 17:09:14,593 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-14 17:09:14,594 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-14 17:09:14,598 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-14 17:09:14,599 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-14 17:09:14,611 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-14 17:09:14,611 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-14 17:09:14,612 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-14 17:09:14,612 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-14 17:09:14,612 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-14 17:09:14,613 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-14 17:09:14,613 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-14 17:09:14,614 [INFO] integrated_test: 統合テスト完了
