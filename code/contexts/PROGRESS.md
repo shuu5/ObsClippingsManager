@@ -51,7 +51,7 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [完了] 2.1.3 ファイル移動・リネーム機能実装
 - [完了] 2.1.4 既存ファイル衝突回避機能実装
 - [完了] 2.1.5 ユニットテスト実行・全テスト成功確認
-- [] 2.1.6 **organize機能統合テスト実行**
+- [完了] 2.1.6 **organize機能統合テスト実行**
   ```bash
   # organize機能の統合テスト（AI機能無効化）
   cd /home/user/proj/ObsClippingsManager
