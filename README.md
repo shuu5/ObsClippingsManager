@@ -36,6 +36,7 @@ code/py/
 - **[共有モジュール](code/contexts/shared_modules_specification.md)** - 基盤機能・設定管理
 - **[引用文献取得システム](code/contexts/citation_fetcher_specification.md)** - 多段階フォールバック引用文献取得
 
+
 ### テストシステム
 - **[統合テストシステム](code/contexts/integrated_testing_specification.md)** - Python統一テスト実行・品質保証・エンドツーエンド検証
 

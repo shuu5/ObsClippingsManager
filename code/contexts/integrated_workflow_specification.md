@@ -32,7 +32,7 @@ flowchart TD
 ## モジュール関係図
 ```mermaid
 graph LR
-    A["統合ワークフロー"] --> B["yaml_template_manager"]
+        A["統合ワークフロー"] --> B["yaml_template_manager"]
     A --> C["基本機能"]
     A --> D["CitationFetcher"]
     A --> E["AI引用解析"]
