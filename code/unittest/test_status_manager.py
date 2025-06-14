@@ -18,11 +18,11 @@ from unittest.mock import patch, MagicMock
 # テスト対象モジュールのパス追加
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from py.modules.status_management.status_manager import StatusManager
-from py.modules.status_management.processing_status import ProcessingStatus
-from py.modules.shared.config_manager import ConfigManager
-from py.modules.shared.integrated_logger import IntegratedLogger
-from py.modules.shared.exceptions import ProcessingError, ValidationError
+from py.modules.status_management_yaml.status_manager import StatusManager
+from py.modules.status_management_yaml.processing_status import ProcessingStatus
+from py.modules.shared_modules.config_manager import ConfigManager
+from py.modules.shared_modules.integrated_logger import IntegratedLogger
+from py.modules.shared_modules.exceptions import ProcessingError, ValidationError
 
 
 class TestStatusManager(unittest.TestCase):

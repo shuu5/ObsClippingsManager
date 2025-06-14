@@ -13,10 +13,10 @@ import shutil
 from pathlib import Path
 from datetime import datetime
 
-from code.py.modules.status_management.workflow_version_manager import WorkflowVersionManager
-from code.py.modules.shared.config_manager import ConfigManager
-from code.py.modules.shared.integrated_logger import IntegratedLogger
-from code.py.modules.shared.exceptions import ValidationError, ProcessingError
+from code.py.modules.status_management_yaml.workflow_version_manager import WorkflowVersionManager
+from code.py.modules.shared_modules.config_manager import ConfigManager
+from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
+from code.py.modules.shared_modules.exceptions import ValidationError, ProcessingError
 
 
 class TestWorkflowVersionManager(unittest.TestCase):

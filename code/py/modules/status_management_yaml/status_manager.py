@@ -15,10 +15,10 @@ from typing import Dict, List, Optional, Union
 
 from .processing_status import ProcessingStatus
 from .yaml_header_processor import YAMLHeaderProcessor
-from ..shared.config_manager import ConfigManager
-from ..shared.integrated_logger import IntegratedLogger
-from ..shared.exceptions import ProcessingError, YAMLError, FileSystemError
-from ..shared.file_utils import BackupManager
+from ..shared_modules.config_manager import ConfigManager
+from ..shared_modules.integrated_logger import IntegratedLogger
+from ..shared_modules.exceptions import ProcessingError, YAMLError, FileSystemError
+from ..shared_modules.file_utils import BackupManager
 
 
 class StatusManager:

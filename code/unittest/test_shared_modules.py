@@ -25,7 +25,7 @@ class TestConfigManager(unittest.TestCase):
         """ConfigManagerクラスのインポートテスト"""
         try:
             # ConfigManagerが正常にインポートできることを確認
-            from code.py.modules.shared.config_manager import ConfigManager
+            from code.py.modules.shared_modules.config_manager import ConfigManager
             self.assertTrue(True, "ConfigManager successfully imported")
         except ImportError:
             self.fail("ConfigManager should be importable")
@@ -36,7 +36,7 @@ class TestIntegratedLogger(unittest.TestCase):
     def test_integrated_logger_import(self):
         """IntegratedLoggerクラスのインポートテスト"""
         try:
-            from code.py.modules.shared.integrated_logger import IntegratedLogger
+            from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
             self.assertTrue(True, "IntegratedLogger successfully imported")
         except ImportError:
             self.fail("IntegratedLogger should be importable")
@@ -48,7 +48,7 @@ class TestBibTeXParser(unittest.TestCase):
         """BibTeXParserクラスのインポートテスト"""
         try:
             # BibTeXParserが正常にインポートできることを確認
-            from code.py.modules.shared.bibtex_parser import BibTeXParser
+            from code.py.modules.shared_modules.bibtex_parser import BibTeXParser
             self.assertTrue(True, "BibTeXParser successfully imported")
         except ImportError:
             self.fail("BibTeXParser should be importable")
@@ -60,7 +60,7 @@ class TestClaudeAPIClient(unittest.TestCase):
         """ClaudeAPIClientクラスのインポートテスト"""
         with self.assertRaises(ImportError):
             # まだ実装されていないため、ImportError が発生することを確認
-            from code.py.modules.shared.claude_api_client import ClaudeAPIClient
+            from code.py.modules.shared_modules.claude_api_client import ClaudeAPIClient
 
 if __name__ == '__main__':
     unittest.main() 

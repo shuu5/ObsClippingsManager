@@ -12,9 +12,9 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict, Any, List, Optional, Union
 
-from ..shared.config_manager import ConfigManager
-from ..shared.integrated_logger import IntegratedLogger
-from ..shared.exceptions import (
+from ..shared_modules.config_manager import ConfigManager
+from ..shared_modules.integrated_logger import IntegratedLogger
+from ..shared_modules.exceptions import (
     ProcessingError, ValidationError, YAMLError, FileSystemError
 )
 from .yaml_header_processor import YAMLHeaderProcessor

@@ -15,12 +15,12 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, List, Optional, Union, Tuple
 
-from ..shared.config_manager import ConfigManager
-from ..shared.integrated_logger import IntegratedLogger
-from ..shared.exceptions import FileSystemError, ProcessingError, YAMLError
-from ..shared.file_utils import FileUtils, PathUtils, BackupManager
-from ..shared.bibtex_parser import BibTeXParser
-from ..status_management.yaml_header_processor import YAMLHeaderProcessor
+from ..shared_modules.config_manager import ConfigManager
+from ..shared_modules.integrated_logger import IntegratedLogger
+from ..shared_modules.exceptions import FileSystemError, ProcessingError, YAMLError
+from ..shared_modules.file_utils import FileUtils, PathUtils, BackupManager
+from ..shared_modules.bibtex_parser import BibTeXParser
+from ..status_management_yaml.yaml_header_processor import YAMLHeaderProcessor
 
 
 class FileOrganizer:

@@ -12,12 +12,12 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Tuple, List, Optional
 
-from ..shared.config_manager import ConfigManager
-from ..shared.integrated_logger import IntegratedLogger
-from ..shared.exceptions import (
+from ..shared_modules.config_manager import ConfigManager
+from ..shared_modules.integrated_logger import IntegratedLogger
+from ..shared_modules.exceptions import (
     YAMLError, ValidationError, FileSystemError, ProcessingError
 )
-from ..shared.file_utils import FileUtils, BackupManager, StringUtils
+from ..shared_modules.file_utils import FileUtils, BackupManager, StringUtils
 
 
 class YAMLHeaderProcessor:

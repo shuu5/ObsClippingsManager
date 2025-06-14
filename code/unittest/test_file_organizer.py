@@ -30,7 +30,7 @@ IMPORTS_AVAILABLE = False
 IMPORT_ERROR = None
 
 try:
-    from code.py.modules.workflows.file_organizer import FileOrganizer
+    from code.py.modules.file_organizer.file_organizer import FileOrganizer
     IMPORTS_AVAILABLE = True
 except ImportError as e:
     IMPORT_ERROR = str(e)

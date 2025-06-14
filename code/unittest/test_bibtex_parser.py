@@ -13,12 +13,12 @@ from unittest.mock import Mock, patch, mock_open
 
 # テスト対象クラスのインポート（実装後に有効化）
 try:
-    from code.py.modules.shared.bibtex_parser import BibTeXParser
+    from code.py.modules.shared_modules.bibtex_parser import BibTeXParser
     BIBTEX_PARSER_AVAILABLE = True
 except ImportError:
     BIBTEX_PARSER_AVAILABLE = False
 
-from code.py.modules.shared.exceptions import BibTeXError
+from code.py.modules.shared_modules.exceptions import BibTeXError
 
 
 class TestBibTeXParserImport(unittest.TestCase):
@@ -29,7 +29,7 @@ class TestBibTeXParserImport(unittest.TestCase):
         if not BIBTEX_PARSER_AVAILABLE:
             self.skipTest("BibTeXParser not yet implemented")
         
-        from code.py.modules.shared.bibtex_parser import BibTeXParser
+        from code.py.modules.shared_modules.bibtex_parser import BibTeXParser
         self.assertTrue(hasattr(BibTeXParser, '__init__'))
         self.assertTrue(hasattr(BibTeXParser, 'parse_file'))
         self.assertTrue(hasattr(BibTeXParser, 'parse_string'))

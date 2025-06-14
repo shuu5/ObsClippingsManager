@@ -53,7 +53,7 @@ class TestFileSystemUtilities(unittest.TestCase):
     def test_file_utils_import(self):
         """FileUtilsクラスのインポートテスト"""
         try:
-            from py.modules.shared.file_utils import FileUtils
+            from py.modules.shared_modules.file_utils import FileUtils
             self.assertTrue(True, "FileUtilsクラスのインポートが成功")
         except ImportError:
             self.skipTest("FileUtils not implemented yet")
@@ -61,7 +61,7 @@ class TestFileSystemUtilities(unittest.TestCase):
     def test_file_utils_initialization(self):
         """FileUtilsクラスの初期化テスト"""
         try:
-            from py.modules.shared.file_utils import FileUtils
+            from py.modules.shared_modules.file_utils import FileUtils
             file_utils = FileUtils()
             self.assertIsNotNone(file_utils)
         except ImportError:
@@ -86,7 +86,7 @@ class TestFileOperations(unittest.TestCase):
     def test_safe_file_copy(self):
         """安全なファイルコピーテスト"""
         try:
-            from py.modules.shared.file_utils import FileUtils
+            from py.modules.shared_modules.file_utils import FileUtils
             
             # テスト用ファイル作成
             source = self.test_dir / "source.txt"
@@ -105,7 +105,7 @@ class TestFileOperations(unittest.TestCase):
     def test_safe_file_move(self):
         """安全なファイル移動テスト"""
         try:
-            from py.modules.shared.file_utils import FileUtils
+            from py.modules.shared_modules.file_utils import FileUtils
             
             # テスト用ファイル作成
             source = self.test_dir / "move_source.txt"
@@ -125,7 +125,7 @@ class TestFileOperations(unittest.TestCase):
     def test_file_copy_with_existing_destination(self):
         """既存ファイルへのコピー処理テスト"""
         try:
-            from py.modules.shared.file_utils import FileUtils
+            from py.modules.shared_modules.file_utils import FileUtils
             
             # テスト用ファイル作成
             source = self.test_dir / "source.txt"
@@ -150,7 +150,7 @@ class TestFileOperations(unittest.TestCase):
     def test_atomic_file_write(self):
         """アトミックファイル書き込みテスト"""
         try:
-            from py.modules.shared.file_utils import FileUtils
+            from py.modules.shared_modules.file_utils import FileUtils
             
             target_file = self.test_dir / "atomic.txt"
             content = "atomic write content"
@@ -183,7 +183,7 @@ class TestDirectoryOperations(unittest.TestCase):
     def test_ensure_directory_exists(self):
         """ディレクトリ存在確保テスト"""
         try:
-            from py.modules.shared.file_utils import FileUtils
+            from py.modules.shared_modules.file_utils import FileUtils
             
             target_dir = self.test_dir / "new" / "nested" / "directory"
             
@@ -199,7 +199,7 @@ class TestDirectoryOperations(unittest.TestCase):
     def test_safe_directory_remove(self):
         """安全なディレクトリ削除テスト"""
         try:
-            from py.modules.shared.file_utils import FileUtils
+            from py.modules.shared_modules.file_utils import FileUtils
             
             # テスト用ディレクトリ構造作成
             target_dir = self.test_dir / "to_remove"
@@ -219,7 +219,7 @@ class TestDirectoryOperations(unittest.TestCase):
     def test_directory_size_calculation(self):
         """ディレクトリサイズ計算テスト"""
         try:
-            from py.modules.shared.file_utils import FileUtils
+            from py.modules.shared_modules.file_utils import FileUtils
             
             # テスト用ファイル作成
             (self.test_dir / "file1.txt").write_text("1" * 100)
@@ -239,7 +239,7 @@ class TestPathUtils(unittest.TestCase):
     def test_path_validation(self):
         """パス検証機能テスト"""
         try:
-            from py.modules.shared.file_utils import PathUtils
+            from py.modules.shared_modules.file_utils import PathUtils
             
             path_utils = PathUtils()
             
@@ -256,7 +256,7 @@ class TestPathUtils(unittest.TestCase):
     def test_path_normalization(self):
         """パス正規化テスト"""
         try:
-            from py.modules.shared.file_utils import PathUtils
+            from py.modules.shared_modules.file_utils import PathUtils
             
             path_utils = PathUtils()
             
@@ -270,7 +270,7 @@ class TestPathUtils(unittest.TestCase):
     def test_relative_path_calculation(self):
         """相対パス計算テスト"""
         try:
-            from py.modules.shared.file_utils import PathUtils
+            from py.modules.shared_modules.file_utils import PathUtils
             
             path_utils = PathUtils()
             
@@ -285,7 +285,7 @@ class TestPathUtils(unittest.TestCase):
     def test_sanitize_filename(self):
         """ファイル名サニタイズテスト"""
         try:
-            from py.modules.shared.file_utils import PathUtils
+            from py.modules.shared_modules.file_utils import PathUtils
             
             # 無効な文字を含むファイル名
             invalid_filename = 'file<name>with:invalid*chars?.txt'
@@ -303,7 +303,7 @@ class TestPathUtils(unittest.TestCase):
     def test_citation_key_extraction(self):
         """citation_key抽出テスト"""
         try:
-            from py.modules.shared.file_utils import PathUtils
+            from py.modules.shared_modules.file_utils import PathUtils
             
             # 標準的なcitation_keyパターン
             test_cases = [
@@ -322,7 +322,7 @@ class TestPathUtils(unittest.TestCase):
     def test_safe_directory_name_generation(self):
         """安全なディレクトリ名生成テスト"""
         try:
-            from py.modules.shared.file_utils import PathUtils
+            from py.modules.shared_modules.file_utils import PathUtils
             
             citation_key = "Smith2024a:test/invalid*chars"
             safe_name = PathUtils.generate_safe_directory_name(citation_key)
@@ -338,7 +338,7 @@ class TestPathUtils(unittest.TestCase):
     def test_clippings_file_path_building(self):
         """クリッピングファイルパス構築テスト"""
         try:
-            from py.modules.shared.file_utils import PathUtils
+            from py.modules.shared_modules.file_utils import PathUtils
             
             base_dir = "/tmp/test_clippings"
             citation_key = "Smith2024a"
@@ -380,7 +380,7 @@ class TestFileSearch(unittest.TestCase):
     def test_find_files_by_extension(self):
         """拡張子によるファイル検索テスト"""
         try:
-            from py.modules.shared.file_utils import FileSearch
+            from py.modules.shared_modules.file_utils import FileSearch
             
             search = FileSearch()
             txt_files = search.find_by_extension(self.test_dir, ".txt")
@@ -394,7 +394,7 @@ class TestFileSearch(unittest.TestCase):
     def test_find_files_by_pattern(self):
         """パターンによるファイル検索テスト"""
         try:
-            from py.modules.shared.file_utils import FileSearch
+            from py.modules.shared_modules.file_utils import FileSearch
             
             search = FileSearch()
             files = search.find_by_pattern(self.test_dir, "file*.txt")
@@ -407,7 +407,7 @@ class TestFileSearch(unittest.TestCase):
     def test_recursive_search(self):
         """再帰的検索テスト"""
         try:
-            from py.modules.shared.file_utils import FileSearch
+            from py.modules.shared_modules.file_utils import FileSearch
             
             search = FileSearch()
             all_files = search.find_files(self.test_dir, recursive=True)
@@ -438,7 +438,7 @@ class TestBackupUtilities(unittest.TestCase):
     def test_create_backup(self):
         """バックアップ作成テスト"""
         try:
-            from py.modules.shared.file_utils import BackupManager
+            from py.modules.shared_modules.file_utils import BackupManager
             
             backup_manager = BackupManager()
             backup_path = backup_manager.create_backup(self.source_file)
@@ -452,7 +452,7 @@ class TestBackupUtilities(unittest.TestCase):
     def test_restore_from_backup(self):
         """バックアップからのリストアテスト"""
         try:
-            from py.modules.shared.file_utils import BackupManager
+            from py.modules.shared_modules.file_utils import BackupManager
             
             backup_manager = BackupManager()
             backup_path = backup_manager.create_backup(self.source_file)
@@ -471,7 +471,7 @@ class TestBackupUtilities(unittest.TestCase):
     def test_backup_cleanup(self):
         """バックアップクリーンアップテスト"""
         try:
-            from py.modules.shared.file_utils import BackupManager
+            from py.modules.shared_modules.file_utils import BackupManager
             
             backup_manager = BackupManager()
             backup_path = backup_manager.create_backup(self.source_file)
@@ -491,7 +491,7 @@ class TestStringUtils(unittest.TestCase):
     def test_clean_text(self):
         """テキストクリーニングテスト"""
         try:
-            from py.modules.shared.file_utils import StringUtils
+            from py.modules.shared_modules.file_utils import StringUtils
             
             # 連続する空白の正規化
             text = "  This   has    multiple   spaces  "
@@ -507,7 +507,7 @@ class TestStringUtils(unittest.TestCase):
     def test_truncate_text(self):
         """テキスト切り詰めテスト"""
         try:
-            from py.modules.shared.file_utils import StringUtils
+            from py.modules.shared_modules.file_utils import StringUtils
             
             # 通常の切り詰め
             text = "This is a very long text that needs to be truncated"
@@ -525,7 +525,7 @@ class TestStringUtils(unittest.TestCase):
     def test_extract_markdown_title(self):
         """Markdownタイトル抽出テスト"""
         try:
-            from py.modules.shared.file_utils import StringUtils
+            from py.modules.shared_modules.file_utils import StringUtils
             
             # 標準的なH1ヘッダー
             content = "# Example Title\n\nSome content here."
@@ -542,7 +542,7 @@ class TestStringUtils(unittest.TestCase):
     def test_format_citation_key(self):
         """citation_keyフォーマットテスト"""
         try:
-            from py.modules.shared.file_utils import StringUtils
+            from py.modules.shared_modules.file_utils import StringUtils
             
             # 標準的なケース
             citation_key = StringUtils.format_citation_key("Smith", "2024", "a")
@@ -557,7 +557,7 @@ class TestStringUtils(unittest.TestCase):
     def test_extract_doi_from_text(self):
         """DOI抽出テスト"""
         try:
-            from py.modules.shared.file_utils import StringUtils
+            from py.modules.shared_modules.file_utils import StringUtils
             
             # 標準的なDOI
             text = "This paper has DOI: 10.1000/123456 and more text."
@@ -574,7 +574,7 @@ class TestStringUtils(unittest.TestCase):
     def test_validate_citation_key(self):
         """citation_key検証テスト"""
         try:
-            from py.modules.shared.file_utils import StringUtils
+            from py.modules.shared_modules.file_utils import StringUtils
             
             # 有効なcitation_key
             valid_keys = ["Smith2024a", "JohnsonLee2024b", "author_2024"]
@@ -593,7 +593,7 @@ class TestStringUtils(unittest.TestCase):
     def test_generate_unique_filename(self):
         """ユニークファイル名生成テスト"""
         try:
-            from py.modules.shared.file_utils import StringUtils
+            from py.modules.shared_modules.file_utils import StringUtils
             
             # 重複なしの場合
             existing = ["file1.txt", "file2.txt"]
@@ -610,7 +610,7 @@ class TestStringUtils(unittest.TestCase):
     def test_escape_markdown(self):
         """Markdownエスケープテスト"""
         try:
-            from py.modules.shared.file_utils import StringUtils
+            from py.modules.shared_modules.file_utils import StringUtils
             
             # 特殊文字を含むテキスト
             text = "Text with *bold* and [link](url) and `code`"

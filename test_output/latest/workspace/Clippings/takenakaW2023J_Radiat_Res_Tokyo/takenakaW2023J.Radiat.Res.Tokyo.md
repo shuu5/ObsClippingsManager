@@ -2,7 +2,7 @@
 citation_key: takenakaW2023J.Radiat.Res.Tokyo
 created: 2025-06-09
 doi: 10.1093/jrr/rrac091
-last_updated: '2025-06-14T13:46:58.842874'
+last_updated: '2025-06-14T16:14:10.042077'
 processing_status:
   organize: completed
 source: https://academic.oup.com/jrr/article/64/2/284/6968637

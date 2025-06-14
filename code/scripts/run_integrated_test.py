@@ -8,8 +8,8 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from code.py.modules.shared.config_manager import ConfigManager
-from code.py.modules.shared.integrated_logger import IntegratedLogger
+from code.py.modules.shared_modules.config_manager import ConfigManager
+from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
 from code.integrated_test.simple_integrated_test_runner import SimpleIntegratedTestRunner
 
 def main():

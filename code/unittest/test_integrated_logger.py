@@ -21,7 +21,7 @@ class TestIntegratedLoggerImport(unittest.TestCase):
     def test_integrated_logger_import(self):
         """IntegratedLoggerクラスのインポートテスト"""
         try:
-            from code.py.modules.shared.integrated_logger import IntegratedLogger
+            from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
             self.assertTrue(True, "IntegratedLogger successfully imported")
         except ImportError:
             self.fail("IntegratedLogger should be importable")
@@ -59,7 +59,7 @@ class TestIntegratedLoggerBasic(unittest.TestCase):
     
     def test_integrated_logger_initialization(self):
         """IntegratedLoggerクラスの初期化テスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         
         logger = IntegratedLogger(self.mock_config_manager, str(self.log_file))
         
@@ -68,7 +68,7 @@ class TestIntegratedLoggerBasic(unittest.TestCase):
     
     def test_get_logger_module_specific(self):
         """モジュール別ロガー取得テスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         
         logger = IntegratedLogger(self.mock_config_manager, str(self.log_file))
         
@@ -86,7 +86,7 @@ class TestIntegratedLoggerBasic(unittest.TestCase):
     
     def test_log_levels(self):
         """ログレベル機能テスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         
         logger = IntegratedLogger(self.mock_config_manager, str(self.log_file))
         module_logger = logger.get_logger('TestModule')
@@ -109,7 +109,7 @@ class TestIntegratedLoggerBasic(unittest.TestCase):
     
     def test_structured_logging(self):
         """構造化ログ出力テスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         
         logger = IntegratedLogger(self.mock_config_manager, str(self.log_file))
         module_logger = logger.get_logger('TestModule')
@@ -132,7 +132,7 @@ class TestIntegratedLoggerBasic(unittest.TestCase):
     @unittest.skipIf(True, "IntegratedLogger not implemented yet")
     def test_log_format_consistency(self):
         """ログフォーマット一貫性テスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         
         logger = IntegratedLogger(self.mock_config_manager, str(self.log_file))
         module_logger = logger.get_logger('TestModule')
@@ -180,7 +180,7 @@ class TestIntegratedLoggerAdvanced(unittest.TestCase):
     @unittest.skipIf(True, "IntegratedLogger not implemented yet")
     def test_file_rotation_functionality(self):
         """ファイルローテーション機能テスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         
         # 小さなファイルサイズでローテーションテスト
         small_config = self.mock_config_manager.get_config.return_value.copy()
@@ -201,7 +201,7 @@ class TestIntegratedLoggerAdvanced(unittest.TestCase):
     
     def test_error_tracking_functionality(self):
         """エラートラッキング機能テスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         
         logger = IntegratedLogger(self.mock_config_manager, str(self.log_file))
         
@@ -221,7 +221,7 @@ class TestIntegratedLoggerAdvanced(unittest.TestCase):
     
     def test_performance_logging(self):
         """パフォーマンスログ機能テスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         
         logger = IntegratedLogger(self.mock_config_manager, str(self.log_file))
         
@@ -241,7 +241,7 @@ class TestIntegratedLoggerAdvanced(unittest.TestCase):
     
     def test_log_level_dynamic_change(self):
         """ログレベル動的変更テスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         
         logger = IntegratedLogger(self.mock_config_manager, str(self.log_file))
         module_logger = logger.get_logger('TestModule')
@@ -265,7 +265,7 @@ class TestIntegratedLoggerAdvanced(unittest.TestCase):
     @unittest.skipIf(True, "IntegratedLogger not implemented yet")
     def test_concurrent_logging(self):
         """並行ログ出力テスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         import threading
         
         logger = IntegratedLogger(self.mock_config_manager, str(self.log_file))
@@ -325,7 +325,7 @@ class TestIntegratedLoggerIntegration(unittest.TestCase):
     @unittest.skipIf(True, "IntegratedLogger not implemented yet")
     def test_full_workflow_logging(self):
         """完全なワークフローログテスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         
         logger = IntegratedLogger(self.mock_config_manager, str(self.log_file))
         
@@ -384,7 +384,7 @@ class TestIntegratedLoggerIntegration(unittest.TestCase):
     @unittest.skipIf(True, "IntegratedLogger not implemented yet")
     def test_config_manager_integration(self):
         """ConfigManagerとの統合テスト"""
-        from code.py.modules.shared.integrated_logger import IntegratedLogger
+        from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
         
         # ConfigManagerからの設定でロガー初期化
         logger = IntegratedLogger(self.mock_config_manager)

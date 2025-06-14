@@ -39,7 +39,7 @@ class TestConfigManager(unittest.TestCase):
         """ConfigManagerクラスのインポートテスト"""
         try:
             # ConfigManagerが正常にインポートできることを確認
-            from code.py.modules.shared.config_manager import ConfigManager
+            from code.py.modules.shared_modules.config_manager import ConfigManager
             self.assertTrue(True, "ConfigManager successfully imported")
         except ImportError:
             self.fail("ConfigManager should be importable")
@@ -59,7 +59,7 @@ class TestConfigManager(unittest.TestCase):
         
         # ConfigManagerが存在すれば以下のテストを実行
         try:
-            from code.py.modules.shared.config_manager import ConfigManager
+            from code.py.modules.shared_modules.config_manager import ConfigManager
             config_manager = ConfigManager(str(self.config_file))
             
             # 設定が正しく読み込まれることを確認
@@ -71,7 +71,7 @@ class TestConfigManager(unittest.TestCase):
     def test_load_config_file_not_exists(self):
         """設定ファイルが存在しない場合のデフォルト値適用テスト"""
         try:
-            from code.py.modules.shared.config_manager import ConfigManager
+            from code.py.modules.shared_modules.config_manager import ConfigManager
             config_manager = ConfigManager(str(self.test_env / "nonexistent.yaml"))
             
             # デフォルト値が適用されることを確認
@@ -89,7 +89,7 @@ class TestConfigManager(unittest.TestCase):
         # 環境変数設定
         with patch.dict(os.environ, {'WORKSPACE_PATH': '/env/workspace'}):
             try:
-                from code.py.modules.shared.config_manager import ConfigManager
+                from code.py.modules.shared_modules.config_manager import ConfigManager
                 config_manager = ConfigManager(str(self.config_file))
                 
                 # 環境変数が優先されることを確認
@@ -104,7 +104,7 @@ class TestConfigManager(unittest.TestCase):
             yaml.dump(test_config, f)
         
         try:
-            from code.py.modules.shared.config_manager import ConfigManager
+            from code.py.modules.shared_modules.config_manager import ConfigManager
             config_manager = ConfigManager(str(self.config_file))
             
             # パスが正しく導出されることを確認
@@ -127,7 +127,7 @@ class TestConfigManager(unittest.TestCase):
             yaml.dump(test_config, f)
         
         try:
-            from code.py.modules.shared.config_manager import ConfigManager
+            from code.py.modules.shared_modules.config_manager import ConfigManager
             config_manager = ConfigManager(str(self.config_file))
             
             # API設定が正しく取得できることを確認
@@ -153,7 +153,7 @@ class TestConfigManager(unittest.TestCase):
             yaml.dump(test_config, f)
         
         try:
-            from code.py.modules.shared.config_manager import ConfigManager
+            from code.py.modules.shared_modules.config_manager import ConfigManager
             config_manager = ConfigManager(str(self.config_file))
             
             # AI設定が正しく取得できることを確認
@@ -177,7 +177,7 @@ class TestConfigManager(unittest.TestCase):
             yaml.dump(test_config, f)
         
         try:
-            from code.py.modules.shared.config_manager import ConfigManager
+            from code.py.modules.shared_modules.config_manager import ConfigManager
             config_manager = ConfigManager(str(self.config_file))
             
             # ログ設定が正しく取得できることを確認
@@ -198,7 +198,7 @@ class TestConfigManager(unittest.TestCase):
             yaml.dump(invalid_config, f)
         
         try:
-            from code.py.modules.shared.config_manager import ConfigManager, ConfigurationError
+            from code.py.modules.shared_modules.config_manager import ConfigManager, ConfigurationError
             
             # 設定検証でエラーが発生することを確認
             with self.assertRaises(ConfigurationError):
@@ -220,7 +220,7 @@ class TestConfigManager(unittest.TestCase):
             yaml.dump(partial_config, f)
         
         try:
-            from code.py.modules.shared.config_manager import ConfigManager
+            from code.py.modules.shared_modules.config_manager import ConfigManager
             config_manager = ConfigManager(str(self.config_file))
             
             # カスタム値とデフォルト値が正しくマージされることを確認
@@ -233,7 +233,7 @@ class TestConfigManager(unittest.TestCase):
     def test_config_update_and_save(self):
         """設定更新・保存機能テスト"""
         try:
-            from code.py.modules.shared.config_manager import ConfigManager
+            from code.py.modules.shared_modules.config_manager import ConfigManager
             config_manager = ConfigManager(str(self.config_file))
             
             # 設定を更新

@@ -87,7 +87,7 @@ class SimpleIntegratedTestRunner:
         
         try:
             # IntegratedWorkflowクラスが実装されている場合は、それを使用
-            from code.py.modules.workflows.integrated_workflow import IntegratedWorkflow
+            from code.py.modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
             
             workflow = IntegratedWorkflow(self.config_manager, self.logger)
             result = workflow.execute(workspace_path)
@@ -107,7 +107,7 @@ class SimpleIntegratedTestRunner:
             try:
                 # organize機能
                 self.logger.info("Attempting to import FileOrganizer")
-                from code.py.modules.workflows.file_organizer import FileOrganizer
+                from code.py.modules.file_organizer.file_organizer import FileOrganizer
                 self.logger.info("FileOrganizer imported successfully")
                 
                 organizer = FileOrganizer(self.config_manager, self.integrated_logger)

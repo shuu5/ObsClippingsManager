@@ -89,6 +89,31 @@ git commit -m "feat: DOIマッチングベースのorganize機能実装完了"
 git push
 ```
 
+#### 2.1.8 **コード構造再編成**
+- [完了] 2.1.8.1 モジュールディレクトリ構造の仕様書準拠化
+  - `shared` → `shared_modules`
+  - `workflows` → `file_organizer`  
+  - `status_management` → `status_management_yaml`
+- [完了] 2.1.8.2 全インポートパスの修正
+  - 実装ファイル（20+ファイル）
+  - テストファイル（15+ファイル）
+  - 統合テストファイル
+- [完了] 2.1.8.3 仕様書のコード収納場所明記
+  - `code/py/modules/shared_modules/`
+  - `code/py/modules/file_organizer/`
+  - `code/py/modules/status_management_yaml/`
+- [完了] 2.1.8.4 全テスト実行確認（214テスト成功）
+- [完了] 2.1.8.5 統合テスト実行確認（DOIマッチング機能正常動作）
+
+**最終構造**:
+```
+code/py/modules/
+├── shared_modules/          # 共通基盤機能
+├── file_organizer/          # organize機能
+├── status_management_yaml/  # 状態管理機能
+└── (未来の機能モジュール)    # 段階的追加予定
+```
+
 #### 2.2 ステップ2: sync（同期チェック）
 - [ ] 2.2.1 SyncCheckerクラス設計・テスト作成
 - [ ] 2.2.2 BibTeX ↔ Clippings整合性チェック実装

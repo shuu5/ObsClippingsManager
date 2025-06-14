@@ -18,14 +18,14 @@ import shutil
 
 # テスト対象モジュールのインポート
 try:
-    from code.py.modules.status_management.yaml_header_processor import YAMLHeaderProcessor
+    from code.py.modules.status_management_yaml.yaml_header_processor import YAMLHeaderProcessor
 except ImportError:
     # モジュールが未実装の場合はスキップ用のMockクラスを用意
     YAMLHeaderProcessor = None
 
-from code.py.modules.shared.config_manager import ConfigManager
-from code.py.modules.shared.integrated_logger import IntegratedLogger
-from code.py.modules.shared.exceptions import (
+from code.py.modules.shared_modules.config_manager import ConfigManager
+from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
+from code.py.modules.shared_modules.exceptions import (
     YAMLError, ValidationError, FileSystemError
 )
 
@@ -242,7 +242,7 @@ This is the content with corrupted YAML header.
         """YAMLヘッダー修復時のバックアップ作成テスト"""
         test_file = self._create_test_file("backup_test.md", self.corrupted_yaml_content)
         
-        with patch('code.py.modules.status_management.yaml_header_processor.BackupManager') as mock_backup_manager:
+        with patch('code.py.modules.status_management_yaml.yaml_header_processor.BackupManager') as mock_backup_manager:
             mock_backup_instance = Mock()
             mock_backup_manager.return_value = mock_backup_instance
             

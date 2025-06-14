@@ -4,6 +4,7 @@
 - **責務**: 各論文の処理状態をYAMLヘッダーで管理し重複処理回避を実現
 - **依存**: yaml_template_manager → 全ワークフロー（状態管理基盤）
 - **実行**: 統合ワークフローで自動実行
+- **コード収納場所**: `code/py/modules/status_management_yaml/`
 
 ## 処理フロー図
 ```mermaid

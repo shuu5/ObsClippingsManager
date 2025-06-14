@@ -2,7 +2,7 @@
 citation_key: yinL2022BreastCancerRes
 created: 2025-06-09
 doi: 10.1186/s13058-022-01502-6
-last_updated: '2025-06-14T13:46:58.833707'
+last_updated: '2025-06-14T16:14:10.037357'
 processing_status:
   organize: completed
 source: https://breast-cancer-research.biomedcentral.com/articles/10.1186/s13058-022-01502-6

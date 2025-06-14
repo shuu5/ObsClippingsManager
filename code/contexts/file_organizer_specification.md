@@ -2,9 +2,10 @@
 
 ## 概要
 - **責務**: CurrentManuscript.bibとClippings/*.mdのDOIマッチングによるファイル整理
-- **依存**: shared/config_manager, shared/logger, shared/exceptions, shared/bibtex_parser
+- **依存**: shared_modules/config_manager, shared_modules/logger, shared_modules/exceptions, shared_modules/bibtex_parser
 - **実行**: 統合ワークフローのorganizeステップで自動実行
 - **出力**: citation_keyベースのディレクトリ構造への整理
+- **コード収納場所**: `code/py/modules/file_organizer/`
 
 ## 処理フロー図
 ```mermaid

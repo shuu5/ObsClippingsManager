@@ -18,7 +18,7 @@ import os
 # テスト環境のセットアップ
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from py.modules.shared.exceptions import (
+from py.modules.shared_modules.exceptions import (
     ObsClippingsManagerError,
     ConfigurationError,
     ValidationError,
@@ -205,7 +205,7 @@ class TestRetryMechanism(unittest.TestCase):
     @patch('time.sleep')  # sleepをモック化してテストを高速化
     def test_retry_decorator_success(self, mock_sleep):
         """リトライデコレーター成功テスト"""
-        from py.modules.shared.exceptions import retry_on_error
+        from py.modules.shared_modules.exceptions import retry_on_error
         
         @retry_on_error(max_attempts=5, delay=0.1)
         def test_function():
@@ -220,7 +220,7 @@ class TestRetryMechanism(unittest.TestCase):
     @patch('time.sleep')
     def test_retry_decorator_max_attempts_exceeded(self, mock_sleep):
         """リトライデコレーター最大試行回数超過テスト"""
-        from py.modules.shared.exceptions import retry_on_error
+        from py.modules.shared_modules.exceptions import retry_on_error
         
         @retry_on_error(max_attempts=2, delay=0.1)
         def test_function():
@@ -235,7 +235,7 @@ class TestRetryMechanism(unittest.TestCase):
     @patch('time.sleep')
     def test_retry_with_exponential_backoff(self, mock_sleep):
         """指数バックオフリトライテスト"""
-        from py.modules.shared.exceptions import retry_on_error
+        from py.modules.shared_modules.exceptions import retry_on_error
         
         @retry_on_error(max_attempts=4, delay=0.1, backoff_factor=2.0, jitter=False)
         def test_function():
@@ -251,7 +251,7 @@ class TestRetryMechanism(unittest.TestCase):
     
     def test_retry_with_specific_exceptions(self):
         """特定例外タイプでのリトライテスト"""
-        from py.modules.shared.exceptions import retry_on_error
+        from py.modules.shared_modules.exceptions import retry_on_error
         
         @retry_on_error(max_attempts=3, delay=0.1, 
                        retry_exceptions=(APIError, ProcessingError))
@@ -273,7 +273,7 @@ class TestRetryMechanism(unittest.TestCase):
     
     def test_retry_configuration_integration(self):
         """リトライ設定統合テスト"""
-        from py.modules.shared.exceptions import retry_on_error
+        from py.modules.shared_modules.exceptions import retry_on_error
         
         # 設定から取得されるリトライパラメータをテスト
         @retry_on_error()  # デフォルト設定使用
