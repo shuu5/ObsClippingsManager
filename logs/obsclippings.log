@@ -1878,3 +1878,27 @@
 2025-06-14 12:30:07,531 [INFO] test_environment_manager: Cleaning up environment: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250614_123007_82a56b3b
 2025-06-14 12:30:07,532 [INFO] test_environment_manager: Environment cleanup completed: /tmp/ObsClippingsManager_IntegratedTest_integration_test_20250614_123007_82a56b3b
 2025-06-14 12:30:07,532 [INFO] integrated_test_runner: Regression test completed successfully: integration_test_20250614_123007_82a56b3b
+2025-06-14 12:56:26,522 [ERROR] integrated_test: 統合テスト失敗: 'Logger' object has no attribute 'get_logger'
+2025-06-14 12:57:32,146 [ERROR] integrated_test: 統合テスト失敗: 'Logger' object has no attribute 'get_logger'
+2025-06-14 12:58:10,676 [ERROR] integrated_test: 統合テスト失敗: 'Logger' object has no attribute 'get_logger'
+2025-06-14 12:59:14,369 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 12:59:14,370 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 12:59:14,371 [INFO] FileOrganizer: Starting organize process for: test_output/latest/before/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md
+2025-06-14 12:59:14,373 [ERROR] FileOrganizer: Failed to organize file test_output/latest/before/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md: [CITATION_KEY_NOT_FOUND] Cannot determine citation_key for file: test_output/latest/before/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md
+2025-06-14 12:59:14,373 [ERROR] integrated_test: 統合テスト失敗: [CITATION_KEY_NOT_FOUND] Cannot determine citation_key for file: test_output/latest/before/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md
+2025-06-14 13:02:59,362 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 13:02:59,363 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 13:02:59,364 [INFO] FileOrganizer: Starting organize process for: test_output/latest/before/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md
+2025-06-14 13:02:59,374 [INFO] FileOrganizer: Moved file from test_output/latest/before/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md to test_output/latest/before/Clippings/keratin_profiling_2021/keratin_profiling_2021.md
+2025-06-14 13:02:59,375 [INFO] FileOrganizer: Organize process completed for: keratin_profiling_2021
+2025-06-14 13:02:59,375 [INFO] FileOrganizer: Starting organize process for: test_output/latest/before/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md
+2025-06-14 13:02:59,377 [ERROR] FileOrganizer: Failed to organize file test_output/latest/before/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md: [CITATION_KEY_NOT_FOUND] Cannot determine citation_key for file: test_output/latest/before/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md
+2025-06-14 13:02:59,378 [ERROR] integrated_test: 統合テスト失敗: [CITATION_KEY_NOT_FOUND] Cannot determine citation_key for file: test_output/latest/before/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md
+2025-06-14 13:08:54,372 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-14 13:08:54,373 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-14 13:08:54,374 [INFO] FileOrganizer: Starting organize process for: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md
+2025-06-14 13:08:54,388 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md to test_output/latest/workspace/Clippings/keratin_profiling_2021/keratin_profiling_2021.md
+2025-06-14 13:08:54,388 [INFO] FileOrganizer: Organize process completed for: keratin_profiling_2021
+2025-06-14 13:08:54,388 [INFO] FileOrganizer: Starting organize process for: test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md
+2025-06-14 13:08:54,390 [ERROR] FileOrganizer: Failed to organize file test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md: [CITATION_KEY_NOT_FOUND] Cannot determine citation_key for file: test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md
+2025-06-14 13:08:54,390 [ERROR] integrated_test: 統合テスト失敗: [CITATION_KEY_NOT_FOUND] Cannot determine citation_key for file: test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md

@@ -1,23 +1,16 @@
 """
-統合テストシステム
+シンプル統合テストシステム
 
 統合テストシステムパッケージ。
-エンドツーエンドテスト実行による品質保証とリグレッション防止を担当。
+現在実装中のintegrated_workflowをテストデータで実際に実行して動作確認する
+最小限の機能に特化した統合テストシステム。
 """
 
 __version__ = "3.2.0"
 __author__ = "ObsClippingsManager Development Team"
 
-from .integrated_test_runner import IntegratedTestRunner
-from .test_environment_manager import TestEnvironmentManager
-from .test_data_manager import TestDataManager
-from .workflow_validator import WorkflowValidator
-from .result_analyzer import ResultAnalyzer
+from .simple_integrated_test_runner import SimpleIntegratedTestRunner
 
 __all__ = [
-    'IntegratedTestRunner',
-    'TestEnvironmentManager',
-    'TestDataManager',
-    'WorkflowValidator',
-    'ResultAnalyzer'
+    'SimpleIntegratedTestRunner'
 ] 

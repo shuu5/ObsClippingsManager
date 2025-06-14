@@ -57,6 +57,7 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
   cd /home/user/proj/ObsClippingsManager
   uv run python code/scripts/run_integrated_test.py
   ```
+  **改善完了**: beforeとafter分離を削除し、workspaceでその場処理するシンプルな統合テストシステムに修正
 
 #### 2.2 ステップ2: sync（同期チェック）
 - [ ] 2.2.1 SyncCheckerクラス設計・テスト作成

@@ -1,57 +1,23 @@
-# 統合テストシステム 仕様書
+"""
+シンプル統合テストランナー
 
-## 概要
-- **目的**: 現在実装中のintegrated_workflowをテストデータで実際に実行して動作確認する
-- **責務**: テストデータコピー → integrated_workflow実行 → 処理結果確認
-- **出力**: test_outputディレクトリに処理前のデータバックアップと処理結果を保存してユーザーが確認可能
+現在実装中のintegrated_workflowをテストデータで実際に実行して動作確認する
+最小限の機能に特化した統合テストシステム
+"""
 
-## 処理フロー
-```mermaid
-flowchart TD
-    A["統合テスト開始"] --> B["テストデータをワークスペースにコピー"]
-    B --> C["データの事前バックアップ保存"]
-    C --> D["integrated_workflow実行（その場処理）"]  
-    D --> E["処理結果をtest_outputに保存"]
-    E --> F["基本チェック"]
-    F --> G["完了"]
-    
-    D -->|エラー| H["エラーログ記録"]
-    H --> I["失敗報告"]
-```
+import shutil
+import yaml
+from datetime import datetime
+from pathlib import Path
 
-## ディレクトリ構造
 
-### 入力：テストデータマスター
-```
-code/test_data_master/
-├── CurrentManuscript.bib          # テスト用BibTeX
-└── Clippings/                     # テスト用クリッピング
-    ├── paper1.md
-    ├── paper2.md  
-    └── paper3.md
-```
-
-### 出力：テスト結果
-```
-test_output/
-└── latest/                        # 最新のテスト実行結果
-    ├── workspace/                 # 実際の処理ワークスペース
-    │   ├── CurrentManuscript.bib
-    │   └── Clippings/             # integrated_workflowがその場で処理
-    ├── backup/                    # 処理前データのバックアップ
-    │   ├── CurrentManuscript.bib
-    │   └── Clippings/
-    └── test_result.yaml           # テスト実行結果
-```
-
-## 実装
-
-### シンプル統合テストランナー
-```python
 class SimpleIntegratedTestRunner:
-    def __init__(self, config_manager, logger):
+    """シンプル統合テストランナー"""
+    
+    def __init__(self, config_manager, integrated_logger):
         self.config_manager = config_manager
-        self.logger = logger.get_logger("integrated_test")
+        self.integrated_logger = integrated_logger
+        self.logger = integrated_logger.get_logger("integrated_test")
         self.test_data_path = Path("code/test_data_master")
         self.output_path = Path("test_output/latest")
     
@@ -141,7 +107,7 @@ class SimpleIntegratedTestRunner:
             try:
                 # organize機能
                 from code.py.modules.workflows.file_organizer import FileOrganizer
-                organizer = FileOrganizer(self.config_manager, self.logger)
+                organizer = FileOrganizer(self.config_manager, self.integrated_logger)
                 clippings_dir = workspace_path / "Clippings"
                 
                 if clippings_dir.exists():
@@ -208,91 +174,5 @@ class SimpleIntegratedTestRunner:
         }
         
         result_file = self.output_path / "test_result.yaml"
-        with open(result_file, 'w', encoding='utf-8') as f:
-            yaml.dump(result, f, default_flow_style=False, allow_unicode=True)
-```
-
-### 実行スクリプト
-```python
-# code/scripts/run_integrated_test.py
-
-#!/usr/bin/env python3
-"""シンプル統合テスト実行スクリプト"""
-
-import sys
-from pathlib import Path
-
-# プロジェクトルートをPythonパスに追加
-project_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(project_root))
-
-from code.py.modules.shared.config_manager import ConfigManager
-from code.py.modules.shared.integrated_logger import IntegratedLogger
-from code.integrated_test.simple_integrated_test_runner import SimpleIntegratedTestRunner
-
-def main():
-    """統合テスト実行"""
-    try:
-        # 設定とログ初期化
-        config_manager = ConfigManager()
-        logger = IntegratedLogger(config_manager)
-        
-        # 統合テスト実行
-        test_runner = SimpleIntegratedTestRunner(config_manager, logger)
-        success = test_runner.run_test()
-        
-        if success:
-            print("✅ 統合テスト成功")
-            print("📁 結果確認: test_output/latest/")
-            return 0
-        else:
-            print("❌ 統合テスト失敗") 
-            print("📁 エラー詳細: test_output/latest/test_result.yaml")
-            return 1
-            
-    except Exception as e:
-        print(f"❌ 統合テスト実行エラー: {e}")
-        return 1
-
-if __name__ == "__main__":
-    exit(main())
-```
-
-## 実行方法
-
-### 基本実行
-```bash
-# 統合テスト実行
-cd /home/user/proj/ObsClippingsManager
-uv run python code/scripts/run_integrated_test.py
-```
-
-### 結果確認
-```bash
-# 処理ワークスペース確認
-ls -la test_output/latest/workspace/
-
-# 処理前データバックアップ確認
-ls -la test_output/latest/backup/
-
-# テスト結果確認
-cat test_output/latest/test_result.yaml
-
-# 処理前後の差分確認
-diff -r test_output/latest/backup/ test_output/latest/workspace/
-```
-
-## 設定
-
-### 統合テスト設定（config/config.yaml）
-```yaml
-integrated_testing:
-  enabled: true
-  test_data_source: "code/test_data_master"
-  output_directory: "test_output"
-  auto_cleanup: false
-```
-
----
-
-**重要**: このシンプルな統合テストシステムは、テストデータをワークスペースにコピーして現在実装中のintegrated_workflowを実際にその場で実行し、処理結果をtest_outputディレクトリで確認できる最小限の機能を提供します。実装が進むにつれて、_run_integrated_workflow()メソッドを更新していけば、常に最新の機能をテストできます。 
+        with open(result_file, 'w',  encoding='utf-8') as f:
+            yaml.dump(result, f, default_flow_style=False, allow_unicode=True) 
