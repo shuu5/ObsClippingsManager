@@ -36,6 +36,7 @@ class TestCitationFetcherImport(unittest.TestCase):
                 self.fail("CitationFetcher should be importable")
         else:
             # インポート成功時のテスト
+            from code.py.modules.citation_fetcher.citation_fetcher import CitationFetcher
             self.assertIsNotNone(CitationFetcher)
 
 
@@ -126,13 +127,11 @@ class TestCitationFetcherCrossRef(unittest.TestCase):
         mock_response.json.return_value = {
             'status': 'ok',
             'message': {
-                'items': [{
-                    'DOI': '10.1000/123456',
-                    'title': ['Test Paper Title'],
-                    'author': [{'given': 'John', 'family': 'Doe'}],
-                    'published-print': {'date-parts': [[2023]]},
-                    'container-title': ['Test Journal']
-                }]
+                'DOI': '10.1000/123456',
+                'title': ['Test Paper Title'],
+                'author': [{'given': 'John', 'family': 'Doe'}],
+                'published-print': {'date-parts': [[2023]]},
+                'container-title': ['Test Journal']
             }
         }
         mock_get.return_value = mock_response
@@ -171,7 +170,13 @@ class TestCitationFetcherCrossRef(unittest.TestCase):
         mock_response.status_code = 200
         mock_response.json.return_value = {
             'status': 'ok',
-            'message': {'items': []}
+            'message': {
+                'DOI': f'10.1000/test0',
+                'title': ['Test Title'],
+                'author': [{'given': 'Test', 'family': 'Author'}],
+                'published-print': {'date-parts': [[2023]]},
+                'container-title': ['Test Journal']
+            }
         }
         mock_get.return_value = mock_response
         

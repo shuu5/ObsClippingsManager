@@ -106,18 +106,48 @@ class SimpleIntegratedTestRunner:
             # 現在実装済みの機能を順次実行
             try:
                 # organize機能
+                self.logger.info("Attempting to import FileOrganizer")
                 from code.py.modules.workflows.file_organizer import FileOrganizer
+                self.logger.info("FileOrganizer imported successfully")
+                
                 organizer = FileOrganizer(self.config_manager, self.integrated_logger)
+                self.logger.info("FileOrganizer initialized")
+                
+                # DOIマッチングベースのorganize処理
+                bibtex_file = workspace_path / "CurrentManuscript.bib"
                 clippings_dir = workspace_path / "Clippings"
                 
-                if clippings_dir.exists():
-                    md_files = list(clippings_dir.glob("*.md"))
-                    for md_file in md_files:
-                        organizer.organize_file(md_file, clippings_dir)
+                self.logger.info(f"Checking files: bibtex={bibtex_file.exists()}, clippings={clippings_dir.exists()}")
+                
+                if bibtex_file.exists() and clippings_dir.exists():
+                    self.logger.info("Starting organize_workspace")
+                    result = organizer.organize_workspace(
+                        str(workspace_path), 
+                        str(bibtex_file), 
+                        str(clippings_dir)
+                    )
+                    self.logger.info(f"organize_workspace completed: {result}")
                     modules_executed.append('file_organizer')
-                    files_processed = len(md_files)
-            except ImportError:
-                pass
+                    files_processed = result.get('processed_papers', 0)
+                    
+                    # エッジケース情報をログ出力
+                    skipped = result.get('skipped_papers', {})
+                    if skipped.get('missing_in_clippings'):
+                        self.integrated_logger.get_logger('integrated_test').warning(
+                            f"Missing markdown files: {len(skipped['missing_in_clippings'])}"
+                        )
+                    if skipped.get('orphaned_in_clippings'):
+                        self.integrated_logger.get_logger('integrated_test').warning(
+                            f"Orphaned markdown files: {len(skipped['orphaned_in_clippings'])}"
+                        )
+                else:
+                    self.logger.warning(f"Required files missing: bibtex={bibtex_file.exists()}, clippings={clippings_dir.exists()}")
+            except ImportError as e:
+                self.logger.warning(f"ImportError: {e}")
+            except Exception as e:
+                self.logger.error(f"Error in organize processing: {e}")
+                import traceback
+                self.logger.error(traceback.format_exc())
             
             # 他の実装済み機能があれば順次追加
             # TODO: 新しいモジュールが実装されたら追加

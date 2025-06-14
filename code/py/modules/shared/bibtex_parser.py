@@ -132,6 +132,7 @@ class BibTeXParser:
             
             # 基本的な構文チェック（解析前）
             if not self._basic_syntax_check(bibtex_content):
+                self.logger.error("Invalid BibTeX syntax: malformed entries detected")
                 raise BibTeXError(
                     "Invalid BibTeX syntax: malformed entries detected",
                     error_code="BIBTEX_SYNTAX_ERROR",
@@ -142,6 +143,7 @@ class BibTeXParser:
             try:
                 bib_database = bibtexparser.loads(bibtex_content, parser=self.parser)
             except Exception as e:
+                self.logger.error(f"Failed to parse BibTeX content: {str(e)}")
                 raise BibTeXError(
                     f"Failed to parse BibTeX content: {str(e)}",
                     error_code="BIBTEX_PARSE_ERROR",

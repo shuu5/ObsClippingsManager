@@ -489,28 +489,46 @@ ai_generation:
 ### 主要処理フロー
 1. **パス解決**: workspace_pathから全パス自動導出
 2. **設定検証**: ファイル存在・エッジケース検出
-3. **処理対象決定**: BibTeXとMarkdownの両方に存在する論文のみ
+3. **処理対象決定**: CurrentManuscript.bibとClippings/*.mdのDOIマッチングによる処理対象決定
 4. **ステップ実行**: 順次処理（前段階完了後に次段階）
 5. **状態更新**: 各ステップ完了時の状態記録
+
+## organize機能
+
+### 概要
+ファイル整理機能の詳細については、専用仕様書を参照してください：
+**[FileOrganizer仕様書](file_organizer_specification.md)**
+
+### 主要機能
+- CurrentManuscript.bibとClippings/*.mdのDOIマッチング
+- citation_keyベースのディレクトリ構造への整理
+- エッジケース処理（マッチしない論文のスキップ）
+- YAMLヘッダーの自動更新
 
 ## エッジケース処理仕様
 
 ### 概要
-BibTeXファイルとClippingsディレクトリ間の不整合ケースに対する処理方針を定義します。
+CurrentManuscript.bibとClippingsディレクトリ間の不整合ケースに対する処理方針を定義します。
 
 ### エッジケース定義
 
 #### 1. missing_in_clippings
-- **定義**: BibTeXに記載されているがClippingsディレクトリに対応する.mdファイルが存在しない論文
+- **定義**: CurrentManuscript.bibに記載されているがClippingsディレクトリに対応するDOIを持つ.mdファイルが存在しない論文
 - **処理方針**: **DOI情報表示のみ、処理スキップ**
 - **ログレベル**: WARNING
-- **表示内容**: Citation key、DOI（利用可能な場合）、クリック可能なDOIリンク
+- **表示内容**: Citation key、DOI、クリック可能なDOIリンク
 
 #### 2. orphaned_in_clippings  
-- **定義**: Clippingsディレクトリに存在するがBibTeXファイルに記載されていない.mdファイル
+- **定義**: Clippingsディレクトリに存在するがCurrentManuscript.bibに対応するDOIが記載されていない.mdファイル
 - **処理方針**: **論文情報表示のみ、処理スキップ**
 - **ログレベル**: WARNING  
-- **表示内容**: ファイルパス、Citation key（ファイル名から推定）
+- **表示内容**: ファイルパス、DOI（YAMLヘッダーから）
+
+#### 3. no_doi_in_markdown
+- **定義**: ClippingsディレクトリのMarkdownファイルにDOI情報が存在しない
+- **処理方針**: **ファイル情報表示のみ、処理スキップ**
+- **ログレベル**: WARNING
+- **表示内容**: ファイルパス、DOI不足の警告
 
 ### 処理対象論文の決定
 エッジケースを除外した処理対象論文リストを生成します。

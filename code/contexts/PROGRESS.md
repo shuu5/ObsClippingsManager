@@ -53,11 +53,41 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [完了] 2.1.5 ユニットテスト実行・全テスト成功確認
 - [完了] 2.1.6 **organize機能統合テスト実行**
   ```bash
-  # 現在のintegrated_workflowを実行する統合テスト
+  # DOIマッチングベースのorganize統合テスト実行
   cd /home/user/proj/ObsClippingsManager
   uv run python code/scripts/run_integrated_test.py
   ```
-  **改善完了**: beforeとafter分離を削除し、workspaceでその場処理するシンプルな統合テストシステムに修正
+  **成功**: DOIマッチングベースのorganize機能が正常動作
+  
+  **テスト結果詳細**:
+  - 処理対象: CurrentManuscript.bib(4エントリ) と Clippings/*.md(3ファイル)
+  - DOIマッチング: 2論文が正常にマッチング
+  - 処理成功: 2ファイルを適切なcitation_keyディレクトリに整理
+    - `yinL2022BreastCancerRes/yinL2022BreastCancerRes.md`
+    - `takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md`
+  - エッジケース処理: 
+    - 2ファイル: BibTeXにあるがMarkdownなし（適切にスキップ）
+    - 1ファイル: MarkdownにあるがBibTeXなし（適切にスキップ）
+  
+  **実装済み機能**:
+  - DOIベースマッチングシステム
+  - CurrentManuscript.bibからcitation_key自動取得
+  - 安全なファイル移動・リネーム
+  - YAMLヘッダーのcitation_key更新
+  - 詳細なエッジケース検出・報告
+  
+  **仕様書分離完了**:
+  - `code/contexts/file_organizer_specification.md` 新規作成
+  - `integrated_workflow_specification.md` から詳細仕様を分離
+  - モジュール構造の明確化
+
+#### 2.1.7 **organize機能git同期**
+```bash
+# PROGRESS.md更新とorganize機能実装のcommit
+git add -A
+git commit -m "feat: DOIマッチングベースのorganize機能実装完了"
+git push
+```
 
 #### 2.2 ステップ2: sync（同期チェック）
 - [ ] 2.2.1 SyncCheckerクラス設計・テスト作成

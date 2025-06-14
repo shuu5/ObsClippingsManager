@@ -46,9 +46,12 @@ class TestBibTeXParser(unittest.TestCase):
     
     def test_bibtex_parser_import(self):
         """BibTeXParserクラスのインポートテスト"""
-        with self.assertRaises(ImportError):
-            # まだ実装されていないため、ImportError が発生することを確認
-            from modules.shared.bibtex_parser import BibTeXParser
+        try:
+            # BibTeXParserが正常にインポートできることを確認
+            from code.py.modules.shared.bibtex_parser import BibTeXParser
+            self.assertTrue(True, "BibTeXParser successfully imported")
+        except ImportError:
+            self.fail("BibTeXParser should be importable")
 
 class TestClaudeAPIClient(unittest.TestCase):
     """ClaudeAPIClientクラスのテスト"""
@@ -57,7 +60,7 @@ class TestClaudeAPIClient(unittest.TestCase):
         """ClaudeAPIClientクラスのインポートテスト"""
         with self.assertRaises(ImportError):
             # まだ実装されていないため、ImportError が発生することを確認
-            from modules.shared.claude_api_client import ClaudeAPIClient
+            from code.py.modules.shared.claude_api_client import ClaudeAPIClient
 
 if __name__ == '__main__':
     unittest.main() 

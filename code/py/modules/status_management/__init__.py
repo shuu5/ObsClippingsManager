@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-Status Management Module
+ObsClippingsManager Status Management Package
 
-状態管理システムのモジュール。
-YAMLヘッダーベースの処理状態管理を提供。
+状態管理モジュールパッケージ。
 """
 
 from .yaml_header_processor import YAMLHeaderProcessor

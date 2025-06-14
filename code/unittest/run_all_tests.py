@@ -11,7 +11,7 @@ from pathlib import Path
 
 # プロジェクトルートをPythonパスに追加
 project_root = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(project_root / "code" / "py"))
+sys.path.insert(0, str(project_root))
 
 def discover_and_run_tests():
     """全ユニットテストを検出・実行"""
