@@ -657,6 +657,205 @@ class TestStatusChecker(unittest.TestCase):
         self.assertIn('recovery_operations', rollback_plan)
         self.assertTrue(rollback_plan['snapshot_required'])
 
+    def test_content_difference_detection_no_changes(self):
+        """コンテンツ差分検出テスト（変更なし）"""
+        # テストファイル作成（content_hashなし）
+        yaml_header = {
+            'citation_key': 'nodiff2023test',
+            'workflow_version': '3.2',
+            'last_updated': datetime.now().isoformat(),
+            'created_at': datetime.now().isoformat(),
+            'processing_status': {
+                'organize': 'completed'
+            }
+        }
+        md_file = self._create_test_markdown_file('nodiff2023test', yaml_header)
+        
+        # 初回差分検出実行でハッシュを設定
+        first_result = self.status_checker.detect_content_changes(md_file)
+        self.assertTrue(first_result['has_changes'])  # 初回は変更ありとする
+        self.assertIsNone(first_result['previous_hash'])
+        
+        # 2回目の差分検出（変更なし）
+        second_result = self.status_checker.detect_content_changes(md_file)
+        
+        # 変更なしの場合
+        self.assertFalse(second_result['has_changes'])
+        self.assertIsNotNone(second_result['current_hash'])
+        self.assertIsNotNone(second_result['previous_hash'])
+        self.assertEqual(second_result['current_hash'], second_result['previous_hash'])
+
+    def test_content_difference_detection_with_changes(self):
+        """コンテンツ差分検出テスト（変更あり）"""
+        # テストファイル作成
+        yaml_header = {
+            'citation_key': 'diff2023test',
+            'workflow_version': '3.2',
+            'last_updated': datetime.now().isoformat(),
+            'created_at': datetime.now().isoformat(),
+            'processing_status': {
+                'organize': 'completed'
+            },
+            'content_hash': 'old_hash_value'  # 古いハッシュを設定
+        }
+        md_file = self._create_test_markdown_file('diff2023test', yaml_header)
+        
+        # ファイル内容を変更
+        with open(md_file, 'a', encoding='utf-8') as f:
+            f.write("\n\n## New Section\nThis is a new section added to the document.")
+        
+        # 差分検出実行
+        result = self.status_checker.detect_content_changes(md_file)
+        
+        # 変更ありの場合
+        self.assertTrue(result['has_changes'])
+        self.assertIsNotNone(result['current_hash'])
+        self.assertEqual(result['previous_hash'], 'old_hash_value')
+        self.assertNotEqual(result['current_hash'], result['previous_hash'])
+
+    def test_content_difference_detection_first_time(self):
+        """コンテンツ差分検出テスト（初回処理）"""
+        # テストファイル作成（content_hashなし）
+        yaml_header = {
+            'citation_key': 'firsttime2023test',
+            'workflow_version': '3.2',
+            'last_updated': datetime.now().isoformat(),
+            'created_at': datetime.now().isoformat(),
+            'processing_status': {
+                'organize': 'pending'
+            }
+        }
+        md_file = self._create_test_markdown_file('firsttime2023test', yaml_header)
+        
+        # 初回差分検出実行
+        result = self.status_checker.detect_content_changes(md_file)
+        
+        # 初回処理の場合
+        self.assertTrue(result['has_changes'])  # 初回は変更ありとする
+        self.assertIsNotNone(result['current_hash'])
+        self.assertIsNone(result['previous_hash'])
+
+    def test_batch_content_difference_detection(self):
+        """バッチコンテンツ差分検出テスト"""
+        # 複数のテストファイル作成
+        test_files = []
+        for i in range(3):
+            yaml_header = {
+                'citation_key': f'batch{i}2023test',
+                'workflow_version': '3.2',
+                'last_updated': datetime.now().isoformat(),
+                'created_at': datetime.now().isoformat(),
+                'processing_status': {
+                    'organize': 'completed'
+                }
+            }
+            md_file = self._create_test_markdown_file(f'batch{i}2023test', yaml_header)
+            test_files.append(md_file)
+        
+        # 全ファイルにハッシュを設定（変更なし状態にする）
+        for md_file in test_files:
+            self.status_checker.detect_content_changes(md_file)
+        
+        # 1つのファイルのみ変更
+        with open(test_files[1], 'a', encoding='utf-8') as f:
+            f.write("\n\n## Modified Section\nThis file has been modified.")
+        
+        # バッチ差分検出実行
+        result = self.status_checker.detect_batch_content_changes(test_files)
+        
+        # 結果確認
+        self.assertEqual(len(result['changed_files']), 1)
+        self.assertEqual(len(result['unchanged_files']), 2)
+        self.assertIn(test_files[1], [f['file_path'] for f in result['changed_files']])
+
+    def test_intelligent_skip_decision_with_content_changes(self):
+        """コンテンツ変更を考慮したインテリジェントスキップ判定テスト"""
+        # テストファイル作成（完了状態だが内容変更あり）
+        yaml_header = {
+            'citation_key': 'intelligent2023test',
+            'workflow_version': '3.2',
+            'last_updated': datetime.now().isoformat(),
+            'created_at': datetime.now().isoformat(),
+            'processing_status': {
+                'organize': 'completed'
+            },
+            'content_hash': 'old_hash_value'
+        }
+        md_file = self._create_test_markdown_file('intelligent2023test', yaml_header)
+        
+        # ファイル内容を変更
+        with open(md_file, 'a', encoding='utf-8') as f:
+            f.write("\n\n## Updated Content\nThis content has been updated.")
+        
+        # インテリジェントスキップ判定
+        result = self.status_checker.should_skip_operation_intelligent(
+            md_file, 'organize'
+        )
+        
+        # 内容変更があるため、完了状態でもスキップしない
+        self.assertFalse(result['should_skip'])
+        self.assertIn('content_changed', result['skip_reasons'])
+        self.assertTrue(result['content_analysis']['has_changes'])
+
+    def test_file_hash_calculation_consistency(self):
+        """ファイルハッシュ計算の一貫性テスト"""
+        # テストファイル作成
+        yaml_header = {
+            'citation_key': 'hash2023test',
+            'workflow_version': '3.2',
+            'last_updated': datetime.now().isoformat(),
+            'created_at': datetime.now().isoformat(),
+            'processing_status': {
+                'organize': 'pending'
+            }
+        }
+        md_file = self._create_test_markdown_file('hash2023test', yaml_header)
+        
+        # 同じファイルから複数回ハッシュ計算
+        hash1 = self.status_checker.calculate_content_hash(md_file)
+        hash2 = self.status_checker.calculate_content_hash(md_file)
+        
+        # ハッシュ値の一貫性確認
+        self.assertEqual(hash1, hash2)
+        self.assertIsNotNone(hash1)
+        self.assertIsInstance(hash1, str)
+        self.assertGreater(len(hash1), 0)
+
+    def test_content_change_tracking_workflow(self):
+        """コンテンツ変更追跡ワークフローテスト"""
+        # テストファイル作成
+        yaml_header = {
+            'citation_key': 'workflow2023test',
+            'workflow_version': '3.2',
+            'last_updated': datetime.now().isoformat(),
+            'created_at': datetime.now().isoformat(),
+            'processing_status': {
+                'organize': 'pending'
+            }
+        }
+        md_file = self._create_test_markdown_file('workflow2023test', yaml_header)
+        
+        # 1. 初回処理判定
+        initial_needed = self.status_checker.check_processing_needed(md_file, 'organize')
+        self.assertTrue(initial_needed)
+        
+        # 2. 処理完了とハッシュ更新をシミュレート
+        self.status_checker.update_processing_status_with_hash(
+            md_file, 'organize', ProcessingStatus.COMPLETED
+        )
+        
+        # 3. 再度処理必要性チェック（変更なし）
+        no_change_needed = self.status_checker.check_processing_needed(md_file, 'organize')
+        self.assertFalse(no_change_needed)
+        
+        # 4. ファイル内容変更
+        with open(md_file, 'a', encoding='utf-8') as f:
+            f.write("\n\n## Workflow Test Addition\nContent added for workflow test.")
+        
+        # 5. 変更後の処理必要性チェック
+        change_needed = self.status_checker.check_processing_needed(md_file, 'organize')
+        self.assertTrue(change_needed)
+
 
 if __name__ == '__main__':
     unittest.main() 

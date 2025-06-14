@@ -9,6 +9,7 @@ StatusChecker
 
 import yaml
 import os
+import hashlib
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, List, Optional, Union
@@ -98,7 +99,7 @@ class StatusChecker:
             # ProcessingStatusで変換して判定
             status_enum = ProcessingStatus.from_string(current_status)
             
-            # COMPLETEDの場合は、修正時刻チェックも実行
+            # COMPLETEDの場合は、修正時刻とコンテンツ変更をチェック
             if status_enum == ProcessingStatus.COMPLETED:
                 # 完了済み操作をスキップする設定の場合
                 if self.skip_completed_operations:
@@ -109,7 +110,16 @@ class StatusChecker:
                                 f"ファイルが変更されているため再処理が必要: {file_path.name}"
                             )
                             return True
-                    # 変更がないか、修正時刻チェックが無効の場合はスキップ
+                    
+                    # コンテンツ変更チェック
+                    content_result = self.detect_content_changes(file_path, update_hash=False)
+                    if content_result['has_changes']:
+                        self.logger.get_logger().info(
+                            f"コンテンツが変更されているため再処理が必要: {file_path.name}"
+                        )
+                        return True
+                    
+                    # 変更がない場合はスキップ
                     return False
                 else:
                     # 完了済み操作をスキップしない設定の場合は処理が必要
@@ -1054,4 +1064,303 @@ class StatusChecker:
                 'recovery_operations': ['emergency_recovery'],
                 'rollback_points': [],
                 'error': str(e)
-            } 
+            }
+
+    def calculate_content_hash(self, file_path: Union[str, Path]) -> str:
+        """
+        ファイルコンテンツのハッシュ値を計算
+        YAMLヘッダーを除いたコンテンツ部分のみをハッシュ計算対象とする
+        
+        Args:
+            file_path: Markdownファイルパス
+            
+        Returns:
+            str: SHA256ハッシュ値
+            
+        Raises:
+            FileSystemError: ファイル読み込みエラー
+        """
+        try:
+            file_path = Path(file_path)
+            
+            # YAMLヘッダーとコンテンツを分離
+            yaml_header, content = self.yaml_processor.parse_yaml_header(file_path)
+            
+            # コンテンツ部分のみでハッシュ計算（YAMLヘッダーは除外）
+            content_bytes = content.encode('utf-8')
+            hash_object = hashlib.sha256(content_bytes)
+            return hash_object.hexdigest()
+            
+        except Exception as e:
+            raise FileSystemError(
+                f"ファイルハッシュ計算エラー: {file_path}: {str(e)}",
+                error_code="HASH_CALCULATION_ERROR",
+                context={"file": str(file_path)}
+            )
+
+    def detect_content_changes(self, file_path: Union[str, Path], update_hash: bool = True) -> Dict[str, Any]:
+        """
+        ファイルコンテンツの変更を検出
+        
+        Args:
+            file_path: Markdownファイルパス
+            update_hash: ハッシュを更新するかどうか
+            
+        Returns:
+            Dict[str, Any]: 変更検出結果
+        """
+        try:
+            file_path = Path(file_path)
+            
+            # 現在のコンテンツハッシュ計算
+            current_hash = self.calculate_content_hash(file_path)
+            
+            # YAMLヘッダーから保存されたハッシュを取得
+            yaml_header, content = self.yaml_processor.parse_yaml_header(file_path)
+            previous_hash = None
+            
+            if yaml_header:
+                previous_hash = yaml_header.get('content_hash')
+            
+            # 変更検出
+            has_changes = previous_hash is None or current_hash != previous_hash
+            
+            # 初回実行または変更があった場合、ハッシュを更新
+            if update_hash and (previous_hash is None or has_changes):
+                if not yaml_header:
+                    yaml_header = {}
+                yaml_header['content_hash'] = current_hash
+                yaml_header['last_updated'] = datetime.now().isoformat()
+                self.yaml_processor.write_yaml_header(file_path, yaml_header, content)
+            
+            result = {
+                'has_changes': has_changes,
+                'current_hash': current_hash,
+                'previous_hash': previous_hash,
+                'file_path': str(file_path),
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            if has_changes:
+                self.logger.get_logger().info(
+                    f"コンテンツ変更検出: {file_path.name}"
+                )
+            else:
+                self.logger.get_logger().debug(
+                    f"コンテンツ変更なし: {file_path.name}"
+                )
+            
+            return result
+            
+        except Exception as e:
+            self.logger.get_logger().error(
+                f"コンテンツ変更検出エラー: {file_path}: {str(e)}"
+            )
+            return {
+                'has_changes': True,  # エラー時は安全側に倒す
+                'current_hash': None,
+                'previous_hash': None,
+                'file_path': str(file_path),
+                'timestamp': datetime.now().isoformat(),
+                'error': str(e)
+            }
+
+    def detect_batch_content_changes(
+        self, 
+        file_paths: List[Union[str, Path]]
+    ) -> Dict[str, Any]:
+        """
+        複数ファイルのコンテンツ変更をバッチ検出
+        
+        Args:
+            file_paths: Markdownファイルパスのリスト
+            
+        Returns:
+            Dict[str, Any]: バッチ変更検出結果
+        """
+        try:
+            result = {
+                'changed_files': [],
+                'unchanged_files': [],
+                'total_files': len(file_paths),
+                'error_files': [],
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            for file_path in file_paths:
+                try:
+                    # バッチ処理では自動ハッシュ更新は行わない
+                    change_result = self.detect_content_changes(file_path, update_hash=False)
+                    
+                    if change_result.get('has_changes', False):
+                        result['changed_files'].append({
+                            'file_path': change_result['file_path'],
+                            'current_hash': change_result['current_hash'],
+                            'previous_hash': change_result['previous_hash']
+                        })
+                    else:
+                        result['unchanged_files'].append({
+                            'file_path': change_result['file_path'],
+                            'hash': change_result['current_hash']
+                        })
+                        
+                except Exception as e:
+                    result['error_files'].append({
+                        'file_path': str(file_path),
+                        'error': str(e)
+                    })
+            
+            self.logger.get_logger().info(
+                f"バッチ変更検出完了: 変更{len(result['changed_files'])}件, "
+                f"未変更{len(result['unchanged_files'])}件, "
+                f"エラー{len(result['error_files'])}件"
+            )
+            
+            return result
+            
+        except Exception as e:
+            self.logger.get_logger().error(f"バッチ変更検出エラー: {str(e)}")
+            return {
+                'changed_files': [],
+                'unchanged_files': [],
+                'total_files': len(file_paths),
+                'error_files': [{'error': str(e)}],
+                'timestamp': datetime.now().isoformat()
+            }
+
+    def should_skip_operation_intelligent(
+        self, 
+        file_path: Union[str, Path], 
+        operation: str
+    ) -> Dict[str, Any]:
+        """
+        コンテンツ変更を考慮したインテリジェントスキップ判定
+        
+        Args:
+            file_path: Markdownファイルパス
+            operation: 処理操作名
+            
+        Returns:
+            Dict[str, Any]: スキップ判定結果
+        """
+        try:
+            file_path = Path(file_path)
+            
+            result = {
+                'should_skip': False,
+                'skip_reasons': [],
+                'content_analysis': {
+                    'has_changes': False,
+                    'hash_comparison': None
+                },
+                'status_analysis': {
+                    'current_status': 'unknown',
+                    'completion_time': None
+                }
+            }
+            
+            # 基本的な処理必要性チェック
+            processing_needed = self.check_processing_needed(file_path, operation)
+            
+            # コンテンツ変更検出（判定のみ、ハッシュは更新しない）
+            content_result = self.detect_content_changes(file_path, update_hash=False)
+            result['content_analysis'] = {
+                'has_changes': content_result['has_changes'],
+                'hash_comparison': {
+                    'current': content_result['current_hash'],
+                    'previous': content_result['previous_hash']
+                }
+            }
+            
+            # YAMLヘッダーから処理状態取得
+            yaml_header, _ = self.yaml_processor.parse_yaml_header(file_path)
+            if yaml_header:
+                processing_status = yaml_header.get('processing_status', {})
+                current_status = processing_status.get(operation, 'pending')
+                result['status_analysis']['current_status'] = current_status
+                
+                # 完了時刻情報取得
+                completion_info = processing_status.get(f"{operation}_completed_at")
+                if completion_info:
+                    result['status_analysis']['completion_time'] = completion_info
+            
+            # インテリジェントスキップ判定
+            if not processing_needed:
+                # 基本的にはスキップ対象
+                result['should_skip'] = True
+                result['skip_reasons'].append('operation_completed')
+                
+                # ただし、コンテンツ変更がある場合はスキップしない
+                if content_result['has_changes']:
+                    result['should_skip'] = False
+                    result['skip_reasons'].append('content_changed')
+            else:
+                result['should_skip'] = False
+                result['skip_reasons'].append('processing_required')
+            
+            return result
+            
+        except Exception as e:
+            self.logger.get_logger().error(
+                f"インテリジェントスキップ判定エラー: {file_path}: {str(e)}"
+            )
+            return {
+                'should_skip': False,  # エラー時は処理を実行
+                'skip_reasons': [f'error: {str(e)}'],
+                'content_analysis': {'has_changes': True, 'hash_comparison': None},
+                'status_analysis': {'current_status': 'error', 'completion_time': None}
+            }
+
+    def update_processing_status_with_hash(
+        self, 
+        file_path: Union[str, Path], 
+        operation: str, 
+        status: ProcessingStatus
+    ) -> None:
+        """
+        処理状態とコンテンツハッシュを同時に更新
+        
+        Args:
+            file_path: Markdownファイルパス
+            operation: 処理操作名
+            status: 新しい処理状態
+            
+        Raises:
+            ProcessingError: 状態更新エラー
+        """
+        try:
+            file_path = Path(file_path)
+            
+            # YAMLヘッダー取得
+            yaml_header, content = self.yaml_processor.parse_yaml_header(file_path)
+            if not yaml_header:
+                yaml_header = {}
+            
+            # 処理状態更新
+            if 'processing_status' not in yaml_header:
+                yaml_header['processing_status'] = {}
+            
+            yaml_header['processing_status'][operation] = status.to_string()
+            
+            # 完了時の追加情報
+            if status == ProcessingStatus.COMPLETED:
+                yaml_header['processing_status'][f"{operation}_completed_at"] = datetime.now().isoformat()
+                # コンテンツハッシュ更新
+                yaml_header['content_hash'] = self.calculate_content_hash(file_path)
+            
+            # 最終更新時刻更新
+            yaml_header['last_updated'] = datetime.now().isoformat()
+            
+            # YAMLヘッダー書き込み
+            self.yaml_processor.write_yaml_header(file_path, yaml_header, content)
+            
+            self.logger.get_logger().info(
+                f"処理状態・ハッシュ更新完了: {file_path.name}, {operation} -> {status.to_string()}"
+            )
+            
+        except Exception as e:
+            raise ProcessingError(
+                f"処理状態・ハッシュ更新エラー: {file_path}: {str(e)}",
+                error_code="STATUS_HASH_UPDATE_ERROR",
+                context={"file": str(file_path), "operation": operation, "status": status.to_string()}
+            ) 
