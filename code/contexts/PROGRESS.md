@@ -67,12 +67,12 @@
 ### フェーズ4: 引用文献取得システム
 #### 4.1 BibTeX解析
 - [完了] 4.1.1 BibTexParserクラス設計・テスト作成
-- [進行中] 4.1.2 BibTeXファイル読み込み機能実装
-- [ ] 4.1.3 citation_key抽出機能
-- [ ] 4.1.4 BibTeX検証・修復機能
+- [完了] 4.1.2 BibTeXファイル読み込み機能実装
+- [完了] 4.1.3 citation_key抽出機能
+- [完了] 4.1.4 BibTeX検証・修復機能
 
 #### 4.2 API連携
-- [ ] 4.2.1 CitationFetcherクラス設計・テスト作成
+- [進行中] 4.2.1 CitationFetcherクラス設計・テスト作成
 - [ ] 4.2.2 CrossRef API連携実装
 - [ ] 4.2.3 OpenCitations API連携実装
 - [ ] 4.2.4 API レート制限・エラーハンドリング
