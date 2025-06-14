@@ -53,9 +53,9 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [完了] 2.1.5 ユニットテスト実行・全テスト成功確認
 - [完了] 2.1.6 **organize機能統合テスト実行**
   ```bash
-  # organize機能の統合テスト（AI機能無効化）
+  # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules file_organizer --disable-ai-features --verbose
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 #### 2.2 ステップ2: sync（同期チェック）
@@ -67,9 +67,9 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [ ] 2.2.6 ユニットテスト実行・全テスト成功確認
 - [ ] 2.2.7 **sync機能統合テスト実行**
   ```bash
-  # sync機能の統合テスト（organize + sync）
+  # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules file_organizer,sync_checker --disable-ai-features --verbose
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 #### 2.3 ステップ3: fetch（引用文献取得）
@@ -87,9 +87,9 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [ ] 2.3.12 ユニットテスト実行・全テスト成功確認
 - [ ] 2.3.13 **fetch機能統合テスト実行**
   ```bash
-  # fetch機能の統合テスト（organize + sync + fetch）
+  # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules file_organizer,sync_checker,citation_fetcher --disable-ai-features --verbose
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 #### 2.4 ステップ4: section_parsing（セクション分割）
@@ -100,9 +100,9 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [ ] 2.4.5 ユニットテスト実行・全テスト成功確認
 - [ ] 2.4.6 **section_parsing機能統合テスト実行**
   ```bash
-  # section_parsing機能の統合テスト（organize + sync + fetch + section_parsing）
+  # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules file_organizer,sync_checker,citation_fetcher,section_parser --disable-ai-features --verbose
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 #### 2.5 ステップ5: ai_citation_support（AI引用理解支援）
@@ -114,9 +114,9 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [ ] 2.5.6 ユニットテスト実行・全テスト成功確認
 - [ ] 2.5.7 **ai_citation_support機能統合テスト実行**
   ```bash
-  # ai_citation_support機能の統合テスト（AI機能開始）
+  # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules file_organizer,sync_checker,citation_fetcher,section_parser,ai_citation_support --verbose
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 #### 2.6 ステップ6: enhanced-tagger（AIタグ生成）
@@ -128,9 +128,9 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [ ] 2.6.6 ユニットテスト実行・全テスト成功確認
 - [ ] 2.6.7 **enhanced-tagger機能統合テスト実行**
   ```bash
-  # enhanced-tagger機能の統合テスト
-  cd /home/user/proj/ObsClippingsManager  
-  uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules file_organizer,sync_checker,citation_fetcher,section_parser,ai_citation_support,ai_tagging_translation --verbose
+  # 現在のintegrated_workflowを実行する統合テスト
+  cd /home/user/proj/ObsClippingsManager
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 #### 2.7 ステップ7: enhanced-translate（要約翻訳）
@@ -141,9 +141,9 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [ ] 2.7.5 ユニットテスト実行・全テスト成功確認
 - [ ] 2.7.6 **enhanced-translate機能統合テスト実行**
   ```bash
-  # enhanced-translate機能の統合テスト
+  # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules file_organizer,sync_checker,citation_fetcher,section_parser,ai_citation_support,ai_tagging_translation --verbose
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 #### 2.8 ステップ8: ochiai-format（落合フォーマット要約）
@@ -154,9 +154,9 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [ ] 2.8.5 ユニットテスト実行・全テスト成功確認
 - [ ] 2.8.6 **ochiai-format機能統合テスト実行**
   ```bash
-  # ochiai-format機能の統合テスト
+  # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules file_organizer,sync_checker,citation_fetcher,section_parser,ai_citation_support,ai_tagging_translation,ochiai_format --verbose
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 #### 2.9 ステップ9: final-sync（最終同期）
@@ -166,9 +166,9 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [ ] 2.9.4 ユニットテスト実行・全テスト成功確認
 - [ ] 2.9.5 **final-sync機能統合テスト実行**
   ```bash
-  # final-sync機能の統合テスト（フェーズ2完了）
+  # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type full --verbose
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 ---
@@ -185,9 +185,9 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [ ] 3.1.7 ユニットテスト実行・全テスト成功確認
 - [ ] 3.1.8 **IntegratedWorkflow統合テスト実行**
   ```bash
-  # IntegratedWorkflowクラスの統合テスト
+  # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type full --verbose
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 #### 3.2 コマンドライン界面
@@ -202,41 +202,17 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 - [ ] 3.2.9 ユニットテスト実行・全テスト成功確認
 - [ ] 3.2.10 **CLI機能統合テスト実行**
   ```bash
-  # CLI機能の統合テスト
+  # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type full --verbose
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 #### 3.3 統合ワークフロー統合テスト
 - [ ] 3.3.1 **エンドツーエンド統合テスト実行**
   ```bash
-  # 完全エンドツーエンド統合テスト
+  # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type full --reset-environment --verbose
-  ```
-- [ ] 3.3.2 全ワークフロー連携動作確認
-  ```bash
-  # 全ワークフロー連携確認
-  cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type full --verbose --report-format html
-  ```
-- [ ] 3.3.3 AI機能統合動作確認
-  ```bash
-  # AI機能統合動作確認
-  cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules ai_citation_support,ai_tagging_translation,ochiai_format --verbose
-  ```
-- [ ] 3.3.4 エッジケース処理動作確認
-  ```bash
-  # エッジケース処理確認（環境リセット）
-  cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type full --reset-environment --keep-environment --verbose
-  ```
-- [ ] 3.3.5 パフォーマンステスト実行
-  ```bash
-  # パフォーマンステスト実行
-  cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py --test-type performance --verbose --report-format html
+  uv run python code/scripts/run_integrated_test.py
   ```
 
 ---
@@ -287,126 +263,39 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 
 ### 重要な開発原則
 1. **ワークフロー順実装**: organize → sync → fetch → ... の順序で実装
-2. **段階的統合テスト**: 各ステップ完了後に統合テスト実行必須
-3. **依存関係の方向**: shared ← workflow_steps ← integrated_workflow ← main
-4. **状態管理**: 全処理ステップでYAMLヘッダー更新必須
-5. **エラー処理**: ObsClippingsManagerError基底の統一例外体系
-6. **テスト分離**: `/tmp/ObsClippingsManager_Test` での完全分離
+2. **integrated_workflowへの組み込み**: モジュール完成後は必ずintegrated_workflowに統合
+3. **統合テスト**: 常に同じコマンドで現在の機能をテスト
+4. **依存関係の方向**: shared ← workflow_steps ← integrated_workflow ← main
+5. **状態管理**: 全処理ステップでYAMLヘッダー更新必須
+6. **エラー処理**: ObsClippingsManagerError基底の統一例外体系
 
-### 統合テスト実行タイミング
+### 開発完了後のテスト実行
 ```bash
-# 各ステップ完了後に実行
+# ユニットテスト（必須）
 cd /home/user/proj/ObsClippingsManager
 uv run code/unittest/run_all_tests.py
 
-# 統合テスト実行
-uv run python code/integrated_test/run_integrated_tests.py
+# 統合テスト（必須）
+uv run python code/scripts/run_integrated_test.py
 ```
 
-## 📋 統合テスト実行ガイド
+## 📋 シンプルな開発ワークフロー
 
-### 統合テストの種類と使い分け
+### 開発手順
+1. **モジュール開発**: TDDでモジュールを開発・完成
+2. **integrated_workflowに組み込み**: 完成したモジュールをintegrated_workflowに統合
+3. **統合テスト実行**: 現在のintegrated_workflowをテスト実行
+4. **進捗更新**: テスト成功後にPROGRESS.mdを更新
 
-#### 1. **regressionテスト** - 段階的統合テスト
-各モジュール完成後に実行する基本的な統合テスト。特定モジュールとその依存関係を検証。
-
+### 統合テスト実行
 ```bash
-# 基本形式
-uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules [モジュール名] --verbose
-
-# AI機能実装前（2.1～2.4）
---disable-ai-features フラグを追加
-
-# AI機能実装後（2.5～2.9）
---disable-ai-features フラグを削除
+# 現在のintegrated_workflowを実行する統合テスト（常に同じコマンド）
+cd /home/user/proj/ObsClippingsManager
+uv run python code/scripts/run_integrated_test.py
 ```
-
-#### 2. **fullテスト** - 完全統合テスト
-大きなマイルストーン完了時や最終検証時に実行。全ワークフローの完全なエンドツーエンド検証。
-
-```bash
-# フェーズ完了時の完全テスト
-uv run python code/scripts/run_integrated_test.py --test-type full --verbose
-
-# 環境リセット後の完全テスト（推奨）
-uv run python code/scripts/run_integrated_test.py --test-type full --reset-environment --verbose
-```
-
-#### 3. **performanceテスト** - パフォーマンス検証
-システム完成時やパフォーマンス課題調査時に実行。
-
-```bash
-# パフォーマンステスト
-uv run python code/scripts/run_integrated_test.py --test-type performance --verbose --report-format html
-```
-
-### 主要オプション解説
-
-| オプション | 用途 | 推奨使用場面 |
-|------------|------|--------------|
-| `--test-type regression` | 特定モジュールの統合テスト | 各モジュール完成後 |
-| `--test-type full` | 完全エンドツーエンド検証 | フェーズ完了時 |
-| `--test-type performance` | パフォーマンス測定 | 最終検証時 |
-| `--specific-modules` | テスト対象モジュール指定 | 段階的テスト実行 |
-| `--disable-ai-features` | AI機能無効化 | AI実装前テスト |
-| `--reset-environment` | テスト環境強制リセット | 環境問題解決時 |
-| `--keep-environment` | テスト環境保持 | デバッグ時 |
-| `--verbose` | 詳細ログ出力 | 問題調査時 |
-| `--report-format html` | HTML形式レポート | 詳細結果確認時 |
-
-### モジュール名対応表
-
-| ワークフローステップ | モジュール名 |
-|---------------------|--------------|
-| organize | `file_organizer` |
-| sync | `sync_checker` |
-| fetch | `citation_fetcher` |
-| section_parsing | `section_parser` |
-| ai_citation_support | `ai_citation_support` |
-| enhanced-tagger | `ai_tagging_translation` |
-| enhanced-translate | `ai_tagging_translation` |
-| ochiai-format | `ochiai_format` |
-| final-sync | `final_sync` |
-
-### デバッグ時の統合テスト
-
-```bash
-# デバッグモード（環境保持、詳細ログ）
-uv run python code/scripts/run_integrated_test.py --test-type regression --specific-modules [モジュール名] --keep-environment --verbose
-
-# 特定の問題調査時
-uv run python code/scripts/run_integrated_test.py --test-type full --reset-environment --keep-environment --verbose --report-format html
-```
-
-### 統合テスト失敗時の対応
-
-1. **ユニットテスト確認**
-   ```bash
-   uv run code/unittest/run_all_tests.py
-   ```
-
-2. **環境リセット後再実行**
-   ```bash
-   uv run python code/scripts/run_integrated_test.py --reset-environment [元のオプション]
-   ```
-
-3. **デバッグモードで詳細確認**
-   ```bash
-   uv run python code/scripts/run_integrated_test.py --keep-environment --verbose [元のオプション]
-   ```
-
-4. **ログ確認**
-   - 統合テストログ: テスト実行時に表示
-   - アプリケーションログ: `logs/obsclippings.log`
-
-### API連携注意事項
-- **CrossRef**: 秒間10リクエスト制限、品質閾値0.8
-- **Semantic Scholar**: 秒間1リクエスト制限（API キー使用）、品質閾値0.7
-- **OpenCitations**: 秒間5リクエスト制限、最終フォールバック
-- **Claude API**: 使用量制限確認必須、バッチ処理最適化
 
 ### 品質保証チェックリスト
-- [ ] 各ステップのユニットテスト100%成功
-- [ ] 各ステップの統合テスト成功
+- [ ] ユニットテスト100%成功
+- [ ] 統合テスト成功
 - [ ] 全テスト実行成功後のGitコミット・プッシュ
 - [ ] 進捗状況のPROGRESS.md更新
