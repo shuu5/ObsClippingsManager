@@ -1,9 +1,10 @@
 # AI理解支援引用文献パーサー機能仕様書
 
 ## 概要
-- **責務**: references.bibの内容をYAMLヘッダーに統合しAI理解支援機能を提供
-- **依存**: yaml_template_manager → organize → sync → fetch
+- **責務**: fetch機能で生成されたreferences.bibの内容をYAMLヘッダーに統合しAI理解支援機能を提供
+- **依存**: yaml_template_manager → organize → sync → fetch（references.bib生成完了後）
 - **実行**: 統合ワークフローで自動実行
+- **入力**: 各論文サブディレクトリの`references.bib`ファイル
 
 ## 処理フロー図
 ```mermaid
@@ -11,21 +12,24 @@ flowchart TD
     A["入力データ"] --> B["AI引用解析処理開始"]
     B --> C["yaml_template_manager構造確認"]
     C --> D["データ検証"]
-    D --> E["BibTeXファイル読み込み"]
-    E --> F["BibTeXエントリー解析"]
-    F --> G["引用マッピング作成"]
-    G --> H["YAML citation_metadata・citations セクション更新"]
-    H --> I["結果出力"]
-    I --> J["完了"]
+    D --> E["references.bibファイル検索"]
+    E --> F["references.bibファイル読み込み"]
+    F --> G["BibTeXエントリー解析"]
+    G --> H["引用マッピング作成"]
+    H --> I["YAML citation_metadata・citations セクション更新"]
+    I --> J["結果出力"]
+    J --> K["完了"]
     
-    C -->|構造不正| K["統一テンプレート修復"]
-    D -->|エラー| L["エラーハンドリング"]
-    E -->|ファイル不正| M["BibTeX修復"]
-    F -->|解析失敗| N["パース再試行"]
-    K --> D
-    L --> O["失敗ログ記録"]
-    M --> E
-    N --> F
+    C -->|構造不正| L["統一テンプレート修復"]
+    D -->|エラー| M["エラーハンドリング"]
+    E -->|ファイル未作成| N["fetch未実行警告"]
+    F -->|ファイル不正| O["BibTeX修復"]
+    G -->|解析失敗| P["パース再試行"]
+    L --> D
+    M --> Q["失敗ログ記録"]
+    N --> J
+    O --> F
+    P --> G
 ```
 
 ## モジュール関係図
@@ -34,15 +38,16 @@ graph LR
     A["yaml_template_manager"] --> B["AI引用解析"]
     C["基本機能"] --> B
     
-    D["BibTeXファイル"] -.-> B
-    E["設定ファイル"] -.-> B
-    F["ログシステム"] -.-> B
+    D["論文サブディレクトリ"] -.-> B
+    E["references.bibファイル"] -.-> B
+    F["設定ファイル"] -.-> B
+    G["ログシステム"] -.-> B
     
-    B --> G["セクション分割"]
-    B --> H["AIタグ付け"]
-    B --> I["要約翻訳"]
-    B --> J["落合フォーマット"]
-    B --> K["統合ワークフロー"]
+    B --> H["セクション分割"]
+    B --> I["AIタグ付け"]
+    B --> J["要約翻訳"]
+    B --> K["落合フォーマット"]
+    B --> L["統合ワークフロー"]
 ```
 
 ## YAMLヘッダー形式
@@ -213,26 +218,44 @@ class AICitationSupportWorkflow:
             input_dir, 'ai_citation_support', target_items
         )
         
-        # BibTeXファイルを読み込み
-        bibtex_file = self.config_manager.get_bibtex_file()
-        bibtex_entries = self.bibtex_parser.parse_file(bibtex_file)
-        
         for paper_path in papers_needing_processing:
             try:
-                citation_mapping = self.create_citation_mapping(bibtex_entries)
+                # 論文ディレクトリのreferences.bibファイルを検索
+                references_bib_path = self._find_references_bib(paper_path)
+                if not references_bib_path:
+                    self.logger.warning(f"references.bib not found for {paper_path}, skipping citation integration")
+                    status_manager.update_status(input_dir, paper_path, 'ai_citation_support', 'skipped')
+                    continue
+                
+                # references.bibファイル読み込み
+                bibtex_entries = self.bibtex_parser.parse_file(references_bib_path)
+                citation_mapping = self.create_citation_mapping(bibtex_entries, references_bib_path)
                 self.update_yaml_with_citations(paper_path, citation_mapping)
                 status_manager.update_status(input_dir, paper_path, 'ai_citation_support', 'completed')
             except Exception as e:
                 self.logger.error(f"Failed to add citation support for {paper_path}: {e}")
                 status_manager.update_status(input_dir, paper_path, 'ai_citation_support', 'failed')
     
-    def create_citation_mapping(self, bibtex_entries):
+    def _find_references_bib(self, paper_path: str) -> Optional[str]:
+        """論文に対応するreferences.bibファイルを検索"""
+        from pathlib import Path
+        
+        paper_dir = Path(paper_path).parent
+        references_bib = paper_dir / "references.bib"
+        
+        if references_bib.exists():
+            return str(references_bib)
+        else:
+            return None
+    
+    def create_citation_mapping(self, bibtex_entries, references_bib_path):
         """BibTeXエントリーから引用マッピングを作成"""
         citations = {}
         citation_metadata = {
             'last_updated': datetime.now().isoformat(),
             'mapping_version': '2.0',
             'source_bibtex': 'references.bib',
+            'references_bib_path': references_bib_path,
             'total_citations': len(bibtex_entries)
         }
         

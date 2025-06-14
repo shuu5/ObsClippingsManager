@@ -34,12 +34,13 @@ flowchart TD
 graph LR
     A["統合ワークフロー"] --> B["yaml_template_manager"]
     A --> C["基本機能"]
-    A --> D["AI引用解析"]
-    A --> E["セクション分割"]
-    A --> F["AIタグ付け"]
-    A --> G["要約翻訳"]
-    A --> H["落合フォーマット"]
-    A --> I["状態管理"]
+    A --> D["CitationFetcher"]
+    A --> E["AI引用解析"]
+    A --> F["セクション分割"]
+    A --> G["AIタグ付け"]
+    A --> H["要約翻訳"]
+    A --> I["落合フォーマット"]
+    A --> J["状態管理"]
     
     B --> C
     B --> D
@@ -48,11 +49,15 @@ graph LR
     B --> G
     B --> H
     B --> I
+    B --> J
     
-    J["設定ファイル"] -.-> A
-    K["ログシステム"] -.-> A
-    L["バックアップシステム"] -.-> A
-    M["Claude API"] -.-> A
+    K["設定ファイル"] -.-> A
+    L["ログシステム"] -.-> A
+    M["バックアップシステム"] -.-> A
+    N["Claude API"] -.-> A
+    O["CrossRef API"] -.-> D
+    P["Semantic Scholar API"] -.-> D
+    Q["OpenCitations API"] -.-> D
 ```
 
 ## YAMLヘッダー形式
@@ -140,6 +145,17 @@ integrated_execution_summary:
       papers_processed: 3
       execution_time: 8.1
       sync_operations: 6
+    fetch:
+      status: completed
+      papers_processed: 3
+      execution_time: 18.7
+      dois_extracted: 12
+      references_bib_files_created: 3
+      crossref_success: 8
+      semantic_scholar_success: 3
+      opencitations_success: 1
+      fallback_placeholders: 0
+      average_quality_score: 0.89
     ai_citation_support:
       status: completed
       papers_processed: 3
@@ -415,10 +431,10 @@ organize → sync → fetch → section_parsing → ai_citation_support → enha
 ```
 
 ### メタデータ自動補完システム
-- **デフォルト有効**: 全引用文献に対して自動的にメタデータ補完を実行
-- **フォールバック戦略**: CrossRef → Semantic Scholar → OpenAlex → PubMed → OpenCitations
-- **完全自動制御**: 十分な情報（title, author, journal, year）が得られた時点で後続API呼び出しを停止
-- **API最適化**: 無駄なAPI呼び出しを削減し、効率的な処理を実現
+- **fetchステップ**: 論文内のDOI情報を抽出し、各論文サブディレクトリに`references.bib`を生成
+- **フォールバック戦略**: CrossRef → Semantic Scholar → OpenCitations
+- **BibTeX形式保存**: 取得したメタデータをBibTeX形式で保存
+- **ai_citation_supportステップ**: `references.bib`の内容をYAMLヘッダーに統合
 
 ### 依存関係
 - 各ステップは**順次実行**

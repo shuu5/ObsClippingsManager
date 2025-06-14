@@ -5,7 +5,7 @@
 ## 📋 システム概要
 
 ### 主要機能
-1. **引用文献自動取得** - CrossRef/OpenCitations API
+1. **多段階フォールバック引用文献取得** - CrossRef → Semantic Scholar → OpenCitations API
 2. **ファイル自動整理** - Citation keyベースのディレクトリ構造
 3. **同期チェック** - BibTeX ↔ Clippings整合性確認
 4. **論文セクション分割** - Markdownの見出し構造による自動セクション解析
@@ -34,6 +34,7 @@ code/py/
 - **[統合ワークフロー](code/contexts/integrated_workflow_specification.md)** - 全処理ステップを単一コマンドで実行
 - **[状態管理システム](code/contexts/status_management_yaml_specification.md)** - YAMLヘッダーベースの状態管理
 - **[共有モジュール](code/contexts/shared_modules_specification.md)** - 基盤機能・設定管理
+- **[引用文献取得システム](code/contexts/citation_fetcher_specification.md)** - 多段階フォールバック引用文献取得
 
 ### テストシステム
 - **[統合テストシステム](code/contexts/integrated_testing_specification.md)** - Python統一テスト実行・品質保証・エンドツーエンド検証

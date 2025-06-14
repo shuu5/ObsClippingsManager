@@ -292,6 +292,16 @@ ai_generation:
 }
 ```
 
+## CitationFetcher - 引用文献取得システム（参照）
+
+### 基本機能
+- **多段階フォールバック**: CrossRef → Semantic Scholar → OpenCitations
+- **レート制限管理**: 各API独立の制限制御
+- **データ正規化**: 統一フォーマットでのメタデータ出力
+- **エラーハンドリング**: API障害・ネットワークエラーの適切な処理
+
+> **詳細仕様**: [citation_fetcher_specification.md](citation_fetcher_specification.md) 参照
+
 ## Utils - 共通ユーティリティ
 
 ### ファイルシステム操作
