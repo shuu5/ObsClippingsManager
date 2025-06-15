@@ -288,17 +288,47 @@ code/py/modules/
   **現在状況**: fetch機能が正常に統合ワークフローに組み込まれ、3つの主要機能（organize・sync・fetch）が連続実行する状態を達成
 
 #### 2.4 ステップ4: section_parsing（セクション分割）
-- [ ] 2.4.1 SectionParserクラス設計・テスト作成
-- [ ] 2.4.2 Markdownヘッダー構造解析実装
-- [ ] 2.4.3 セクション境界検出機能実装
-- [ ] 2.4.4 ネストレベル管理実装
-- [ ] 2.4.5 ユニットテスト実行・全テスト成功確認
-- [ ] 2.4.6 **section_parsing機能統合テスト実行**
-  ```bash
-  # 現在のintegrated_workflowを実行する統合テスト
-  cd /home/user/proj/ObsClippingsManager
-  uv run python code/scripts/run_integrated_test.py
+- [完了] 2.4.1 SectionParsingWorkflowクラス設計・テスト作成
+- [完了] 2.4.2 論文構造解析機能実装（見出しレベル判定）
+- [完了] 2.4.3 セクション種別自動識別実装（Abstract, Introduction, Methods, Results, Discussion, Conclusion等）
+- [完了] 2.4.4 階層構造認識・subsection処理実装
+- [完了] 2.4.5 word_count計算機能実装
+- [完了] 2.4.6 PaperStructure データ構造実装
+- [完了] 2.4.7 ユニットテスト実行・全テスト成功確認（14/14 PASS）
+- [完了] 2.4.8 **YAMLヘッダースキップ処理の致命的バグ修正**
+  
+  **問題**: YAMLヘッダー内のpaper_structure情報を実際のMarkdownセクションと混同
+  - 実際の`## Abstract`は293行目に存在
+  - しかし報告されていたのは41行目（YAMLヘッダー内）
+  - 根本原因: YAMLヘッダーのスキップ処理が不完全
+  
+  **修正内容**:
+  - `_extract_sections`メソッドの完全書き換え
+  - yaml_header_count による2つ目の`---`まで確実にスキップ
+  - `_count_words_from_lines`メソッド追加（行範囲ベース文字数計算）
+  - デバッグログ出力機能強化
+  
+  **修正検証結果**:
   ```
+  Found markdown headers: [(294, '## Abstract'), (312, '## Background'), 
+  (324, '## Methods'), (378, '## Results'), (434, '## Discussion'), ...]
+  
+  Section Parsing Results:
+  - Abstract (abstract): lines 294-295 ✅
+  - Background (introduction): lines 312-323 ✅  
+  - Methods (methods): lines 324-325 ✅
+  - Results (results): lines 378-379 ✅
+  - Discussion (discussion): lines 434-449 ✅
+  ```
+  
+  **統合テスト成功**:
+  - 2 papers processed, 24 total sections found
+  - Section types found: abstract, conclusion, methods, references, acknowledgments, unknown, introduction, discussion, results
+  
+  **品質保証**:
+  - 新規テストケース `test_extract_sections_with_real_yaml_header` 追加
+  - 実際のYAMLヘッダー構造に対応したテスト実装
+  - デバッグスクリプト作成・問題解決手法の確立
 
 #### 2.5 ステップ5: ai_citation_support（AI引用理解支援）
 - [ ] 2.5.1 AICitationSupportクラス設計・テスト作成

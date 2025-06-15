@@ -2,34 +2,186 @@
 citation_key: takenakaW2023J.Radiat.Res.Tokyo
 citation_metadata:
   api_statistics:
-    crossref_avg_quality: 0.817019230769231
+    crossref_avg_quality: 0.8554949095022629
     crossref_failures: 0
-    crossref_max_quality: 0.817019230769231
+    crossref_max_quality: 0.8939705882352948
     crossref_min_quality: 0.817019230769231
-    crossref_requests: 1
+    crossref_requests: 2
     crossref_success_rate: 1.0
-    crossref_successes: 1
+    crossref_successes: 2
     overall_success_rate: 1.0
     total_failures: 0
-    total_requests: 1
-    total_successes: 1
-  fetch_completed_at: '2025-06-15T03:45:23.312596'
-  last_updated: '2025-06-15T03:45:23.312596'
+    total_requests: 2
+    total_successes: 2
+  fetch_completed_at: '2025-06-15T07:54:20.063897'
+  last_updated: '2025-06-15T07:54:20.063897'
   primary_api_used: crossref
   quality_score: 0.817019230769231
   references_bib_path: references.bib
   total_references_found: 52
 created: 2025-06-09
 doi: 10.1093/jrr/rrac091
-last_updated: '2025-06-15T03:45:23.312596'
+last_updated: '2025-06-15T07:54:20.090722'
+paper_structure:
+  parsed_at: '2025-06-15T07:54:20.088345'
+  section_types_found:
+  - abstract
+  - introduction
+  - methods
+  - results
+  - discussion
+  - unknown
+  - references
+  sections:
+  - end_line: 48
+    level: 2
+    section_type: abstract
+    start_line: 45
+    subsections: []
+    title: Abstract
+    word_count: 164
+  - end_line: 60
+    level: 2
+    section_type: introduction
+    start_line: 49
+    subsections: []
+    title: INTRODUCTION
+    word_count: 467
+  - end_line: 62
+    level: 2
+    section_type: methods
+    start_line: 61
+    subsections:
+    - end_line: 66
+      level: 3
+      start_line: 63
+      title: Generation of a pancreatic CSC model
+      word_count: 215
+    - end_line: 70
+      level: 3
+      start_line: 67
+      title: Irradiation
+      word_count: 28
+    - end_line: 74
+      level: 3
+      start_line: 71
+      title: Colony formation assay
+      word_count: 48
+    - end_line: 78
+      level: 3
+      start_line: 75
+      title: Flow cytometry analysis
+      word_count: 113
+    - end_line: 82
+      level: 3
+      start_line: 79
+      title: Sphere formation assay
+      word_count: 134
+    - end_line: 92
+      level: 3
+      start_line: 83
+      title: Reverse transcription quantitative PCR analysis
+      word_count: 102
+    - end_line: 96
+      level: 3
+      start_line: 93
+      title: RNA sequence data
+      word_count: 131
+    - end_line: 100
+      level: 3
+      start_line: 97
+      title: siRNA transfection
+      word_count: 46
+    - end_line: 104
+      level: 3
+      start_line: 101
+      title: Data analysis
+      word_count: 43
+    - end_line: 108
+      level: 3
+      start_line: 105
+      title: Statistics
+      word_count: 36
+    title: MATERIALS AND METHODS
+    word_count: 4
+  - end_line: 110
+    level: 2
+    section_type: results
+    start_line: 109
+    subsections:
+    - end_line: 122
+      level: 3
+      start_line: 111
+      title: Generation of the pancreatic CSC model
+      word_count: 493
+    - end_line: 134
+      level: 3
+      start_line: 123
+      title: Degron (++) cells displayed higher radioresistance
+      word_count: 310
+    - end_line: 146
+      level: 3
+      start_line: 135
+      title: KRT13 gene expression was upregulated in degron (++) cells
+      word_count: 151
+    - end_line: 158
+      level: 3
+      start_line: 147
+      title: KRT13 knockdown decreased radioresistance and stem-like cell property
+        in degron (++) cells
+      word_count: 522
+    - end_line: 170
+      level: 3
+      start_line: 159
+      title: KRT13 is upregulated in pancreatic cancer and associated with poor prognosis
+      word_count: 202
+    title: RESULTS
+    word_count: 2
+  - end_line: 184
+    level: 2
+    section_type: discussion
+    start_line: 171
+    subsections: []
+    title: DISCUSSION
+    word_count: 1049
+  - end_line: 188
+    level: 2
+    section_type: unknown
+    start_line: 185
+    subsections: []
+    title: CONFLICT OF INTEREST
+    word_count: 12
+  - end_line: 192
+    level: 2
+    section_type: unknown
+    start_line: 189
+    subsections: []
+    title: FUNDING
+    word_count: 24
+  - end_line: 2108
+    level: 2
+    section_type: references
+    start_line: 193
+    subsections: []
+    title: References
+    word_count: 1137
+  - end_line: 2121
+    level: 2
+    section_type: unknown
+    start_line: 2109
+    subsections: []
+    title: Supplementary data
+    word_count: 25
+  total_sections: 9
 processing_status:
   fetch: completed
   organize: completed
+  section_parsing: completed
   sync: failed
 source: https://academic.oup.com/jrr/article/64/2/284/6968637
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-15T03:45:22.408222'
+  checked_at: '2025-06-15T07:54:18.930021'
   consistency_status: inconsistent
   corrections_applied: []
   issues_detected: 1

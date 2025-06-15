@@ -253,6 +253,52 @@ class SimpleIntegratedTestRunner:
                 import traceback
                 self.logger.error(traceback.format_exc())
             
+            # section_parsing機能
+            try:
+                self.logger.info("Attempting to import SectionParsingWorkflow")
+                from code.py.modules.section_parsing.section_parsing_workflow import SectionParsingWorkflow
+                self.logger.info("SectionParsingWorkflow imported successfully")
+                
+                section_parser = SectionParsingWorkflow(self.config_manager, self.integrated_logger)
+                self.logger.info("SectionParsingWorkflow initialized")
+                
+                self.logger.info("Starting section parsing workflow")
+                # 処理対象のmarkdownファイルを取得してsection_parsing処理実行
+                clippings_dir = workspace_path / "Clippings"
+                if clippings_dir.exists():
+                    # サブディレクトリ内のmarkdownファイルを対象とする
+                    target_papers = []
+                    for subdir in clippings_dir.iterdir():
+                        if subdir.is_dir():
+                            # サブディレクトリ名をtarget_papersに追加
+                            target_papers.append(subdir.name)
+                    
+                    if target_papers:
+                        self.logger.info(f"Processing section parsing for {len(target_papers)} papers")
+                        section_result = section_parser.process_papers(str(clippings_dir), target_papers)
+                        
+                        processed_papers = section_result.get('processed_papers', 0)
+                        total_sections = section_result.get('total_sections_found', 0)
+                        section_types = section_result.get('section_types_found', [])
+                        
+                        self.logger.info(f"Section parsing completed: {processed_papers} papers processed, "
+                                       f"{total_sections} total sections found")
+                        self.logger.info(f"Section types found: {', '.join(section_types)}")
+                        
+                        modules_executed.append('section_parsing')
+                    else:
+                        self.logger.warning("No organized papers found for section parsing")
+                        
+                else:
+                    self.logger.warning("Clippings directory not found for section parsing")
+                    
+            except ImportError as e:
+                self.logger.warning(f"SectionParsingWorkflow ImportError: {e}")
+            except Exception as e:
+                self.logger.error(f"Error in section_parsing processing: {e}")
+                import traceback
+                self.logger.error(traceback.format_exc())
+            
             # TODO: 新しいモジュールが実装されたら追加
             
             return {

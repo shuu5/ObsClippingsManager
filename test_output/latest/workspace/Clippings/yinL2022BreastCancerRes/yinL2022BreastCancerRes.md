@@ -2,34 +2,287 @@
 citation_key: yinL2022BreastCancerRes
 citation_metadata:
   api_statistics:
-    crossref_avg_quality: 0.8554949095022629
+    crossref_avg_quality: 0.8939705882352948
     crossref_failures: 0
     crossref_max_quality: 0.8939705882352948
-    crossref_min_quality: 0.817019230769231
-    crossref_requests: 2
+    crossref_min_quality: 0.8939705882352948
+    crossref_requests: 1
     crossref_success_rate: 1.0
-    crossref_successes: 2
+    crossref_successes: 1
     overall_success_rate: 1.0
     total_failures: 0
-    total_requests: 2
-    total_successes: 2
-  fetch_completed_at: '2025-06-15T03:45:23.522477'
-  last_updated: '2025-06-15T03:45:23.522477'
+    total_requests: 1
+    total_successes: 1
+  fetch_completed_at: '2025-06-15T07:54:19.861640'
+  last_updated: '2025-06-15T07:54:19.861640'
   primary_api_used: crossref
   quality_score: 0.8939705882352948
   references_bib_path: references.bib
   total_references_found: 51
 created: 2025-06-09
 doi: 10.1186/s13058-022-01502-6
-last_updated: '2025-06-15T03:45:23.522477'
+last_updated: '2025-06-15T07:54:20.077977'
+paper_structure:
+  parsed_at: '2025-06-15T07:54:20.074960'
+  section_types_found:
+  - abstract
+  - introduction
+  - methods
+  - results
+  - discussion
+  - conclusion
+  - unknown
+  - references
+  - acknowledgments
+  sections:
+  - end_line: 42
+    level: 2
+    section_type: abstract
+    start_line: 41
+    subsections:
+    - end_line: 46
+      level: 3
+      start_line: 43
+      title: Background
+      word_count: 50
+    - end_line: 50
+      level: 3
+      start_line: 47
+      title: Methods
+      word_count: 64
+    - end_line: 54
+      level: 3
+      start_line: 51
+      title: Results
+      word_count: 114
+    - end_line: 58
+      level: 3
+      start_line: 55
+      title: Conclusions
+      word_count: 34
+    title: Abstract
+    word_count: 2
+  - end_line: 70
+    level: 2
+    section_type: introduction
+    start_line: 59
+    subsections: []
+    title: Background
+    word_count: 542
+  - end_line: 72
+    level: 2
+    section_type: methods
+    start_line: 71
+    subsections:
+    - end_line: 76
+      level: 3
+      start_line: 73
+      title: Cell culture
+      word_count: 89
+    - end_line: 80
+      level: 3
+      start_line: 77
+      title: Plasmids, siRNA transfection and viral transduction
+      word_count: 140
+    - end_line: 84
+      level: 3
+      start_line: 81
+      title: Cell proliferation and behavioral assays
+      word_count: 144
+    - end_line: 88
+      level: 3
+      start_line: 85
+      title: Cell fractionation and western blot analysis
+      word_count: 104
+    - end_line: 92
+      level: 3
+      start_line: 89
+      title: Quantitative reverse transcription and polymerase chain reaction (qRT-PCR)
+        and RNA sequencing (RNA-seq) analyses
+      word_count: 160
+    - end_line: 96
+      level: 3
+      start_line: 93
+      title: Clinical specimens
+      word_count: 58
+    - end_line: 104
+      level: 3
+      start_line: 97
+      title: Immunohistochemical analyses
+      word_count: 153
+    - end_line: 108
+      level: 3
+      start_line: 105
+      title: Flow cytometry
+      word_count: 70
+    - end_line: 112
+      level: 3
+      start_line: 109
+      title: Mammosphere assay
+      word_count: 101
+    - end_line: 116
+      level: 3
+      start_line: 113
+      title: Co-immunoprecipitation (co-IP) analysis
+      word_count: 106
+    - end_line: 120
+      level: 3
+      start_line: 117
+      title: In vivo experiments
+      word_count: 142
+    - end_line: 124
+      level: 3
+      start_line: 121
+      title: Statistical analysis
+      word_count: 75
+    title: Methods
+    word_count: 2
+  - end_line: 126
+    level: 2
+    section_type: results
+    start_line: 125
+    subsections:
+    - end_line: 140
+      level: 3
+      start_line: 127
+      title: KRT13 overexpression increases breast cancer proliferation, migration
+        and invasion in vitro, and promotes tumorigenesis and metastasis in vivo
+      word_count: 347
+    - end_line: 152
+      level: 3
+      start_line: 141
+      title: KRT13 overexpression induces epithelial to mesenchymal transition (EMT)
+        and stemness
+      word_count: 323
+    - end_line: 160
+      level: 3
+      start_line: 153
+      title: KRT13 induces aggressiveness through activation of c-Myc
+      word_count: 149
+    - end_line: 170
+      level: 3
+      start_line: 161
+      title: KRT13 interacts with PG and decreases its expression and nuclear translocation
+      word_count: 293
+    - end_line: 180
+      level: 3
+      start_line: 171
+      title: KRT13 expression is correlated with c-Myc levels in clinical breast cancer
+      word_count: 240
+    title: Results
+    word_count: 2
+  - end_line: 196
+    level: 2
+    section_type: discussion
+    start_line: 181
+    subsections: []
+    title: Discussion
+    word_count: 960
+  - end_line: 200
+    level: 2
+    section_type: conclusion
+    start_line: 197
+    subsections: []
+    title: Conclusions
+    word_count: 52
+  - end_line: 204
+    level: 2
+    section_type: unknown
+    start_line: 201
+    subsections: []
+    title: Availability of data and materials
+    word_count: 11
+  - end_line: 242
+    level: 2
+    section_type: unknown
+    start_line: 205
+    subsections: []
+    title: Abbreviations
+    word_count: 35
+  - end_line: 244
+    level: 2
+    section_type: references
+    start_line: 243
+    subsections: []
+    title: References
+    word_count: 2
+  - end_line: 248
+    level: 2
+    section_type: acknowledgments
+    start_line: 245
+    subsections: []
+    title: Acknowledgements
+    word_count: 29
+  - end_line: 252
+    level: 2
+    section_type: unknown
+    start_line: 249
+    subsections: []
+    title: Funding
+    word_count: 29
+  - end_line: 254
+    level: 2
+    section_type: unknown
+    start_line: 253
+    subsections:
+    - end_line: 258
+      level: 3
+      start_line: 255
+      title: Ethics approval and consent to participate
+      word_count: 39
+    - end_line: 262
+      level: 3
+      start_line: 259
+      title: Consent for publication
+      word_count: 12
+    - end_line: 266
+      level: 3
+      start_line: 263
+      title: Competing interests
+      word_count: 12
+    title: Ethics declarations
+    word_count: 3
+  - end_line: 268
+    level: 2
+    section_type: unknown
+    start_line: 267
+    subsections:
+    - end_line: 272
+      level: 3
+      start_line: 269
+      title: Publisher's Note
+      word_count: 18
+    title: Additional information
+    word_count: 3
+  - end_line: 274
+    level: 2
+    section_type: unknown
+    start_line: 273
+    subsections:
+    - end_line: 278
+      level: 3
+      start_line: 275
+      title: Additional file 1
+      word_count: 22
+    title: Supplementary Information
+    word_count: 3
+  - end_line: 383
+    level: 2
+    section_type: unknown
+    start_line: 279
+    subsections: []
+    title: Rights and permissions
+    word_count: 1600
+  total_sections: 15
 processing_status:
   fetch: completed
   organize: completed
+  section_parsing: completed
   sync: completed
 source: https://breast-cancer-research.biomedcentral.com/articles/10.1186/s13058-022-01502-6
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-15T03:45:22.408780'
+  checked_at: '2025-06-15T07:54:18.930587'
   consistency_status: validated
   corrections_applied: []
   issues_detected: 0

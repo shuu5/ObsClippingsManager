@@ -12,5 +12,6 @@ from . import status_management_yaml
 from . import file_organizer
 from . import sync_checker
 from . import citation_fetcher
+from . import section_parsing
 
 __version__ = '3.2.0'

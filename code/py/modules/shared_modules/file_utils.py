@@ -461,7 +461,7 @@ class PathUtils:
         safe_name = PathUtils.sanitize_filename(citation_key)
         
         # ディレクトリ名として不適切な文字をさらに置換
-        safe_name = safe_name.replace('.', '_')
+        # Note: citation_keyの「.」は正しいのでそのまま保持
         safe_name = safe_name.replace(' ', '_')
         
         # 長すぎる場合は切り詰め（多くのファイルシステムで255文字制限）
