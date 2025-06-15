@@ -1,15 +1,35 @@
 ---
 citation_key: takenakaW2023J.Radiat.Res.Tokyo
+citation_metadata:
+  api_statistics:
+    crossref_avg_quality: 0.817019230769231
+    crossref_failures: 0
+    crossref_max_quality: 0.817019230769231
+    crossref_min_quality: 0.817019230769231
+    crossref_requests: 1
+    crossref_success_rate: 1.0
+    crossref_successes: 1
+    overall_success_rate: 1.0
+    total_failures: 0
+    total_requests: 1
+    total_successes: 1
+  fetch_completed_at: '2025-06-15T03:45:23.312596'
+  last_updated: '2025-06-15T03:45:23.312596'
+  primary_api_used: crossref
+  quality_score: 0.817019230769231
+  references_bib_path: references.bib
+  total_references_found: 52
 created: 2025-06-09
 doi: 10.1093/jrr/rrac091
-last_updated: '2025-06-15T02:50:19.794314'
+last_updated: '2025-06-15T03:45:23.312596'
 processing_status:
+  fetch: completed
   organize: completed
   sync: failed
 source: https://academic.oup.com/jrr/article/64/2/284/6968637
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-15T02:50:19.816689'
+  checked_at: '2025-06-15T03:45:22.408222'
   consistency_status: inconsistent
   corrections_applied: []
   issues_detected: 1

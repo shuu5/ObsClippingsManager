@@ -34,10 +34,11 @@ class CitationFetcherWorkflow:
             logger: ログシステムインスタンス
         """
         self.config_manager = config_manager
+        self.integrated_logger = logger  # IntegratedLoggerインスタンスを保持
         self.logger = logger.get_logger('CitationFetcherWorkflow')
         
         # 共通コンポーネント初期化
-        self.bibtex_parser = BibTeXParser(logger)
+        self.bibtex_parser = BibTeXParser(logger.get_logger('BibTeXParser'))
         self.yaml_processor = YAMLHeaderProcessor(config_manager, logger)
         
         # API クライアント（遅延初期化）
@@ -57,7 +58,7 @@ class CitationFetcherWorkflow:
         """CrossRef APIクライアント（遅延初期化）"""
         if self._crossref_client is None:
             from .api_clients import CrossRefAPIClient
-            self._crossref_client = CrossRefAPIClient(self.config_manager, self.logger)
+            self._crossref_client = CrossRefAPIClient(self.config_manager, self.integrated_logger.get_logger('CrossRefAPIClient'))
         return self._crossref_client
     
     @property
@@ -65,7 +66,7 @@ class CitationFetcherWorkflow:
         """Semantic Scholar APIクライアント（遅延初期化）"""
         if self._semantic_scholar_client is None:
             from .api_clients import SemanticScholarAPIClient
-            self._semantic_scholar_client = SemanticScholarAPIClient(self.config_manager, self.logger)
+            self._semantic_scholar_client = SemanticScholarAPIClient(self.config_manager, self.integrated_logger.get_logger('SemanticScholarAPIClient'))
         return self._semantic_scholar_client
     
     @property
@@ -73,7 +74,7 @@ class CitationFetcherWorkflow:
         """OpenCitations APIクライアント（遅延初期化）"""
         if self._opencitations_client is None:
             from .api_clients import OpenCitationsAPIClient
-            self._opencitations_client = OpenCitationsAPIClient(self.config_manager, self.logger)
+            self._opencitations_client = OpenCitationsAPIClient(self.config_manager, self.integrated_logger.get_logger('OpenCitationsAPIClient'))
         return self._opencitations_client
     
     @property
@@ -81,7 +82,7 @@ class CitationFetcherWorkflow:
         """レート制限管理（遅延初期化）"""
         if self._rate_limiter is None:
             from .rate_limiter import RateLimiter
-            self._rate_limiter = RateLimiter(self.config_manager, self.logger)
+            self._rate_limiter = RateLimiter(self.config_manager, self.integrated_logger.get_logger('RateLimiter'))
         return self._rate_limiter
     
     @property
@@ -89,7 +90,7 @@ class CitationFetcherWorkflow:
         """データ品質評価（遅延初期化）"""
         if self._quality_evaluator is None:
             from .data_quality_evaluator import DataQualityEvaluator
-            self._quality_evaluator = DataQualityEvaluator(self.config_manager, self.logger)
+            self._quality_evaluator = DataQualityEvaluator(self.config_manager, self.integrated_logger.get_logger('DataQualityEvaluator'))
         return self._quality_evaluator
     
     @property

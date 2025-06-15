@@ -29,7 +29,7 @@ class BaseAPIClient(ABC):
             api_name (str): API名
         """
         self.config_manager = config_manager
-        self.logger = logger.get_logger(f'{api_name}APIClient')
+        self.logger = logger
         self.api_name = api_name
         
         # API設定取得

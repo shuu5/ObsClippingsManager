@@ -1,15 +1,35 @@
 ---
 citation_key: yinL2022BreastCancerRes
+citation_metadata:
+  api_statistics:
+    crossref_avg_quality: 0.8554949095022629
+    crossref_failures: 0
+    crossref_max_quality: 0.8939705882352948
+    crossref_min_quality: 0.817019230769231
+    crossref_requests: 2
+    crossref_success_rate: 1.0
+    crossref_successes: 2
+    overall_success_rate: 1.0
+    total_failures: 0
+    total_requests: 2
+    total_successes: 2
+  fetch_completed_at: '2025-06-15T03:45:23.522477'
+  last_updated: '2025-06-15T03:45:23.522477'
+  primary_api_used: crossref
+  quality_score: 0.8939705882352948
+  references_bib_path: references.bib
+  total_references_found: 51
 created: 2025-06-09
 doi: 10.1186/s13058-022-01502-6
-last_updated: '2025-06-15T02:50:19.785747'
+last_updated: '2025-06-15T03:45:23.522477'
 processing_status:
+  fetch: completed
   organize: completed
   sync: completed
 source: https://breast-cancer-research.biomedcentral.com/articles/10.1186/s13058-022-01502-6
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-15T02:50:19.817309'
+  checked_at: '2025-06-15T03:45:22.408780'
   consistency_status: validated
   corrections_applied: []
   issues_detected: 0

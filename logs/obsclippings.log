@@ -4332,3 +4332,508 @@ AttributeError: 'ConfigManager' object has no attribute 'get'
 2025-06-15 02:50:19,827 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
 2025-06-15 02:50:19,828 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
 2025-06-15 02:50:19,828 [INFO] integrated_test: 統合テスト完了
+2025-06-15 03:10:07,393 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,393 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,394 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-15 03:10:07,398 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-15 03:10:07,399 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-15 03:10:07,403 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-15 03:10:07,403 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-15 03:10:07,405 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,405 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,407 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,407 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,410 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,410 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,412 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,412 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,415 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,415 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,417 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,417 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,417 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-15 03:10:07,419 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,419 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,419 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-15 03:10:07,421 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,421 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,423 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,423 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,425 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,425 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,427 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,428 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,428 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-15 03:10:07,434 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-15 03:10:07,436 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,436 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,439 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,439 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,440 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,441 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-15 03:10:07,478 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,479 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-15 03:10:07,484 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-15 03:10:07,488 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-15 03:10:07,492 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-15 03:10:07,492 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-15 03:10:07,495 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:07,496 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-15 03:10:56,141 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-15 03:10:56,142 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-15 03:10:56,147 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:56,147 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-15 03:10:56,147 [INFO] integrated_test: FileOrganizer initialized
+2025-06-15 03:10:56,148 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-15 03:10:56,148 [INFO] integrated_test: Starting organize_workspace
+2025-06-15 03:10:56,148 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-15 03:10:56,164 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:10:56,164 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-15 03:10:56,166 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-15 03:10:56,166 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-15 03:10:56,166 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-15 03:10:56,172 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-15 03:10:56,172 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-15 03:10:56,178 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:10:56,178 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-15 03:10:56,179 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-15 03:10:56,179 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-15 03:10:56,179 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-15 03:10:56,179 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.012595}
+2025-06-15 03:10:56,179 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-15 03:10:56,179 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-15 03:10:56,179 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-15 03:10:56,180 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-15 03:10:56,183 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:10:56,183 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-15 03:10:56,183 [INFO] integrated_test: SyncChecker initialized
+2025-06-15 03:10:56,183 [INFO] integrated_test: Starting sync consistency check
+2025-06-15 03:10:56,183 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-15 03:10:56,197 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:10:56,197 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-15 03:10:56,200 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-15 03:10:56,200 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-15 03:10:56,210 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-15 03:10:56,210 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-15 03:10:56,212 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-15 03:10:56,212 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-15 03:10:56,212 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-15 03:10:56,212 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-15 03:10:56,212 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-15 03:10:56,213 [INFO] integrated_test: 統合テスト完了
+2025-06-15 03:20:42,662 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-15 03:20:42,664 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-15 03:20:42,667 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:20:42,667 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-15 03:20:42,667 [INFO] integrated_test: FileOrganizer initialized
+2025-06-15 03:20:42,668 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-15 03:20:42,668 [INFO] integrated_test: Starting organize_workspace
+2025-06-15 03:20:42,668 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-15 03:20:42,683 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:20:42,683 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-15 03:20:42,685 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-15 03:20:42,685 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-15 03:20:42,685 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-15 03:20:42,690 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-15 03:20:42,691 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-15 03:20:42,695 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:20:42,696 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-15 03:20:42,696 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-15 03:20:42,696 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-15 03:20:42,696 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-15 03:20:42,696 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.011052}
+2025-06-15 03:20:42,696 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-15 03:20:42,696 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-15 03:20:42,696 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-15 03:20:42,696 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-15 03:20:42,699 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:20:42,700 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-15 03:20:42,700 [INFO] integrated_test: SyncChecker initialized
+2025-06-15 03:20:42,700 [INFO] integrated_test: Starting sync consistency check
+2025-06-15 03:20:42,700 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-15 03:20:42,713 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:20:42,713 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-15 03:20:42,716 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-15 03:20:42,716 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-15 03:20:42,725 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-15 03:20:42,725 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-15 03:20:42,727 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-15 03:20:42,727 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-15 03:20:42,727 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-15 03:20:42,727 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-15 03:20:42,727 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-15 03:20:42,728 [INFO] integrated_test: 統合テスト完了
+2025-06-15 03:22:49,136 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-15 03:22:49,137 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-15 03:22:49,141 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:22:49,142 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-15 03:22:49,142 [INFO] integrated_test: FileOrganizer initialized
+2025-06-15 03:22:49,142 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-15 03:22:49,142 [INFO] integrated_test: Starting organize_workspace
+2025-06-15 03:22:49,142 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-15 03:22:49,154 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:22:49,155 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-15 03:22:49,157 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-15 03:22:49,157 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-15 03:22:49,157 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-15 03:22:49,161 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-15 03:22:49,161 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-15 03:22:49,165 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:22:49,165 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-15 03:22:49,165 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-15 03:22:49,165 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-15 03:22:49,165 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-15 03:22:49,165 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.008035}
+2025-06-15 03:22:49,165 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-15 03:22:49,166 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-15 03:22:49,166 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-15 03:22:49,166 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-15 03:22:49,168 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:22:49,168 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-15 03:22:49,168 [INFO] integrated_test: SyncChecker initialized
+2025-06-15 03:22:49,168 [INFO] integrated_test: Starting sync consistency check
+2025-06-15 03:22:49,168 [ERROR] integrated_test: Error in sync processing: SyncChecker.check_workspace_consistency() missing 2 required positional arguments: 'bibtex_file' and 'clippings_dir'
+2025-06-15 03:22:49,168 [ERROR] integrated_test: Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 90, in _run_integrated_workflow
+    from code.py.modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
+ModuleNotFoundError: No module named 'code.py.modules.integrated_workflow'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 163, in _run_integrated_workflow
+    sync_result = sync_checker.check_workspace_consistency(str(workspace_path))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: SyncChecker.check_workspace_consistency() missing 2 required positional arguments: 'bibtex_file' and 'clippings_dir'
+
+2025-06-15 03:22:49,168 [INFO] integrated_test: Attempting to import CitationFetcherWorkflow
+2025-06-15 03:22:49,169 [INFO] integrated_test: CitationFetcherWorkflow imported successfully
+2025-06-15 03:22:49,170 [ERROR] integrated_test: Error in fetch processing: 'IntegratedLogger' object has no attribute 'debug'
+2025-06-15 03:22:49,171 [ERROR] integrated_test: Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 90, in _run_integrated_workflow
+    from code.py.modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
+ModuleNotFoundError: No module named 'code.py.modules.integrated_workflow'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 194, in _run_integrated_workflow
+    citation_fetcher = CitationFetcherWorkflow(self.config_manager, self.integrated_logger)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/proj/ObsClippingsManager/code/py/modules/citation_fetcher/citation_fetcher_workflow.py", line 40, in __init__
+    self.bibtex_parser = BibTeXParser(logger)
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/proj/ObsClippingsManager/code/py/modules/shared_modules/bibtex_parser.py", line 53, in __init__
+    self.logger.debug("BibTeXParser initialized successfully")
+    ^^^^^^^^^^^^^^^^^
+AttributeError: 'IntegratedLogger' object has no attribute 'debug'
+
+2025-06-15 03:22:49,172 [INFO] integrated_test: 統合テスト完了
+2025-06-15 03:24:42,696 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-15 03:24:42,697 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-15 03:24:42,703 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:24:42,703 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-15 03:24:42,704 [INFO] integrated_test: FileOrganizer initialized
+2025-06-15 03:24:42,704 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-15 03:24:42,704 [INFO] integrated_test: Starting organize_workspace
+2025-06-15 03:24:42,704 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-15 03:24:42,718 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:24:42,718 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-15 03:24:42,720 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-15 03:24:42,720 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-15 03:24:42,720 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-15 03:24:42,725 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-15 03:24:42,726 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-15 03:24:42,731 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:24:42,731 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-15 03:24:42,731 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-15 03:24:42,731 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-15 03:24:42,731 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-15 03:24:42,731 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}, {'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.010975}
+2025-06-15 03:24:42,731 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-15 03:24:42,731 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-15 03:24:42,731 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-15 03:24:42,731 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-15 03:24:42,734 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:24:42,734 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-15 03:24:42,734 [INFO] integrated_test: SyncChecker initialized
+2025-06-15 03:24:42,734 [INFO] integrated_test: Starting sync consistency check
+2025-06-15 03:24:42,734 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-15 03:24:42,748 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:24:42,748 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-15 03:24:42,751 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-15 03:24:42,751 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-15 03:24:42,762 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-15 03:24:42,762 [INFO] integrated_test: Sync consistency check completed: unknown
+2025-06-15 03:24:42,762 [INFO] integrated_test: Attempting to import CitationFetcherWorkflow
+2025-06-15 03:24:42,762 [INFO] integrated_test: CitationFetcherWorkflow imported successfully
+2025-06-15 03:24:42,764 [ERROR] integrated_test: Error in fetch processing: 'IntegratedLogger' object has no attribute 'debug'
+2025-06-15 03:24:42,765 [ERROR] integrated_test: Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 90, in _run_integrated_workflow
+    from code.py.modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
+ModuleNotFoundError: No module named 'code.py.modules.integrated_workflow'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 202, in _run_integrated_workflow
+    citation_fetcher = CitationFetcherWorkflow(self.config_manager, self.integrated_logger)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/proj/ObsClippingsManager/code/py/modules/citation_fetcher/citation_fetcher_workflow.py", line 40, in __init__
+    self.bibtex_parser = BibTeXParser(logger)
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/proj/ObsClippingsManager/code/py/modules/shared_modules/bibtex_parser.py", line 53, in __init__
+    self.logger.debug("BibTeXParser initialized successfully")
+    ^^^^^^^^^^^^^^^^^
+AttributeError: 'IntegratedLogger' object has no attribute 'debug'
+
+2025-06-15 03:24:42,766 [INFO] integrated_test: 統合テスト完了
+2025-06-15 03:28:17,877 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-15 03:28:17,878 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-15 03:28:17,885 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:28:17,886 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-15 03:28:17,886 [INFO] integrated_test: FileOrganizer initialized
+2025-06-15 03:28:17,886 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-15 03:28:17,886 [INFO] integrated_test: Starting organize_workspace
+2025-06-15 03:28:17,886 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-15 03:28:17,904 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:28:17,904 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-15 03:28:17,905 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-15 03:28:17,905 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-15 03:28:17,906 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-15 03:28:17,911 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-15 03:28:17,911 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-15 03:28:17,915 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:28:17,916 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-15 03:28:17,916 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-15 03:28:17,916 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-15 03:28:17,916 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-15 03:28:17,916 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}, {'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.010367}
+2025-06-15 03:28:17,916 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-15 03:28:17,916 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-15 03:28:17,916 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-15 03:28:17,916 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-15 03:28:17,918 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:28:17,919 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-15 03:28:17,919 [INFO] integrated_test: SyncChecker initialized
+2025-06-15 03:28:17,919 [INFO] integrated_test: Starting sync consistency check
+2025-06-15 03:28:17,919 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-15 03:28:17,933 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:28:17,933 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-15 03:28:17,935 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-15 03:28:17,935 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-15 03:28:17,945 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-15 03:28:17,945 [INFO] integrated_test: Sync consistency check completed: unknown
+2025-06-15 03:28:17,945 [INFO] integrated_test: Attempting to import CitationFetcherWorkflow
+2025-06-15 03:28:17,945 [INFO] integrated_test: CitationFetcherWorkflow imported successfully
+2025-06-15 03:28:17,945 [ERROR] integrated_test: Error in fetch processing: 'Logger' object has no attribute 'get_logger'
+2025-06-15 03:28:17,948 [ERROR] integrated_test: Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 90, in _run_integrated_workflow
+    from code.py.modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
+ModuleNotFoundError: No module named 'code.py.modules.integrated_workflow'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/proj/ObsClippingsManager/code/integrated_test/simple_integrated_test_runner.py", line 204, in _run_integrated_workflow
+    citation_fetcher = CitationFetcherWorkflow(self.config_manager, fetch_logger)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/proj/ObsClippingsManager/code/py/modules/citation_fetcher/citation_fetcher_workflow.py", line 37, in __init__
+    self.logger = logger.get_logger('CitationFetcherWorkflow')
+                  ^^^^^^^^^^^^^^^^^
+AttributeError: 'Logger' object has no attribute 'get_logger'
+
+2025-06-15 03:28:17,949 [INFO] integrated_test: 統合テスト完了
+2025-06-15 03:31:12,403 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-15 03:31:12,405 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-15 03:31:12,411 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:31:12,411 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-15 03:31:12,411 [INFO] integrated_test: FileOrganizer initialized
+2025-06-15 03:31:12,411 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-15 03:31:12,412 [INFO] integrated_test: Starting organize_workspace
+2025-06-15 03:31:12,412 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-15 03:31:12,426 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:31:12,426 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-15 03:31:12,428 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-15 03:31:12,429 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-15 03:31:12,429 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-15 03:31:12,434 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-15 03:31:12,434 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-15 03:31:12,437 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:31:12,438 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-15 03:31:12,438 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-15 03:31:12,438 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-15 03:31:12,438 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-15 03:31:12,438 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.008952}
+2025-06-15 03:31:12,438 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-15 03:31:12,438 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-15 03:31:12,438 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-15 03:31:12,438 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-15 03:31:12,441 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:31:12,441 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-15 03:31:12,441 [INFO] integrated_test: SyncChecker initialized
+2025-06-15 03:31:12,441 [INFO] integrated_test: Starting sync consistency check
+2025-06-15 03:31:12,441 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-15 03:31:12,453 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:31:12,454 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-15 03:31:12,456 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-15 03:31:12,457 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-15 03:31:12,468 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-15 03:31:12,468 [INFO] integrated_test: Sync consistency check completed: unknown
+2025-06-15 03:31:12,468 [INFO] integrated_test: Attempting to import CitationFetcherWorkflow
+2025-06-15 03:31:12,468 [INFO] integrated_test: CitationFetcherWorkflow imported successfully
+2025-06-15 03:31:12,470 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:31:12,470 [INFO] integrated_test: CitationFetcherWorkflow initialized
+2025-06-15 03:31:12,470 [INFO] integrated_test: Starting citation fetcher workflow
+2025-06-15 03:31:12,472 [ERROR] CitationFetcherWorkflow: Error in fetch citations with fallback: 'Logger' object has no attribute 'get_logger'
+2025-06-15 03:31:12,472 [WARNING] integrated_test: Failed to fetch citations for takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:31:12,474 [ERROR] CitationFetcherWorkflow: Error in fetch citations with fallback: 'Logger' object has no attribute 'get_logger'
+2025-06-15 03:31:12,474 [WARNING] integrated_test: Failed to fetch citations for yinL2022BreastCancerRes.md
+2025-06-15 03:31:12,474 [INFO] integrated_test: Citation fetcher workflow completed: 0 papers processed
+2025-06-15 03:31:12,475 [INFO] integrated_test: 統合テスト完了
+2025-06-15 03:33:09,036 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-15 03:33:09,037 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-15 03:33:09,042 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:33:09,043 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-15 03:33:09,043 [INFO] integrated_test: FileOrganizer initialized
+2025-06-15 03:33:09,044 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-15 03:33:09,044 [INFO] integrated_test: Starting organize_workspace
+2025-06-15 03:33:09,044 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-15 03:33:09,059 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:33:09,059 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-15 03:33:09,061 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-15 03:33:09,061 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-15 03:33:09,061 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-15 03:33:09,067 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-15 03:33:09,067 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-15 03:33:09,070 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:33:09,071 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-15 03:33:09,071 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-15 03:33:09,071 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-15 03:33:09,071 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-15 03:33:09,071 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}, {'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.009439}
+2025-06-15 03:33:09,071 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-15 03:33:09,071 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-15 03:33:09,071 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-15 03:33:09,071 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-15 03:33:09,074 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:33:09,074 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-15 03:33:09,074 [INFO] integrated_test: SyncChecker initialized
+2025-06-15 03:33:09,074 [INFO] integrated_test: Starting sync consistency check
+2025-06-15 03:33:09,074 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-15 03:33:09,088 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:33:09,088 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-15 03:33:09,090 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-15 03:33:09,091 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-15 03:33:09,101 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-15 03:33:09,101 [INFO] integrated_test: Sync consistency check completed: unknown
+2025-06-15 03:33:09,101 [INFO] integrated_test: Attempting to import CitationFetcherWorkflow
+2025-06-15 03:33:09,101 [INFO] integrated_test: CitationFetcherWorkflow imported successfully
+2025-06-15 03:33:09,103 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:33:09,103 [INFO] integrated_test: CitationFetcherWorkflow initialized
+2025-06-15 03:33:09,104 [INFO] integrated_test: Starting citation fetcher workflow
+2025-06-15 03:33:09,105 [ERROR] CitationFetcherWorkflow: Error in fetch citations with fallback: 'Logger' object has no attribute 'get_logger'
+2025-06-15 03:33:09,105 [WARNING] integrated_test: Failed to fetch citations for takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:33:09,107 [ERROR] CitationFetcherWorkflow: Error in fetch citations with fallback: 'Logger' object has no attribute 'get_logger'
+2025-06-15 03:33:09,107 [WARNING] integrated_test: Failed to fetch citations for yinL2022BreastCancerRes.md
+2025-06-15 03:33:09,107 [INFO] integrated_test: Citation fetcher workflow completed: 0 papers processed
+2025-06-15 03:33:09,108 [INFO] integrated_test: 統合テスト完了
+2025-06-15 03:44:11,145 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-15 03:44:11,147 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-15 03:44:11,151 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:44:11,152 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-15 03:44:11,152 [INFO] integrated_test: FileOrganizer initialized
+2025-06-15 03:44:11,152 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-15 03:44:11,152 [INFO] integrated_test: Starting organize_workspace
+2025-06-15 03:44:11,152 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-15 03:44:11,169 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:44:11,169 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-15 03:44:11,171 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-15 03:44:11,172 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-15 03:44:11,172 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-15 03:44:11,177 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-15 03:44:11,177 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-15 03:44:11,181 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:44:11,181 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-15 03:44:11,181 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-15 03:44:11,181 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-15 03:44:11,182 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-15 03:44:11,182 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.00993}
+2025-06-15 03:44:11,182 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-15 03:44:11,182 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-15 03:44:11,182 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-15 03:44:11,182 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-15 03:44:11,184 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:44:11,184 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-15 03:44:11,184 [INFO] integrated_test: SyncChecker initialized
+2025-06-15 03:44:11,184 [INFO] integrated_test: Starting sync consistency check
+2025-06-15 03:44:11,184 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-15 03:44:11,196 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:44:11,196 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-15 03:44:11,198 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-15 03:44:11,199 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-15 03:44:11,208 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-15 03:44:11,209 [INFO] integrated_test: Sync consistency check completed: unknown
+2025-06-15 03:44:11,209 [INFO] integrated_test: Attempting to import CitationFetcherWorkflow
+2025-06-15 03:44:11,209 [INFO] integrated_test: CitationFetcherWorkflow imported successfully
+2025-06-15 03:44:11,212 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:44:11,212 [INFO] integrated_test: CitationFetcherWorkflow initialized
+2025-06-15 03:44:11,212 [INFO] integrated_test: Starting citation fetcher workflow
+2025-06-15 03:44:11,213 [ERROR] CitationFetcherWorkflow: Error in fetch citations with fallback: 'Logger' object has no attribute 'get_logger'
+2025-06-15 03:44:11,214 [WARNING] integrated_test: Failed to fetch citations for takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:44:11,215 [ERROR] CitationFetcherWorkflow: Error in fetch citations with fallback: 'Logger' object has no attribute 'get_logger'
+2025-06-15 03:44:11,215 [WARNING] integrated_test: Failed to fetch citations for yinL2022BreastCancerRes.md
+2025-06-15 03:44:11,215 [INFO] integrated_test: Citation fetcher workflow completed: 0 papers processed
+2025-06-15 03:44:11,216 [INFO] integrated_test: 統合テスト完了
+2025-06-15 03:45:22,351 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-15 03:45:22,352 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-15 03:45:22,357 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:45:22,358 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-15 03:45:22,358 [INFO] integrated_test: FileOrganizer initialized
+2025-06-15 03:45:22,359 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-15 03:45:22,359 [INFO] integrated_test: Starting organize_workspace
+2025-06-15 03:45:22,359 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-15 03:45:22,374 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:45:22,374 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-15 03:45:22,376 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-15 03:45:22,376 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-15 03:45:22,376 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-15 03:45:22,381 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-15 03:45:22,382 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-15 03:45:22,388 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:45:22,388 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-15 03:45:22,388 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-15 03:45:22,389 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-15 03:45:22,389 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-15 03:45:22,389 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.012468}
+2025-06-15 03:45:22,389 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-15 03:45:22,389 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-15 03:45:22,389 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-15 03:45:22,389 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-15 03:45:22,391 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:45:22,391 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-15 03:45:22,391 [INFO] integrated_test: SyncChecker initialized
+2025-06-15 03:45:22,391 [INFO] integrated_test: Starting sync consistency check
+2025-06-15 03:45:22,391 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-15 03:45:22,403 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-15 03:45:22,404 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-15 03:45:22,407 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-15 03:45:22,407 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-15 03:45:22,419 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-15 03:45:22,419 [INFO] integrated_test: Sync consistency check completed: unknown
+2025-06-15 03:45:22,419 [INFO] integrated_test: Attempting to import CitationFetcherWorkflow
+2025-06-15 03:45:22,419 [INFO] integrated_test: CitationFetcherWorkflow imported successfully
+2025-06-15 03:45:22,421 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-15 03:45:22,422 [INFO] integrated_test: CitationFetcherWorkflow initialized
+2025-06-15 03:45:22,422 [INFO] integrated_test: Starting citation fetcher workflow
+2025-06-15 03:45:22,424 [WARNING] CrossRefAPIClient: Failed to load crossref config: 'ConfigManager' object has no attribute 'get'
+2025-06-15 03:45:22,424 [WARNING] SemanticScholarAPIClient: Failed to load semantic_scholar config: 'ConfigManager' object has no attribute 'get'
+2025-06-15 03:45:22,424 [WARNING] OpenCitationsAPIClient: Failed to load opencitations config: 'ConfigManager' object has no attribute 'get'
+2025-06-15 03:45:23,310 [INFO] CitationFetcherWorkflow: Successfully fetched citations from crossref (quality: 0.82)
+2025-06-15 03:45:23,311 [INFO] CitationFetcherWorkflow: Generated references.bib: test_output/latest/workspace/Clippings/takenakaW2023J_Radiat_Res_Tokyo/references.bib
+2025-06-15 03:45:23,316 [INFO] integrated_test: Successfully processed fetch for: takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-15 03:45:23,520 [INFO] CitationFetcherWorkflow: Successfully fetched citations from crossref (quality: 0.89)
+2025-06-15 03:45:23,521 [INFO] CitationFetcherWorkflow: Generated references.bib: test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib
+2025-06-15 03:45:23,530 [INFO] integrated_test: Successfully processed fetch for: yinL2022BreastCancerRes.md
+2025-06-15 03:45:23,530 [INFO] integrated_test: Citation fetcher workflow completed: 2 papers processed
+2025-06-15 03:45:23,531 [INFO] integrated_test: 統合テスト完了

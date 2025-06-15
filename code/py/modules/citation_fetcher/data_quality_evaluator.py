@@ -23,7 +23,7 @@ class DataQualityEvaluator:
             logger: ログシステムインスタンス
         """
         self.config_manager = config_manager
-        self.logger = logger.get_logger('DataQualityEvaluator')
+        self.logger = logger
         
         # 評価重み設定（設定ファイルから取得可能）
         self.weights = {

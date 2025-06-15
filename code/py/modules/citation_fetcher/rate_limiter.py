@@ -24,7 +24,7 @@ class RateLimiter:
             logger: ログシステムインスタンス
         """
         self.config_manager = config_manager
-        self.logger = logger.get_logger('RateLimiter')
+        self.logger = logger
         
         # 最終リクエスト時刻を記録
         self.last_request_times: Dict[str, float] = {}

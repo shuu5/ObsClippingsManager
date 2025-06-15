@@ -150,7 +150,7 @@ class SimpleIntegratedTestRunner:
                 self.logger.error(traceback.format_exc())
             
             # 他の実装済み機能があれば順次追加
-            # sync機能（SyncChecker）
+            # sync機能
             try:
                 self.logger.info("Attempting to import SyncChecker")
                 from code.py.modules.sync_checker.sync_checker import SyncChecker
@@ -159,34 +159,97 @@ class SimpleIntegratedTestRunner:
                 sync_checker = SyncChecker(self.config_manager, self.integrated_logger)
                 self.logger.info("SyncChecker initialized")
                 
-                if bibtex_file.exists() and clippings_dir.exists():
-                    self.logger.info("Starting sync consistency check")
-                    sync_result = sync_checker.check_workspace_consistency(
-                        str(workspace_path),
-                        str(bibtex_file),
-                        str(clippings_dir)
-                    )
-                    self.logger.info(f"Sync consistency check completed: {sync_result.get('consistency_status')}")
-                    modules_executed.append('sync_checker')
-                    
+                self.logger.info("Starting sync consistency check")
+                # 必要なファイルパスを定義
+                bibtex_file = workspace_path / "CurrentManuscript.bib"
+                clippings_dir = workspace_path / "Clippings"
+                
+                sync_result = sync_checker.check_workspace_consistency(
+                    str(workspace_path), 
+                    str(bibtex_file), 
+                    str(clippings_dir)
+                )
+                self.logger.info(f"Sync consistency check completed: {sync_result.get('status', 'unknown')}")
+                
+                if sync_result.get('status') == 'issues_detected':
                     # DOIリンク表示
-                    missing_papers = sync_result.get('missing_markdown_files', [])
-                    orphaned_papers = sync_result.get('orphaned_markdown_files', [])
-                    if missing_papers or orphaned_papers:
-                        sync_checker.display_doi_links(missing_papers, orphaned_papers)
+                    missing_files = sync_result.get('missing_markdown_files', [])
+                    orphaned_files = sync_result.get('orphaned_markdown_files', [])
                     
-                    # 自動修正の実行（設定で有効な場合）
-                    if sync_result.get('issues_detected', 0) > 0:
-                        self.logger.info("Attempting auto-fix for detected issues")
-                        fix_result = sync_checker.auto_fix_minor_inconsistencies(sync_result)
-                        if fix_result.get('auto_fix_successful', False):
-                            corrections_applied = len(fix_result.get('corrections_applied', []))
-                            self.logger.info(f"Auto-fix completed: {corrections_applied} corrections applied")
+                    if missing_files or orphaned_files:
+                        sync_checker.display_doi_links(missing_files, orphaned_files)
+                    
+                    # auto-fix試行
+                    self.logger.info("Attempting auto-fix for detected issues")
+                    fix_result = sync_checker.auto_fix_minor_inconsistencies(str(workspace_path))
+                    self.logger.info(f"Auto-fix completed: {fix_result.get('corrections_applied', 0)} corrections applied")
+                
+                modules_executed.append('sync_checker')
                 
             except ImportError as e:
                 self.logger.warning(f"SyncChecker ImportError: {e}")
             except Exception as e:
                 self.logger.error(f"Error in sync processing: {e}")
+                import traceback
+                self.logger.error(traceback.format_exc())
+            
+            # fetch機能
+            try:
+                self.logger.info("Attempting to import CitationFetcherWorkflow")
+                from code.py.modules.citation_fetcher.citation_fetcher_workflow import CitationFetcherWorkflow
+                self.logger.info("CitationFetcherWorkflow imported successfully")
+                
+                citation_fetcher = CitationFetcherWorkflow(self.config_manager, self.integrated_logger)
+                self.logger.info("CitationFetcherWorkflow initialized")
+                
+                self.logger.info("Starting citation fetcher workflow")
+                # 処理対象のmarkdownファイルを取得してfetch処理実行
+                # clippings_dir内のorganized markdownファイルを対象とする
+                clippings_dir = workspace_path / "Clippings"
+                if clippings_dir.exists():
+                    # サブディレクトリ内のmarkdownファイルを対象とする
+                    processed_count = 0
+                    for subdir in clippings_dir.iterdir():
+                        if subdir.is_dir():
+                            for md_file in subdir.glob("*.md"):
+                                try:
+                                    self.logger.debug(f"Processing fetch for: {md_file}")
+                                    
+                                    # DOI抽出
+                                    doi = citation_fetcher.extract_doi_from_paper(str(md_file))
+                                    if doi:
+                                        self.logger.debug(f"Found DOI: {doi} for {md_file.name}")
+                                        
+                                        # 引用文献取得（フォールバック戦略）
+                                        citation_data = citation_fetcher.fetch_citations_with_fallback(doi)
+                                        
+                                        if citation_data:
+                                            # references.bib生成
+                                            references_bib_path = citation_fetcher.generate_references_bib(str(md_file), citation_data)
+                                            
+                                            # YAMLヘッダー更新
+                                            citation_fetcher.update_yaml_with_fetch_results(str(md_file), citation_data, references_bib_path)
+                                            
+                                            processed_count += 1
+                                            self.logger.info(f"Successfully processed fetch for: {md_file.name}")
+                                        else:
+                                            self.logger.warning(f"Failed to fetch citations for {md_file.name}")
+                                    else:
+                                        self.logger.warning(f"No DOI found for {md_file.name}")
+                                        
+                                except Exception as e:
+                                    self.logger.error(f"Error processing {md_file}: {e}")
+                    
+                    self.logger.info(f"Citation fetcher workflow completed: {processed_count} papers processed")
+                    modules_executed.append('citation_fetcher')
+                    
+                else:
+                    self.logger.warning("Clippings directory not found for fetch processing")
+                    
+            except ImportError as e:
+                self.logger.warning(f"CitationFetcherWorkflow ImportError: {e}")
+            except Exception as e:
+                self.logger.error(f"Error in fetch processing: {e}")
                 import traceback
                 self.logger.error(traceback.format_exc())
             
