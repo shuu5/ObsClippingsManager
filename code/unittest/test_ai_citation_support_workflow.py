@@ -158,15 +158,22 @@ class TestAICitationSupportWorkflow(unittest.TestCase):
             citations = mapping['citations']
             self.assertEqual(len(citations), 2)
             
-            # 第1の引用文献
+            # 第1の引用文献（数値キーとnumber値を検証）
             self.assertIn(1, citations)
             citation1 = citations[1]
+            self.assertEqual(citation1['number'], 1)  # 数値として期待
             self.assertEqual(citation1['citation_key'], 'smith2023test')
             self.assertEqual(citation1['title'], 'Novel Method for Cancer Cell Analysis')
             self.assertEqual(citation1['authors'], 'Smith, John')
             self.assertEqual(citation1['year'], '2023')
             self.assertEqual(citation1['journal'], 'Cancer Research')
             self.assertEqual(citation1['doi'], '10.1158/0008-5472.CAN-23-0123')
+            
+            # 第2の引用文献（数値キーとnumber値を検証）
+            self.assertIn(2, citations)
+            citation2 = citations[2]
+            self.assertEqual(citation2['number'], 2)  # 数値として期待
+            self.assertEqual(citation2['citation_key'], 'jones2022biomarkers')
             
         except ImportError:
             self.skipTest("AICitationSupportWorkflow not implemented yet")
@@ -209,7 +216,8 @@ citations: {}
                     'total_citations': 1
                 },
                 'citations': {
-                    1: {
+                    1: {  # 数値キーとして定義
+                        'number': 1,  # 数値として定義
                         'citation_key': 'smith2023test',
                         'title': 'Test Paper',
                         'authors': 'Smith, John',
@@ -321,6 +329,65 @@ citations: {}
             
             # 処理状態が完了に更新されているか確認
             self.assertIn('ai_citation_support: completed', content)
+            
+        except ImportError:
+            self.skipTest("AICitationSupportWorkflow not implemented yet")
+    
+    def test_create_citation_mapping_ordered_numeric_keys(self):
+        """順序保持機能での数値キー・数値numberフィールドテスト"""
+        try:
+            from code.py.modules.ai_citation_support.ai_citation_support_workflow import AICitationSupportWorkflow
+            
+            workflow = AICitationSupportWorkflow(self.config_manager, self.logger)
+            
+            # サンプル順序保持BibTeXエントリー（numberが文字列で入力される場合を模擬）
+            bibtex_entries_ordered = [
+                {
+                    'number': '1',  # 文字列として入力
+                    'citation_key': 'smith2023test',
+                    'title': 'Novel Method for Cancer Cell Analysis',
+                    'author': 'Smith, John',
+                    'year': '2023',
+                    'journal': 'Cancer Research',
+                    'doi': '10.1158/0008-5472.CAN-23-0123'
+                },
+                {
+                    'number': '2',  # 文字列として入力
+                    'citation_key': 'jones2022biomarkers',
+                    'title': 'Advanced Biomarker Techniques',
+                    'author': 'Jones, Alice',
+                    'year': '2022',
+                    'journal': 'Nature Medicine',
+                    'doi': '10.1038/s41591-022-0456-7'
+                }
+            ]
+            
+            references_bib_path = "/test/path/references.bib"
+            
+            # 引用マッピング作成（順序保持）
+            mapping = workflow.create_citation_mapping_ordered(bibtex_entries_ordered, references_bib_path)
+            
+            # 検証
+            self.assertIn('citation_metadata', mapping)
+            self.assertIn('citations', mapping)
+            
+            # citations検証（数値キー・数値numberフィールド）
+            citations = mapping['citations']
+            self.assertEqual(len(citations), 2)
+            
+            # 第1の引用文献（文字列numberが数値に変換されることを確認）
+            self.assertIn(1, citations)  # 数値キー
+            citation1 = citations[1]
+            self.assertEqual(citation1['number'], 1)  # 数値として変換されることを確認
+            self.assertIsInstance(citation1['number'], int)  # 型チェック
+            self.assertEqual(citation1['citation_key'], 'smith2023test')
+            
+            # 第2の引用文献（文字列numberが数値に変換されることを確認）
+            self.assertIn(2, citations)  # 数値キー
+            citation2 = citations[2]
+            self.assertEqual(citation2['number'], 2)  # 数値として変換されることを確認
+            self.assertIsInstance(citation2['number'], int)  # 型チェック
+            self.assertEqual(citation2['citation_key'], 'jones2022biomarkers')
             
         except ImportError:
             self.skipTest("AICitationSupportWorkflow not implemented yet")

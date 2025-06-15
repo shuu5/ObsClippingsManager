@@ -333,6 +333,16 @@ class BibTeXParser:
         if 'doi' in normalized and normalized['doi']:
             normalized['doi'] = self._normalize_doi(normalized['doi'])
         
+        # numberフィールドの数値変換
+        if 'number' in normalized and normalized['number']:
+            try:
+                if isinstance(normalized['number'], str):
+                    # 文字列の場合は数値に変換
+                    normalized['number'] = int(normalized['number'])
+            except (ValueError, TypeError):
+                # 変換できない場合は元の値を保持
+                pass
+        
         return normalized
     
     def _clean_latex_braces(self, text: str) -> str:

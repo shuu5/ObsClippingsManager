@@ -152,8 +152,9 @@ class AICitationSupportWorkflow:
         
         # BibTeXエントリーをcitationsフォーマットに変換
         for index, (citation_key, entry) in enumerate(bibtex_entries.items(), 1):
+            # インデックスは数値として保持
             citations[index] = {
-                'number': index,
+                'number': index,  # 数値として保存
                 'citation_key': citation_key,
                 'title': entry.get('title', ''),
                 'authors': entry.get('author', ''),
@@ -193,8 +194,16 @@ class AICitationSupportWorkflow:
         # 順序保持エントリーをcitationsフォーマットに変換（重複保持）
         for entry in bibtex_entries_ordered:
             number = entry.get('number', 0)
+            # numberが文字列の場合は数値に変換
+            if isinstance(number, str):
+                try:
+                    number = int(number)
+                except (ValueError, TypeError):
+                    number = 0
+            
+            # YAMLキーとして使用するnumberは数値のまま保持
             citations[number] = {
-                'number': number,
+                'number': number,  # 数値として保存
                 'citation_key': entry.get('citation_key', ''),
                 'title': entry.get('title', ''),
                 'authors': entry.get('author', ''),

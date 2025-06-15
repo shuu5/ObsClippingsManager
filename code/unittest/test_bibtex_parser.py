@@ -283,7 +283,7 @@ class TestBibTeXParserAdvanced(unittest.TestCase):
         entry = result['complex2023']
         self.assertIn('Special', entry['title'])
         self.assertEqual(entry['volume'], '42')
-        self.assertEqual(entry['number'], '7')
+        self.assertEqual(entry['number'], 7)  # numberフィールドは整数として期待
         self.assertIn('10.1000', entry['doi'])
     
     def test_extract_citation_keys_mixed_case(self):
