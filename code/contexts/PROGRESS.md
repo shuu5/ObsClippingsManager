@@ -183,7 +183,24 @@ code/py/modules/
     - citationCount: 引用数
     - url: Semantic Scholar URL
   - 品質閾値0.7要件対応、1req/sec レート制限準拠
-- [ ] 2.3.5 OpenCitations API連携実装（5req/sec、最終フォールバック）
+- [完了] 2.3.5 OpenCitations API連携実装（5req/sec、最終フォールバック）
+  **実装完了詳細**:
+  - 実際のOpenCitations API連携に置き換え（モックから実装）
+  - API URL構築 (`_build_api_url`) - `/references/{doi}`エンドポイント
+  - レスポンス解析 (`_parse_opencitations_response`) - citing/cited構造対応
+  - エラーハンドリング（404, 429, 接続エラー、JSON解析エラー）
+  - DOI正規化機能 (`_normalize_doi`) - プレフィックス除去対応
+  - 新規テストファイル作成 (`test_opencitations_api_client.py`, 12テスト全成功)
+  - 全ユニットテスト成功確認 (279/279 PASS)
+  - フィールド解析対応:
+    - oci: OpenCitations識別子
+    - citing: 引用している論文のDOI
+    - cited: 引用された論文のDOI  
+    - creation: 引用作成日時
+    - timespan: 引用時間スパン
+  - 品質評価: OpenCitations Indexの信頼性（最終フォールバック）
+  - レート制限対応: 5req/sec準拠
+  - 統合テスト成功確認 (organize & sync 機能正常動作)
 - [ ] 2.3.6 DataQualityEvaluatorクラス実装（品質スコア計算）
 - [ ] 2.3.7 RateLimiterクラス実装（API別レート制限）
 - [ ] 2.3.8 フォールバック制御ロジック実装

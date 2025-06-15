@@ -2,14 +2,14 @@
 citation_key: takenakaW2023J.Radiat.Res.Tokyo
 created: 2025-06-09
 doi: 10.1093/jrr/rrac091
-last_updated: '2025-06-15T02:19:22.671661'
+last_updated: '2025-06-15T02:50:19.794314'
 processing_status:
   organize: completed
   sync: failed
 source: https://academic.oup.com/jrr/article/64/2/284/6968637
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-15T02:19:22.695761'
+  checked_at: '2025-06-15T02:50:19.816689'
   consistency_status: inconsistent
   corrections_applied: []
   issues_detected: 1

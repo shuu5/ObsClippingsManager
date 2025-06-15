@@ -437,6 +437,10 @@ class OpenCitationsAPIClient(BaseAPIClient):
     def __init__(self, config_manager, logger):
         super().__init__(config_manager, logger, 'opencitations')
         self.base_url = self.config.get('base_url', 'https://opencitations.net/index/api/v1')
+        
+        # レート制限設定（5req/sec）
+        self.rate_limit = 5
+        self.min_request_interval = 1.0 / self.rate_limit
     
     def fetch_citations(self, doi: str) -> List[Dict[str, Any]]:
         """
@@ -451,9 +455,24 @@ class OpenCitationsAPIClient(BaseAPIClient):
         try:
             self.logger.debug(f"Fetching citations from OpenCitations for DOI: {doi}")
             
-            # MockData一時的に返す（後で実装を置き換える）
-            return self._get_mock_citation_data(doi)
+            # DOI正規化
+            normalized_doi = self._normalize_doi_for_api(doi)
             
+            # API URL構築
+            url = self._build_api_url(normalized_doi)
+            
+            # API呼び出し
+            response_data = self._make_request(url)
+            
+            # レスポンス解析
+            citations = self._parse_opencitations_response(response_data)
+            
+            self.logger.debug(f"Successfully fetched {len(citations)} citations from OpenCitations")
+            return citations
+            
+        except APIError:
+            # API関連のエラーはそのまま再発生させる
+            raise
         except Exception as e:
             self.logger.error(f"OpenCitations API error for DOI {doi}: {e}")
             raise APIError(
@@ -461,6 +480,83 @@ class OpenCitationsAPIClient(BaseAPIClient):
                 error_code="OPENCITATIONS_API_ERROR",
                 context={"doi": doi, "original_error": str(e)}
             )
+    
+    def _build_api_url(self, doi: str) -> str:
+        """OpenCitations API URLを構築"""
+        return f"{self.base_url}/references/{doi}"
+    
+    def _normalize_doi_for_api(self, doi: str) -> str:
+        """OpenCitations API用にDOIを正規化"""
+        if not doi:
+            return doi
+        
+        # DOI URLプレフィックスを除去
+        if doi.startswith('https://doi.org/'):
+            return doi[len('https://doi.org/'):]
+        elif doi.startswith('http://dx.doi.org/'):
+            return doi[len('http://dx.doi.org/'):]
+        elif doi.startswith('doi:'):
+            return doi[len('doi:'):]
+        
+        return doi
+    
+    def _parse_opencitations_response(self, response_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """OpenCitations APIレスポンスを解析して引用文献リストを返す"""
+        citations = []
+        
+        # レスポンスが空の場合
+        if not response_data:
+            return citations
+        
+        try:
+            # OpenCitations APIレスポンス構造を解析
+            for ref in response_data:
+                citation = {}
+                
+                # Open Citation Identifier (OCI)
+                if 'oci' in ref:
+                    citation['oci'] = ref['oci']
+                
+                # 引用元論文DOI
+                if 'citing' in ref:
+                    citation['citing_doi'] = ref['citing']
+                
+                # 被引用論文DOI（これが引用文献）
+                if 'cited' in ref:
+                    citation['doi'] = ref['cited']
+                
+                # 作成日（出版日）
+                if 'creation' in ref:
+                    citation['creation'] = ref['creation']
+                    # 年を抽出（OpenCitations形式：YYYY-MM-DD または YYYY）
+                    try:
+                        if ref['creation']:
+                            year_str = str(ref['creation']).split('-')[0]
+                            if year_str.isdigit():
+                                citation['year'] = int(year_str)
+                    except (ValueError, IndexError):
+                        pass
+                
+                # タイムスパン
+                if 'timespan' in ref:
+                    citation['timespan'] = ref['timespan']
+                
+                # 自己引用情報
+                if 'journal_sc' in ref:
+                    citation['journal_self_citation'] = ref['journal_sc']
+                if 'author_sc' in ref:
+                    citation['author_self_citation'] = ref['author_sc']
+                
+                # 最低限のデータがある場合のみ追加
+                if citation.get('doi'):
+                    citations.append(citation)
+            
+            self.logger.debug(f"Parsed {len(citations)} citations from OpenCitations response")
+            return citations
+            
+        except Exception as e:
+            self.logger.warning(f"Error parsing OpenCitations response: {e}")
+            return citations
     
     def _get_mock_citation_data(self, doi: str) -> List[Dict[str, Any]]:
         """モック引用文献データを返す（開発用）"""
