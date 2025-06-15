@@ -1,29 +1,417 @@
 ---
 citation_key: yinL2022BreastCancerRes
 citation_metadata:
-  api_statistics:
-    crossref_avg_quality: 0.8939705882352948
-    crossref_failures: 0
-    crossref_max_quality: 0.8939705882352948
-    crossref_min_quality: 0.8939705882352948
-    crossref_requests: 1
-    crossref_success_rate: 1.0
-    crossref_successes: 1
-    overall_success_rate: 1.0
-    total_failures: 0
-    total_requests: 1
-    total_successes: 1
-  fetch_completed_at: '2025-06-15T08:06:39.193143'
-  last_updated: '2025-06-15T08:06:39.193143'
-  primary_api_used: crossref
-  quality_score: 0.8939705882352948
-  references_bib_path: references.bib
-  total_references_found: 51
+  last_updated: '2025-06-15T11:51:01.246631'
+  mapping_version: '2.0'
+  references_bib_path: test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib
+  source_bibtex: references.bib
+  total_citations: 50
+citations:
+  1:
+    authors: S Kim
+    citation_key: skim2006
+    doi: 10.1038/nature04659
+    journal: Nature
+    title: Kim S, Wong P, Coulombe PA. A keratin cytoskeletal protein regulates protein
+      synthesis and epithelia...
+    year: '2006'
+  2:
+    authors: SK Saha
+    citation_key: sksaha2017
+    doi: 10.1038/onc.2016.221
+    journal: Oncogene
+    title: Saha SK, Choi HY, Kim BW, Dayem AA, Yang GM, Kim KS, et al. KRT19 directly
+      interacts with beta-caten...
+    year: '2017'
+  3:
+    authors: MJ Hendrix
+    citation_key: mjhendrix1996
+    doi: 10.1007/BF00054016
+    journal: Cancer Metastasis Rev
+    title: Hendrix MJ, Seftor EA, Chu YW, Trevor KT, Seftor RE. Role of intermediate
+      filaments in migration, in...
+    year: '1996'
+  4:
+    authors: MJ Malecha
+    citation_key: mjmalecha1991
+    doi: 10.1007/BF01606063
+    journal: Virchows Arch A Pathol Anat Histopathol
+    title: Malecha MJ, Miettinen M. Expression of keratin 13 in human epithelial neoplasms.
+      Virchows Arch A Pat...
+    year: '1991'
+  5:
+    authors: GN van Muijen
+    citation_key: gnvanmuijen1986
+    doi: 10.1016/0014-4827(86)90429-5
+    journal: Exp Cell Res
+    title: van Muijen GN, Ruiter DJ, Franke WW, Achtstatter T, Haasnoot WH, Ponec
+      M, et al. Cell type heterogen...
+    year: '1986'
+  6:
+    authors: S Liu
+    citation_key: sliu2016
+    doi: 10.1371/journal.pone.0163232
+    journal: PLoS ONE
+    title: Liu S, Cadaneanu RM, Zhang B, Huo L, Lai K, Li X, et al. Keratin 13 is
+      enriched in prostate tubule-i...
+    year: '2016'
+  7:
+    authors: R Moll
+    citation_key: rmoll2008
+    doi: 10.1007/s00418-008-0435-6
+    journal: Histochem Cell Biol
+    title: 'Moll R, Divo M, Langbein L. The human keratins: biology and pathology.
+      Histochem Cell Biol. 2008;129...'
+    year: '2008'
+  8:
+    authors: A Waseem
+    citation_key: awaseem1998
+    doi: 10.1016/S0378-1119(98)00297-2
+    journal: Gene
+    title: Waseem A, Alam Y, Dogan B, White KN, Leigh IM, Waseem NH. Isolation, sequence
+      and expression of the ...
+    year: '1998'
+  9:
+    authors: S Sheng
+    citation_key: ssheng2008
+    doi: 10.1016/j.mce.2008.09.022
+    journal: Mol Cell Endocrinol
+    title: Sheng S, Barnett DH, Katzenellenbogen BS. Differential estradiol and selective
+      estrogen receptor mod...
+    year: '2008'
+  10:
+    authors: G Richard
+    citation_key: grichard1995
+    doi: 10.1038/ng1295-453
+    journal: Nat Genet
+    title: Richard G, De Laurenzi V, Didona B, Bale SJ, Compton JG. Keratin 13 point
+      mutation underlies the her...
+    year: '1995'
+  11:
+    authors: Y Yang
+    citation_key: yyang2019
+    doi: 10.7717/peerj.6629
+    journal: PeerJ
+    title: Yang Y, Tang X, Song X, Tang L, Cao Y, Liu X, et al. Evidence for an oncogenic
+      role of HOXC6 in huma...
+    year: '2019'
+  12:
+    authors: J Madoz-Gurpide
+    citation_key: jmadozgurpide2007
+    doi: 10.1074/mcp.M700006-MCP200
+    journal: Mol Cell Proteomics
+    title: Madoz-Gurpide J, Canamero M, Sanchez L, Solano J, Alfonso P, Casal JI.
+      A proteomics analysis of cell...
+    year: '2007'
+  13:
+    authors: D Acehan
+    citation_key: dacehan2008
+    doi: 10.1038/jid.2008.141
+    journal: J Invest Dermatol
+    title: Acehan D, Petzold C, Gumper I, Sabatini DD, Muller EJ, Cowin P, et al.
+      Plakoglobin is required for e...
+    year: '2008'
+  14:
+    authors: I Holen
+    citation_key: iholen2012
+    doi: 10.1186/bcr3201
+    journal: Breast Cancer Res
+    title: Holen I, Whitworth J, Nutter F, Evans A, Brown HK, Lefley DV, et al. Loss
+      of plakoglobin promotes de...
+    year: '2012'
+  15:
+    authors: Z Aktary
+    citation_key: zaktary2013
+    doi: ''
+    journal: J Cell Sci
+    title: Aktary Z, Kulak S, Mackey J, Jahroudi N, Pasdar M. Plakoglobin interacts
+      with the transcription fact...
+    year: '2013'
+  16:
+    authors: Z Aktary
+    citation_key: zaktary2017
+    doi: 10.18632/oncotarget.15650
+    journal: Oncotarget
+    title: 'Aktary Z, Alaee M, Pasdar M. Beyond cell-cell adhesion: Plakoglobin and
+      the regulation of tumorigene...'
+    year: '2017'
+  17:
+    authors: Z Aktary
+    citation_key: zaktary2012
+    doi: 10.1155/2012/189521
+    journal: Int J Cell Biol.
+    title: 'Aktary Z, Pasdar M. Plakoglobin: role in tumorigenesis and metastasis.
+      Int J Cell Biol. 2012;2012:18...'
+    year: '2012'
+  18:
+    authors: Q Li
+    citation_key: qli2016
+    doi: 10.18632/oncotarget.13175
+    journal: Oncotarget
+    title: Li Q, Yin L, Jones LW, Chu GC, Wu JB, Huang JM, et al. Keratin 13 expression
+      reprograms bone and bra...
+    year: '2016'
+  19:
+    authors: GC Chu
+    citation_key: gcchu2014
+    doi: 10.1007/s10555-013-9488-7
+    journal: Cancer Metastasis Rev
+    title: Chu GC, Chung LW. RANK-mediated signaling network and cancer metastasis.
+      Cancer Metastasis Rev. 2014...
+    year: '2014'
+  20:
+    authors: X Zhao
+    citation_key: xzhao2014
+    doi: 10.1186/1471-2407-14-211
+    journal: BMC Cancer
+    title: Zhao X, Rødland EA, Sørlie T, Vollan HK, Russnes HG, Kristensen VN, et
+      al. Systematic assessment of ...
+    year: '2014'
+  21:
+    authors: CM Perou
+    citation_key: cmperou2000
+    doi: 10.1038/35021093
+    journal: Nature
+    title: Perou CM, Sørlie T, Eisen MB, van de Rijn M, Jeffrey SS, Rees CA, et al.
+      Molecular portraits of huma...
+    year: '2000'
+  22:
+    authors: HE Zhau
+    citation_key: hezhau2008
+    doi: 10.1007/s10585-008-9183-1
+    journal: Clin Exp Metastasis
+    title: Zhau HE, Odero-Marah V, Lue HW, Nomura T, Wang R, Chu G, et al. Epithelial
+      to mesenchymal transition...
+    year: '2008'
+  23:
+    authors: X Li
+    citation_key: xli2016
+    doi: 10.18632/oncotarget.7331
+    journal: Oncotarget
+    title: Li X, Wu JB, Li Q, Shigemura K, Chung LW, Huang WC. SREBP-2 promotes stem
+      cell-like properties and m...
+    year: '2016'
+  24:
+    authors: P Hu
+    citation_key: phu2011
+    doi: 10.1371/journal.pone.0028670
+    journal: PLoS ONE
+    title: Hu P, Chu GC, Zhu G, Yang H, Luthringer D, Prins G, et al. Multiplexed
+      quantum dot labeling of activ...
+    year: '2011'
+  25:
+    authors: PK Lo
+    citation_key: pklo2012
+    doi: 10.1038/onc.2011.439
+    journal: Oncogene
+    title: Lo PK, Kanojia D, Liu X, Singh UP, Berger FG, Wang Q, et al. CD49f and
+      CD61 identify Her2/neu-induce...
+    year: '2012'
+  26:
+    authors: E Provenzano
+    citation_key: eprovenzano2018
+    doi: 10.1016/j.cpet.2018.02.004
+    journal: PET Clin
+    title: Provenzano E, Ulaner GA, Chin SF. Molecular Classification of Breast Cancer.
+      PET Clin. 2018;13(3):32...
+    year: '2018'
+  27:
+    authors: L Yang
+    citation_key: lyang2012
+    doi: 10.1093/carcin/bgs226
+    journal: Carcinogenesis
+    title: Yang L, Chen Y, Cui T, Knosel T, Zhang Q, Albring KF, et al. Desmoplakin
+      acts as a tumor suppressor ...
+    year: '2012'
+  28:
+    authors: T Kawai
+    citation_key: tkawai2015
+    doi: 10.1158/1078-0432.CCR-14-1936
+    journal: Clin Cancer Res
+    title: Kawai T, Yasuchika K, Ishii T, Katayama H, Yoshitoshi EY, Ogiso S, et al.
+      Keratin 19, a cancer stem ...
+    year: '2015'
+  29:
+    authors: O Govaere
+    citation_key: ogovaere2014
+    doi: 10.1136/gutjnl-2012-304351
+    journal: Gut
+    title: 'Govaere O, Komuta M, Berkers J, Spee B, Janssen C, de Luca F, et al. Keratin
+      19: a key role player i...'
+    year: '2014'
+  30:
+    authors: KJ Cheung
+    citation_key: kjcheung2016
+    doi: 10.1126/science.aaf6546
+    journal: Science
+    title: 'Cheung KJ, Ewald AJ. A collective route to metastasis: Seeding by tumor
+      cell clusters. Science. 2016...'
+    year: '2016'
+  31:
+    authors: J Dittmer
+    citation_key: jdittmer2018
+    doi: 10.1016/j.semcancer.2018.07.007
+    journal: Semin Cancer Biol
+    title: 'Dittmer J. Breast cancer stem cells: features, key drivers and treatment
+      options. Semin Cancer Biol....'
+    year: '2018'
+  32:
+    authors: I Baccelli
+    citation_key: ibaccelli2013
+    doi: 10.1038/nbt.2576
+    journal: Nat Biotechnol
+    title: Baccelli I, Schneeweiss A, Riethdorf S, Stenzinger A, Schillert A, Vogel
+      V, et al. Identification of...
+    year: '2013'
+  33:
+    authors: WY Hu
+    citation_key: wyhu2017
+    doi: 10.1016/j.scr.2017.06.009
+    journal: Stem Cell Res
+    title: Hu WY, Hu DP, Xie L, Li Y, Majumdar S, Nonn L, et al. Isolation and functional
+      interrogation of adul...
+    year: '2017'
+  34:
+    authors: S Ricardo
+    citation_key: sricardo2011
+    doi: 10.1136/jcp.2011.090456
+    journal: J Clin Pathol
+    title: Ricardo S, Vieira AF, Gerhard R, Leitao D, Pinto R, Cameselle-Teijeiro
+      JF, et al. Breast cancer stem...
+    year: '2011'
+  35:
+    authors: F Bertucci
+    citation_key: fbertucci2007
+    doi: 10.1056/NEJMc070393
+    journal: N Engl J Med
+    title: Bertucci F, Cervera N, Birnbaum D. A gene signature in breast cancer. N
+      Engl J Med. 2007;356(18):188...
+    year: '2007'
+  36:
+    authors: M Vita
+    citation_key: mvita2006
+    doi: 10.1016/j.semcancer.2006.07.015
+    journal: Semin Cancer Biol
+    title: Vita M, Henriksson M. The Myc oncoprotein as a therapeutic target for human
+      cancer. Semin Cancer Bio...
+    year: '2006'
+  37:
+    authors: N Todorovic-Rakovic
+    citation_key: ntodorovicrakovic2012
+    doi: 10.1007/s10238-011-0169-y
+    journal: Clin Exp Med
+    title: Todorovic-Rakovic N, Neskovic-Konstantinovic Z, Nikolic-Vukosavljevic D.
+      C-myc as a predictive marke...
+    year: '2012'
+  38:
+    authors: EC Robanus-Maandag
+    citation_key: ecrobanusmaandag2003
+    doi: 10.1002/path.1385
+    journal: J Pathol
+    title: Robanus-Maandag EC, Bosch CA, Kristel PM, Hart AA, Faneyte IF, Nederlof
+      PM, et al. Association of C-...
+    year: '2003'
+  39:
+    authors: R Nair
+    citation_key: rnair2014
+    doi: 10.1038/onc.2013.368
+    journal: Oncogene
+    title: Nair R, Roden DL, Teo WS, McFarland A, Junankar S, Ye S, et al. c-Myc and
+      Her2 cooperate to drive a ...
+    year: '2014'
+  40:
+    authors: D Pradella
+    citation_key: dpradella2017
+    doi: 10.1186/s12943-016-0579-2
+    journal: Mol Cancer
+    title: 'Pradella D, Naro C, Sette C, Ghigna C. EMT and stemness: flexible processes
+      tuned by alternative spl...'
+    year: '2017'
+  41:
+    authors: I Fabregat
+    citation_key: ifabregat2016
+    doi: 10.3390/jcm5030037
+    journal: J Clin Med
+    title: Fabregat I, Malfettone A, Soukupova J. New insights into the crossroads
+      between EMT and stemness in ...
+    year: '2016'
+  42:
+    authors: T Yin
+    citation_key: tyin2005
+    doi: 10.1073/pnas.0501676102
+    journal: Proc Natl Acad Sci U S A
+    title: Yin T, Getsios S, Caldelari R, Kowalczyk AP, Muller EJ, Jones JC, et al.
+      Plakoglobin suppresses kera...
+    year: '2005'
+  43:
+    authors: V Todorovic
+    citation_key: vtodorovic2010
+    doi: 10.1242/jcs.070391
+    journal: J Cell Sci
+    title: Todorovic V, Desai BV, Patterson MJ, Amargo EV, Dubash AD, Yin T, et al.
+      Plakoglobin regulates cell ...
+    year: '2010'
+  44:
+    authors: KM Rieger-Christ
+    citation_key: kmriegerchrist2005
+    doi: 10.1038/sj.bjc.6602651
+    journal: Br J Cancer
+    title: Rieger-Christ KM, Ng L, Hanley RS, Durrani O, Ma H, Yee AS, et al. Restoration
+      of plakoglobin expres...
+    year: '2005'
+  45:
+    authors: M Alaee
+    citation_key: malaee2018
+    doi: 10.1111/cas.13612
+    journal: Cancer Sci
+    title: Alaee M, Nool K, Pasdar M. Plakoglobin restores tumor suppressor activity
+      of p53(R175H) mutant by se...
+    year: '2018'
+  46:
+    authors: A de Bruin
+    citation_key: adebruin2007
+    doi: 10.1111/j.1600-0625.2007.00557.x
+    journal: Exp Dermatol
+    title: de Bruin A, Caldelari R, Williamson L, Suter MM, Hunziker T, Wyder M, et
+      al. Plakoglobin-dependent d...
+    year: '2007'
+  47:
+    authors: YH Lai
+    citation_key: yhlai2011
+    doi: 10.1186/1471-2121-12-50
+    journal: BMC Cell Biol
+    title: Lai YH, Cheng J, Cheng D, Feasel ME, Beste KD, Peng J, et al. SOX4 interacts
+      with plakoglobin in a W...
+    year: '2011'
+  48:
+    authors: R Koyama-Nasu
+    citation_key: rkoyamanasu2013
+    doi: 10.1371/journal.pone.0053710
+    journal: PLoS ONE
+    title: Koyama-Nasu R, Takahashi R, Yanagida S, Nasu-Nishimura Y, Oyama M, Kozuka-Hata
+      H, et al. The cancer ...
+    year: '2013'
+  49:
+    authors: L Williamson
+    citation_key: lwilliamson2006
+    doi: 10.1038/sj.emboj.7601224
+    journal: Embo J
+    title: Williamson L, Raess NA, Caldelari R, Zakher A, de Bruin A, Posthaus H,
+      et al. Pemphigus vulgaris ide...
+    year: '2006'
+  50:
+    authors: YJ Chen
+    citation_key: yjchen2013
+    doi: 10.1371/journal.pone.0064088
+    journal: PLoS ONE
+    title: Chen YJ, Lee LY, Chao YK, Chang JT, Lu YC, Li HF, et al. DSG3 facilitates
+      cancer cell growth and inv...
+    year: '2013'
 created: 2025-06-09
 doi: 10.1186/s13058-022-01502-6
-last_updated: '2025-06-15T08:06:39.402830'
+last_updated: '2025-06-15T11:51:01.258450'
 paper_structure:
-  parsed_at: '2025-06-15T08:06:39.400604'
+  parsed_at: '2025-06-15T11:51:01.108171'
   section_types_found:
   - abstract
   - introduction
@@ -275,6 +663,7 @@ paper_structure:
     word_count: 1600
   total_sections: 15
 processing_status:
+  ai_citation_support: completed
   fetch: completed
   organize: completed
   section_parsing: completed
@@ -282,7 +671,7 @@ processing_status:
 source: https://breast-cancer-research.biomedcentral.com/articles/10.1186/s13058-022-01502-6
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-15T08:06:38.379650'
+  checked_at: '2025-06-15T11:51:00.117527'
   consistency_status: validated
   corrections_applied: []
   issues_detected: 0

@@ -169,20 +169,21 @@ class SimpleIntegratedTestRunner:
                     str(bibtex_file), 
                     str(clippings_dir)
                 )
-                self.logger.info(f"Sync consistency check completed: {sync_result.get('status', 'unknown')}")
+                self.logger.info(f"Sync consistency check completed: {sync_result.get('consistency_status', 'unknown')}")
                 
-                if sync_result.get('status') == 'issues_detected':
+                if sync_result.get('consistency_status') == 'issues_detected':
                     # DOIリンク表示
                     missing_files = sync_result.get('missing_markdown_files', [])
                     orphaned_files = sync_result.get('orphaned_markdown_files', [])
                     
                     if missing_files or orphaned_files:
+                        self.logger.info(f"Displaying DOI links for {len(missing_files)} missing and {len(orphaned_files)} orphaned files")
                         sync_checker.display_doi_links(missing_files, orphaned_files)
                     
                     # auto-fix試行
                     self.logger.info("Attempting auto-fix for detected issues")
-                    fix_result = sync_checker.auto_fix_minor_inconsistencies(str(workspace_path))
-                    self.logger.info(f"Auto-fix completed: {fix_result.get('corrections_applied', 0)} corrections applied")
+                    fix_result = sync_checker.auto_fix_minor_inconsistencies(sync_result)
+                    self.logger.info(f"Auto-fix completed: {len(fix_result.get('corrections_applied', []))} corrections applied")
                 
                 modules_executed.append('sync_checker')
                 
@@ -296,6 +297,43 @@ class SimpleIntegratedTestRunner:
                 self.logger.warning(f"SectionParsingWorkflow ImportError: {e}")
             except Exception as e:
                 self.logger.error(f"Error in section_parsing processing: {e}")
+                import traceback
+                self.logger.error(traceback.format_exc())
+            
+            # ai_citation_support機能
+            try:
+                self.logger.info("Attempting to import AICitationSupportWorkflow")
+                from code.py.modules.ai_citation_support.ai_citation_support_workflow import AICitationSupportWorkflow
+                self.logger.info("AICitationSupportWorkflow imported successfully")
+                
+                ai_citation_support = AICitationSupportWorkflow(self.config_manager, self.integrated_logger)
+                self.logger.info("AICitationSupportWorkflow initialized")
+                
+                self.logger.info("Starting AI citation support workflow")
+                # 処理対象のmarkdownファイルを取得してai_citation_support処理実行
+                clippings_dir = workspace_path / "Clippings"
+                if clippings_dir.exists():
+                    # サブディレクトリ内のmarkdownファイルを対象とする
+                    target_papers = []
+                    for subdir in clippings_dir.iterdir():
+                        if subdir.is_dir():
+                            # サブディレクトリ名をtarget_papersに追加
+                            target_papers.append(subdir.name)
+                    
+                    if target_papers:
+                        self.logger.info(f"Processing AI citation support for {len(target_papers)} papers")
+                        ai_citation_support.process_items(str(clippings_dir), target_papers)
+                        modules_executed.append('ai_citation_support')
+                        self.logger.info("AI citation support workflow completed")
+                    else:
+                        self.logger.warning("No organized papers found for AI citation support")
+                else:
+                    self.logger.warning("Clippings directory not found for AI citation support")
+                    
+            except ImportError as e:
+                self.logger.warning(f"AICitationSupportWorkflow ImportError: {e}")
+            except Exception as e:
+                self.logger.error(f"Error in ai_citation_support processing: {e}")
                 import traceback
                 self.logger.error(traceback.format_exc())
             

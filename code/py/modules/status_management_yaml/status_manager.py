@@ -109,13 +109,15 @@ class StatusManager:
             
         try:
             # 更新前バックアップ作成
-            if self.config_manager.get('status_management.backup_strategy.backup_before_status_update', True):
+            backup_before_update = self.config_manager.config.get('status_management', {}).get('backup_strategy', {}).get('backup_before_status_update', True)
+            if backup_before_update:
                 self.backup_manager.create_backup(md_file, backup_type="status_update")
             
             yaml_header, content = self.yaml_processor.parse_yaml_header(Path(md_file))
             
             # YAML検証
-            if self.config_manager.get('status_management.error_handling.validate_yaml_before_update', True):
+            validate_yaml = self.config_manager.config.get('status_management', {}).get('error_handling', {}).get('validate_yaml_before_update', True)
+            if validate_yaml:
                 self.yaml_processor.validate_yaml_structure(yaml_header)
             
             # processing_statusを更新
@@ -135,16 +137,19 @@ class StatusManager:
             
         except YAMLError as e:
             # YAML構造エラー：バックアップ作成後修復試行
-            if self.config_manager.get('status_management.error_handling.create_backup_on_yaml_error', True):
+            create_backup_on_yaml_error = self.config_manager.config.get('status_management', {}).get('error_handling', {}).get('create_backup_on_yaml_error', True)
+            if create_backup_on_yaml_error:
                 self.backup_manager.create_backup(md_file, backup_type="yaml_error")
             
-            if self.config_manager.get('status_management.error_handling.auto_repair_corrupted_headers', True):
+            auto_repair = self.config_manager.config.get('status_management', {}).get('error_handling', {}).get('auto_repair_corrupted_headers', True)
+            if auto_repair:
                 return self._attempt_yaml_repair(md_file, citation_key, step, status, clippings_dir)
             raise
             
         except Exception as e:
             # 一般的なエラー：バックアップからの復旧試行
-            if self.config_manager.get('status_management.error_handling.fallback_to_backup_on_failure', True):
+            fallback_to_backup = self.config_manager.config.get('status_management', {}).get('error_handling', {}).get('fallback_to_backup_on_failure', True)
+            if fallback_to_backup:
                 return self._attempt_backup_recovery(md_file, citation_key, step, status, clippings_dir)
             
             raise ProcessingError(

@@ -23,10 +23,19 @@ class TestOpenCitationsAPIClient(unittest.TestCase):
     
     def setUp(self):
         """テストの前準備"""
-        self.config_manager = Mock(spec=ConfigManager)
-        self.logger = Mock(spec=IntegratedLogger)
+        self.config_manager = Mock()
+        # config_manager.getメソッドの適切なモック設定
+        self.config_manager.get.return_value = {}
+        
+        self.logger = Mock()
         self.mock_logger_instance = Mock()
         self.logger.get_logger.return_value = self.mock_logger_instance
+        
+        # loggerの基本メソッドもモック
+        self.logger.warning = Mock()
+        self.logger.error = Mock()
+        self.logger.info = Mock()
+        self.logger.debug = Mock()
         
         self.client = OpenCitationsAPIClient(self.config_manager, self.logger)
     

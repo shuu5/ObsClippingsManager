@@ -357,7 +357,9 @@ class CitationFetcherWorkflow:
                     # 最初の著者の苗字を抽出（簡易）
                     first_author = citation['authors'].split(',')[0].strip()
                     year = citation.get('year', 'unknown')
-                    citation_key = f"{first_author.lower()}{year}"
+                    # BibTeX citation keyでは、スペースと特殊文字を除去・置換
+                    safe_author = re.sub(r'[^a-zA-Z0-9]', '', first_author.lower())
+                    citation_key = f"{safe_author}{year}"
                 
                 # エントリタイプ決定
                 entry_type = "article"

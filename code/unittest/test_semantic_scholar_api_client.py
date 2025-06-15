@@ -211,8 +211,8 @@ class TestSemanticScholarAPIClient(unittest.TestCase):
         self.assertEqual(second_citation['doi'], '10.1016/j.cell.test.002')
         self.assertEqual(second_citation['citationCount'], 75)
         
-        # ログ出力が正しく呼ばれているか確認（actual loggerを使用）
-        self.mock_specific_logger.debug.assert_any_call(f"Fetching citations from Semantic Scholar for DOI: {self.test_doi}")
+        # ログ出力が正しく呼ばれているか確認（基本loggerを使用）
+        self.mock_logger.debug.assert_any_call(f"Fetching citations from Semantic Scholar for DOI: {self.test_doi}")
     
     @patch('requests.Session.get')
     def test_fetch_citations_empty_response(self, mock_get):

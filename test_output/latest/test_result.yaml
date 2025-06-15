@@ -10,6 +10,7 @@ test_execution:
     - sync_checker
     - citation_fetcher
     - section_parsing
+    - ai_citation_support
     status: success
   status: success
-  timestamp: '2025-06-15T08:06:39.424685'
+  timestamp: '2025-06-15T11:51:01.380258'
