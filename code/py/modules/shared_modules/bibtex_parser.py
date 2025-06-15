@@ -395,4 +395,102 @@ class BibTeXParser:
             return True
             
         except Exception:
-            return False 
+            return False
+    
+    # === Citation Fetcher機能拡張 ===
+    def extract_doi_from_entries(self, entries: Dict[str, Dict[str, Any]]) -> List[str]:
+        """
+        BibTeXエントリ辞書からDOIを抽出
+        
+        Args:
+            entries (Dict[str, Dict[str, Any]]): parse_string/parse_fileの結果エントリ辞書
+            
+        Returns:
+            List[str]: 有効なDOIのリスト（重複除去、ソート済み）
+        """
+        try:
+            self.logger.debug(f"Extracting DOIs from {len(entries)} entries")
+            
+            dois = []
+            
+            for citation_key, entry in entries.items():
+                if 'doi' in entry and entry['doi']:
+                    doi = entry['doi'].strip()
+                    
+                    # DOI形式の基本検証（10.から始まる）
+                    if self._is_valid_doi_format(doi):
+                        # 正規化（URLプレフィックス除去）
+                        normalized_doi = self._normalize_doi(doi)
+                        dois.append(normalized_doi)
+                    else:
+                        self.logger.warning(f"Invalid DOI format in entry '{citation_key}': {doi}")
+            
+            # 重複除去とソート
+            unique_dois = sorted(list(set(dois)))
+            
+            self.logger.debug(f"Extracted {len(unique_dois)} unique valid DOIs")
+            return unique_dois
+            
+        except Exception as e:
+            self.logger.error(f"Error extracting DOIs from entries: {e}")
+            raise BibTeXError(
+                f"Failed to extract DOIs from entries: {str(e)}",
+                error_code="BIBTEX_DOI_EXTRACTION_ERROR",
+                context={"original_error": str(e)}
+            )
+    
+    def get_citation_key_to_doi_mapping(self, entries: Dict[str, Dict[str, Any]]) -> Dict[str, str]:
+        """
+        Citation Key → DOI マッピング辞書を生成
+        
+        Args:
+            entries (Dict[str, Dict[str, Any]]): parse_string/parse_fileの結果エントリ辞書
+            
+        Returns:
+            Dict[str, str]: citation_key → doi のマッピング辞書
+        """
+        try:
+            self.logger.debug(f"Creating citation_key → DOI mapping from {len(entries)} entries")
+            
+            mapping = {}
+            
+            for citation_key, entry in entries.items():
+                if 'doi' in entry and entry['doi']:
+                    doi = entry['doi'].strip()
+                    
+                    # DOI形式の基本検証
+                    if self._is_valid_doi_format(doi):
+                        # 正規化（URLプレフィックス除去）
+                        normalized_doi = self._normalize_doi(doi)
+                        mapping[citation_key] = normalized_doi
+                    else:
+                        self.logger.warning(f"Invalid DOI format in entry '{citation_key}': {doi}")
+            
+            self.logger.debug(f"Created mapping with {len(mapping)} citation_key → DOI pairs")
+            return mapping
+            
+        except Exception as e:
+            self.logger.error(f"Error creating citation_key → DOI mapping: {e}")
+            raise BibTeXError(
+                f"Failed to create citation_key → DOI mapping: {str(e)}",
+                error_code="BIBTEX_MAPPING_ERROR",
+                context={"original_error": str(e)}
+            )
+    
+    def _is_valid_doi_format(self, doi: str) -> bool:
+        """
+        DOI形式の基本検証
+        
+        Args:
+            doi (str): 検証対象のDOI文字列
+            
+        Returns:
+            bool: 有効なDOI形式かどうか
+        """
+        if not doi or not isinstance(doi, str):
+            return False
+        
+        # DOIの基本パターン（10.で始まり、/を含む）
+        doi_pattern = r'(?:https?://(?:dx\.)?doi\.org/|doi:)?10\.\d+/.+'
+        
+        return bool(re.match(doi_pattern, doi.strip(), re.IGNORECASE)) 
