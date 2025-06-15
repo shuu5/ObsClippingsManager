@@ -13,17 +13,17 @@ citation_metadata:
     total_failures: 0
     total_requests: 2
     total_successes: 2
-  fetch_completed_at: '2025-06-15T07:54:20.063897'
-  last_updated: '2025-06-15T07:54:20.063897'
+  fetch_completed_at: '2025-06-15T08:06:39.390635'
+  last_updated: '2025-06-15T08:06:39.390635'
   primary_api_used: crossref
   quality_score: 0.817019230769231
   references_bib_path: references.bib
   total_references_found: 52
 created: 2025-06-09
 doi: 10.1093/jrr/rrac091
-last_updated: '2025-06-15T07:54:20.090722'
+last_updated: '2025-06-15T08:06:39.417158'
 paper_structure:
-  parsed_at: '2025-06-15T07:54:20.088345'
+  parsed_at: '2025-06-15T08:06:39.415079'
   section_types_found:
   - abstract
   - introduction
@@ -33,142 +33,142 @@ paper_structure:
   - unknown
   - references
   sections:
-  - end_line: 48
+  - end_line: 9
     level: 2
     section_type: abstract
-    start_line: 45
+    start_line: 6
     subsections: []
     title: Abstract
     word_count: 164
-  - end_line: 60
+  - end_line: 21
     level: 2
     section_type: introduction
-    start_line: 49
+    start_line: 10
     subsections: []
     title: INTRODUCTION
     word_count: 467
-  - end_line: 62
+  - end_line: 23
     level: 2
     section_type: methods
-    start_line: 61
+    start_line: 22
     subsections:
-    - end_line: 66
+    - end_line: 27
       level: 3
-      start_line: 63
+      start_line: 24
       title: Generation of a pancreatic CSC model
       word_count: 215
-    - end_line: 70
+    - end_line: 31
       level: 3
-      start_line: 67
+      start_line: 28
       title: Irradiation
       word_count: 28
-    - end_line: 74
+    - end_line: 35
       level: 3
-      start_line: 71
+      start_line: 32
       title: Colony formation assay
       word_count: 48
-    - end_line: 78
+    - end_line: 39
       level: 3
-      start_line: 75
+      start_line: 36
       title: Flow cytometry analysis
       word_count: 113
-    - end_line: 82
+    - end_line: 43
       level: 3
-      start_line: 79
+      start_line: 40
       title: Sphere formation assay
       word_count: 134
-    - end_line: 92
+    - end_line: 53
       level: 3
-      start_line: 83
+      start_line: 44
       title: Reverse transcription quantitative PCR analysis
       word_count: 102
-    - end_line: 96
+    - end_line: 57
       level: 3
-      start_line: 93
+      start_line: 54
       title: RNA sequence data
       word_count: 131
-    - end_line: 100
+    - end_line: 61
       level: 3
-      start_line: 97
+      start_line: 58
       title: siRNA transfection
       word_count: 46
-    - end_line: 104
+    - end_line: 65
       level: 3
-      start_line: 101
+      start_line: 62
       title: Data analysis
       word_count: 43
-    - end_line: 108
+    - end_line: 69
       level: 3
-      start_line: 105
+      start_line: 66
       title: Statistics
       word_count: 36
     title: MATERIALS AND METHODS
     word_count: 4
-  - end_line: 110
+  - end_line: 71
     level: 2
     section_type: results
-    start_line: 109
+    start_line: 70
     subsections:
-    - end_line: 122
+    - end_line: 83
       level: 3
-      start_line: 111
+      start_line: 72
       title: Generation of the pancreatic CSC model
       word_count: 493
-    - end_line: 134
+    - end_line: 95
       level: 3
-      start_line: 123
+      start_line: 84
       title: Degron (++) cells displayed higher radioresistance
       word_count: 310
-    - end_line: 146
+    - end_line: 107
       level: 3
-      start_line: 135
+      start_line: 96
       title: KRT13 gene expression was upregulated in degron (++) cells
       word_count: 151
-    - end_line: 158
+    - end_line: 119
       level: 3
-      start_line: 147
+      start_line: 108
       title: KRT13 knockdown decreased radioresistance and stem-like cell property
         in degron (++) cells
       word_count: 522
-    - end_line: 170
+    - end_line: 131
       level: 3
-      start_line: 159
+      start_line: 120
       title: KRT13 is upregulated in pancreatic cancer and associated with poor prognosis
       word_count: 202
     title: RESULTS
     word_count: 2
-  - end_line: 184
+  - end_line: 145
     level: 2
     section_type: discussion
-    start_line: 171
+    start_line: 132
     subsections: []
     title: DISCUSSION
     word_count: 1049
-  - end_line: 188
+  - end_line: 149
     level: 2
     section_type: unknown
-    start_line: 185
+    start_line: 146
     subsections: []
     title: CONFLICT OF INTEREST
     word_count: 12
-  - end_line: 192
+  - end_line: 153
     level: 2
     section_type: unknown
-    start_line: 189
+    start_line: 150
     subsections: []
     title: FUNDING
     word_count: 24
-  - end_line: 2108
+  - end_line: 2069
     level: 2
     section_type: references
-    start_line: 193
+    start_line: 154
     subsections: []
     title: References
     word_count: 1137
-  - end_line: 2121
+  - end_line: 2082
     level: 2
     section_type: unknown
-    start_line: 2109
+    start_line: 2070
     subsections: []
     title: Supplementary data
     word_count: 25
@@ -181,7 +181,7 @@ processing_status:
 source: https://academic.oup.com/jrr/article/64/2/284/6968637
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-15T07:54:18.930021'
+  checked_at: '2025-06-15T08:06:38.379033'
   consistency_status: inconsistent
   corrections_applied: []
   issues_detected: 1

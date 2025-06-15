@@ -330,6 +330,29 @@ code/py/modules/
   - 実際のYAMLヘッダー構造に対応したテスト実装
   - デバッグスクリプト作成・問題解決手法の確立
 
+- [完了] 2.4.9 **YAMLヘッダー除外相対行数計算修正**（最終修正）
+  **重要修正**: section_parsing機能で「YAMLヘッダーを除いた純粋なMarkdown部分での相対行数」でセクション位置を記録するよう修正
+  
+  **修正前の問題**:
+  - `## Abstract`が294行目に存在するのに、paper_structureには41行目と記録
+  - 「全ファイル行数ベース」で記録されていた
+  
+  **修正内容**:
+  - `_extract_sections`メソッドの行数計算ロジック修正
+  - `markdown_relative_line = line_num - yaml_header_end_line` による相対行数計算
+  - `_count_words_from_markdown_lines`メソッドの引数調整
+  - テストケースの期待値を相対行数ベースに修正
+  
+  **修正後の結果**:
+  - yinL2022論文: `## Abstract`（294行目）→ 相対行数2行目として正しく記録
+  - paper_structure YAMLで `start_line: 2` として正確に記録
+  - 統合テスト成功: 24セクション検出、2論文処理完了
+  
+  **検証完了**:
+  - ユニットテスト全成功
+  - 統合テスト成功確認
+  - YAMLヘッダーを除いた純粋なMarkdown部分での行数計算が正確に動作
+
 #### 2.5 ステップ5: ai_citation_support（AI引用理解支援）
 - [ ] 2.5.1 AICitationSupportクラス設計・テスト作成
 - [ ] 2.5.2 Claude API連携基盤実装

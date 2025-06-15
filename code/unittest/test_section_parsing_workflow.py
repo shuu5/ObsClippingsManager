@@ -159,16 +159,16 @@ class TestSectionExtraction(unittest.TestCase):
         self.assertEqual(abstract.title, "Abstract")
         self.assertEqual(abstract.level, 2)
         self.assertEqual(abstract.section_type, "abstract")
-        self.assertEqual(abstract.start_line, 5)
-        self.assertEqual(abstract.end_line, 8)
+        self.assertEqual(abstract.start_line, 2)  # 5行目-3行目 = 2行目（YAMLヘッダー除外後の相対行数）
+        self.assertEqual(abstract.end_line, 5)   # 8行目-3行目 = 5行目
         
         # Introduction セクション確認
         introduction = sections[1]
         self.assertEqual(introduction.title, "Introduction")
         self.assertEqual(introduction.level, 2)
         self.assertEqual(introduction.section_type, "introduction")
-        self.assertEqual(introduction.start_line, 9)
-        self.assertEqual(introduction.end_line, 12)
+        self.assertEqual(introduction.start_line, 6)  # 9行目-3行目 = 6行目
+        self.assertEqual(introduction.end_line, 9)   # 12行目-3行目 = 9行目
         
         # Introduction の子セクション確認
         self.assertEqual(len(introduction.subsections), 1)
@@ -196,6 +196,9 @@ class TestSectionExtraction(unittest.TestCase):
     def test_count_words(self):
         """文字数カウントテスト"""
         content_lines = [
+            "---",
+            "title: Test",
+            "---",
             "## Test Section",
             "",
             "This is a test content.",
@@ -203,7 +206,8 @@ class TestSectionExtraction(unittest.TestCase):
             "Each line contains words."
         ]
         
-        word_count = self.workflow._count_words_from_lines(content_lines, 1, 5)
+        yaml_header_end_line = 3  # YAMLヘッダーは3行目まで
+        word_count = self.workflow._count_words_from_markdown_lines(content_lines, yaml_header_end_line, 1, 5)
         
         # 文字数が計算されていることを確認
         self.assertGreater(word_count, 0)
@@ -251,40 +255,40 @@ class TestSectionExtraction(unittest.TestCase):
         # セクション数の確認
         self.assertEqual(len(sections), 5)  # Abstract, Introduction, Methods, Results, Discussion
         
-        # Abstract セクション確認
+        # Abstract セクション確認（YAMLヘッダー除外後の相対行数）
         abstract = sections[0]
         self.assertEqual(abstract.title, "Abstract")
         self.assertEqual(abstract.level, 2)
         self.assertEqual(abstract.section_type, "abstract")
-        self.assertEqual(abstract.start_line, 13)  # YAMLヘッダー後の実際の行番号
+        self.assertEqual(abstract.start_line, 4)  # 13行目-9行目 = 4行目（YAMLヘッダー除外後の相対行数）
         
         # Introduction セクション確認
         introduction = sections[1]
         self.assertEqual(introduction.title, "INTRODUCTION")
         self.assertEqual(introduction.level, 2)
         self.assertEqual(introduction.section_type, "introduction")
-        self.assertEqual(introduction.start_line, 18)
+        self.assertEqual(introduction.start_line, 9)  # 18行目-9行目 = 9行目（YAMLヘッダー除外後の相対行数）
         
         # Methods セクション確認
         methods = sections[2]
         self.assertEqual(methods.title, "MATERIALS AND METHODS")
         self.assertEqual(methods.level, 2)
         self.assertEqual(methods.section_type, "methods")
-        self.assertEqual(methods.start_line, 23)
+        self.assertEqual(methods.start_line, 14)  # 23行目-9行目 = 14行目（YAMLヘッダー除外後の相対行数）
         
         # Results セクション確認
         results = sections[3]
         self.assertEqual(results.title, "RESULTS")
         self.assertEqual(results.level, 2)
         self.assertEqual(results.section_type, "results")
-        self.assertEqual(results.start_line, 27)
+        self.assertEqual(results.start_line, 18)  # 27行目-9行目 = 18行目（YAMLヘッダー除外後の相対行数）
         
         # Discussion セクション確認
         discussion = sections[4]
         self.assertEqual(discussion.title, "DISCUSSION")
         self.assertEqual(discussion.level, 2)
         self.assertEqual(discussion.section_type, "discussion")
-        self.assertEqual(discussion.start_line, 31)
+        self.assertEqual(discussion.start_line, 22)  # 31行目-9行目 = 22行目（YAMLヘッダー除外後の相対行数）
 
 
 class TestPaperStructureBuilding(unittest.TestCase):

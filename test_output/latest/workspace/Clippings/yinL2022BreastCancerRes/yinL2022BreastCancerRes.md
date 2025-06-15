@@ -13,17 +13,17 @@ citation_metadata:
     total_failures: 0
     total_requests: 1
     total_successes: 1
-  fetch_completed_at: '2025-06-15T07:54:19.861640'
-  last_updated: '2025-06-15T07:54:19.861640'
+  fetch_completed_at: '2025-06-15T08:06:39.193143'
+  last_updated: '2025-06-15T08:06:39.193143'
   primary_api_used: crossref
   quality_score: 0.8939705882352948
   references_bib_path: references.bib
   total_references_found: 51
 created: 2025-06-09
 doi: 10.1186/s13058-022-01502-6
-last_updated: '2025-06-15T07:54:20.077977'
+last_updated: '2025-06-15T08:06:39.402830'
 paper_structure:
-  parsed_at: '2025-06-15T07:54:20.074960'
+  parsed_at: '2025-06-15T08:06:39.400604'
   section_types_found:
   - abstract
   - introduction
@@ -35,241 +35,241 @@ paper_structure:
   - references
   - acknowledgments
   sections:
-  - end_line: 42
+  - end_line: 3
     level: 2
     section_type: abstract
-    start_line: 41
+    start_line: 2
     subsections:
-    - end_line: 46
+    - end_line: 7
       level: 3
-      start_line: 43
+      start_line: 4
       title: Background
       word_count: 50
-    - end_line: 50
+    - end_line: 11
       level: 3
-      start_line: 47
+      start_line: 8
       title: Methods
       word_count: 64
-    - end_line: 54
+    - end_line: 15
       level: 3
-      start_line: 51
+      start_line: 12
       title: Results
       word_count: 114
-    - end_line: 58
+    - end_line: 19
       level: 3
-      start_line: 55
+      start_line: 16
       title: Conclusions
       word_count: 34
     title: Abstract
     word_count: 2
-  - end_line: 70
+  - end_line: 31
     level: 2
     section_type: introduction
-    start_line: 59
+    start_line: 20
     subsections: []
     title: Background
     word_count: 542
-  - end_line: 72
+  - end_line: 33
     level: 2
     section_type: methods
-    start_line: 71
+    start_line: 32
     subsections:
-    - end_line: 76
+    - end_line: 37
       level: 3
-      start_line: 73
+      start_line: 34
       title: Cell culture
       word_count: 89
-    - end_line: 80
+    - end_line: 41
       level: 3
-      start_line: 77
+      start_line: 38
       title: Plasmids, siRNA transfection and viral transduction
       word_count: 140
-    - end_line: 84
+    - end_line: 45
       level: 3
-      start_line: 81
+      start_line: 42
       title: Cell proliferation and behavioral assays
       word_count: 144
-    - end_line: 88
+    - end_line: 49
       level: 3
-      start_line: 85
+      start_line: 46
       title: Cell fractionation and western blot analysis
       word_count: 104
-    - end_line: 92
+    - end_line: 53
       level: 3
-      start_line: 89
+      start_line: 50
       title: Quantitative reverse transcription and polymerase chain reaction (qRT-PCR)
         and RNA sequencing (RNA-seq) analyses
       word_count: 160
-    - end_line: 96
+    - end_line: 57
       level: 3
-      start_line: 93
+      start_line: 54
       title: Clinical specimens
       word_count: 58
-    - end_line: 104
+    - end_line: 65
       level: 3
-      start_line: 97
+      start_line: 58
       title: Immunohistochemical analyses
       word_count: 153
-    - end_line: 108
+    - end_line: 69
       level: 3
-      start_line: 105
+      start_line: 66
       title: Flow cytometry
       word_count: 70
-    - end_line: 112
+    - end_line: 73
       level: 3
-      start_line: 109
+      start_line: 70
       title: Mammosphere assay
       word_count: 101
-    - end_line: 116
+    - end_line: 77
       level: 3
-      start_line: 113
+      start_line: 74
       title: Co-immunoprecipitation (co-IP) analysis
       word_count: 106
-    - end_line: 120
+    - end_line: 81
       level: 3
-      start_line: 117
+      start_line: 78
       title: In vivo experiments
       word_count: 142
-    - end_line: 124
+    - end_line: 85
       level: 3
-      start_line: 121
+      start_line: 82
       title: Statistical analysis
       word_count: 75
     title: Methods
     word_count: 2
-  - end_line: 126
+  - end_line: 87
     level: 2
     section_type: results
-    start_line: 125
+    start_line: 86
     subsections:
-    - end_line: 140
+    - end_line: 101
       level: 3
-      start_line: 127
+      start_line: 88
       title: KRT13 overexpression increases breast cancer proliferation, migration
         and invasion in vitro, and promotes tumorigenesis and metastasis in vivo
       word_count: 347
-    - end_line: 152
+    - end_line: 113
       level: 3
-      start_line: 141
+      start_line: 102
       title: KRT13 overexpression induces epithelial to mesenchymal transition (EMT)
         and stemness
       word_count: 323
-    - end_line: 160
+    - end_line: 121
       level: 3
-      start_line: 153
+      start_line: 114
       title: KRT13 induces aggressiveness through activation of c-Myc
       word_count: 149
-    - end_line: 170
+    - end_line: 131
       level: 3
-      start_line: 161
+      start_line: 122
       title: KRT13 interacts with PG and decreases its expression and nuclear translocation
       word_count: 293
-    - end_line: 180
+    - end_line: 141
       level: 3
-      start_line: 171
+      start_line: 132
       title: KRT13 expression is correlated with c-Myc levels in clinical breast cancer
       word_count: 240
     title: Results
     word_count: 2
-  - end_line: 196
+  - end_line: 157
     level: 2
     section_type: discussion
-    start_line: 181
+    start_line: 142
     subsections: []
     title: Discussion
     word_count: 960
-  - end_line: 200
+  - end_line: 161
     level: 2
     section_type: conclusion
-    start_line: 197
+    start_line: 158
     subsections: []
     title: Conclusions
     word_count: 52
-  - end_line: 204
+  - end_line: 165
     level: 2
     section_type: unknown
-    start_line: 201
+    start_line: 162
     subsections: []
     title: Availability of data and materials
     word_count: 11
-  - end_line: 242
+  - end_line: 203
     level: 2
     section_type: unknown
-    start_line: 205
+    start_line: 166
     subsections: []
     title: Abbreviations
     word_count: 35
-  - end_line: 244
+  - end_line: 205
     level: 2
     section_type: references
-    start_line: 243
+    start_line: 204
     subsections: []
     title: References
     word_count: 2
-  - end_line: 248
+  - end_line: 209
     level: 2
     section_type: acknowledgments
-    start_line: 245
+    start_line: 206
     subsections: []
     title: Acknowledgements
     word_count: 29
-  - end_line: 252
+  - end_line: 213
     level: 2
     section_type: unknown
-    start_line: 249
+    start_line: 210
     subsections: []
     title: Funding
     word_count: 29
-  - end_line: 254
+  - end_line: 215
     level: 2
     section_type: unknown
-    start_line: 253
+    start_line: 214
     subsections:
-    - end_line: 258
+    - end_line: 219
       level: 3
-      start_line: 255
+      start_line: 216
       title: Ethics approval and consent to participate
       word_count: 39
-    - end_line: 262
+    - end_line: 223
       level: 3
-      start_line: 259
+      start_line: 220
       title: Consent for publication
       word_count: 12
-    - end_line: 266
+    - end_line: 227
       level: 3
-      start_line: 263
+      start_line: 224
       title: Competing interests
       word_count: 12
     title: Ethics declarations
     word_count: 3
-  - end_line: 268
+  - end_line: 229
     level: 2
     section_type: unknown
-    start_line: 267
+    start_line: 228
     subsections:
-    - end_line: 272
+    - end_line: 233
       level: 3
-      start_line: 269
+      start_line: 230
       title: Publisher's Note
       word_count: 18
     title: Additional information
     word_count: 3
-  - end_line: 274
+  - end_line: 235
     level: 2
     section_type: unknown
-    start_line: 273
+    start_line: 234
     subsections:
-    - end_line: 278
+    - end_line: 239
       level: 3
-      start_line: 275
+      start_line: 236
       title: Additional file 1
       word_count: 22
     title: Supplementary Information
     word_count: 3
-  - end_line: 383
+  - end_line: 344
     level: 2
     section_type: unknown
-    start_line: 279
+    start_line: 240
     subsections: []
     title: Rights and permissions
     word_count: 1600
@@ -282,7 +282,7 @@ processing_status:
 source: https://breast-cancer-research.biomedcentral.com/articles/10.1186/s13058-022-01502-6
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-15T07:54:18.930587'
+  checked_at: '2025-06-15T08:06:38.379650'
   consistency_status: validated
   corrections_applied: []
   issues_detected: 0

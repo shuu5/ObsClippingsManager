@@ -170,6 +170,7 @@ class SectionParsingWorkflow:
         current_section = None
         in_yaml_header = False
         yaml_header_count = 0
+        yaml_header_end_line = 0  # YAMLヘッダー終了行を記録
         
         for line_num, line in enumerate(content_lines, 1):
             line_stripped = line.strip()
@@ -182,18 +183,22 @@ class SectionParsingWorkflow:
                     continue
                 elif yaml_header_count == 2:
                     in_yaml_header = False
+                    yaml_header_end_line = line_num  # YAMLヘッダー終了行を記録
                     continue
             
             if in_yaml_header:
                 continue
             
+            # YAMLヘッダー終了後のMarkdown部分の相対行数を計算
+            markdown_line_num = line_num - yaml_header_end_line
+            
             # 見出し行の処理
             if self._is_heading(line_stripped):
                 # 前のセクションを完了
                 if current_section:
-                    current_section.end_line = line_num - 1
-                    current_section.word_count = self._count_words_from_lines(
-                        content_lines, current_section.start_line, current_section.end_line
+                    current_section.end_line = markdown_line_num - 1
+                    current_section.word_count = self._count_words_from_markdown_lines(
+                        content_lines, yaml_header_end_line, current_section.start_line, current_section.end_line
                     )
                     
                     # 階層構造の処理
@@ -204,19 +209,20 @@ class SectionParsingWorkflow:
                     title=self._extract_title(line_stripped),
                     level=self._get_heading_level(line_stripped),
                     section_type=self._identify_section_type(line_stripped),
-                    start_line=line_num,
+                    start_line=markdown_line_num,
                     end_line=0,  # 後で設定
                     word_count=0,  # 後で計算
                     content_lines=[]
                 )
                 
-                self.logger.debug(f"Found section: {current_section.title} at line {line_num}")
+                self.logger.debug(f"Found section: {current_section.title} at markdown line {markdown_line_num} (file line {line_num})")
         
         # 最後のセクションを完了
         if current_section:
-            current_section.end_line = len(content_lines)
-            current_section.word_count = self._count_words_from_lines(
-                content_lines, current_section.start_line, current_section.end_line
+            markdown_total_lines = len(content_lines) - yaml_header_end_line
+            current_section.end_line = markdown_total_lines
+            current_section.word_count = self._count_words_from_markdown_lines(
+                content_lines, yaml_header_end_line, current_section.start_line, current_section.end_line
             )
             self._add_section_with_hierarchy(sections, current_section)
         
@@ -270,11 +276,18 @@ class SectionParsingWorkflow:
         
         return "unknown"
     
-    def _count_words_from_lines(self, content_lines: List[str], start_line: int, end_line: int) -> int:
-        """指定された行範囲の文字数をカウント"""
+    def _count_words_from_markdown_lines(self, content_lines: List[str], yaml_header_end_line: int, start_line: int, end_line: int) -> int:
+        """指定された行範囲の文字数をカウント（YAMLヘッダー除外）"""
         word_count = 0
-        for line in content_lines[start_line - 1:end_line]:
-            word_count += len(line.split())
+        # YAMLヘッダー終了後のMarkdown部分でのstart/end indexを計算
+        markdown_start_index = yaml_header_end_line + start_line - 1
+        markdown_end_index = yaml_header_end_line + end_line
+        
+        # 実際の配列範囲チェック
+        if markdown_start_index < len(content_lines) and markdown_end_index <= len(content_lines):
+            for line in content_lines[markdown_start_index:markdown_end_index]:
+                word_count += len(line.split())
+        
         return word_count
     
     def _build_paper_structure(self, sections: List[Section]) -> PaperStructure:
