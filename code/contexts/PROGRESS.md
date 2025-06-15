@@ -432,6 +432,20 @@ code/py/modules/
   - 統合ワークフロー順序（ステップ5）での正常動作確認
   - Claude API連携基盤は次期開発対象（enhanced-tagger段階で実装予定）
 
+#### 2.5.8 **引用文献番号機能拡張完了**
+- [完了] 2.5.8.1 citation_fetcher仕様書修正（number プロパティ追加仕様）
+- [完了] 2.5.8.2 CitationFetcherWorkflow実装修正
+  - タイトルアルファベット順ソート実装
+  - 1から始まる引用文献番号自動付与
+  - BibTeXエントリにnumber = {N}フィールド追加
+- [完了] 2.5.8.3 テストケース拡張（引用文献番号機能対応）
+- [完了] 2.5.8.4 統合テスト実行・動作確認
+  **動作確認結果**:
+  - ✅ 51個・52個のBibTeXエントリーに引用文献番号付与成功
+  - ✅ タイトルアルファベット順ソート正常動作
+  - ✅ 統合ワークフロー全体（organize→sync→fetch→section_parsing→ai_citation_support）成功
+  - ✅ 全ユニットテスト（307テスト）成功
+
 #### 2.6 ステップ6: enhanced-tagger（AIタグ生成）
 - [ ] 2.6.1 AITaggingTranslationクラス設計・テスト作成
 - [ ] 2.6.2 Claude 3.5 Haiku連携実装

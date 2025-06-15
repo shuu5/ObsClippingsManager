@@ -606,11 +606,11 @@ class DataQualityError(ProcessingError):
 ### references.bib形式
 ```bibtex
 @article{smith2023oncology,
+  number={1},
   title={Advanced Biomarker Techniques in Oncology},
   author={Smith, John and Doe, Jane},
   journal={Nature Medicine},
   volume={29},
-  number={3},
   pages={123--135},
   year={2023},
   publisher={Nature Publishing Group},
@@ -618,17 +618,23 @@ class DataQualityError(ProcessingError):
 }
 
 @article{jones2022biomarkers,
+  number={2},
   title={Biomarker Discovery in Cancer Research},
   author={Jones, Alice and Brown, Bob},
   journal={Science},
   volume={375},
-  number={6580},
   pages={456--468},
   year={2022},
   publisher={American Association for the Advancement of Science},
   doi={10.1126/science.abcd1234}
 }
 ```
+
+**引用文献番号仕様**:
+- **number フィールド**: 1から始まる引用文献番号を自動付与
+- **順序**: 論文タイトルのアルファベット順で番号を付与
+- **形式**: `number={N}` として各BibTeXエントリーの最初に配置
+- **連番管理**: 同一references.bib内で重複なし・連続番号を保証
 
 ### ディレクトリ構造
 ```

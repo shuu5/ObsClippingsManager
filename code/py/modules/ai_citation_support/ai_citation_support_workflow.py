@@ -50,7 +50,7 @@ class AICitationSupportWorkflow:
             self.config = {
                 'enabled': True,
                 'mapping_version': '2.0',
-                'preserve_existing_citations': True,
+                'preserve_existing_citations': False,
                 'update_existing_mapping': True,
                 'batch_size': 10
             }
@@ -91,9 +91,9 @@ class AICitationSupportWorkflow:
                     skipped_count += 1
                     continue
                 
-                # references.bibファイル読み込み・解析
-                bibtex_entries = self.bibtex_parser.parse_file(references_bib_path)
-                citation_mapping = self.create_citation_mapping(bibtex_entries, references_bib_path)
+                # references.bibファイル読み込み・解析（順序・重複保持）
+                bibtex_entries_ordered = self.bibtex_parser.parse_file_ordered(references_bib_path)
+                citation_mapping = self.create_citation_mapping_ordered(bibtex_entries_ordered, references_bib_path)
                 
                 # YAMLヘッダー更新
                 self.update_yaml_with_citations(paper_path, citation_mapping)
@@ -139,7 +139,7 @@ class AICitationSupportWorkflow:
     def create_citation_mapping(self, bibtex_entries: Dict[str, Any], 
                               references_bib_path: str) -> Dict[str, Any]:
         """
-        BibTeXエントリーから引用マッピングを作成
+        BibTeXエントリーから引用マッピングを作成（後方互換性用）
         
         Args:
             bibtex_entries (Dict[str, Any]): BibTeXエントリー辞書
@@ -153,6 +153,7 @@ class AICitationSupportWorkflow:
         # BibTeXエントリーをcitationsフォーマットに変換
         for index, (citation_key, entry) in enumerate(bibtex_entries.items(), 1):
             citations[index] = {
+                'number': index,
                 'citation_key': citation_key,
                 'title': entry.get('title', ''),
                 'authors': entry.get('author', ''),
@@ -175,6 +176,47 @@ class AICitationSupportWorkflow:
             'citations': citations
         }
     
+    def create_citation_mapping_ordered(self, bibtex_entries_ordered: List[Dict[str, Any]], 
+                                      references_bib_path: str) -> Dict[str, Any]:
+        """
+        順序・重複保持BibTeXエントリーから引用マッピングを作成
+        
+        Args:
+            bibtex_entries_ordered (List[Dict[str, Any]]): 順序保持BibTeXエントリーリスト
+            references_bib_path (str): references.bibファイルパス
+            
+        Returns:
+            Dict[str, Any]: 引用マッピング（citation_metadata + citations）
+        """
+        citations = {}
+        
+        # 順序保持エントリーをcitationsフォーマットに変換（重複保持）
+        for entry in bibtex_entries_ordered:
+            number = entry.get('number', 0)
+            citations[number] = {
+                'number': number,
+                'citation_key': entry.get('citation_key', ''),
+                'title': entry.get('title', ''),
+                'authors': entry.get('author', ''),
+                'year': entry.get('year', ''),
+                'journal': entry.get('journal', ''),
+                'doi': entry.get('doi', '')
+            }
+        
+        # citation_metadata作成
+        citation_metadata = {
+            'last_updated': datetime.now().isoformat(),
+            'mapping_version': self.config.get('mapping_version', '2.0'),
+            'source_bibtex': 'references.bib',
+            'references_bib_path': references_bib_path,
+            'total_citations': len(bibtex_entries_ordered)
+        }
+        
+        return {
+            'citation_metadata': citation_metadata,
+            'citations': citations
+        }
+    
     def update_yaml_with_citations(self, paper_path: str, citation_mapping: Dict[str, Any]):
         """
         YAMLヘッダーに引用情報を統合
@@ -189,32 +231,13 @@ class AICitationSupportWorkflow:
         # citation_metadataセクション更新
         yaml_header['citation_metadata'] = citation_mapping['citation_metadata']
         
-        # citationsセクション更新
-        if self.config.get('preserve_existing_citations', True):
-            # 既存のcitationsを保持しつつ新しいものを追加
-            existing_citations = yaml_header.get('citations', {})
-            new_citations = citation_mapping['citations']
-            
-            # 既存のcitationsと新しいcitationsをマージ
-            merged_citations = existing_citations.copy()
-            merged_citations.update(new_citations)
-            
-            yaml_header['citations'] = merged_citations
-        else:
-            # 新しいcitationsで完全置換
-            yaml_header['citations'] = citation_mapping['citations']
+        # citationsセクション更新（references.bibの内容のみを使用）
+        yaml_header['citations'] = citation_mapping['citations']
         
-        # processing_status更新
+        # processing_status更新（ai_citation_support: completed）
         if 'processing_status' not in yaml_header:
             yaml_header['processing_status'] = {}
         yaml_header['processing_status']['ai_citation_support'] = 'completed'
         
-        # last_updated更新
-        yaml_header['last_updated'] = datetime.now().isoformat()
-        
-        # ファイル保存（Pathオブジェクトに変換）
-        self.yaml_processor.write_yaml_header(Path(paper_path), yaml_header, content)
-        
-        self.logger.debug(
-            f"Updated YAML header with {len(citation_mapping['citations'])} citations for {paper_path}"
-        ) 
+        # ファイル更新
+        self.yaml_processor.write_yaml_header(Path(paper_path), yaml_header, content) 

@@ -44,11 +44,12 @@ class BibTeXParser:
                 error_code="BIBTEX_DEPENDENCY_ERROR"
             )
         
-        # BibTeXパーサーの設定
-        self.parser = BibtexparserParser()
-        self.parser.customization = convert_to_unicode
-        self.parser.ignore_nonstandard_types = False
-        self.parser.homogenize_fields = True
+        # BibTeXパーサーの設定（毎回新しいインスタンスを作成するため、ここでは設定のみ保存）
+        self.parser_config = {
+            'customization': convert_to_unicode,
+            'ignore_nonstandard_types': False,
+            'homogenize_fields': True
+        }
         
         self.logger.debug("BibTeXParser initialized successfully")
     
@@ -139,9 +140,14 @@ class BibTeXParser:
                     context={"content_preview": bibtex_content[:200]}
                 )
             
-            # BibTeX解析実行
+            # BibTeX解析実行（毎回新しいパーサーを作成して混在を防ぐ）
             try:
-                bib_database = bibtexparser.loads(bibtex_content, parser=self.parser)
+                parser = BibtexparserParser()
+                parser.customization = self.parser_config['customization']
+                parser.ignore_nonstandard_types = self.parser_config['ignore_nonstandard_types']
+                parser.homogenize_fields = self.parser_config['homogenize_fields']
+                
+                bib_database = bibtexparser.loads(bibtex_content, parser=parser)
             except Exception as e:
                 self.logger.error(f"Failed to parse BibTeX content: {str(e)}")
                 raise BibTeXError(
@@ -235,7 +241,12 @@ class BibTeXParser:
             
             # 基本的な構文チェック
             try:
-                bib_database = bibtexparser.loads(bibtex_content, parser=self.parser)
+                parser = BibtexparserParser()
+                parser.customization = self.parser_config['customization']
+                parser.ignore_nonstandard_types = self.parser_config['ignore_nonstandard_types']
+                parser.homogenize_fields = self.parser_config['homogenize_fields']
+                
+                bib_database = bibtexparser.loads(bibtex_content, parser=parser)
             except Exception as e:
                 errors.append(f"BibTeX syntax error: {str(e)}")
                 return False, errors
@@ -362,34 +373,54 @@ class BibTeXParser:
     
     def _basic_syntax_check(self, bibtex_content: str) -> bool:
         """
-        BibTeX基本構文チェック
+        BibTeXコンテンツの基本的な構文チェック
         
         Args:
-            bibtex_content (str): BibTeX文字列
+            bibtex_content (str): 検証対象のBibTeX文字列
             
         Returns:
-            bool: 構文が正しいかどうか
+            bool: 基本的な構文が正しい場合True
         """
         try:
-            # @記号で始まるエントリーの基本チェック
-            entries = re.findall(r'@\w+\s*\{[^}]*\}', bibtex_content, re.DOTALL)
-            if not entries and '@' in bibtex_content:
-                # @記号があるのにエントリーが見つからない場合は構文エラー
-                return False
+            if not bibtex_content.strip():
+                return True  # 空の場合は有効
+                
+            # @記号があるかチェック
+            if '@' not in bibtex_content:
+                return True  # @記号がない場合は空文字列と同様に扱う
             
-            # 波括弧のバランスチェック
+            # 無効なパターンをチェック
+            # 1. 未閉じの波括弧
             open_braces = bibtex_content.count('{')
             close_braces = bibtex_content.count('}')
-            
-            # 完全にバランスが取れていない場合は無効
-            if abs(open_braces - close_braces) > 2:  # 多少の誤差は許容
+            if abs(open_braces - close_braces) > 2:  # 多少の許容範囲
                 return False
             
-            # 基本的なエントリーパターンの確認
-            if '@' in bibtex_content:
-                # @記号があるなら、少なくとも1つの有効なエントリー形式があるべき
-                valid_entry_pattern = r'@\w+\s*\{\s*\w+\s*,'
-                if not re.search(valid_entry_pattern, bibtex_content):
+            # 2. 基本的なエントリーパターンチェック
+            # @type{key, または @type{key} の形式があるかチェック
+            entry_pattern = r'@\w+\s*\{\s*[^,\s}]+\s*[,}]'
+            
+            # エントリーが見つかるかチェック
+            if not re.search(entry_pattern, bibtex_content, re.IGNORECASE | re.MULTILINE):
+                return False
+            
+            # 3. 明らかな構文エラーパターンをチェック
+            # カンマの後に直接@が来る（エントリが完全に終了していない）
+            if re.search(r',\s*@', bibtex_content):
+                return False
+            
+            # 4. 未閉じのエントリー（@の後に対応する}がない）
+            entry_starts = [m.start() for m in re.finditer(r'@\w+\s*\{', bibtex_content)]
+            for i, start in enumerate(entry_starts):
+                # 次のエントリーまでの範囲で波括弧がバランスしているかチェック
+                if i + 1 < len(entry_starts):
+                    entry_content = bibtex_content[start:entry_starts[i + 1]]
+                else:
+                    entry_content = bibtex_content[start:]
+                
+                entry_open = entry_content.count('{')
+                entry_close = entry_content.count('}')
+                if entry_open > entry_close + 1:  # 1つ以上の未閉じ波括弧は問題
                     return False
             
             return True
@@ -493,4 +524,136 @@ class BibTeXParser:
         # DOIの基本パターン（10.で始まり、/を含む）
         doi_pattern = r'(?:https?://(?:dx\.)?doi\.org/|doi:)?10\.\d+/.+'
         
-        return bool(re.match(doi_pattern, doi.strip(), re.IGNORECASE)) 
+        return bool(re.match(doi_pattern, doi.strip(), re.IGNORECASE))
+    
+    # === AI Citation Support機能拡張: 順序・重複保持 ===
+    def parse_file_ordered(self, bibtex_file: str) -> List[Dict[str, Any]]:
+        """
+        BibTeXファイルの順序・重複保持解析
+        
+        Args:
+            bibtex_file (str): BibTeXファイルのパス
+            
+        Returns:
+            List[Dict[str, Any]]: 順序保持・重複包含のエントリリスト
+                                 各エントリにnumberプロパティを追加
+            
+        Raises:
+            BibTeXError: ファイル読み込みエラー、解析エラー時
+        """
+        try:
+            self.logger.debug(f"Starting ordered parse of BibTeX file: {bibtex_file}")
+            
+            # ファイル存在確認
+            if not os.path.exists(bibtex_file):
+                raise BibTeXError(
+                    f"BibTeX file not found: {bibtex_file}",
+                    error_code="BIBTEX_FILE_NOT_FOUND",
+                    context={"file_path": bibtex_file}
+                )
+            
+            # ファイル読み込み
+            try:
+                with open(bibtex_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+            except Exception as e:
+                raise BibTeXError(
+                    f"Failed to read BibTeX file {bibtex_file}: {str(e)}",
+                    error_code="BIBTEX_READ_ERROR",
+                    context={"file_path": bibtex_file, "original_error": str(e)}
+                )
+            
+            # 順序・重複保持BibTeX解析
+            result = self.parse_string_ordered(content)
+            
+            self.logger.info(f"Successfully parsed BibTeX file (ordered): {bibtex_file} ({len(result)} entries)")
+            return result
+            
+        except BibTeXError:
+            raise
+        except Exception as e:
+            self.logger.error(f"Unexpected error parsing BibTeX file (ordered) {bibtex_file}: {e}")
+            raise BibTeXError(
+                f"Unexpected error parsing BibTeX file (ordered) {bibtex_file}: {str(e)}",
+                error_code="BIBTEX_UNEXPECTED_ERROR",
+                context={"file_path": bibtex_file, "original_error": str(e)}
+            )
+    
+    def parse_string_ordered(self, bibtex_content: str) -> List[Dict[str, Any]]:
+        """
+        BibTeX文字列の順序・重複保持解析
+        
+        Args:
+            bibtex_content (str): BibTeX形式の文字列
+            
+        Returns:
+            List[Dict[str, Any]]: 順序保持・重複包含のエントリリスト
+                                 各エントリにnumberプロパティを追加
+            
+        Raises:
+            BibTeXError: 解析エラー時
+        """
+        try:
+            self.logger.debug("Starting ordered parse of BibTeX string content")
+            
+            # 空文字列チェック
+            if not bibtex_content.strip():
+                self.logger.debug("Empty BibTeX content provided")
+                return []
+            
+            # 基本的な構文チェック（解析前）
+            if not self._basic_syntax_check(bibtex_content):
+                self.logger.error("Invalid BibTeX syntax: malformed entries detected")
+                raise BibTeXError(
+                    "Invalid BibTeX syntax: malformed entries detected",
+                    error_code="BIBTEX_SYNTAX_ERROR",
+                    context={"content_preview": bibtex_content[:200]}
+                )
+            
+            # BibTeX解析実行（毎回新しいパーサーを作成して混在を防ぐ）
+            try:
+                parser = BibtexparserParser()
+                parser.customization = self.parser_config['customization']
+                parser.ignore_nonstandard_types = self.parser_config['ignore_nonstandard_types']
+                parser.homogenize_fields = self.parser_config['homogenize_fields']
+                
+                bib_database = bibtexparser.loads(bibtex_content, parser=parser)
+            except Exception as e:
+                self.logger.error(f"Failed to parse BibTeX content: {str(e)}")
+                raise BibTeXError(
+                    f"Failed to parse BibTeX content: {str(e)}",
+                    error_code="BIBTEX_PARSE_ERROR",
+                    context={"parse_error": str(e)}
+                )
+            
+            # 順序付きエントリリストの構築（重複保持）
+            ordered_entries = []
+            for number, entry in enumerate(bib_database.entries, 1):
+                if 'ID' not in entry:
+                    self.logger.warning(f"BibTeX entry #{number} missing ID field, skipping")
+                    continue
+                
+                citation_key = entry['ID']
+                normalized_entry = self._normalize_entry(entry)
+                
+                # 順序・重複保持エントリの構築
+                ordered_entry = {
+                    'number': number,
+                    'citation_key': citation_key,
+                    **normalized_entry
+                }
+                
+                ordered_entries.append(ordered_entry)
+            
+            self.logger.debug(f"Successfully parsed {len(ordered_entries)} BibTeX entries (ordered)")
+            return ordered_entries
+            
+        except BibTeXError:
+            raise
+        except Exception as e:
+            self.logger.error(f"Unexpected error parsing BibTeX string (ordered): {e}")
+            raise BibTeXError(
+                f"Unexpected error parsing BibTeX string (ordered): {str(e)}",
+                error_code="BIBTEX_STRING_PARSE_ERROR",
+                context={"original_error": str(e)}
+            ) 

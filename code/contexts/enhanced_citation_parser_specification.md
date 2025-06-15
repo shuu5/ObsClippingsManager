@@ -150,6 +150,7 @@ citation_metadata:
 
 citations:
   1:
+    number: 1
     citation_key: smith2023test
     authors: Smith
     title: Novel Method for Cancer Cell Analysis
@@ -157,6 +158,7 @@ citations:
     journal: Cancer Research
     doi: 10.1158/0008-5472.CAN-23-0123
   2:
+    number: 2
     citation_key: jones2022biomarkers
     authors: Jones
     title: Advanced Biomarker Techniques in Oncology
@@ -300,8 +302,9 @@ ai_citation_support:
 ### シンプルマッピング原則
 1. **順序保持**: references.bibのエントリー順序をそのまま維持
 2. **重複包含**: 重複エントリーも含めて全て処理（BibTeXファイルの構造保持）
-3. **1:1対応**: BibTeXエントリー番号 = 引用番号（1から開始）
-4. **プレースホルダーなし**: 存在しないエントリーに対する自動生成なし
+3. **引用番号管理**: 各引用文献にnumberプロパティ（1から開始）を付与
+4. **1:1対応**: BibTeXエントリー番号 = 引用番号（1から開始）
+5. **プレースホルダーなし**: 存在しないエントリーに対する自動生成なし
 
 ### データ一貫性
 - `total_citations` = BibTeXファイルのエントリー数

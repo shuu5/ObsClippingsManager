@@ -348,11 +348,17 @@ class CitationFetcherWorkflow:
             str: BibTeX形式の文字列
         """
         try:
+            # タイトルのアルファベット順でソート
+            sorted_citations = sorted(citation_data, key=lambda x: x.get('title', '').lower())
+            
             bibtex_entries = []
             
-            for i, citation in enumerate(citation_data):
+            for i, citation in enumerate(sorted_citations):
+                # 引用文献番号（1から開始）
+                citation_number = i + 1
+                
                 # citation_key生成（簡易実装）
-                citation_key = f"ref{i+1:03d}"
+                citation_key = f"ref{citation_number:03d}"
                 if 'authors' in citation and citation['authors']:
                     # 最初の著者の苗字を抽出（簡易）
                     first_author = citation['authors'].split(',')[0].strip()
@@ -369,18 +375,22 @@ class CitationFetcherWorkflow:
                 # BibTeXエントリ構築
                 entry_lines = [f"@{entry_type}{{{citation_key},"]
                 
-                # フィールド追加
+                # numberフィールドを最初に追加（引用文献番号）
+                entry_lines.append(f"  number = {{{citation_number}}},")
+                
+                # その他のフィールド追加
                 for field, value in citation.items():
                     if value and field != 'citation_key':
                         # フィールド名の正規化
                         bibtex_field = self._normalize_bibtex_field(field)
-                        if bibtex_field:
+                        if bibtex_field and bibtex_field != 'number':  # numberは既に追加済み
                             clean_value = str(value).replace('{', '').replace('}', '')
                             entry_lines.append(f"  {bibtex_field} = {{{clean_value}}},")
                 
                 entry_lines.append("}")
                 bibtex_entries.append("\n".join(entry_lines))
             
+            self.logger.info(f"Generated {len(bibtex_entries)} BibTeX entries with citation numbers")
             return "\n\n".join(bibtex_entries) + "\n"
             
         except Exception as e:

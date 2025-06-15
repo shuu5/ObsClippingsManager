@@ -248,6 +248,76 @@ author: "Test Author"
             self.assertIn('Smith, John', bib_content)
             self.assertIn('Doe, Jane', bib_content)
             
+            # 引用文献番号（number フィールド）の確認
+            self.assertIn('number = {1}', bib_content)
+            self.assertIn('number = {2}', bib_content)
+            
+            # タイトルのアルファベット順になっているか確認
+            paper1_pos = bib_content.find('Reference Paper 1')
+            paper2_pos = bib_content.find('Reference Paper 2')
+            # "Reference Paper 1" が "Reference Paper 2" より先に来るはず
+            self.assertLess(paper1_pos, paper2_pos)
+            
+        except ImportError:
+            self.skipTest("CitationFetcherWorkflow not implemented yet")
+    
+    def test_convert_to_bibtex_with_citation_numbers(self):
+        """引用文献番号付きBibTeX変換テスト"""
+        try:
+            from code.py.modules.citation_fetcher.citation_fetcher_workflow import CitationFetcherWorkflow
+            
+            workflow = CitationFetcherWorkflow(self.config_manager, self.logger)
+            
+            # サンプル引用データ（タイトル順序をテスト）
+            citation_data = [
+                {
+                    'title': 'Zebra Research Methods',
+                    'authors': 'Smith, John',
+                    'journal': 'Animal Science',
+                    'year': 2023,
+                    'doi': '10.1000/zebra'
+                },
+                {
+                    'title': 'Alpha Study Results',
+                    'authors': 'Doe, Jane', 
+                    'journal': 'Nature',
+                    'year': 2022,
+                    'doi': '10.1000/alpha'
+                },
+                {
+                    'title': 'Beta Analysis Framework',
+                    'authors': 'Brown, Bob',
+                    'journal': 'Science',
+                    'year': 2021,
+                    'doi': '10.1000/beta'
+                }
+            ]
+            
+            # BibTeX変換
+            bibtex_content = workflow._convert_to_bibtex(citation_data)
+            
+            # 番号付与の確認
+            self.assertIn('number = {1}', bibtex_content)
+            self.assertIn('number = {2}', bibtex_content)
+            self.assertIn('number = {3}', bibtex_content)
+            
+            # タイトルアルファベット順の確認
+            alpha_pos = bibtex_content.find('Alpha Study Results')
+            beta_pos = bibtex_content.find('Beta Analysis Framework')
+            zebra_pos = bibtex_content.find('Zebra Research Methods')
+            
+            # Alpha -> Beta -> Zebra の順序
+            self.assertLess(alpha_pos, beta_pos)
+            self.assertLess(beta_pos, zebra_pos)
+            
+            # 対応する番号も順序通りに
+            alpha_number_pos = bibtex_content.find('number = {1}')
+            beta_number_pos = bibtex_content.find('number = {2}')
+            zebra_number_pos = bibtex_content.find('number = {3}')
+            
+            self.assertLess(alpha_number_pos, beta_number_pos)
+            self.assertLess(beta_number_pos, zebra_number_pos)
+            
         except ImportError:
             self.skipTest("CitationFetcherWorkflow not implemented yet")
     

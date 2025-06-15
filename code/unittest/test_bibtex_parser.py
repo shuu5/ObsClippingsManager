@@ -458,5 +458,133 @@ class TestBibTeXParserIntegration(unittest.TestCase):
             os.unlink(temp_file)
 
 
+@unittest.skipUnless(BIBTEX_PARSER_AVAILABLE, "BibTeXParser not yet implemented")
+class TestBibTeXParserOrdered(unittest.TestCase):
+    """BibTeXParserクラスの順序・重複保持機能テスト"""
+    
+    def setUp(self):
+        """テスト前の準備"""
+        self.mock_logger = Mock()
+        self.parser = BibTeXParser(self.mock_logger)
+        
+        # 重複を含むBibTeXデータ
+        self.duplicate_bibtex = """
+@article{adikrisna2012,
+    title={Identification of pancreatic cancer stem cells and selective toxicity of chemotherapeutic agents},
+    author={Adikrisna},
+    journal={Gastroenterology},
+    year={2012},
+    doi={10.1053/j.gastro.2012.03.054}
+}
+
+@article{smith2023,
+    title={Novel Method for Cancer Cell Analysis},
+    author={Smith, John},
+    journal={Cancer Research},
+    year={2023},
+    doi={10.1158/0008-5472.CAN-23-0123}
+}
+
+@article{adikrisna2012,
+    title={Identification of pancreatic cancer stem cells and selective toxicity of chemotherapeutic agents},
+    author={Adikrisna},
+    journal={Gastroenterology},
+    year={2012},
+    doi={10.1053/j.gastro.2012.03.054}
+}
+"""
+    
+    def test_parse_string_ordered_with_duplicates(self):
+        """重複を含むBibTeX文字列の順序保持解析テスト"""
+        result = self.parser.parse_string_ordered(self.duplicate_bibtex)
+        
+        # 重複を含めて3つのエントリがあることを確認
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), 3)
+        
+        # 順序の確認
+        self.assertEqual(result[0]['number'], 1)
+        self.assertEqual(result[0]['citation_key'], 'adikrisna2012')
+        
+        self.assertEqual(result[1]['number'], 2)
+        self.assertEqual(result[1]['citation_key'], 'smith2023')
+        
+        self.assertEqual(result[2]['number'], 3)
+        self.assertEqual(result[2]['citation_key'], 'adikrisna2012')
+        
+        # numberプロパティの確認
+        for i, entry in enumerate(result, 1):
+            self.assertEqual(entry['number'], i)
+            self.assertIn('citation_key', entry)
+            self.assertIn('title', entry)
+            self.assertIn('author', entry)
+    
+    def test_parse_file_ordered_with_duplicates(self):
+        """重複を含むBibTeXファイルの順序保持解析テスト"""
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.bib', delete=False) as f:
+            f.write(self.duplicate_bibtex)
+            temp_file = f.name
+        
+        try:
+            result = self.parser.parse_file_ordered(temp_file)
+            
+            # 重複を含めて3つのエントリがあることを確認
+            self.assertIsInstance(result, list)
+            self.assertEqual(len(result), 3)
+            
+            # 重複した引用文献のタイトルが同じことを確認
+            self.assertEqual(result[0]['title'], result[2]['title'])
+            self.assertEqual(result[0]['citation_key'], result[2]['citation_key'])
+            
+            # しかし番号は異なることを確認
+            self.assertEqual(result[0]['number'], 1)
+            self.assertEqual(result[2]['number'], 3)
+            
+        finally:
+            os.unlink(temp_file)
+    
+    def test_parse_string_ordered_empty_input(self):
+        """空の入力文字列の順序保持解析テスト"""
+        result = self.parser.parse_string_ordered("")
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), 0)
+    
+    def test_compare_ordered_vs_regular_parsing(self):
+        """順序保持解析と通常解析の比較テスト"""
+        # 通常解析（重複除去される）
+        regular_result = self.parser.parse_string(self.duplicate_bibtex)
+        
+        # 順序保持解析（重複保持される）
+        ordered_result = self.parser.parse_string_ordered(self.duplicate_bibtex)
+        
+        # 通常解析では重複が除去されて2つのエントリ
+        self.assertEqual(len(regular_result), 2)
+        
+        # 順序保持解析では重複が保持されて3つのエントリ
+        self.assertEqual(len(ordered_result), 3)
+        
+        # 通常解析の結果確認
+        self.assertIn('adikrisna2012', regular_result)
+        self.assertIn('smith2023', regular_result)
+        
+        # 順序保持解析の結果確認
+        citation_keys = [entry['citation_key'] for entry in ordered_result]
+        self.assertEqual(citation_keys, ['adikrisna2012', 'smith2023', 'adikrisna2012'])
+    
+    def test_ordered_parsing_number_property(self):
+        """順序保持解析のnumberプロパティテスト"""
+        result = self.parser.parse_string_ordered(self.duplicate_bibtex)
+        
+        # 各エントリにnumberプロパティがあることを確認
+        for i, entry in enumerate(result, 1):
+            self.assertIn('number', entry)
+            self.assertEqual(entry['number'], i)
+            self.assertIsInstance(entry['number'], int)
+        
+        # numberプロパティが連続していることを確認
+        numbers = [entry['number'] for entry in result]
+        self.assertEqual(numbers, [1, 2, 3])
+
+
 if __name__ == '__main__':
     unittest.main() 

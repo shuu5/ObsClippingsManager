@@ -42,6 +42,26 @@ class TestStatusManager(unittest.TestCase):
                 return False
             return True
         self.config_manager.get = MagicMock(side_effect=config_get_side_effect)
+        
+        # config属性のモック設定（AttributeError修正用）
+        mock_config = MagicMock()
+        def config_nested_get_side_effect(key, default=None):
+            # status_management関連の設定を返す
+            if key == 'status_management':
+                return {
+                    'backup_strategy': {
+                        'backup_before_status_update': False  # テスト用に無効化
+                    },
+                    'error_handling': {
+                        'validate_yaml_before_update': False,  # テスト用に無効化
+                        'create_backup_on_yaml_error': False,
+                        'auto_repair_corrupted_headers': False,
+                        'fallback_to_backup_on_failure': False
+                    }
+                }
+            return default
+        mock_config.get = MagicMock(side_effect=config_nested_get_side_effect)
+        self.config_manager.config = mock_config
         self.logger = MagicMock(spec=IntegratedLogger)
         self.logger.get_logger.return_value = MagicMock()
         
