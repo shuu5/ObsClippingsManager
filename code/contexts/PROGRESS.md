@@ -155,8 +155,16 @@ code/py/modules/
 #### 2.3 ステップ3: fetch（引用文献取得）
 - [完了] 2.3.1 BibTexParserクラス機能拡張（DOI抽出）
 - [完了] 2.3.2 CitationFetcherクラス再設計・テスト作成（全テスト成功・246/246 PASS）
-- [進行中] 2.3.3 CrossRef API連携実装（10req/sec、品質閾値0.8）
-- [ ] 2.3.4 Semantic Scholar API連携実装（1req/sec、品質閾値0.7）
+- [完了] 2.3.3 CrossRef API連携実装（10req/sec、品質閾値0.8）
+  **実装完了詳細**:
+  - 実際のCrossRef API連携に置き換え（モックから実装）
+  - API URL構築 (`_build_api_url`)
+  - レスポンス解析 (`_parse_crossref_response`)
+  - エラーハンドリング（404, 429, 接続エラー）
+  - 新規テストファイル作成 (`test_crossref_api_client.py`, 9テスト全成功)
+  - 全ユニットテスト成功確認 (255/255 PASS)
+  - 統合テスト成功確認 (organize & sync 機能正常動作)
+- [進行中] 2.3.4 Semantic Scholar API連携実装（1req/sec、品質閾値0.7）
 - [ ] 2.3.5 OpenCitations API連携実装（5req/sec、最終フォールバック）
 - [ ] 2.3.6 DataQualityEvaluatorクラス実装（品質スコア計算）
 - [ ] 2.3.7 RateLimiterクラス実装（API別レート制限）

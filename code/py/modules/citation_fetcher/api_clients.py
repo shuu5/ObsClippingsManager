@@ -169,9 +169,21 @@ class CrossRefAPIClient(BaseAPIClient):
         try:
             self.logger.debug(f"Fetching citations from CrossRef for DOI: {doi}")
             
-            # MockData一時的に返す（後で実装を置き換える）
-            return self._get_mock_citation_data(doi)
+            # API URL構築
+            url = self._build_api_url(doi)
             
+            # API呼び出し
+            response_data = self._make_request(url)
+            
+            # レスポンス解析
+            citations = self._parse_crossref_response(response_data)
+            
+            self.logger.debug(f"Successfully fetched {len(citations)} citations from CrossRef")
+            return citations
+            
+        except APIError:
+            # API関連のエラーはそのまま再発生させる
+            raise
         except Exception as e:
             self.logger.error(f"CrossRef API error for DOI {doi}: {e}")
             raise APIError(
@@ -179,6 +191,66 @@ class CrossRefAPIClient(BaseAPIClient):
                 error_code="CROSSREF_API_ERROR",
                 context={"doi": doi, "original_error": str(e)}
             )
+    
+    def _build_api_url(self, doi: str) -> str:
+        """CrossRef API URLを構築"""
+        return f"{self.base_url}/works/{doi}"
+    
+    def _parse_crossref_response(self, response_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """CrossRef APIレスポンスを解析して引用文献リストを返す"""
+        citations = []
+        
+        # レスポンスが空の場合
+        if not response_data:
+            return citations
+        
+        try:
+            # CrossRef APIレスポンス構造を解析
+            message = response_data.get('message', {})
+            references = message.get('reference', [])
+            
+            for ref in references:
+                citation = {}
+                
+                # タイトル
+                if 'article-title' in ref:
+                    citation['title'] = ref['article-title']
+                elif 'unstructured' in ref:
+                    # 構造化されていない引用文献の場合
+                    citation['title'] = ref['unstructured'][:100] + "..." if len(ref['unstructured']) > 100 else ref['unstructured']
+                
+                # 著者
+                if 'author' in ref:
+                    citation['authors'] = ref['author']
+                
+                # ジャーナル
+                if 'journal-title' in ref:
+                    citation['journal'] = ref['journal-title']
+                
+                # 年
+                if 'year' in ref:
+                    citation['year'] = int(ref['year']) if str(ref['year']).isdigit() else ref['year']
+                
+                # DOI
+                if 'DOI' in ref:
+                    citation['doi'] = ref['DOI']
+                
+                # 巻・ページ
+                if 'volume' in ref:
+                    citation['volume'] = ref['volume']
+                if 'page' in ref:
+                    citation['pages'] = ref['page']
+                
+                # 最低限のデータがある場合のみ追加
+                if citation.get('title') or citation.get('unstructured'):
+                    citations.append(citation)
+            
+            self.logger.debug(f"Parsed {len(citations)} citations from CrossRef response")
+            return citations
+            
+        except Exception as e:
+            self.logger.warning(f"Error parsing CrossRef response: {e}")
+            return citations
     
     def _get_mock_citation_data(self, doi: str) -> List[Dict[str, Any]]:
         """モック引用文献データを返す（開発用）"""
