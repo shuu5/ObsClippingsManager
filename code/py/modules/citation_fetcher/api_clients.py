@@ -308,9 +308,21 @@ class SemanticScholarAPIClient(BaseAPIClient):
         try:
             self.logger.debug(f"Fetching citations from Semantic Scholar for DOI: {doi}")
             
-            # MockData一時的に返す（後で実装を置き換える）
-            return self._get_mock_citation_data(doi)
+            # API URL構築 
+            url = self._build_api_url(doi)
             
+            # API呼び出し
+            response_data = self._make_request(url)
+            
+            # レスポンス解析
+            citations = self._parse_semantic_scholar_response(response_data)
+            
+            self.logger.debug(f"Successfully fetched {len(citations)} citations from Semantic Scholar")
+            return citations
+            
+        except APIError:
+            # API関連のエラーはそのまま再発生させる
+            raise
         except Exception as e:
             self.logger.error(f"Semantic Scholar API error for DOI {doi}: {e}")
             raise APIError(
@@ -318,6 +330,81 @@ class SemanticScholarAPIClient(BaseAPIClient):
                 error_code="SEMANTIC_SCHOLAR_API_ERROR",
                 context={"doi": doi, "original_error": str(e)}
             )
+    
+    def _build_api_url(self, doi: str) -> str:
+        """Semantic Scholar API URLを構築"""
+        # DOIからpaper情報を取得し、そこからreferencesを取得するエンドポイントを構築
+        return f"{self.base_url}/graph/v1/paper/{doi}/references"
+    
+    def _parse_semantic_scholar_response(self, response_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Semantic Scholar APIレスポンスを解析して引用文献リストを返す"""
+        citations = []
+        
+        # レスポンスが空の場合
+        if not response_data:
+            return citations
+        
+        try:
+            # Semantic Scholar APIレスポンス構造を解析
+            data = response_data.get('data', [])
+            
+            for item in data:
+                ref = item.get('citedPaper', {})
+                if not ref:
+                    continue
+                
+                citation = {}
+                
+                # タイトル
+                if 'title' in ref:
+                    citation['title'] = ref['title']
+                
+                # 著者
+                if 'authors' in ref and ref['authors']:
+                    # 著者リストを文字列に変換
+                    author_names = []
+                    for author in ref['authors']:
+                        if 'name' in author:
+                            author_names.append(author['name'])
+                    if author_names:
+                        citation['authors'] = ', '.join(author_names)
+                
+                # ジャーナル/出版venue
+                if 'venue' in ref:
+                    citation['journal'] = ref['venue']
+                
+                # 年
+                if 'year' in ref and ref['year']:
+                    citation['year'] = ref['year']
+                
+                # DOI
+                if 'externalIds' in ref and ref['externalIds']:
+                    external_ids = ref['externalIds']
+                    if 'DOI' in external_ids:
+                        citation['doi'] = external_ids['DOI']
+                
+                # abstract
+                if 'abstract' in ref:
+                    citation['abstract'] = ref['abstract']
+                
+                # citationCount
+                if 'citationCount' in ref:
+                    citation['citationCount'] = ref['citationCount']
+                
+                # URL
+                if 'url' in ref:
+                    citation['url'] = ref['url']
+                
+                # 最低限のデータがある場合のみ追加
+                if citation.get('title'):
+                    citations.append(citation)
+            
+            self.logger.debug(f"Parsed {len(citations)} citations from Semantic Scholar response")
+            return citations
+            
+        except Exception as e:
+            self.logger.warning(f"Error parsing Semantic Scholar response: {e}")
+            return citations
     
     def _get_mock_citation_data(self, doi: str) -> List[Dict[str, Any]]:
         """モック引用文献データを返す（開発用）"""
