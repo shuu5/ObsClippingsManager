@@ -11,6 +11,7 @@ test_execution:
     - citation_fetcher
     - section_parsing
     - ai_citation_support
+    - enhanced-tagger
     status: success
   status: success
-  timestamp: '2025-06-16T06:58:14.221310'
+  timestamp: '2025-06-16T07:16:16.364568'

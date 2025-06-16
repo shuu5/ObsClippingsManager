@@ -327,6 +327,13 @@ ai_generation:
 
 ## タグ生成機能
 
+### 論文コンテンツ抽出方式
+- **抽出対象**: YAMLヘッダーのpaper_structureプロパティを使用
+- **対象セクション**: introduction, results, discussion セクションのみ
+- **抽出方法**: paper_structure内のsection_type判定とstart_line/end_line範囲による正確な抽出
+- **文字数制限**: なし（全文を使用）
+- **前提条件**: section_parsing処理が完了済み
+
 ### タグ生成ルール
 - **言語**: 英語のみ
 - **形式**: スネークケース（例: machine_learning, cancer_research）
@@ -336,18 +343,59 @@ ai_generation:
 
 ### プロンプト設計
 ```
-以下の学術論文の内容を分析し、10-20個のタグを生成してください。
+以下の学術論文の主要セクション（Introduction, Results, Discussion）から、10-20個のタグを生成してください。
 
 ルール:
 - 英語でのタグ生成
-- スネークケース形式（例: machine_learning）
-- 遺伝子名はgene symbol（例: KRT13, EGFR）
+- スネークケース形式（例: machine_learning, cancer_research）
+- 遺伝子名はgene symbol（例: KRT13, EGFR, TP53）
 - 論文理解に重要なキーワードを抽出
+- 研究分野、技術、疾患、遺伝子、手法などを含む
+- 専門性と一般性のバランスを考慮
 
-論文内容:
+論文の主要セクション:
 {paper_content}
 
 生成されたタグ（JSON配列形式で返答）:
+```
+
+### 実装詳細
+```python
+def extract_paper_content(self, paper_path: str) -> str:
+    """
+    paper_structure を使用してintroduction, results, discussionセクションを抽出
+    
+    Args:
+        paper_path: 論文ファイルパス
+        
+    Returns:
+        str: 抽出されたセクションコンテンツ（全文）
+    """
+    # YAMLヘッダー解析
+    processor = YAMLHeaderProcessor(self.config_manager, self.integrated_logger)
+    yaml_data, markdown_content = processor.parse_yaml_header(Path(paper_path))
+    
+    # paper_structure 取得
+    paper_structure = yaml_data.get('paper_structure', {})
+    sections = paper_structure.get('sections', [])
+    
+    # 対象セクション（introduction, results, discussion）の抽出
+    target_section_types = ['introduction', 'results', 'discussion']
+    extracted_sections = []
+    
+    markdown_lines = markdown_content.split('\n')
+    
+    for section in sections:
+        section_type = section.get('section_type')
+        if section_type in target_section_types:
+            start_line = section.get('start_line', 0)
+            end_line = section.get('end_line', len(markdown_lines))
+            
+            # セクション内容抽出（行範囲ベース）
+            section_content = '\n'.join(markdown_lines[start_line-1:end_line])
+            extracted_sections.append(f"## {section.get('title', section_type.title())}\n{section_content}")
+    
+    return '\n\n'.join(extracted_sections)
 ```
 
 ## 要約翻訳機能
@@ -380,16 +428,17 @@ Original Abstract:
 
 #### タグ生成プロンプト
 ```
-以下の学術論文の内容を分析し、10-20個のタグを生成してください。
+以下の学術論文の主要セクション（Introduction, Results, Discussion）から、10-20個のタグを生成してください。
 
 ルール:
 - 英語でのタグ生成
-- スネークケース形式（例: machine_learning）
-- 遺伝子名はgene symbol（例: KRT13, EGFR）
+- スネークケース形式（例: machine_learning, cancer_research）
+- 遺伝子名はgene symbol（例: KRT13, EGFR, TP53）
 - 論文理解に重要なキーワードを抽出
-- 研究分野、技術、疾患、遺伝子などを含む
+- 研究分野、技術、疾患、遺伝子、手法などを含む
+- 専門性と一般性のバランスを考慮
 
-論文内容:
+論文の主要セクション:
 {paper_content}
 
 生成されたタグ（JSON配列形式で返答）:

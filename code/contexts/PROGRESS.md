@@ -485,12 +485,22 @@ code/py/modules/
   - 品質評価テスト: 高品質・低品質・フィードバック・改善提案・関連性検証
   - 既存機能テスト: タグ生成・プロンプト構築・YAML更新・API連携
   - 統合処理テスト: process_items一括処理機能
-- [ ] 2.6.7 **enhanced-tagger機能統合テスト実行**
+- [完了] 2.6.7 **enhanced-tagger機能統合テスト実行・paper_structure利用機能修正完了**
   ```bash
   # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
   uv run python code/scripts/run_integrated_test.py
   ```
+  
+  **修正完了詳細**:
+  - ✅ paper_structure利用によるセクション抽出方式への変更完了
+  - ✅ introduction, results, discussionセクション限定抽出実装
+  - ✅ 8000文字制限除去（全文使用）完了
+  - ✅ プロンプト内容更新（「主要セクション」明記）
+  - ✅ 仕様書更新（ai_tagging_translation_specification.md）
+  - ✅ 統合テスト成功（2論文処理：15タグ・18タグ生成、品質0.765・0.799）
+  - ✅ Claude API正常連携確認（HTTP/1.1 200 OK）
+  - ✅ 6機能シーケンシャル実行確認（organize→sync→fetch→section_parsing→ai_citation_support→enhanced-tagger）
 
 #### 2.7 ステップ7: enhanced-translate（要約翻訳）
 - [ ] 2.7.1 AITaggingTranslationクラス翻訳機能拡張

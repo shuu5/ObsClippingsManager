@@ -1,7 +1,7 @@
 ---
 citation_key: yinL2022BreastCancerRes
 citation_metadata:
-  last_updated: '2025-06-16T06:58:05.419088'
+  last_updated: '2025-06-16T07:16:02.700666'
   mapping_version: '2.0'
   references_bib_path: test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib
   source_bibtex: references.bib
@@ -468,9 +468,9 @@ citations:
     year: '2008'
 created: 2025-06-09
 doi: 10.1186/s13058-022-01502-6
-last_updated: '2025-06-16T06:58:14.189232'
+last_updated: '2025-06-16T07:16:09.902680'
 paper_structure:
-  parsed_at: '2025-06-16T06:58:05.247883'
+  parsed_at: '2025-06-16T07:16:02.546346'
   section_types_found:
   - abstract
   - introduction
@@ -731,35 +731,33 @@ processing_status:
 source: https://breast-cancer-research.biomedcentral.com/articles/10.1186/s13058-022-01502-6
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-16T06:58:04.001566'
+  checked_at: '2025-06-16T07:16:01.402924'
   consistency_status: validated
   corrections_applied: []
   issues_detected: 0
 tag_quality:
-  content_relevance: 0.7529411764705882
-  evaluation_timestamp: '2025-06-16T06:58:14.146107'
+  content_relevance: 0.7466666666666667
+  evaluation_timestamp: '2025-06-16T07:16:09.862245'
   format_compliance: 1.0
-  has_suggestions: false
-  quality_score: 0.8345098039215686
-  tag_count: 17
+  has_suggestions: true
+  quality_score: 0.7653333333333334
+  tag_count: 15
 tags:
 - breast_cancer
-- keratin_13
-- krt13_gene
+- keratin_biology
 - cancer_metastasis
+- gene_krt13
 - tumor_progression
-- cell_migration
-- epithelial_to_mesenchymal_transition
-- plakoglobin_pathway
-- c_myc_signaling
-- intermediate_filament_proteins
+- cancer_stem_cells
+- epithelial_mesenchymal_transition
 - molecular_oncology
-- cancer_biomarkers
-- protein_interaction
-- tumor_suppressor_mechanism
-- cell_proliferation
-- gene_expression_regulation
-- xenograft_model
+- gene_c_myc
+- plakoglobin_signaling
+- cell_migration
+- cancer_invasion
+- intermediate_filaments
+- nuclear_translocation
+- estrogen_receptor_regulation
 title: KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobin/c-Myc
   signaling pathway
 workflow_version: '3.2'

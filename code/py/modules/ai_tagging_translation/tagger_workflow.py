@@ -106,18 +106,21 @@ class TaggerWorkflow:
                     # YAMLヘッダー更新（品質情報も含む）
                     self.update_yaml_with_tags_and_quality(paper_path, tags, feedback)
                     
-                    # 状態更新
-                    status_manager.update_status(input_dir, paper_path, 'tagger', 'completed')
+                    # citation_keyを抽出してから状態更新
+                    citation_key = Path(paper_path).parent.name
+                    status_manager.update_status(input_dir, citation_key, 'tagger', 'completed')
                     processed_count += 1
                 else:
                     # タグ生成失敗
-                    status_manager.update_status(input_dir, paper_path, 'tagger', 'failed')
+                    citation_key = Path(paper_path).parent.name
+                    status_manager.update_status(input_dir, citation_key, 'tagger', 'failed')
                     failed_count += 1
                     self.logger.warning(f"No tags generated for {Path(paper_path).name}")
                     
             except Exception as e:
                 self.logger.error(f"Failed to generate tags for {paper_path}: {e}")
-                status_manager.update_status(input_dir, paper_path, 'tagger', 'failed')
+                citation_key = Path(paper_path).parent.name
+                status_manager.update_status(input_dir, citation_key, 'tagger', 'failed')
                 failed_count += 1
         
         result = {
@@ -166,25 +169,54 @@ class TaggerWorkflow:
     
     def extract_paper_content(self, paper_path: str) -> str:
         """
-        論文コンテンツの抽出（YAMLヘッダー除外）
+        paper_structure を使用してintroduction, results, discussionセクションを抽出
         
         Args:
             paper_path: 論文ファイルパス
             
         Returns:
-            str: 抽出されたコンテンツ
+            str: 抽出されたセクションコンテンツ（全文）
         """
         try:
-            with open(paper_path, 'r', encoding='utf-8') as f:
-                content = f.read()
+            # YAMLヘッダー解析
+            processor = YAMLHeaderProcessor(self.config_manager, self.integrated_logger)
+            yaml_data, markdown_content = processor.parse_yaml_header(Path(paper_path))
             
-            # YAMLヘッダーを除外
-            if content.startswith('---'):
-                parts = content.split('---', 2)
-                if len(parts) >= 3:
-                    content = parts[2].strip()
+            # paper_structure 取得
+            paper_structure = yaml_data.get('paper_structure', {})
+            sections = paper_structure.get('sections', [])
             
-            return content
+            if not sections:
+                self.logger.warning(f"No paper_structure found in {paper_path}, falling back to full content")
+                return markdown_content
+            
+            # 対象セクション（introduction, results, discussion）の抽出
+            target_section_types = ['introduction', 'results', 'discussion']
+            extracted_sections = []
+            
+            markdown_lines = markdown_content.split('\n')
+            
+            for section in sections:
+                section_type = section.get('section_type')
+                if section_type in target_section_types:
+                    start_line = section.get('start_line', 0)
+                    end_line = section.get('end_line', len(markdown_lines))
+                    
+                    # セクション内容抽出（行範囲ベース、1-indexedから0-indexedに変換）
+                    section_content = '\n'.join(markdown_lines[start_line-1:end_line])
+                    section_title = section.get('title', section_type.title())
+                    extracted_sections.append(f"## {section_title}\n{section_content}")
+                    
+                    self.logger.debug(f"Extracted {section_type} section: lines {start_line}-{end_line}")
+            
+            if not extracted_sections:
+                self.logger.warning(f"No target sections found in {paper_path}, falling back to full content")
+                return markdown_content
+            
+            result = '\n\n'.join(extracted_sections)
+            self.logger.info(f"Extracted {len(extracted_sections)} sections for tagging from {Path(paper_path).name}")
+            
+            return result
             
         except Exception as e:
             self.logger.error(f"Failed to extract content from {paper_path}: {e}")
@@ -199,14 +231,14 @@ class TaggerWorkflow:
         タグ生成プロンプトの構築
         
         Args:
-            paper_content: 論文コンテンツ
+            paper_content: 論文コンテンツ（主要セクション抽出済み）
             
         Returns:
             str: 構築されたプロンプト
         """
         min_tags, max_tags = self.tag_count_range
         
-        prompt = f"""以下の学術論文の内容を分析し、{min_tags}-{max_tags}個のタグを生成してください。
+        prompt = f"""以下の学術論文の主要セクション（Introduction, Results, Discussion）から、{min_tags}-{max_tags}個のタグを生成してください。
 
 ルール:
 - 英語でのタグ生成
@@ -216,8 +248,8 @@ class TaggerWorkflow:
 - 研究分野、技術、疾患、遺伝子、手法などを含む
 - 専門性と一般性のバランスを考慮
 
-論文内容:
-{paper_content[:8000]}  # 長すぎる場合は切り詰め
+論文の主要セクション:
+{paper_content}
 
 生成されたタグ（JSON配列形式で返答）:"""
 
