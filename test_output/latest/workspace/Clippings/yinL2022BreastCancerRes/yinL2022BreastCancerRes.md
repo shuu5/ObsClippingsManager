@@ -1,7 +1,7 @@
 ---
 citation_key: yinL2022BreastCancerRes
 citation_metadata:
-  last_updated: '2025-06-16T08:16:07.781829'
+  last_updated: '2025-06-16T08:50:53.067207'
   mapping_version: '2.0'
   references_bib_path: test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib
   source_bibtex: references.bib
@@ -468,9 +468,9 @@ citations:
     year: '2008'
 created: 2025-06-09
 doi: 10.1186/s13058-022-01502-6
-last_updated: '2025-06-16T08:16:12.705276'
+last_updated: '2025-06-16T08:51:44.877880'
 paper_structure:
-  parsed_at: '2025-06-16T08:16:07.614112'
+  parsed_at: '2025-06-16T08:50:52.895054'
   section_types_found:
   - abstract
   - introduction
@@ -731,36 +731,33 @@ processing_status:
 source: https://breast-cancer-research.biomedcentral.com/articles/10.1186/s13058-022-01502-6
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-16T08:16:06.535326'
+  checked_at: '2025-06-16T08:50:51.756476'
   consistency_status: validated
   corrections_applied: []
   issues_detected: 0
 tag_quality:
-  content_relevance: 0.7407407407407408
-  evaluation_timestamp: '2025-06-16T08:16:12.665940'
+  content_relevance: 0.76
+  evaluation_timestamp: '2025-06-16T08:51:44.838303'
   format_compliance: 1.0
   has_suggestions: true
-  quality_score: 0.8296296296296297
-  tag_count: 18
+  quality_score: 0.7706666666666667
+  tag_count: 15
 tags:
+- KRT13
 - breast_cancer
-- keratin_proteins
-- krt13_gene
-- cancer_metastasis
-- stem_cell_biology
-- oncogenic_mechanisms
-- plakoglobin_regulation
-- c_myc_signaling
+- metastasis
+- oncology
+- stem_cell
+- molecular_biology
+- c_myc
 - epithelial_mesenchymal_transition
-- tumor_progression
+- cell_proliferation
+- plakoglobin
+- cancer_progression
+- gene_expression
 - cell_migration
-- nuclear_translocation
-- desmosomal_complex
-- cancer_stem_cells
-- gene_expression_regulation
-- protein_interaction
-- breast_cancer_markers
-- molecular_oncology
+- tumor_suppressor
+- intermediate_filaments
 title: KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobin/c-Myc
   signaling pathway
 workflow_version: '3.2'

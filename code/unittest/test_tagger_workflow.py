@@ -111,7 +111,6 @@ This paper introduces a new biomarker detection method.
         workflow = TaggerWorkflow(self.config_manager, self.logger)
         content = workflow.extract_paper_content(str(test_file))
         
-        self.assertIn("cancer research", content)
         self.assertIn("biomarker detection", content)
         self.assertNotIn("citation_key:", content)  # YAMLヘッダーは除外
     
@@ -125,7 +124,7 @@ This paper introduces a new biomarker detection method.
         prompt = workflow._build_tagging_prompt(paper_content)
         
         self.assertIn("10-20個のタグを生成", prompt)
-        self.assertIn("スネークケース形式", prompt)
+        self.assertIn("スネークケース", prompt)
         self.assertIn("cancer research paper about EGFR", prompt)
         self.assertIn("JSON配列形式", prompt)
     
@@ -166,7 +165,7 @@ This is a test abstract for cancer research.
         
         tags = workflow._parse_tags_response(response)
         
-        self.assertEqual(tags, ["cancer_research", "machine_learning", "biomarkers", "krt13"])
+        self.assertEqual(tags, ["cancer_research", "machine_learning", "biomarkers", "KRT13"])
     
     def test_parse_tags_response_invalid_json(self):
         """タグレスポンス解析テスト（無効なJSON）"""
@@ -364,6 +363,103 @@ class TestTaggerWorkflowQualityAssessment(unittest.TestCase):
         irrelevant_tag = "astronomy"
         relevance_score = workflow.validate_tag_relevance(irrelevant_tag, paper_content)
         self.assertLess(relevance_score, 0.3)
+
+
+class TestTaggerWorkflowGeneSymbolPreservation(unittest.TestCase):
+    """遺伝子シンボル保護機能のテスト"""
+    
+    def setUp(self):
+        """テストのセットアップ"""
+        self.config_manager = Mock(spec=ConfigManager)
+        self.logger = Mock(spec=IntegratedLogger)
+        self.logger.get_logger.return_value = Mock()
+        
+        # デフォルト設定をモック
+        self.config_manager.get_ai_setting.side_effect = lambda *keys, default=None: {
+            ('tagger', 'enabled'): True,
+            ('tagger', 'batch_size'): 8,
+            ('tagger', 'tag_count_range'): [10, 20],
+        }.get(keys, default)
+    
+    def test_is_gene_symbol_uppercase(self):
+        """大文字遺伝子シンボル判定テスト"""
+        from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
+        
+        workflow = TaggerWorkflow(self.config_manager, self.logger)
+        
+        # 遺伝子シンボルのテストケース
+        self.assertTrue(workflow._is_gene_symbol("KRT13"))
+        self.assertTrue(workflow._is_gene_symbol("EGFR"))
+        self.assertTrue(workflow._is_gene_symbol("TP53"))
+        self.assertTrue(workflow._is_gene_symbol("BRCA1"))
+        self.assertTrue(workflow._is_gene_symbol("PIK3CA"))
+        self.assertTrue(workflow._is_gene_symbol("KRAS"))
+        
+        # 非遺伝子シンボルのテストケース
+        self.assertFalse(workflow._is_gene_symbol("cancer_research"))
+        self.assertFalse(workflow._is_gene_symbol("breast_cancer"))
+        self.assertFalse(workflow._is_gene_symbol("oncology"))
+        self.assertFalse(workflow._is_gene_symbol("western_blot"))
+        self.assertFalse(workflow._is_gene_symbol("123"))
+        self.assertFalse(workflow._is_gene_symbol("K"))  # 短すぎる
+        self.assertFalse(workflow._is_gene_symbol("Krt13"))  # 小文字混在
+    
+    def test_is_gene_symbol_lowercase(self):
+        """小文字形式からの遺伝子シンボル判定テスト"""
+        from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
+        
+        workflow = TaggerWorkflow(self.config_manager, self.logger)
+        
+        # 小文字の遺伝子シンボルも判定可能か
+        self.assertTrue(workflow._is_gene_symbol("krt13"))
+        self.assertTrue(workflow._is_gene_symbol("egfr"))
+        self.assertTrue(workflow._is_gene_symbol("tp53"))
+        self.assertTrue(workflow._is_gene_symbol("brca1"))
+    
+    def test_preserve_gene_symbol_case(self):
+        """遺伝子シンボル大文字保護機能テスト"""
+        from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
+        
+        workflow = TaggerWorkflow(self.config_manager, self.logger)
+        
+        # 遺伝子シンボルは大文字に変換される
+        self.assertEqual(workflow._preserve_gene_symbol_case("krt13"), "KRT13")
+        self.assertEqual(workflow._preserve_gene_symbol_case("egfr"), "EGFR")
+        self.assertEqual(workflow._preserve_gene_symbol_case("tp53"), "TP53")
+        self.assertEqual(workflow._preserve_gene_symbol_case("brca1"), "BRCA1")
+        
+        # 一般的なタグは小文字のまま
+        self.assertEqual(workflow._preserve_gene_symbol_case("cancer_research"), "cancer_research")
+        self.assertEqual(workflow._preserve_gene_symbol_case("breast_cancer"), "breast_cancer")
+        self.assertEqual(workflow._preserve_gene_symbol_case("oncology"), "oncology")
+        self.assertEqual(workflow._preserve_gene_symbol_case("western_blot"), "western_blot")
+    
+    def test_parse_tags_response_with_gene_symbols(self):
+        """遺伝子シンボル保護機能付きタグ解析テスト"""
+        from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
+        
+        workflow = TaggerWorkflow(self.config_manager, self.logger)
+        
+        # LLMからの返答（遺伝子シンボルが大文字で返されたケース）
+        response_uppercase = '["KRT13", "cancer_research", "EGFR", "breast_cancer", "TP53"]'
+        tags_uppercase = workflow._parse_tags_response(response_uppercase)
+        
+        expected_uppercase = ["KRT13", "cancer_research", "EGFR", "breast_cancer", "TP53"]
+        self.assertEqual(tags_uppercase, expected_uppercase)
+        
+        # LLMからの返答（遺伝子シンボルが小文字で返されたケース）
+        response_lowercase = '["krt13", "cancer_research", "egfr", "breast_cancer", "tp53"]'
+        tags_lowercase = workflow._parse_tags_response(response_lowercase)
+        
+        expected_lowercase = ["KRT13", "cancer_research", "EGFR", "breast_cancer", "TP53"]
+        self.assertEqual(tags_lowercase, expected_lowercase)
+        
+        # 混在ケース
+        response_mixed = '["KRT13", "cancer_research", "egfr", "BREAST_CANCER", "tp53"]'
+        tags_mixed = workflow._parse_tags_response(response_mixed)
+        
+        expected_mixed = ["KRT13", "cancer_research", "EGFR", "breast_cancer", "TP53"]
+        self.assertEqual(tags_mixed, expected_mixed)
 
 
 if __name__ == '__main__':

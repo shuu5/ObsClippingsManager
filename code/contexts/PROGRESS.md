@@ -514,6 +514,37 @@ code/py/modules/
   - ファイルサイズ・内容の妥当性検証
   - バックアップファイルのメタデータ管理
 
+- [完了] 2.6.8 **遺伝子シンボル保護機能実装・統合テスト成功**
+  **実装完了詳細**:
+  - ✅ **問題特定**: TaggerWorkflowでタグ小文字化処理により遺伝子シンボル（KRT13）が小文字化
+  - ✅ **機能設計**: 遺伝子シンボルのみ大文字保護、他タグは小文字統一の選択的ケース保護
+  - ✅ **TDD実装**: 先行テスト作成（TestTaggerWorkflowGeneSymbolPreservation, 7テスト）
+  - ✅ **判定ロジック実装**: `_is_gene_symbol()`メソッド（正規表現ベース、アンダースコア除外）
+  - ✅ **保護機能実装**: `_preserve_gene_symbol_case()`メソッド（選択的大文字化）
+  - ✅ **適用箇所修正**: `_parse_tags_response()`の2箇所でタグ処理修正
+  
+  **機能仕様**:
+  ```python
+  # 遺伝子シンボル判定パターン（例）
+  KRT13    → 保護（大文字維持）
+  EGFR     → 保護（大文字維持）  
+  PIK3CA   → 保護（大文字維持）
+  TP53     → 保護（大文字維持）
+  oncology → 変換（小文字化）
+  breast_cancer → 変換（小文字化）
+  ```
+  
+  **統合テスト成功結果**:
+  ```bash
+  # 統合テスト実行・遺伝子シンボル保護確認
+  cd /home/user/proj/ObsClippingsManager
+  uv run python code/scripts/run_integrated_test.py
+  ```
+  - ✅ **yinL2022BreastCancerRes**: KRT13（大文字保護）+ 他14タグ（小文字）
+  - ✅ **takenakaW2023J.Radiat.Res.Tokyo**: KRT13（大文字保護）+ 他14タグ（小文字）
+  - ✅ **全テスト成功**: 7個の新規テスト + 既存テスト全てPASS
+  - ✅ **仕様書準拠**: AI タグ生成における生物学的命名規則対応
+
 #### 2.7 ステップ7: enhanced-translate（要約翻訳）
 - [ ] 2.7.1 AITaggingTranslationクラス翻訳機能拡張
 - [ ] 2.7.2 要約翻訳機能実装（バッチサイズ: 5）

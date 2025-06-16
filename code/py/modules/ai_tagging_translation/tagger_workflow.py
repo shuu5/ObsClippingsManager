@@ -238,20 +238,59 @@ class TaggerWorkflow:
         """
         min_tags, max_tags = self.tag_count_range
         
-        prompt = f"""以下の学術論文の主要セクション（Introduction, Results, Discussion）から、{min_tags}-{max_tags}個のタグを生成してください。
-
-ルール:
-- 英語でのタグ生成
-- スネークケース形式（例: machine_learning, cancer_research）
-- 遺伝子名はgene symbol（例: KRT13, EGFR, TP53）
-- 論文理解に重要なキーワードを抽出
-- 研究分野、技術、疾患、遺伝子、手法などを含む
-- 専門性と一般性のバランスを考慮
-
-論文の主要セクション:
+        prompt = f"""
+        
+## **論文の主要セクション:**
+---
 {paper_content}
+---
 
-生成されたタグ（JSON配列形式で返答）:"""
+上記の学術論文の主要セクション（Introduction, Results, Discussion）から、{min_tags}-{max_tags}個のタグを生成してください。
+
+## **タグ生成プロセス**
+
+**Step 1: 双方向解析**
+- 前方スキャン: Introduction → Results → Discussion の順でキーワード抽出
+- 後方スキャン: Discussion → Results → Introduction の順でキーワード抽出
+- 両方向で検出されたキーワードを高優先度として記録
+
+**Step 2: コンテキスト重み付け**
+- 論文タイトルに含まれる用語: 重要度スコア +3
+- 複数セクション（2つ以上）で言及される用語: 重要度スコア +2  
+- 図表キャプションで言及される用語: 重要度スコア +1
+- 基本スコア: +1
+
+**Step 3: 階層分類とタグ化**
+
+**1. 遺伝子シンボル（最高優先度）:**
+- 正式なgene symbol形式（例: KRT13, EGFR, TP53, BRCA1）
+- 大文字のラテン文字とアラビア数字のみ
+- HGNC/MGI準拠、snake_caseや小文字は使用禁止
+- プレフィックス（gene_, protein_等）は付けない
+
+**2. 階層化された一般タグ（スネークケース）:**
+- **Level 1 - 研究分野:** oncology, molecular_biology, pathology
+- **Level 2 - 疾患特異性:** gastric_cancer, colorectal_cancer, liver_cancer
+- **Level 3 - 技術手法:** cell_culture, western_blot, immunohistochemistry, qpcr
+- **Level 4 - 細胞・組織:** cell_line, tissue_sample, primary_culture
+- **Level 5 - 分析・解析:** statistical_analysis, bioinformatics, pathway_analysis
+
+**Step 4: 品質制御**
+1. 遺伝子シンボル形式の検証（大文字・数字のみ確認）
+2. 重複タグの除去と統合
+3. 重要度スコアによる優先順位付け
+4. タグ数制限（{min_tags}-{max_tags}個）の遵守
+5. 専門性と一般性のバランス確認
+
+## **出力要件**
+- JSON配列形式で返答
+- 高スコアタグを優先的に選択
+- 遺伝子シンボルと一般タグの適切な比率維持
+- 各階層から最低1つのタグを含める
+
+**生成されたタグ（重要度スコア順、JSON配列形式）:**
+
+"""
 
         return prompt
     
@@ -274,7 +313,8 @@ class TaggerWorkflow:
                 validated_tags = []
                 for tag in tags:
                     if isinstance(tag, str) and self._validate_tag_format(tag):
-                        validated_tags.append(tag.lower())
+                        # 遺伝子シンボル保護機能を適用
+                        validated_tags.append(self._preserve_gene_symbol_case(tag))
                 
                 return validated_tags
             
@@ -287,7 +327,8 @@ class TaggerWorkflow:
                 tag_pattern = r'["\']([a-zA-Z0-9_]+)["\']'
                 matches = re.findall(tag_pattern, response)
                 if matches:
-                    validated_tags = [tag.lower() for tag in matches if self._validate_tag_format(tag)]
+                    # 遺伝子シンボル保護機能をフォールバック処理にも適用
+                    validated_tags = [self._preserve_gene_symbol_case(tag) for tag in matches if self._validate_tag_format(tag)]
                     return validated_tags[:self.tag_count_range[1]]  # 最大数制限
             except Exception as fallback_error:
                 self.logger.error(f"Fallback tag parsing also failed: {fallback_error}")
@@ -308,6 +349,67 @@ class TaggerWorkflow:
         # スネークケース形式の検証
         pattern = r'^[a-zA-Z0-9_]+$'
         return bool(re.match(pattern, tag)) and len(tag) >= 2
+    
+    def _is_gene_symbol(self, tag: str) -> bool:
+        """
+        遺伝子シンボルかどうかの判定
+        
+        Args:
+            tag: 判定するタグ
+            
+        Returns:
+            bool: 遺伝子シンボルかどうか
+        """
+        # アンダースコアを含む場合は遺伝子シンボルではない
+        if '_' in tag:
+            return False
+        
+        # 長すぎる場合は遺伝子シンボルではない
+        if len(tag) > 8 or len(tag) < 2:
+            return False
+        
+        # 一般的な単語（非遺伝子シンボル）リスト
+        common_words = {
+            'oncology', 'pathology', 'biology', 'chemistry', 'physics',
+            'analysis', 'research', 'method', 'technique', 'procedure',
+            'cancer', 'disease', 'therapy', 'treatment', 'medicine'
+        }
+        
+        if tag.lower() in common_words:
+            return False
+        
+        # 遺伝子シンボルのパターン:
+        # パターン1: 2-4文字のアルファベット + 数字 (例: KRT13, TP53, PIK3CA)
+        # パターン2: 2-8文字のアルファベットのみ (例: EGFR, KRAS, BRCA1はBRCA+1)
+        tag_upper = tag.upper()
+        
+        # 大文字小文字が混在している場合は遺伝子シンボルではない
+        # （遺伝子シンボルは全て大文字または全て小文字であるべき）
+        if tag != tag.upper() and tag != tag.lower():
+            return False
+        
+        # 数字を含む場合
+        if any(c.isdigit() for c in tag):
+            pattern = r'^[A-Z]{2,4}[0-9A-Z]*$'
+            return bool(re.match(pattern, tag_upper))
+        
+        # アルファベットのみの場合（短いもの優先）
+        return len(tag) <= 6 and bool(re.match(r'^[A-Z]{2,6}$', tag_upper))
+    
+    def _preserve_gene_symbol_case(self, tag: str) -> str:
+        """
+        遺伝子シンボルの大文字保護
+        
+        Args:
+            tag: 処理するタグ
+            
+        Returns:
+            str: 遺伝子シンボルは大文字、一般タグは小文字
+        """
+        if self._is_gene_symbol(tag):
+            return tag.upper()
+        else:
+            return tag.lower()
     
     def update_yaml_with_tags(self, paper_path: str, tags: List[str]):
         """

@@ -1,7 +1,7 @@
 ---
 citation_key: takenakaW2023J.Radiat.Res.Tokyo
 citation_metadata:
-  last_updated: '2025-06-16T08:16:07.908002'
+  last_updated: '2025-06-16T08:50:53.213492'
   mapping_version: '2.0'
   references_bib_path: test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib
   source_bibtex: references.bib
@@ -464,9 +464,9 @@ citations:
     year: '2014'
 created: 2025-06-09
 doi: 10.1093/jrr/rrac091
-last_updated: '2025-06-16T08:16:18.198568'
+last_updated: '2025-06-16T08:51:55.428218'
 paper_structure:
-  parsed_at: '2025-06-16T08:16:07.633218'
+  parsed_at: '2025-06-16T08:50:52.914268'
   section_types_found:
   - abstract
   - introduction
@@ -626,38 +626,33 @@ processing_status:
 source: https://academic.oup.com/jrr/article/64/2/284/6968637
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-16T08:16:06.534758'
+  checked_at: '2025-06-16T08:50:51.755518'
   consistency_status: inconsistent
   corrections_applied: []
   issues_detected: 1
 tag_quality:
-  content_relevance: 0.7100000000000001
-  evaluation_timestamp: '2025-06-16T08:16:18.156793'
+  content_relevance: 0.6577777777777778
+  evaluation_timestamp: '2025-06-16T08:51:55.396086'
   format_compliance: 1.0
   has_suggestions: true
-  quality_score: 0.8173333333333334
-  tag_count: 20
+  quality_score: 0.7297777777777779
+  tag_count: 15
 tags:
+- KRT13
 - pancreatic_cancer
 - cancer_stem_cells
-- radiotherapy
 - radioresistance
-- krt13_gene
-- zsgeen_odc_reporter_system
-- cancer_stem_cell_markers
 - proteasome_activity
-- rna_sequencing
-- gene_enrichment_analysis
-- kegg_pathway
-- gsea_analysis
-- therapeutic_targeting
+- molecular_biology
 - cell_sorting
-- intermediate_filament_proteins
-- cancer_biology
+- rna_sequencing
+- gene_knockdown
+- oncology
+- pathway_analysis
+- cell_line_research
 - therapeutic_strategy
-- nanomedicine
-- sirna_delivery
-- tumor_microenvironment
+- zsgeen_reporter_system
+- drug_delivery
 title: KRT13 is upregulated in pancreatic cancer stem-like cells and associated with
   radioresistance
 workflow_version: '3.2'
