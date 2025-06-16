@@ -485,7 +485,7 @@ code/py/modules/
   - 品質評価テスト: 高品質・低品質・フィードバック・改善提案・関連性検証
   - 既存機能テスト: タグ生成・プロンプト構築・YAML更新・API連携
   - 統合処理テスト: process_items一括処理機能
-- [完了] 2.6.7 **enhanced-tagger機能統合テスト実行・paper_structure利用機能修正完了**
+- [問題] 2.6.7 **enhanced-tagger機能統合テスト実行・paper_structure利用機能修正完了（StatusManager無限再帰問題解決・AICitationSupport新問題発生）**
   ```bash
   # 現在のintegrated_workflowを実行する統合テスト
   cd /home/user/proj/ObsClippingsManager
@@ -498,9 +498,14 @@ code/py/modules/
   - ✅ 8000文字制限除去（全文使用）完了
   - ✅ プロンプト内容更新（「主要セクション」明記）
   - ✅ 仕様書更新（ai_tagging_translation_specification.md）
-  - ✅ 統合テスト成功（2論文処理：15タグ・18タグ生成、品質0.765・0.799）
-  - ✅ Claude API正常連携確認（HTTP/1.1 200 OK）
-  - ✅ 6機能シーケンシャル実行確認（organize→sync→fetch→section_parsing→ai_citation_support→enhanced-tagger）
+  - ✅ StatusManager無限再帰問題修正（_attempt_yaml_repair/_attempt_backup_recovery）
+  - ✅ ConfigManager.get→get_config修正（API Client）
+  
+  **残存問題**:
+  - ❌ AICitationSupportWorkflowによるファイル破損問題
+    - 論文ファイルが「This paper has no YAML header.」（3行のテストファイル内容）に置き換わる
+    - TaggerWorkflowでYAMLヘッダー検出不可能
+    - 原因調査中（統合テスト環境とAICitationSupport処理間の競合疑い）
 
 #### 2.7 ステップ7: enhanced-translate（要約翻訳）
 - [ ] 2.7.1 AITaggingTranslationクラス翻訳機能拡張

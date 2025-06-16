@@ -63,7 +63,8 @@ class BaseAPIClient(ABC):
     def _get_api_config(self) -> Dict[str, Any]:
         """API設定を取得"""
         try:
-            citation_config = self.config_manager.get('citation_fetcher', {})
+            config = self.config_manager.get_config()
+            citation_config = config.get('citation_fetcher', {})
             api_config = citation_config.get('apis', {}).get(self.api_name, {})
             return api_config
         except Exception as e:

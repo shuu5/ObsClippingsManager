@@ -246,9 +246,8 @@ class StatusManager:
         """
         try:
             success = self.yaml_processor.repair_yaml_header(Path(md_file), citation_key)
-            if success:
-                # 修復後に再度状態更新を試行
-                return self.update_status(clippings_dir, citation_key, step, status)
+            self.logger.info(f"YAML repair attempt for {citation_key}: {'successful' if success else 'failed'}")
+            return success
         except Exception as e:
             self.logger.error(f"YAML repair failed for {citation_key}: {e}")
         
@@ -276,10 +275,16 @@ class StatusManager:
             bool: 復旧成功の場合True
         """
         try:
-            backup_restored = self.backup_manager.restore_from_backup(md_file)
-            if backup_restored:
-                # 復旧後に再度状態更新を試行
-                return self.update_status(clippings_dir, citation_key, step, status)
+            # 最新のバックアップファイルを探して復旧を試行
+            backups = self.backup_manager.list_backups()
+            if backups:
+                # 最新のバックアップを選択（タイムスタンプ順）
+                latest_backup = max(backups, key=lambda b: b.stat().st_mtime)
+                backup_restored = self.backup_manager.restore_backup(latest_backup, md_file)
+                self.logger.info(f"Backup recovery attempt for {citation_key}: {'successful' if backup_restored else 'failed'}")
+                return backup_restored
+            else:
+                self.logger.warning(f"No backups available for recovery of {citation_key}")
         except Exception as e:
             self.logger.error(f"Backup recovery failed for {citation_key}: {e}")
         

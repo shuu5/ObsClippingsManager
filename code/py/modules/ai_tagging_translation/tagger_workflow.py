@@ -280,6 +280,7 @@ class TaggerWorkflow:
             
         except (json.JSONDecodeError, ValueError) as e:
             self.logger.warning(f"Failed to parse tags response as JSON: {e}")
+            self.logger.debug(f"Response content: '{response.strip()[:200]}...'")
             
             # フォールバック: 正規表現でタグを抽出
             try:
