@@ -161,11 +161,12 @@ This is a test abstract for cancer research.
         from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
         
         workflow = TaggerWorkflow(self.config_manager, self.logger)
-        response = '["cancer_research", "machine_learning", "biomarkers", "krt13"]'
         
+        response = '["cancer_research", "machine_learning", "biomarkers", "KRT13"]'
         tags = workflow._parse_tags_response(response)
         
-        self.assertEqual(tags, ["cancer_research", "machine_learning", "biomarkers", "KRT13"])
+        # 新しい仕様: prefixなし遺伝子シンボル（KRT13）は小文字化される
+        self.assertEqual(tags, ["cancer_research", "machine_learning", "biomarkers", "krt13"])
     
     def test_parse_tags_response_invalid_json(self):
         """タグレスポンス解析テスト（無効なJSON）"""
@@ -280,11 +281,11 @@ class TestTaggerWorkflowQualityAssessment(unittest.TestCase):
         workflow = TaggerWorkflow(self.config_manager, self.logger)
         
         # 高品質タグ（適切な数、形式、専門性、論文内容と関連性高）
-        tags = ["cancer_research", "breast_cancer", "biomarkers", "krt13", "egfr", 
+        tags = ["cancer_research", "breast_cancer", "biomarkers", "gene_krt13", "protein_egfr", 
                 "oncology", "tumor_analysis", "protein_expression", "clinical_studies", 
                 "molecular_biology", "gene_expression", "pathology"]
         
-        paper_content = """This paper studies breast cancer biomarkers including KRT13 and EGFR genes. 
+        paper_content = """This paper studies breast cancer biomarkers including gene_KRT13 and protein_EGFR genes. 
         The research focuses on cancer research methodologies and oncology applications. 
         We performed tumor analysis using protein expression and molecular biology techniques.
         Clinical studies were conducted to evaluate gene expression patterns in pathology samples."""
@@ -302,7 +303,7 @@ class TestTaggerWorkflowQualityAssessment(unittest.TestCase):
         # 低品質タグ（少数、形式不正、内容不適切）
         tags = ["test", "data123", "invalid tag", "x"]
         
-        paper_content = "This paper studies breast cancer biomarkers including KRT13 and EGFR"
+        paper_content = "This paper studies breast cancer biomarkers including gene_KRT13 and protein_EGFR"
         
         quality_score = workflow.evaluate_tag_quality(tags, paper_content)
         
@@ -314,7 +315,7 @@ class TestTaggerWorkflowQualityAssessment(unittest.TestCase):
         
         workflow = TaggerWorkflow(self.config_manager, self.logger)
         
-        tags = ["cancer_research", "biomarkers", "krt13"]
+        tags = ["cancer_research", "biomarkers", "gene_krt13"]
         paper_content = "This paper studies breast cancer biomarkers"
         quality_score = 0.65
         
@@ -338,13 +339,13 @@ class TestTaggerWorkflowQualityAssessment(unittest.TestCase):
         
         # 少ないタグ数の場合
         tags = ["cancer", "research"]
-        paper_content = "This paper studies breast cancer biomarkers including KRT13"
+        paper_content = "This paper studies breast cancer biomarkers including gene_KRT13"
         
         suggestions = workflow.suggest_improvements(tags, paper_content)
         
         self.assertIsInstance(suggestions, list)
         self.assertTrue(any("more tags" in suggestion.lower() for suggestion in suggestions))
-        self.assertTrue(any("krt13" in suggestion.lower() for suggestion in suggestions))
+        self.assertTrue(any("gene_krt13" in suggestion.lower() for suggestion in suggestions))
     
     def test_validate_tag_relevance(self):
         """タグ関連性検証テスト"""
@@ -352,7 +353,7 @@ class TestTaggerWorkflowQualityAssessment(unittest.TestCase):
         
         workflow = TaggerWorkflow(self.config_manager, self.logger)
         
-        paper_content = "This paper studies breast cancer biomarkers including KRT13 and EGFR"
+        paper_content = "This paper studies breast cancer biomarkers including gene_KRT13 and protein_EGFR"
         
         # 関連性の高いタグ
         relevant_tag = "breast_cancer"
@@ -366,7 +367,7 @@ class TestTaggerWorkflowQualityAssessment(unittest.TestCase):
 
 
 class TestTaggerWorkflowGeneSymbolPreservation(unittest.TestCase):
-    """遺伝子シンボル保護機能のテスト"""
+    """遺伝子・タンパク質prefix付きタグ保護機能のテスト"""
     
     def setUp(self):
         """テストのセットアップ"""
@@ -381,84 +382,99 @@ class TestTaggerWorkflowGeneSymbolPreservation(unittest.TestCase):
             ('tagger', 'tag_count_range'): [10, 20],
         }.get(keys, default)
     
-    def test_is_gene_symbol_uppercase(self):
-        """大文字遺伝子シンボル判定テスト"""
+    def test_is_prefixed_gene_protein_tag(self):
+        """prefix付き遺伝子・タンパク質タグ判定テスト"""
         from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
         
         workflow = TaggerWorkflow(self.config_manager, self.logger)
         
-        # 遺伝子シンボルのテストケース
-        self.assertTrue(workflow._is_gene_symbol("KRT13"))
-        self.assertTrue(workflow._is_gene_symbol("EGFR"))
-        self.assertTrue(workflow._is_gene_symbol("TP53"))
-        self.assertTrue(workflow._is_gene_symbol("BRCA1"))
-        self.assertTrue(workflow._is_gene_symbol("PIK3CA"))
-        self.assertTrue(workflow._is_gene_symbol("KRAS"))
+        # prefix付き遺伝子・タンパク質タグのテストケース
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("gene_KRT13"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("protein_KRT13"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("gene_EGFR"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("protein_EGFR"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("gene_TP53"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("protein_TP53"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("gene_BRCA1"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("protein_BRCA1"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("gene_PIK3CA"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("protein_PIK3CA"))
         
-        # 非遺伝子シンボルのテストケース
-        self.assertFalse(workflow._is_gene_symbol("cancer_research"))
-        self.assertFalse(workflow._is_gene_symbol("breast_cancer"))
-        self.assertFalse(workflow._is_gene_symbol("oncology"))
-        self.assertFalse(workflow._is_gene_symbol("western_blot"))
-        self.assertFalse(workflow._is_gene_symbol("123"))
-        self.assertFalse(workflow._is_gene_symbol("K"))  # 短すぎる
-        self.assertFalse(workflow._is_gene_symbol("Krt13"))  # 小文字混在
+        # 非対象タグのテストケース
+        self.assertFalse(workflow._is_prefixed_gene_protein_tag("KRT13"))  # prefixなし
+        self.assertFalse(workflow._is_prefixed_gene_protein_tag("EGFR"))   # prefixなし
+        self.assertFalse(workflow._is_prefixed_gene_protein_tag("cancer_research"))
+        self.assertFalse(workflow._is_prefixed_gene_protein_tag("breast_cancer"))
+        self.assertFalse(workflow._is_prefixed_gene_protein_tag("oncology"))
+        self.assertFalse(workflow._is_prefixed_gene_protein_tag("western_blot"))
+        self.assertFalse(workflow._is_prefixed_gene_protein_tag("123"))
+        self.assertFalse(workflow._is_prefixed_gene_protein_tag("gene_"))  # シンボル部分なし
+        self.assertFalse(workflow._is_prefixed_gene_protein_tag("protein_"))  # シンボル部分なし
+        self.assertFalse(workflow._is_prefixed_gene_protein_tag("rna_KRT13"))  # 無効なprefix
     
-    def test_is_gene_symbol_lowercase(self):
-        """小文字形式からの遺伝子シンボル判定テスト"""
+    def test_is_prefixed_gene_protein_tag_lowercase(self):
+        """小文字形式からのprefix付きタグ判定テスト"""
         from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
         
         workflow = TaggerWorkflow(self.config_manager, self.logger)
         
-        # 小文字の遺伝子シンボルも判定可能か
-        self.assertTrue(workflow._is_gene_symbol("krt13"))
-        self.assertTrue(workflow._is_gene_symbol("egfr"))
-        self.assertTrue(workflow._is_gene_symbol("tp53"))
-        self.assertTrue(workflow._is_gene_symbol("brca1"))
+        # 小文字のprefix付きタグも判定可能か
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("gene_krt13"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("protein_krt13"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("gene_egfr"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("protein_egfr"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("gene_tp53"))
+        self.assertTrue(workflow._is_prefixed_gene_protein_tag("protein_tp53"))
     
-    def test_preserve_gene_symbol_case(self):
-        """遺伝子シンボル大文字保護機能テスト"""
+    def test_preserve_prefixed_gene_protein_case(self):
+        """prefix付き遺伝子・タンパク質タグ大文字保護機能テスト"""
         from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
         
         workflow = TaggerWorkflow(self.config_manager, self.logger)
         
-        # 遺伝子シンボルは大文字に変換される
-        self.assertEqual(workflow._preserve_gene_symbol_case("krt13"), "KRT13")
-        self.assertEqual(workflow._preserve_gene_symbol_case("egfr"), "EGFR")
-        self.assertEqual(workflow._preserve_gene_symbol_case("tp53"), "TP53")
-        self.assertEqual(workflow._preserve_gene_symbol_case("brca1"), "BRCA1")
+        # prefix付き遺伝子・タンパク質タグはシンボル部分が大文字に変換される
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("gene_krt13"), "gene_KRT13")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("protein_krt13"), "protein_KRT13")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("gene_egfr"), "gene_EGFR")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("protein_egfr"), "protein_EGFR")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("gene_tp53"), "gene_TP53")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("protein_tp53"), "protein_TP53")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("gene_brca1"), "gene_BRCA1")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("protein_brca1"), "protein_BRCA1")
         
         # 一般的なタグは小文字のまま
-        self.assertEqual(workflow._preserve_gene_symbol_case("cancer_research"), "cancer_research")
-        self.assertEqual(workflow._preserve_gene_symbol_case("breast_cancer"), "breast_cancer")
-        self.assertEqual(workflow._preserve_gene_symbol_case("oncology"), "oncology")
-        self.assertEqual(workflow._preserve_gene_symbol_case("western_blot"), "western_blot")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("cancer_research"), "cancer_research")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("breast_cancer"), "breast_cancer")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("oncology"), "oncology")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("western_blot"), "western_blot")
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("KRT13"), "krt13")  # prefixなし遺伝子は小文字
+        self.assertEqual(workflow._preserve_prefixed_gene_protein_case("EGFR"), "egfr")   # prefixなし遺伝子は小文字
     
-    def test_parse_tags_response_with_gene_symbols(self):
-        """遺伝子シンボル保護機能付きタグ解析テスト"""
+    def test_parse_tags_response_with_prefixed_gene_protein_tags(self):
+        """prefix付き遺伝子・タンパク質タグ保護機能付きタグ解析テスト"""
         from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
         
         workflow = TaggerWorkflow(self.config_manager, self.logger)
         
-        # LLMからの返答（遺伝子シンボルが大文字で返されたケース）
-        response_uppercase = '["KRT13", "cancer_research", "EGFR", "breast_cancer", "TP53"]'
+        # LLMからの返答（prefix付きタグが大文字で返されたケース）
+        response_uppercase = '["gene_KRT13", "cancer_research", "protein_EGFR", "breast_cancer", "gene_TP53"]'
         tags_uppercase = workflow._parse_tags_response(response_uppercase)
         
-        expected_uppercase = ["KRT13", "cancer_research", "EGFR", "breast_cancer", "TP53"]
+        expected_uppercase = ["gene_KRT13", "cancer_research", "protein_EGFR", "breast_cancer", "gene_TP53"]
         self.assertEqual(tags_uppercase, expected_uppercase)
         
-        # LLMからの返答（遺伝子シンボルが小文字で返されたケース）
-        response_lowercase = '["krt13", "cancer_research", "egfr", "breast_cancer", "tp53"]'
+        # LLMからの返答（prefix付きタグが小文字で返されたケース）
+        response_lowercase = '["gene_krt13", "cancer_research", "protein_egfr", "breast_cancer", "gene_tp53"]'
         tags_lowercase = workflow._parse_tags_response(response_lowercase)
         
-        expected_lowercase = ["KRT13", "cancer_research", "EGFR", "breast_cancer", "TP53"]
+        expected_lowercase = ["gene_KRT13", "cancer_research", "protein_EGFR", "breast_cancer", "gene_TP53"]
         self.assertEqual(tags_lowercase, expected_lowercase)
         
-        # 混在ケース
-        response_mixed = '["KRT13", "cancer_research", "egfr", "BREAST_CANCER", "tp53"]'
+        # 混在ケース（prefix付きとprefixなし混在）
+        response_mixed = '["gene_KRT13", "cancer_research", "EGFR", "breast_cancer", "protein_tp53", "KRT13"]'
         tags_mixed = workflow._parse_tags_response(response_mixed)
         
-        expected_mixed = ["KRT13", "cancer_research", "EGFR", "breast_cancer", "TP53"]
+        expected_mixed = ["gene_KRT13", "cancer_research", "egfr", "breast_cancer", "protein_TP53", "krt13"]
         self.assertEqual(tags_mixed, expected_mixed)
 
 

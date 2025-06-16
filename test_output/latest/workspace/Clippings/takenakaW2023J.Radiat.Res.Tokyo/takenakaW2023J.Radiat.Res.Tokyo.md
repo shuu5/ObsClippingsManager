@@ -1,7 +1,7 @@
 ---
 citation_key: takenakaW2023J.Radiat.Res.Tokyo
 citation_metadata:
-  last_updated: '2025-06-16T08:50:53.213492'
+  last_updated: '2025-06-16T11:18:10.029969'
   mapping_version: '2.0'
   references_bib_path: test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib
   source_bibtex: references.bib
@@ -464,9 +464,9 @@ citations:
     year: '2014'
 created: 2025-06-09
 doi: 10.1093/jrr/rrac091
-last_updated: '2025-06-16T08:51:55.428218'
+last_updated: '2025-06-16T11:18:26.866685'
 paper_structure:
-  parsed_at: '2025-06-16T08:50:52.914268'
+  parsed_at: '2025-06-16T11:18:09.776008'
   section_types_found:
   - abstract
   - introduction
@@ -626,33 +626,35 @@ processing_status:
 source: https://academic.oup.com/jrr/article/64/2/284/6968637
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-16T08:50:51.755518'
+  checked_at: '2025-06-16T11:18:08.780907'
   consistency_status: inconsistent
   corrections_applied: []
   issues_detected: 1
 tag_quality:
-  content_relevance: 0.6577777777777778
-  evaluation_timestamp: '2025-06-16T08:51:55.396086'
+  content_relevance: 0.6549019607843138
+  evaluation_timestamp: '2025-06-16T11:18:26.836882'
   format_compliance: 1.0
-  has_suggestions: true
-  quality_score: 0.7297777777777779
-  tag_count: 15
+  has_suggestions: false
+  quality_score: 0.8619607843137256
+  tag_count: 17
 tags:
-- KRT13
+- gene_KRT13
+- oncology
 - pancreatic_cancer
 - cancer_stem_cells
 - radioresistance
-- proteasome_activity
+- protein_KRT13
 - molecular_biology
-- cell_sorting
-- rna_sequencing
-- gene_knockdown
-- oncology
+- cell_line_panc1
 - pathway_analysis
-- cell_line_research
+- rna_sequencing
+- cell_sorting
+- tumor_microenvironment
+- epithelial_cancer
+- gene_expression_analysis
 - therapeutic_strategy
-- zsgeen_reporter_system
-- drug_delivery
+- proteasome_activity
+- drug_delivery_system
 title: KRT13 is upregulated in pancreatic cancer stem-like cells and associated with
   radioresistance
 workflow_version: '3.2'

@@ -262,11 +262,20 @@ class TaggerWorkflow:
 
 **Step 3: 階層分類とタグ化**
 
-**1. 遺伝子シンボル（最高優先度）:**
-- 正式なgene symbol形式（例: KRT13, EGFR, TP53, BRCA1）
-- 大文字のラテン文字とアラビア数字のみ
-- HGNC/MGI準拠、snake_caseや小文字は使用禁止
-- プレフィックス（gene_, protein_等）は付けない
+**1. 遺伝子・タンパク質シンボルタグ（最高優先度）:**
+
+- 遺伝子として言及されている場合:
+    - 必須形式: gene_SYMBOL（例: gene_TP53, gene_KRT13, gene_EGFR）
+    - 正式なgene symbol形式（大文字のラテン文字とアラビア数字のみ、HGNC/MGI準拠）
+
+- タンパク質として言及されている場合:
+    - 必須形式: protein_SYMBOL（例: protein_TP53, protein_KRT13, protein_EGFR）
+    - 同じく正式なgene symbol形式を用いる
+
+- 遺伝子・タンパク質の両方として言及されている場合:
+    - 両方のタグを記載（例: gene_TP53, protein_TP53）
+- **重要**: プレフィックス（gene_, protein_）は必須、単独シンボル（KRT13等）は使用禁止
+- シンボル部分は必ず大文字で記載
 
 **2. 階層化された一般タグ（スネークケース）:**
 - **Level 1 - 研究分野:** oncology, molecular_biology, pathology
@@ -314,7 +323,7 @@ class TaggerWorkflow:
                 for tag in tags:
                     if isinstance(tag, str) and self._validate_tag_format(tag):
                         # 遺伝子シンボル保護機能を適用
-                        validated_tags.append(self._preserve_gene_symbol_case(tag))
+                        validated_tags.append(self._preserve_prefixed_gene_protein_case(tag))
                 
                 return validated_tags
             
@@ -328,7 +337,7 @@ class TaggerWorkflow:
                 matches = re.findall(tag_pattern, response)
                 if matches:
                     # 遺伝子シンボル保護機能をフォールバック処理にも適用
-                    validated_tags = [self._preserve_gene_symbol_case(tag) for tag in matches if self._validate_tag_format(tag)]
+                    validated_tags = [self._preserve_prefixed_gene_protein_case(tag) for tag in matches if self._validate_tag_format(tag)]
                     return validated_tags[:self.tag_count_range[1]]  # 最大数制限
             except Exception as fallback_error:
                 self.logger.error(f"Fallback tag parsing also failed: {fallback_error}")
@@ -350,22 +359,34 @@ class TaggerWorkflow:
         pattern = r'^[a-zA-Z0-9_]+$'
         return bool(re.match(pattern, tag)) and len(tag) >= 2
     
-    def _is_gene_symbol(self, tag: str) -> bool:
+    def _is_prefixed_gene_protein_tag(self, tag: str) -> bool:
         """
-        遺伝子シンボルかどうかの判定
+        prefix付き遺伝子・タンパク質タグかどうかの判定
         
         Args:
             tag: 判定するタグ
             
         Returns:
-            bool: 遺伝子シンボルかどうか
+            bool: prefix付き遺伝子・タンパク質タグかどうか
         """
-        # アンダースコアを含む場合は遺伝子シンボルではない
-        if '_' in tag:
+        # gene_* または protein_* の形式をチェック
+        if not (tag.startswith('gene_') or tag.startswith('protein_')):
+            return False
+        
+        # prefixを除去してシンボル部分を取得
+        if tag.startswith('gene_'):
+            symbol = tag[5:]  # 'gene_'を除去
+        elif tag.startswith('protein_'):
+            symbol = tag[8:]  # 'protein_'を除去
+        else:
+            return False
+        
+        # シンボル部分が空の場合は無効
+        if not symbol:
             return False
         
         # 長すぎる場合は遺伝子シンボルではない
-        if len(tag) > 8 or len(tag) < 2:
+        if len(symbol) > 8 or len(symbol) < 2:
             return False
         
         # 一般的な単語（非遺伝子シンボル）リスト
@@ -375,41 +396,48 @@ class TaggerWorkflow:
             'cancer', 'disease', 'therapy', 'treatment', 'medicine'
         }
         
-        if tag.lower() in common_words:
+        if symbol.lower() in common_words:
             return False
         
         # 遺伝子シンボルのパターン:
         # パターン1: 2-4文字のアルファベット + 数字 (例: KRT13, TP53, PIK3CA)
         # パターン2: 2-8文字のアルファベットのみ (例: EGFR, KRAS, BRCA1はBRCA+1)
-        tag_upper = tag.upper()
+        symbol_upper = symbol.upper()
         
         # 大文字小文字が混在している場合は遺伝子シンボルではない
         # （遺伝子シンボルは全て大文字または全て小文字であるべき）
-        if tag != tag.upper() and tag != tag.lower():
+        if symbol != symbol.upper() and symbol != symbol.lower():
             return False
         
         # 数字を含む場合
-        if any(c.isdigit() for c in tag):
+        if any(c.isdigit() for c in symbol):
             pattern = r'^[A-Z]{2,4}[0-9A-Z]*$'
-            return bool(re.match(pattern, tag_upper))
+            return bool(re.match(pattern, symbol_upper))
         
         # アルファベットのみの場合（短いもの優先）
-        return len(tag) <= 6 and bool(re.match(r'^[A-Z]{2,6}$', tag_upper))
+        return len(symbol) <= 6 and bool(re.match(r'^[A-Z]{2,6}$', symbol_upper))
     
-    def _preserve_gene_symbol_case(self, tag: str) -> str:
+    def _preserve_prefixed_gene_protein_case(self, tag: str) -> str:
         """
-        遺伝子シンボルの大文字保護
+        prefix付き遺伝子・タンパク質タグの大文字保護
         
         Args:
             tag: 処理するタグ
             
         Returns:
-            str: 遺伝子シンボルは大文字、一般タグは小文字
+            str: prefix付き遺伝子・タンパク質タグはシンボル部分が大文字、一般タグは小文字
         """
-        if self._is_gene_symbol(tag):
-            return tag.upper()
-        else:
-            return tag.lower()
+        if self._is_prefixed_gene_protein_tag(tag):
+            # prefixを識別してシンボル部分を大文字化
+            if tag.startswith('gene_'):
+                symbol = tag[5:].upper()
+                return f"gene_{symbol}"
+            elif tag.startswith('protein_'):
+                symbol = tag[8:].upper()
+                return f"protein_{symbol}"
+        
+        # prefix付きでない場合は小文字化
+        return tag.lower()
     
     def update_yaml_with_tags(self, paper_path: str, tags: List[str]):
         """
@@ -714,7 +742,7 @@ class TaggerWorkflow:
         }
         
         for tag in tags:
-            if re.match(r'^[A-Z]+[0-9]*$', tag.replace('_', '').upper()):
+            if tag.startswith('gene_') or tag.startswith('protein_'):
                 categories['gene'] += 1
             elif any(term in tag.lower() for term in ['cancer', 'disease', 'tumor', 'syndrome']):
                 categories['disease'] += 1
@@ -729,17 +757,16 @@ class TaggerWorkflow:
     
     def _extract_important_keywords(self, paper_content: str) -> List[str]:
         """重要なキーワードの抽出"""
-        # 簡単な実装：大文字の単語（遺伝子名など）と頻出する専門用語
-        content_upper = paper_content.upper()
-        
-        # 遺伝子名パターン
-        gene_pattern = re.findall(r'\b[A-Z]{2,}[0-9]*\b', paper_content)
+        # prefix付き遺伝子・タンパク質名パターンを検出
+        gene_protein_pattern = re.findall(r'\b(?:gene_|protein_)[A-Z]{2,}[0-9]*\b', paper_content, re.IGNORECASE)
+        # 小文字化（統一）
+        gene_protein_normalized = [term.lower() for term in gene_protein_pattern]
         
         # よく使われる専門用語
         common_terms = ['cancer', 'biomarker', 'expression', 'mutation', 'protein', 'analysis']
         found_terms = [term for term in common_terms if term.lower() in paper_content.lower()]
         
-        return list(set(gene_pattern[:3] + found_terms[:3]))  # 最大6個
+        return list(set(gene_protein_normalized[:3] + found_terms[:3]))  # 最大6個
     
     def _find_similar_tags(self, tags: List[str]) -> List[str]:
         """類似タグの検出"""

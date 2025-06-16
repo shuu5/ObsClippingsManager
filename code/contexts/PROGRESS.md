@@ -545,6 +545,38 @@ code/py/modules/
   - ✅ **全テスト成功**: 7個の新規テスト + 既存テスト全てPASS
   - ✅ **仕様書準拠**: AI タグ生成における生物学的命名規則対応
 
+- [完了] 2.6.9 **prefix付き遺伝子・タンパク質タグ保護機能修正完了**
+  **修正完了詳細**:
+  - ✅ **要求仕様変更**: 単独遺伝子シンボル（KRT13）→ prefix付き形式（gene_KRT13, protein_KRT13）のみ保護
+  - ✅ **TDD修正実装**: テスト先行修正（TestTaggerWorkflowGeneSymbolPreservation, 4テスト）
+  - ✅ **判定ロジック修正**: `_is_prefixed_gene_protein_tag()`メソッド（gene_*・protein_*判定）
+  - ✅ **保護機能修正**: `_preserve_prefixed_gene_protein_case()`メソッド（選択的シンボル部大文字化）
+  - ✅ **プロンプト修正**: タグ生成プロンプトでprefix必須化明記
+  - ✅ **品質評価修正**: `_evaluate_tag_diversity()`でprefix付きタグ検出対応
+  - ✅ **改善提案修正**: `_extract_important_keywords()`でprefix付きパターン検出
+  
+  **新機能仕様**:
+  ```python
+  # prefix付き遺伝子・タンパク質タグ保護パターン（例）
+  gene_KRT13    → 保護（シンボル部大文字維持）gene_KRT13
+  protein_EGFR  → 保護（シンボル部大文字維持）protein_EGFR
+  gene_tp53     → 保護（シンボル部大文字化）gene_TP53
+  protein_brca1 → 保護（シンボル部大文字化）protein_BRCA1
+  
+  # 一般タグ・prefixなし遺伝子は小文字化
+  KRT13         → 変換（小文字化）krt13
+  EGFR          → 変換（小文字化）egfr
+  oncology      → 変換（小文字化）oncology
+  breast_cancer → 維持（小文字）breast_cancer
+  ```
+  
+  **統合テスト成功結果**:
+  - ✅ **TaggerWorkflow全テスト成功**: 18/18 PASS（新仕様対応4テスト含む）
+  - ✅ **統合ワークフロー成功**: organize→sync→fetch→section_parsing→ai_citation_support→enhanced-tagger
+  - ✅ **タグ生成品質**: 16タグ（品質0.853）・17タグ（品質0.862）高品質生成確認
+  - ✅ **prefix付きタグ正常動作**: gene_*・protein_*形式のシンボル部大文字保護機能確認済み
+  - ✅ **仕様書準拠**: AI タグ生成におけるprefix付き生物学的命名規則対応完了
+
 #### 2.7 ステップ7: enhanced-translate（要約翻訳）
 - [ ] 2.7.1 AITaggingTranslationクラス翻訳機能拡張
 - [ ] 2.7.2 要約翻訳機能実装（バッチサイズ: 5）
