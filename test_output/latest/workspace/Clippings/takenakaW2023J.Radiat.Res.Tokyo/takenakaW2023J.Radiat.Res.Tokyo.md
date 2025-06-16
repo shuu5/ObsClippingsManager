@@ -1,7 +1,7 @@
 ---
 citation_key: takenakaW2023J.Radiat.Res.Tokyo
 citation_metadata:
-  last_updated: '2025-06-16T11:41:08.991110'
+  last_updated: '2025-06-16T12:02:39.773290'
   mapping_version: '2.0'
   references_bib_path: test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib
   source_bibtex: references.bib
@@ -464,9 +464,9 @@ citations:
     year: '2014'
 created: 2025-06-09
 doi: 10.1093/jrr/rrac091
-last_updated: '2025-06-16T11:41:25.954114'
+last_updated: '2025-06-16T12:02:53.918682'
 paper_structure:
-  parsed_at: '2025-06-16T11:41:08.713556'
+  parsed_at: '2025-06-16T12:02:39.529418'
   section_types_found:
   - abstract
   - introduction
@@ -626,36 +626,33 @@ processing_status:
 source: https://academic.oup.com/jrr/article/64/2/284/6968637
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-16T11:41:05.805967'
+  checked_at: '2025-06-16T12:02:38.518396'
   consistency_status: inconsistent
   corrections_applied: []
   issues_detected: 1
 tag_quality:
-  content_relevance: 0.6407407407407407
-  evaluation_timestamp: '2025-06-16T11:41:25.913067'
+  content_relevance: 0.6444444444444445
+  evaluation_timestamp: '2025-06-16T12:02:53.888884'
   format_compliance: 1.0
   has_suggestions: false
-  quality_score: 0.8562962962962963
-  tag_count: 18
+  quality_score: 0.8577777777777778
+  tag_count: 15
 tags:
 - gene_KRT13
-- pancreatic_cancer
+- oncology_pancreatic_cancer
 - cancer_stem_cells
 - radioresistance
-- pathway_analysis
-- cell_sorting
-- protein_csc_marker
-- molecular_biology
-- oncology
-- degron_system
-- genomic_screening
 - cell_line_panc1
-- drug_targeting
-- rna_sequencing
-- proteasome_activity
-- therapeutic_strategy
-- gene_expression_analysis
-- cancer_progression
+- molecular_biology_gene_expression
+- protein_keratin
+- pathway_analysis_kegg
+- bioinformatics_rna_sequencing
+- cancer_therapy_strategy
+- gene_expression_profiling
+- cell_sorting_technique
+- protein_degradation_mechanism
+- cancer_stem_cell_marker
+- therapeutic_targeting
 title: KRT13 is upregulated in pancreatic cancer stem-like cells and associated with
   radioresistance
 workflow_version: '3.2'

@@ -14,12 +14,18 @@ from pathlib import Path
 class SimpleIntegratedTestRunner:
     """シンプル統合テストランナー"""
     
-    def __init__(self, config_manager, integrated_logger):
+    def __init__(self, config_manager, integrated_logger, ai_controller=None):
         self.config_manager = config_manager
         self.integrated_logger = integrated_logger
         self.logger = integrated_logger.get_logger("integrated_test")
         self.test_data_path = Path("code/test_data_master")
         self.output_path = Path("test_output/latest")
+        # AI機能制御インスタンス（デフォルトは全機能有効）
+        if ai_controller is None:
+            from code.integrated_test.ai_feature_controller import get_default_ai_controller
+            self.ai_controller = get_default_ai_controller()
+        else:
+            self.ai_controller = ai_controller
     
     def run_test(self):
         """シンプルな統合テスト実行"""
@@ -82,20 +88,28 @@ class SimpleIntegratedTestRunner:
         shutil.copytree(workspace_path, backup_path, dirs_exist_ok=True)
     
     def _run_integrated_workflow(self):
-        """integrated_workflowを実行（ワークスペース内でその場処理）"""
+        """integrated_workflowを実行（AI機能制御対応）"""
         workspace_path = self.output_path / "workspace"
+        
+        # AI機能設定をログ出力
+        self.logger.info(f"統合テスト実行設定: {self.ai_controller.get_summary()}")
         
         try:
             # IntegratedWorkflowクラスが実装されている場合は、それを使用
             from code.py.modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
             
-            workflow = IntegratedWorkflow(self.config_manager, self.logger)
+            workflow = IntegratedWorkflow(
+                config_manager=self.config_manager, 
+                logger=self.logger,
+                ai_feature_controller=self.ai_controller  # AI機能制御を渡す
+            )
             result = workflow.execute(workspace_path)
             
             return {
                 'status': 'success',
                 'modules_executed': result.get('modules_executed', []),
-                'files_processed': result.get('files_processed', 0)
+                'files_processed': result.get('files_processed', 0),
+                'ai_features_used': result.get('ai_features_used', [])
             }
             
         except ImportError:
@@ -337,49 +351,98 @@ class SimpleIntegratedTestRunner:
                 import traceback
                 self.logger.error(traceback.format_exc())
             
-            # enhanced-tagger機能 (ai_tagging_translation)
-            try:
-                self.logger.info("Attempting to import TaggerWorkflow")
-                from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
-                self.logger.info("TaggerWorkflow imported successfully")
-                
-                tagger_workflow = TaggerWorkflow(self.config_manager, self.integrated_logger)
-                self.logger.info("TaggerWorkflow initialized")
-                
-                self.logger.info("Starting enhanced-tagger workflow")
-                # 処理対象のmarkdownファイルを取得してenhanced-tagger処理実行
-                clippings_dir = workspace_path / "Clippings"
-                if clippings_dir.exists():
-                    # サブディレクトリ内のmarkdownファイルを対象とする
-                    target_papers = []
-                    for subdir in clippings_dir.iterdir():
-                        if subdir.is_dir():
-                            # サブディレクトリ名をtarget_papersに追加
-                            target_papers.append(subdir.name)
+            # enhanced-tagger機能 (ai_tagging_translation) - AI機能制御対応
+            if self.ai_controller.is_tagger_enabled():
+                try:
+                    self.logger.info("Attempting to import TaggerWorkflow")
+                    from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
+                    self.logger.info("TaggerWorkflow imported successfully")
                     
-                    if target_papers:
-                        self.logger.info(f"Processing enhanced-tagger for {len(target_papers)} papers")
-                        tagger_result = tagger_workflow.process_items(str(clippings_dir), target_papers)
+                    tagger_workflow = TaggerWorkflow(self.config_manager, self.integrated_logger)
+                    self.logger.info("TaggerWorkflow initialized")
+                    
+                    self.logger.info("Starting enhanced-tagger workflow")
+                    # 処理対象のmarkdownファイルを取得してenhanced-tagger処理実行
+                    clippings_dir = workspace_path / "Clippings"
+                    if clippings_dir.exists():
+                        # サブディレクトリ内のmarkdownファイルを対象とする
+                        target_papers = []
+                        for subdir in clippings_dir.iterdir():
+                            if subdir.is_dir():
+                                # サブディレクトリ名をtarget_papersに追加
+                                target_papers.append(subdir.name)
                         
-                        processed_papers = tagger_result.get('processed_papers', 0)
-                        skipped_papers = tagger_result.get('skipped_papers', 0)
-                        failed_papers = tagger_result.get('failed_papers', 0)
-                        
-                        self.logger.info(f"Enhanced-tagger completed: {processed_papers} papers processed, "
-                                       f"{skipped_papers} skipped, {failed_papers} failed")
-                        
-                        modules_executed.append('enhanced-tagger')
+                        if target_papers:
+                            self.logger.info(f"Processing enhanced-tagger for {len(target_papers)} papers")
+                            tagger_result = tagger_workflow.process_items(str(clippings_dir), target_papers)
+                            
+                            processed_papers = tagger_result.get('processed_papers', 0)
+                            skipped_papers = tagger_result.get('skipped_papers', 0)
+                            failed_papers = tagger_result.get('failed_papers', 0)
+                            
+                            self.logger.info(f"Enhanced-tagger completed: {processed_papers} papers processed, "
+                                           f"{skipped_papers} skipped, {failed_papers} failed")
+                            
+                            modules_executed.append('enhanced-tagger')
+                        else:
+                            self.logger.warning("No organized papers found for enhanced-tagger")
                     else:
-                        self.logger.warning("No organized papers found for enhanced-tagger")
-                else:
-                    self.logger.warning("Clippings directory not found for enhanced-tagger")
+                        self.logger.warning("Clippings directory not found for enhanced-tagger")
+                        
+                except ImportError as e:
+                    self.logger.warning(f"TaggerWorkflow ImportError: {e}")
+                except Exception as e:
+                    self.logger.error(f"Error in enhanced-tagger processing: {e}")
+                    import traceback
+                    self.logger.error(traceback.format_exc())
+            else:
+                self.logger.info("Enhanced-tagger機能は無効化されています（API利用料金削減）")
+            
+            # enhanced-translate機能 - AI機能制御対応（未実装）
+            if self.ai_controller.is_translate_enabled():
+                try:
+                    self.logger.info("Attempting to import TranslationWorkflow")
+                    from code.py.modules.ai_tagging_translation.translation_workflow import TranslationWorkflow
+                    self.logger.info("TranslationWorkflow imported successfully")
                     
-            except ImportError as e:
-                self.logger.warning(f"TaggerWorkflow ImportError: {e}")
-            except Exception as e:
-                self.logger.error(f"Error in enhanced-tagger processing: {e}")
-                import traceback
-                self.logger.error(traceback.format_exc())
+                    translation_workflow = TranslationWorkflow(self.config_manager, self.integrated_logger)
+                    self.logger.info("TranslationWorkflow initialized")
+                    
+                    self.logger.info("Starting enhanced-translate workflow")
+                    # TODO: enhanced-translate機能実装時に実装
+                    modules_executed.append('enhanced-translate')
+                    
+                except ImportError as e:
+                    self.logger.warning(f"TranslationWorkflow ImportError (未実装): {e}")
+                except Exception as e:
+                    self.logger.error(f"Error in enhanced-translate processing: {e}")
+                    import traceback
+                    self.logger.error(traceback.format_exc())
+            else:
+                self.logger.info("Enhanced-translate機能は無効化されています（API利用料金削減）")
+            
+            # ochiai-format機能 - AI機能制御対応（未実装）
+            if self.ai_controller.is_ochiai_enabled():
+                try:
+                    self.logger.info("Attempting to import OchiaiFormatWorkflow")
+                    from code.py.modules.ochiai_format.ochiai_format_workflow import OchiaiFormatWorkflow
+                    self.logger.info("OchiaiFormatWorkflow imported successfully")
+                    
+                    ochiai_workflow = OchiaiFormatWorkflow(self.config_manager, self.integrated_logger)
+                    self.logger.info("OchiaiFormatWorkflow initialized")
+                    
+                    self.logger.info("Starting ochiai-format workflow")
+                    # TODO: ochiai-format機能実装時に実装
+                    modules_executed.append('ochiai-format')
+                    
+                except ImportError as e:
+                    self.logger.warning(f"OchiaiFormatWorkflow ImportError (未実装): {e}")
+                except Exception as e:
+                    self.logger.error(f"Error in ochiai-format processing: {e}")
+                    import traceback
+                    self.logger.error(traceback.format_exc())
+            else:
+                self.logger.info("Ochiai-format機能は無効化されています（API利用料金削減）")
             
             # TODO: 新しいモジュールが実装されたら追加
             
@@ -410,13 +473,20 @@ class SimpleIntegratedTestRunner:
         return checks
     
     def _save_test_result(self, execution_result, check_result):
-        """テスト結果を保存"""
+        """テスト結果を保存（AI機能制御情報含む）"""
         result = {
             'test_execution': {
                 'timestamp': datetime.now().isoformat(),
                 'status': 'success',
                 'execution_result': execution_result,
-                'basic_checks': check_result
+                'basic_checks': check_result,
+                'ai_feature_control': {  # 新規追加
+                    'mode': 'development' if self.ai_controller.is_development_mode() else 'production',
+                    'enabled_features': self.ai_controller.get_enabled_features(),
+                    'disabled_features': self.ai_controller.get_disabled_features(),
+                    'api_cost_savings': self.ai_controller.has_api_cost_savings(),
+                    'summary': self.ai_controller.get_summary()
+                }
             }
         }
         

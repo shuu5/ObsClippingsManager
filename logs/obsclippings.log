@@ -11939,3 +11939,413 @@ code.py.modules.shared_modules.exceptions.ProcessingError: [FILE_NOT_FOUND] Mark
 2025-06-16 11:41:25,977 [INFO] TaggerWorkflow: Tagger processing completed: {'status': 'completed', 'processed': 2, 'skipped': 0, 'failed': 0, 'total_papers': 2}
 2025-06-16 11:41:25,977 [INFO] integrated_test: Enhanced-tagger completed: 0 papers processed, 0 skipped, 0 failed
 2025-06-16 11:41:25,979 [INFO] integrated_test: 統合テスト完了
+2025-06-16 12:01:27,261 [INFO] integrated_test: 🚀 本番モード: 全機能有効（デフォルト動作）
+2025-06-16 12:01:27,261 [INFO] integrated_test: 設定: AI機能: すべて有効（デフォルト動作）
+2025-06-16 12:01:27,268 [INFO] integrated_test: 統合テスト実行設定: AI機能: すべて有効（デフォルト動作）
+2025-06-16 12:01:27,269 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-16 12:01:27,269 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-16 12:01:27,270 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:27,271 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-16 12:01:27,271 [INFO] integrated_test: FileOrganizer initialized
+2025-06-16 12:01:27,271 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-16 12:01:27,271 [INFO] integrated_test: Starting organize_workspace
+2025-06-16 12:01:27,271 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-16 12:01:27,297 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-16 12:01:27,297 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-16 12:01:27,299 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-16 12:01:27,299 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-16 12:01:27,299 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-16 12:01:27,307 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-16 12:01:27,308 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-16 12:01:27,314 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-16 12:01:27,315 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-16 12:01:27,315 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-16 12:01:27,315 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-16 12:01:27,315 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-16 12:01:27,315 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.016057}
+2025-06-16 12:01:27,315 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-16 12:01:27,315 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-16 12:01:27,315 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-16 12:01:27,315 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-16 12:01:27,316 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:27,316 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-16 12:01:27,316 [INFO] integrated_test: SyncChecker initialized
+2025-06-16 12:01:27,316 [INFO] integrated_test: Starting sync consistency check
+2025-06-16 12:01:27,316 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-16 12:01:27,336 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-16 12:01:27,337 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-16 12:01:27,342 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-16 12:01:27,343 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-16 12:01:27,360 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-16 12:01:27,361 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-16 12:01:27,361 [INFO] integrated_test: Displaying DOI links for 2 missing and 1 orphaned files
+2025-06-16 12:01:27,361 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-16 12:01:27,362 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-16 12:01:27,362 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-16 12:01:27,362 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-16 12:01:27,362 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-16 12:01:27,362 [INFO] integrated_test: Attempting to import CitationFetcherWorkflow
+2025-06-16 12:01:27,362 [INFO] integrated_test: CitationFetcherWorkflow imported successfully
+2025-06-16 12:01:27,362 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:27,362 [INFO] integrated_test: CitationFetcherWorkflow initialized
+2025-06-16 12:01:27,362 [INFO] integrated_test: Starting citation fetcher workflow
+2025-06-16 12:01:28,124 [INFO] CitationFetcherWorkflow: Successfully fetched citations from crossref (quality: 0.89)
+2025-06-16 12:01:28,124 [INFO] CitationFetcherWorkflow: Generated 51 BibTeX entries with citation numbers
+2025-06-16 12:01:28,125 [INFO] CitationFetcherWorkflow: Generated references.bib: test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib
+2025-06-16 12:01:28,133 [INFO] integrated_test: Successfully processed fetch for: yinL2022BreastCancerRes.md
+2025-06-16 12:01:28,333 [INFO] CitationFetcherWorkflow: Successfully fetched citations from crossref (quality: 0.82)
+2025-06-16 12:01:28,334 [INFO] CitationFetcherWorkflow: Generated 52 BibTeX entries with citation numbers
+2025-06-16 12:01:28,334 [INFO] CitationFetcherWorkflow: Generated references.bib: test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib
+2025-06-16 12:01:28,341 [INFO] integrated_test: Successfully processed fetch for: takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-16 12:01:28,341 [INFO] integrated_test: Citation fetcher workflow completed: 2 papers processed
+2025-06-16 12:01:28,341 [INFO] integrated_test: Attempting to import SectionParsingWorkflow
+2025-06-16 12:01:28,341 [INFO] integrated_test: SectionParsingWorkflow imported successfully
+2025-06-16 12:01:28,341 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:28,341 [INFO] integrated_test: SectionParsingWorkflow initialized
+2025-06-16 12:01:28,342 [INFO] integrated_test: Starting section parsing workflow
+2025-06-16 12:01:28,342 [INFO] integrated_test: Processing section parsing for 2 papers
+2025-06-16 12:01:28,342 [INFO] SectionParsingWorkflow: Starting section parsing for directory: test_output/latest/workspace/Clippings
+2025-06-16 12:01:28,357 [INFO] SectionParsingWorkflow: Successfully parsed sections for: yinL2022BreastCancerRes (15 sections)
+2025-06-16 12:01:28,374 [INFO] SectionParsingWorkflow: Successfully parsed sections for: takenakaW2023J.Radiat.Res.Tokyo (9 sections)
+2025-06-16 12:01:28,375 [INFO] SectionParsingWorkflow: Section parsing completed: 2 papers processed, 24 total sections found
+2025-06-16 12:01:28,375 [INFO] integrated_test: Section parsing completed: 2 papers processed, 24 total sections found
+2025-06-16 12:01:28,375 [INFO] integrated_test: Section types found: discussion, conclusion, results, abstract, references, methods, acknowledgments, introduction, unknown
+2025-06-16 12:01:28,375 [INFO] integrated_test: Attempting to import AICitationSupportWorkflow
+2025-06-16 12:01:28,378 [INFO] integrated_test: AICitationSupportWorkflow imported successfully
+2025-06-16 12:01:28,378 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:28,378 [INFO] AICitationSupportWorkflow: AICitationSupportWorkflow initialized
+2025-06-16 12:01:28,379 [INFO] integrated_test: AICitationSupportWorkflow initialized
+2025-06-16 12:01:28,379 [INFO] integrated_test: Starting AI citation support workflow
+2025-06-16 12:01:28,379 [INFO] integrated_test: Processing AI citation support for 2 papers
+2025-06-16 12:01:28,379 [INFO] AICitationSupportWorkflow: Starting AI citation support processing for directory: test_output/latest/workspace/Clippings
+2025-06-16 12:01:28,379 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:28,379 [INFO] StatusManager: StatusManager initialized
+2025-06-16 12:01:28,410 [INFO] StatusManager: Loaded statuses for 3 papers from test_output/latest/workspace/Clippings
+2025-06-16 12:01:28,411 [INFO] StatusManager: Found 2 papers needing processing for step 'ai_citation_support'
+2025-06-16 12:01:28,504 [INFO] BibTeXParser: Successfully parsed BibTeX file (ordered): test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib (51 entries)
+2025-06-16 12:01:28,551 [WARNING] StatusManager: Backup recovery disabled for yinL2022BreastCancerRes to prevent file corruption
+2025-06-16 12:01:28,551 [INFO] AICitationSupportWorkflow: Successfully processed AI citation support for yinL2022BreastCancerRes (51 citations integrated)
+2025-06-16 12:01:28,622 [INFO] BibTeXParser: Successfully parsed BibTeX file (ordered): test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib (52 entries)
+2025-06-16 12:01:28,656 [WARNING] StatusManager: Backup recovery disabled for takenakaW2023J.Radiat.Res.Tokyo to prevent file corruption
+2025-06-16 12:01:28,656 [INFO] AICitationSupportWorkflow: Successfully processed AI citation support for takenakaW2023J.Radiat.Res.Tokyo (52 citations integrated)
+2025-06-16 12:01:28,656 [INFO] AICitationSupportWorkflow: AI citation support processing completed: 2 processed, 0 skipped, 0 failed
+2025-06-16 12:01:28,656 [INFO] integrated_test: AI citation support workflow completed
+2025-06-16 12:01:28,656 [INFO] integrated_test: Attempting to import TaggerWorkflow
+2025-06-16 12:01:29,298 [INFO] integrated_test: TaggerWorkflow imported successfully
+2025-06-16 12:01:29,299 [INFO] TaggerWorkflow: TaggerWorkflow initialized (enabled: True, batch_size: 8)
+2025-06-16 12:01:29,299 [INFO] integrated_test: TaggerWorkflow initialized
+2025-06-16 12:01:29,299 [INFO] integrated_test: Starting enhanced-tagger workflow
+2025-06-16 12:01:29,299 [INFO] integrated_test: Processing enhanced-tagger for 2 papers
+2025-06-16 12:01:29,299 [INFO] TaggerWorkflow: Starting tagger processing for directory: test_output/latest/workspace/Clippings
+2025-06-16 12:01:29,299 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:29,299 [INFO] StatusManager: StatusManager initialized
+2025-06-16 12:01:29,357 [INFO] StatusManager: Loaded statuses for 3 papers from test_output/latest/workspace/Clippings
+2025-06-16 12:01:29,358 [INFO] StatusManager: Found 2 papers needing processing for step 'tagger'
+2025-06-16 12:01:29,358 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:29,388 [INFO] TaggerWorkflow: Extracted title + 3 sections for tagging from yinL2022BreastCancerRes.md
+2025-06-16 12:01:29,389 [INFO] ClaudeAPIClient: ClaudeAPIClient initialized with model: claude-3-5-haiku-20241022
+2025-06-16 12:01:35,029 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-06-16 12:01:35,038 [WARNING] TaggerWorkflow: Failed to parse tags response as JSON: Expecting value: line 1 column 1 (char 0)
+2025-06-16 12:01:35,040 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:35,083 [INFO] TaggerWorkflow: Extracted title + 3 sections for tagging from yinL2022BreastCancerRes.md
+2025-06-16 12:01:35,088 [INFO] TaggerWorkflow: Generated 17 tags for yinL2022BreastCancerRes.md (quality: 0.868)
+2025-06-16 12:01:35,088 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:35,195 [WARNING] StatusManager: Backup recovery disabled for yinL2022BreastCancerRes to prevent file corruption
+2025-06-16 12:01:35,196 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:35,229 [INFO] TaggerWorkflow: Extracted title + 3 sections for tagging from takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-16 12:01:41,725 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-06-16 12:01:41,729 [WARNING] TaggerWorkflow: Failed to parse tags response as JSON: Expecting value: line 1 column 1 (char 0)
+2025-06-16 12:01:41,730 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:41,756 [INFO] TaggerWorkflow: Extracted title + 3 sections for tagging from takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-16 12:01:41,760 [INFO] TaggerWorkflow: Generated 15 tags for takenakaW2023J.Radiat.Res.Tokyo.md (quality: 0.846)
+2025-06-16 12:01:41,761 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:01:41,812 [WARNING] StatusManager: Backup recovery disabled for takenakaW2023J.Radiat.Res.Tokyo to prevent file corruption
+2025-06-16 12:01:41,813 [INFO] TaggerWorkflow: Tagger processing completed: {'status': 'completed', 'processed': 2, 'skipped': 0, 'failed': 0, 'total_papers': 2}
+2025-06-16 12:01:41,813 [INFO] integrated_test: Enhanced-tagger completed: 0 papers processed, 0 skipped, 0 failed
+2025-06-16 12:01:41,813 [INFO] integrated_test: Attempting to import TranslationWorkflow
+2025-06-16 12:01:41,813 [WARNING] integrated_test: TranslationWorkflow ImportError (未実装): No module named 'code.py.modules.ai_tagging_translation.translation_workflow'
+2025-06-16 12:01:41,814 [INFO] integrated_test: Attempting to import OchiaiFormatWorkflow
+2025-06-16 12:01:41,814 [WARNING] integrated_test: OchiaiFormatWorkflow ImportError (未実装): No module named 'code.py.modules.ochiai_format'
+2025-06-16 12:01:41,815 [INFO] integrated_test: 統合テスト完了
+2025-06-16 12:02:06,382 [INFO] integrated_test: 🔧 開発モード: AI機能制御が適用されています
+2025-06-16 12:02:06,383 [INFO] integrated_test: 設定: AI機能: すべて無効（API利用料金削減モード）
+2025-06-16 12:02:06,383 [INFO] integrated_test: 💰 API利用料金削減モードが有効です
+2025-06-16 12:02:06,387 [INFO] integrated_test: 統合テスト実行設定: AI機能: すべて無効（API利用料金削減モード）
+2025-06-16 12:02:06,388 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-16 12:02:06,389 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-16 12:02:06,389 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:06,389 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-16 12:02:06,389 [INFO] integrated_test: FileOrganizer initialized
+2025-06-16 12:02:06,389 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-16 12:02:06,389 [INFO] integrated_test: Starting organize_workspace
+2025-06-16 12:02:06,389 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-16 12:02:06,410 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-16 12:02:06,410 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-16 12:02:06,412 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-16 12:02:06,412 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-16 12:02:06,412 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-16 12:02:06,425 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-16 12:02:06,426 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-16 12:02:06,433 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-16 12:02:06,434 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-16 12:02:06,434 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-16 12:02:06,434 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-16 12:02:06,434 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-16 12:02:06,434 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.021609}
+2025-06-16 12:02:06,434 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-16 12:02:06,434 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-16 12:02:06,434 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-16 12:02:06,434 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-16 12:02:06,435 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:06,435 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-16 12:02:06,435 [INFO] integrated_test: SyncChecker initialized
+2025-06-16 12:02:06,435 [INFO] integrated_test: Starting sync consistency check
+2025-06-16 12:02:06,435 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-16 12:02:06,453 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-16 12:02:06,453 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-16 12:02:06,457 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-16 12:02:06,458 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-16 12:02:06,471 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-16 12:02:06,471 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-16 12:02:06,471 [INFO] integrated_test: Displaying DOI links for 2 missing and 1 orphaned files
+2025-06-16 12:02:06,473 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-16 12:02:06,473 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-16 12:02:06,473 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-16 12:02:06,474 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-16 12:02:06,474 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-16 12:02:06,474 [INFO] integrated_test: Attempting to import CitationFetcherWorkflow
+2025-06-16 12:02:06,474 [INFO] integrated_test: CitationFetcherWorkflow imported successfully
+2025-06-16 12:02:06,474 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:06,474 [INFO] integrated_test: CitationFetcherWorkflow initialized
+2025-06-16 12:02:06,474 [INFO] integrated_test: Starting citation fetcher workflow
+2025-06-16 12:02:07,238 [INFO] CitationFetcherWorkflow: Successfully fetched citations from crossref (quality: 0.89)
+2025-06-16 12:02:07,238 [INFO] CitationFetcherWorkflow: Generated 51 BibTeX entries with citation numbers
+2025-06-16 12:02:07,239 [INFO] CitationFetcherWorkflow: Generated references.bib: test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib
+2025-06-16 12:02:07,246 [INFO] integrated_test: Successfully processed fetch for: yinL2022BreastCancerRes.md
+2025-06-16 12:02:07,441 [INFO] CitationFetcherWorkflow: Successfully fetched citations from crossref (quality: 0.82)
+2025-06-16 12:02:07,442 [INFO] CitationFetcherWorkflow: Generated 52 BibTeX entries with citation numbers
+2025-06-16 12:02:07,443 [INFO] CitationFetcherWorkflow: Generated references.bib: test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib
+2025-06-16 12:02:07,451 [INFO] integrated_test: Successfully processed fetch for: takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-16 12:02:07,451 [INFO] integrated_test: Citation fetcher workflow completed: 2 papers processed
+2025-06-16 12:02:07,451 [INFO] integrated_test: Attempting to import SectionParsingWorkflow
+2025-06-16 12:02:07,451 [INFO] integrated_test: SectionParsingWorkflow imported successfully
+2025-06-16 12:02:07,452 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:07,452 [INFO] integrated_test: SectionParsingWorkflow initialized
+2025-06-16 12:02:07,452 [INFO] integrated_test: Starting section parsing workflow
+2025-06-16 12:02:07,452 [INFO] integrated_test: Processing section parsing for 2 papers
+2025-06-16 12:02:07,452 [INFO] SectionParsingWorkflow: Starting section parsing for directory: test_output/latest/workspace/Clippings
+2025-06-16 12:02:07,466 [INFO] SectionParsingWorkflow: Successfully parsed sections for: yinL2022BreastCancerRes (15 sections)
+2025-06-16 12:02:07,481 [INFO] SectionParsingWorkflow: Successfully parsed sections for: takenakaW2023J.Radiat.Res.Tokyo (9 sections)
+2025-06-16 12:02:07,481 [INFO] SectionParsingWorkflow: Section parsing completed: 2 papers processed, 24 total sections found
+2025-06-16 12:02:07,481 [INFO] integrated_test: Section parsing completed: 2 papers processed, 24 total sections found
+2025-06-16 12:02:07,482 [INFO] integrated_test: Section types found: references, acknowledgments, methods, introduction, unknown, conclusion, discussion, abstract, results
+2025-06-16 12:02:07,482 [INFO] integrated_test: Attempting to import AICitationSupportWorkflow
+2025-06-16 12:02:07,482 [INFO] integrated_test: AICitationSupportWorkflow imported successfully
+2025-06-16 12:02:07,483 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:07,483 [INFO] AICitationSupportWorkflow: AICitationSupportWorkflow initialized
+2025-06-16 12:02:07,483 [INFO] integrated_test: AICitationSupportWorkflow initialized
+2025-06-16 12:02:07,483 [INFO] integrated_test: Starting AI citation support workflow
+2025-06-16 12:02:07,483 [INFO] integrated_test: Processing AI citation support for 2 papers
+2025-06-16 12:02:07,483 [INFO] AICitationSupportWorkflow: Starting AI citation support processing for directory: test_output/latest/workspace/Clippings
+2025-06-16 12:02:07,483 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:07,483 [INFO] StatusManager: StatusManager initialized
+2025-06-16 12:02:07,513 [INFO] StatusManager: Loaded statuses for 3 papers from test_output/latest/workspace/Clippings
+2025-06-16 12:02:07,514 [INFO] StatusManager: Found 2 papers needing processing for step 'ai_citation_support'
+2025-06-16 12:02:07,606 [INFO] BibTeXParser: Successfully parsed BibTeX file (ordered): test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib (51 entries)
+2025-06-16 12:02:07,654 [WARNING] StatusManager: Backup recovery disabled for yinL2022BreastCancerRes to prevent file corruption
+2025-06-16 12:02:07,654 [INFO] AICitationSupportWorkflow: Successfully processed AI citation support for yinL2022BreastCancerRes (51 citations integrated)
+2025-06-16 12:02:07,718 [INFO] BibTeXParser: Successfully parsed BibTeX file (ordered): test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib (52 entries)
+2025-06-16 12:02:07,750 [WARNING] StatusManager: Backup recovery disabled for takenakaW2023J.Radiat.Res.Tokyo to prevent file corruption
+2025-06-16 12:02:07,750 [INFO] AICitationSupportWorkflow: Successfully processed AI citation support for takenakaW2023J.Radiat.Res.Tokyo (52 citations integrated)
+2025-06-16 12:02:07,750 [INFO] AICitationSupportWorkflow: AI citation support processing completed: 2 processed, 0 skipped, 0 failed
+2025-06-16 12:02:07,750 [INFO] integrated_test: AI citation support workflow completed
+2025-06-16 12:02:07,750 [INFO] integrated_test: Enhanced-tagger機能は無効化されています（API利用料金削減）
+2025-06-16 12:02:07,750 [INFO] integrated_test: Enhanced-translate機能は無効化されています（API利用料金削減）
+2025-06-16 12:02:07,751 [INFO] integrated_test: Ochiai-format機能は無効化されています（API利用料金削減）
+2025-06-16 12:02:07,752 [INFO] integrated_test: 統合テスト完了
+2025-06-16 12:02:38,449 [INFO] integrated_test: 🔧 開発モード: AI機能制御が適用されています
+2025-06-16 12:02:38,449 [INFO] integrated_test: 設定: AI機能: enhanced-tagger のみ有効
+2025-06-16 12:02:38,449 [INFO] integrated_test: 💰 API利用料金削減モードが有効です
+2025-06-16 12:02:38,454 [INFO] integrated_test: 統合テスト実行設定: AI機能: enhanced-tagger のみ有効
+2025-06-16 12:02:38,454 [INFO] integrated_test: Attempting to import FileOrganizer
+2025-06-16 12:02:38,454 [INFO] integrated_test: FileOrganizer imported successfully
+2025-06-16 12:02:38,455 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:38,455 [INFO] FileOrganizer: FileOrganizer initialized
+2025-06-16 12:02:38,456 [INFO] integrated_test: FileOrganizer initialized
+2025-06-16 12:02:38,456 [INFO] integrated_test: Checking files: bibtex=True, clippings=True
+2025-06-16 12:02:38,456 [INFO] integrated_test: Starting organize_workspace
+2025-06-16 12:02:38,456 [INFO] FileOrganizer: Starting workspace organize: test_output/latest/workspace
+2025-06-16 12:02:38,476 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-16 12:02:38,477 [INFO] FileOrganizer: Created DOI mapping for 4 entries
+2025-06-16 12:02:38,479 [INFO] FileOrganizer: Found DOI information in 3 markdown files
+2025-06-16 12:02:38,480 [INFO] FileOrganizer: Matched 2 papers for processing
+2025-06-16 12:02:38,480 [INFO] FileOrganizer: Organizing paper: yinL2022BreastCancerRes
+2025-06-16 12:02:38,488 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobinc-Myc signaling pathway.md to test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/yinL2022BreastCancerRes.md
+2025-06-16 12:02:38,488 [INFO] FileOrganizer: Organizing paper: takenakaW2023J.Radiat.Res.Tokyo
+2025-06-16 12:02:38,493 [INFO] FileOrganizer: Moved file from test_output/latest/workspace/Clippings/KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance.md to test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-16 12:02:38,494 [WARNING] FileOrganizer: Missing markdown file for: lennartzM2023APMIS (DOI: 10.1111/apm.13280)
+2025-06-16 12:02:38,494 [WARNING] FileOrganizer: Missing markdown file for: liQ2016Oncotarget (DOI: 10.18632/oncotarget.13175)
+2025-06-16 12:02:38,494 [WARNING] FileOrganizer: Orphaned markdown file: test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md (DOI: 10.3390/ijms22158109)
+2025-06-16 12:02:38,494 [INFO] FileOrganizer: Workspace organize completed: 2 papers processed
+2025-06-16 12:02:38,494 [INFO] integrated_test: organize_workspace completed: {'status': 'success', 'total_bibtex_entries': 4, 'total_markdown_files': 3, 'matched_papers': 2, 'processed_papers': 2, 'skipped_papers': {'missing_in_clippings': [{'citation_key': 'lennartzM2023APMIS', 'doi': '10.1111/apm.13280'}, {'citation_key': 'liQ2016Oncotarget', 'doi': '10.18632/oncotarget.13175'}], 'orphaned_in_clippings': [{'file_path': 'test_output/latest/workspace/Clippings/Keratin Profiling by Single-Cell RNA-Sequencing Identifies Human Prostate Stem Cell Lineage Hierarchy and Cancer Stem-Like Cells.md', 'doi': '10.3390/ijms22158109'}], 'no_doi_in_markdown': [], 'processing_failed': []}, 'execution_time': 0.014136}
+2025-06-16 12:02:38,494 [WARNING] integrated_test: Missing markdown files: 2
+2025-06-16 12:02:38,494 [WARNING] integrated_test: Orphaned markdown files: 1
+2025-06-16 12:02:38,494 [INFO] integrated_test: Attempting to import SyncChecker
+2025-06-16 12:02:38,494 [INFO] integrated_test: SyncChecker imported successfully
+2025-06-16 12:02:38,494 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:38,494 [INFO] SyncChecker: SyncChecker initialized successfully
+2025-06-16 12:02:38,494 [INFO] integrated_test: SyncChecker initialized
+2025-06-16 12:02:38,494 [INFO] integrated_test: Starting sync consistency check
+2025-06-16 12:02:38,495 [INFO] SyncChecker: Starting workspace consistency check: test_output/latest/workspace
+2025-06-16 12:02:38,513 [INFO] BibTeXParser: Successfully parsed BibTeX file: test_output/latest/workspace/CurrentManuscript.bib (4 entries)
+2025-06-16 12:02:38,513 [INFO] SyncChecker: Found 4 BibTeX entries
+2025-06-16 12:02:38,517 [INFO] SyncChecker: Found 3 total markdown files in test_output/latest/workspace/Clippings
+2025-06-16 12:02:38,517 [INFO] SyncChecker: Found 3 organized markdown files
+2025-06-16 12:02:38,529 [INFO] SyncChecker: Workspace consistency check completed: issues_detected
+2025-06-16 12:02:38,530 [INFO] integrated_test: Sync consistency check completed: issues_detected
+2025-06-16 12:02:38,530 [INFO] integrated_test: Displaying DOI links for 2 missing and 1 orphaned files
+2025-06-16 12:02:38,531 [INFO] integrated_test: Attempting auto-fix for detected issues
+2025-06-16 12:02:38,531 [INFO] SyncChecker: Starting auto-fix for minor inconsistencies
+2025-06-16 12:02:38,532 [INFO] SyncChecker: Creating backup before auto-fix (placeholder)
+2025-06-16 12:02:38,532 [INFO] SyncChecker: Auto-fix completed: 0 corrections applied
+2025-06-16 12:02:38,532 [INFO] integrated_test: Auto-fix completed: 0 corrections applied
+2025-06-16 12:02:38,532 [INFO] integrated_test: Attempting to import CitationFetcherWorkflow
+2025-06-16 12:02:38,532 [INFO] integrated_test: CitationFetcherWorkflow imported successfully
+2025-06-16 12:02:38,532 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:38,532 [INFO] integrated_test: CitationFetcherWorkflow initialized
+2025-06-16 12:02:38,532 [INFO] integrated_test: Starting citation fetcher workflow
+2025-06-16 12:02:39,292 [INFO] CitationFetcherWorkflow: Successfully fetched citations from crossref (quality: 0.89)
+2025-06-16 12:02:39,294 [INFO] CitationFetcherWorkflow: Generated 51 BibTeX entries with citation numbers
+2025-06-16 12:02:39,295 [INFO] CitationFetcherWorkflow: Generated references.bib: test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib
+2025-06-16 12:02:39,301 [INFO] integrated_test: Successfully processed fetch for: yinL2022BreastCancerRes.md
+2025-06-16 12:02:39,496 [INFO] CitationFetcherWorkflow: Successfully fetched citations from crossref (quality: 0.82)
+2025-06-16 12:02:39,497 [INFO] CitationFetcherWorkflow: Generated 52 BibTeX entries with citation numbers
+2025-06-16 12:02:39,497 [INFO] CitationFetcherWorkflow: Generated references.bib: test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib
+2025-06-16 12:02:39,505 [INFO] integrated_test: Successfully processed fetch for: takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-16 12:02:39,505 [INFO] integrated_test: Citation fetcher workflow completed: 2 papers processed
+2025-06-16 12:02:39,505 [INFO] integrated_test: Attempting to import SectionParsingWorkflow
+2025-06-16 12:02:39,505 [INFO] integrated_test: SectionParsingWorkflow imported successfully
+2025-06-16 12:02:39,506 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:39,506 [INFO] integrated_test: SectionParsingWorkflow initialized
+2025-06-16 12:02:39,506 [INFO] integrated_test: Starting section parsing workflow
+2025-06-16 12:02:39,506 [INFO] integrated_test: Processing section parsing for 2 papers
+2025-06-16 12:02:39,506 [INFO] SectionParsingWorkflow: Starting section parsing for directory: test_output/latest/workspace/Clippings
+2025-06-16 12:02:39,526 [INFO] SectionParsingWorkflow: Successfully parsed sections for: yinL2022BreastCancerRes (15 sections)
+2025-06-16 12:02:39,542 [INFO] SectionParsingWorkflow: Successfully parsed sections for: takenakaW2023J.Radiat.Res.Tokyo (9 sections)
+2025-06-16 12:02:39,542 [INFO] SectionParsingWorkflow: Section parsing completed: 2 papers processed, 24 total sections found
+2025-06-16 12:02:39,542 [INFO] integrated_test: Section parsing completed: 2 papers processed, 24 total sections found
+2025-06-16 12:02:39,542 [INFO] integrated_test: Section types found: acknowledgments, results, discussion, introduction, conclusion, unknown, references, abstract, methods
+2025-06-16 12:02:39,542 [INFO] integrated_test: Attempting to import AICitationSupportWorkflow
+2025-06-16 12:02:39,544 [INFO] integrated_test: AICitationSupportWorkflow imported successfully
+2025-06-16 12:02:39,545 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:39,545 [INFO] AICitationSupportWorkflow: AICitationSupportWorkflow initialized
+2025-06-16 12:02:39,545 [INFO] integrated_test: AICitationSupportWorkflow initialized
+2025-06-16 12:02:39,545 [INFO] integrated_test: Starting AI citation support workflow
+2025-06-16 12:02:39,545 [INFO] integrated_test: Processing AI citation support for 2 papers
+2025-06-16 12:02:39,545 [INFO] AICitationSupportWorkflow: Starting AI citation support processing for directory: test_output/latest/workspace/Clippings
+2025-06-16 12:02:39,545 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:39,545 [INFO] StatusManager: StatusManager initialized
+2025-06-16 12:02:39,575 [INFO] StatusManager: Loaded statuses for 3 papers from test_output/latest/workspace/Clippings
+2025-06-16 12:02:39,576 [INFO] StatusManager: Found 2 papers needing processing for step 'ai_citation_support'
+2025-06-16 12:02:39,662 [INFO] BibTeXParser: Successfully parsed BibTeX file (ordered): test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib (51 entries)
+2025-06-16 12:02:39,705 [WARNING] StatusManager: Backup recovery disabled for yinL2022BreastCancerRes to prevent file corruption
+2025-06-16 12:02:39,705 [INFO] AICitationSupportWorkflow: Successfully processed AI citation support for yinL2022BreastCancerRes (51 citations integrated)
+2025-06-16 12:02:39,773 [INFO] BibTeXParser: Successfully parsed BibTeX file (ordered): test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib (52 entries)
+2025-06-16 12:02:39,801 [WARNING] StatusManager: Backup recovery disabled for takenakaW2023J.Radiat.Res.Tokyo to prevent file corruption
+2025-06-16 12:02:39,801 [INFO] AICitationSupportWorkflow: Successfully processed AI citation support for takenakaW2023J.Radiat.Res.Tokyo (52 citations integrated)
+2025-06-16 12:02:39,801 [INFO] AICitationSupportWorkflow: AI citation support processing completed: 2 processed, 0 skipped, 0 failed
+2025-06-16 12:02:39,801 [INFO] integrated_test: AI citation support workflow completed
+2025-06-16 12:02:39,801 [INFO] integrated_test: Attempting to import TaggerWorkflow
+2025-06-16 12:02:40,394 [INFO] integrated_test: TaggerWorkflow imported successfully
+2025-06-16 12:02:40,395 [INFO] TaggerWorkflow: TaggerWorkflow initialized (enabled: True, batch_size: 8)
+2025-06-16 12:02:40,395 [INFO] integrated_test: TaggerWorkflow initialized
+2025-06-16 12:02:40,395 [INFO] integrated_test: Starting enhanced-tagger workflow
+2025-06-16 12:02:40,395 [INFO] integrated_test: Processing enhanced-tagger for 2 papers
+2025-06-16 12:02:40,395 [INFO] TaggerWorkflow: Starting tagger processing for directory: test_output/latest/workspace/Clippings
+2025-06-16 12:02:40,395 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:40,395 [INFO] StatusManager: StatusManager initialized
+2025-06-16 12:02:40,490 [INFO] StatusManager: Loaded statuses for 3 papers from test_output/latest/workspace/Clippings
+2025-06-16 12:02:40,490 [INFO] StatusManager: Found 2 papers needing processing for step 'tagger'
+2025-06-16 12:02:40,491 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:40,539 [INFO] TaggerWorkflow: Extracted title + 3 sections for tagging from yinL2022BreastCancerRes.md
+2025-06-16 12:02:40,540 [INFO] ClaudeAPIClient: ClaudeAPIClient initialized with model: claude-3-5-haiku-20241022
+2025-06-16 12:02:46,454 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-06-16 12:02:46,458 [WARNING] TaggerWorkflow: Failed to parse tags response as JSON: Expecting value: line 1 column 1 (char 0)
+2025-06-16 12:02:46,459 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:46,504 [INFO] TaggerWorkflow: Extracted title + 3 sections for tagging from yinL2022BreastCancerRes.md
+2025-06-16 12:02:46,509 [INFO] TaggerWorkflow: Generated 18 tags for yinL2022BreastCancerRes.md (quality: 0.858)
+2025-06-16 12:02:46,510 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:46,611 [WARNING] StatusManager: Backup recovery disabled for yinL2022BreastCancerRes to prevent file corruption
+2025-06-16 12:02:46,611 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:46,639 [INFO] TaggerWorkflow: Extracted title + 3 sections for tagging from takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-16 12:02:53,848 [INFO] httpx: HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-06-16 12:02:53,849 [WARNING] TaggerWorkflow: Failed to parse tags response as JSON: Expecting value: line 1 column 1 (char 0)
+2025-06-16 12:02:53,849 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:53,883 [INFO] TaggerWorkflow: Extracted title + 3 sections for tagging from takenakaW2023J.Radiat.Res.Tokyo.md
+2025-06-16 12:02:53,888 [INFO] TaggerWorkflow: Generated 15 tags for takenakaW2023J.Radiat.Res.Tokyo.md (quality: 0.858)
+2025-06-16 12:02:53,889 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:02:53,936 [WARNING] StatusManager: Backup recovery disabled for takenakaW2023J.Radiat.Res.Tokyo to prevent file corruption
+2025-06-16 12:02:53,936 [INFO] TaggerWorkflow: Tagger processing completed: {'status': 'completed', 'processed': 2, 'skipped': 0, 'failed': 0, 'total_papers': 2}
+2025-06-16 12:02:53,937 [INFO] integrated_test: Enhanced-tagger completed: 0 papers processed, 0 skipped, 0 failed
+2025-06-16 12:02:53,937 [INFO] integrated_test: Enhanced-translate機能は無効化されています（API利用料金削減）
+2025-06-16 12:02:53,937 [INFO] integrated_test: Ochiai-format機能は無効化されています（API利用料金削減）
+2025-06-16 12:02:53,939 [INFO] integrated_test: 統合テスト完了
+2025-06-16 12:03:51,961 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:51,963 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:51,966 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:51,968 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:51,973 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:51,976 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:51,979 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:51,984 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:51,988 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:51,991 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:51,991 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:51,995 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,508 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,508 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,510 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-16 12:03:52,515 [INFO] WorkflowVersionManager: Updated version for paper3.md from unknown to 3.2
+2025-06-16 12:03:52,518 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-16 12:03:52,522 [INFO] WorkflowVersionManager: Updated version for paper1.md from 3.1 to 3.2
+2025-06-16 12:03:52,524 [INFO] WorkflowVersionManager: Batch version update completed: 2 updated, 1 skipped, 0 failed
+2025-06-16 12:03:52,526 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,526 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,530 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,530 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,532 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,532 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,535 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,536 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,539 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,540 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,542 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,543 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,543 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-16 12:03:52,547 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,548 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,548 [INFO] WorkflowVersionManager: Migrated YAML header from unknown to 3.2
+2025-06-16 12:03:52,550 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,550 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,554 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,554 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,557 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,558 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,563 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,563 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,565 [INFO] WorkflowVersionManager: Migrated YAML header from 3.1 to 3.2
+2025-06-16 12:03:52,570 [INFO] WorkflowVersionManager: Updated version for test_paper.md from 3.1 to 3.2
+2025-06-16 12:03:52,575 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,575 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,579 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,580 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,583 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,583 [INFO] WorkflowVersionManager: WorkflowVersionManager initialized
+2025-06-16 12:03:52,637 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,639 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
+2025-06-16 12:03:52,644 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper003.md
+2025-06-16 12:03:52,649 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper002.md
+2025-06-16 12:03:52,654 [INFO] YAMLHeaderProcessor: Successfully repaired YAML header in paper001.md
+2025-06-16 12:03:52,654 [INFO] YAMLHeaderProcessor: Batch repair completed: 3 repaired, 0 failed
+2025-06-16 12:03:52,657 [INFO] YAMLHeaderProcessor: YAMLHeaderProcessor initialized
+2025-06-16 12:03:52,658 [INFO] YAMLHeaderProcessor: Batch validation completed: 0 valid, 2 invalid, 1 no YAML
