@@ -129,7 +129,6 @@ class TestIntegratedLoggerBasic(unittest.TestCase):
             self.assertIn("Paper processing completed", log_content)
             self.assertIn("smith2023test", log_content)
     
-    @unittest.skipIf(True, "IntegratedLogger not implemented yet")
     def test_log_format_consistency(self):
         """ログフォーマット一貫性テスト"""
         from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
@@ -177,7 +176,6 @@ class TestIntegratedLoggerAdvanced(unittest.TestCase):
         if self.test_dir.exists():
             shutil.rmtree(self.test_dir)
     
-    @unittest.skipIf(True, "IntegratedLogger not implemented yet")
     def test_file_rotation_functionality(self):
         """ファイルローテーション機能テスト"""
         from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
@@ -262,7 +260,6 @@ class TestIntegratedLoggerAdvanced(unittest.TestCase):
             self.assertNotIn("Debug message 2", log_content)
             self.assertIn("Warning message", log_content)
     
-    @unittest.skipIf(True, "IntegratedLogger not implemented yet")
     def test_concurrent_logging(self):
         """並行ログ出力テスト"""
         from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
@@ -322,7 +319,6 @@ class TestIntegratedLoggerIntegration(unittest.TestCase):
         if self.test_dir.exists():
             shutil.rmtree(self.test_dir)
     
-    @unittest.skipIf(True, "IntegratedLogger not implemented yet")
     def test_full_workflow_logging(self):
         """完全なワークフローログテスト"""
         from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
@@ -381,7 +377,6 @@ class TestIntegratedLoggerIntegration(unittest.TestCase):
             self.assertIn("PaperProcessing", log_content)
             self.assertIn("papers_processed", log_content)
     
-    @unittest.skipIf(True, "IntegratedLogger not implemented yet")
     def test_config_manager_integration(self):
         """ConfigManagerとの統合テスト"""
         from code.py.modules.shared_modules.integrated_logger import IntegratedLogger

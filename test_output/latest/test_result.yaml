@@ -2,12 +2,12 @@ test_execution:
   ai_feature_control:
     api_cost_savings: true
     disabled_features:
+    - enhanced-tagger
     - enhanced-translate
     - ochiai-format
-    enabled_features:
-    - enhanced-tagger
+    enabled_features: []
     mode: development
-    summary: 'AI機能: enhanced-tagger のみ有効'
+    summary: 'AI機能: すべて無効（API利用料金削減モード）'
   basic_checks:
     backup_exists: true
     clippings_processed: true
@@ -20,7 +20,6 @@ test_execution:
     - citation_fetcher
     - section_parsing
     - ai_citation_support
-    - enhanced-tagger
     status: success
   status: success
-  timestamp: '2025-06-16T12:02:53.937912'
+  timestamp: '2025-06-16T13:47:31.179890'

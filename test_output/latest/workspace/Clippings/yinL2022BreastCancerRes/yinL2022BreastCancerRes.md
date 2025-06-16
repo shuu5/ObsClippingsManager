@@ -1,7 +1,7 @@
 ---
 citation_key: yinL2022BreastCancerRes
 citation_metadata:
-  last_updated: '2025-06-16T12:02:39.663341'
+  last_updated: '2025-06-16T13:47:31.030702'
   mapping_version: '2.0'
   references_bib_path: test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib
   source_bibtex: references.bib
@@ -468,9 +468,9 @@ citations:
     year: '2008'
 created: 2025-06-09
 doi: 10.1186/s13058-022-01502-6
-last_updated: '2025-06-16T12:02:46.591062'
+last_updated: '2025-06-16T13:47:30.902087'
 paper_structure:
-  parsed_at: '2025-06-16T12:02:39.507950'
+  parsed_at: '2025-06-16T13:47:30.899414'
   section_types_found:
   - abstract
   - introduction
@@ -727,40 +727,13 @@ processing_status:
   organize: completed
   section_parsing: completed
   sync: completed
-  tagger: completed
 source: https://breast-cancer-research.biomedcentral.com/articles/10.1186/s13058-022-01502-6
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-16T12:02:38.518987'
+  checked_at: '2025-06-16T13:47:29.883086'
   consistency_status: validated
   corrections_applied: []
   issues_detected: 0
-tag_quality:
-  content_relevance: 0.6444444444444445
-  evaluation_timestamp: '2025-06-16T12:02:46.509087'
-  format_compliance: 1.0
-  has_suggestions: true
-  quality_score: 0.8577777777777778
-  tag_count: 18
-tags:
-- gene_KRT13
-- protein_KRT13
-- oncology
-- breast_cancer
-- cancer_metastasis
-- protein_c_myc
-- gene_c_myc
-- molecular_biology
-- cancer_stem_cells
-- protein_plakoglobin
-- epithelial_mesenchymal_transition
-- cell_migration
-- cancer_progression
-- gene_ALDH1A1
-- immunohistochemistry
-- pathway_analysis
-- tumor_biology
-- protein_CD44
 title: KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobin/c-Myc
   signaling pathway
 workflow_version: '3.2'

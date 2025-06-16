@@ -26,13 +26,17 @@ class TestCrossRefAPIClient(unittest.TestCase):
         self.config_manager = MagicMock()
         self.logger = MagicMock()
         
-        # CrossRef API設定モック
-        self.config_manager.get.return_value = {
-            'crossref': {
-                'base_url': 'https://api.crossref.org',
-                'timeout': 30,
-                'rate_limit': 10,
-                'quality_threshold': 0.8
+        # 正しいConfigManager APIモック設定
+        self.config_manager.get_config.return_value = {
+            'citation_fetcher': {
+                'apis': {
+                    'crossref': {
+                        'base_url': 'https://api.crossref.org',
+                        'timeout': 30,
+                        'rate_limit': 10,
+                        'quality_threshold': 0.8
+                    }
+                }
             }
         }
         

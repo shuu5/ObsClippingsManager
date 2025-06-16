@@ -24,8 +24,19 @@ class TestOpenCitationsAPIClient(unittest.TestCase):
     def setUp(self):
         """テストの前準備"""
         self.config_manager = Mock()
-        # config_manager.getメソッドの適切なモック設定
-        self.config_manager.get.return_value = {}
+        # 正しいConfigManager APIモック設定
+        self.config_manager.get_config.return_value = {
+            'citation_fetcher': {
+                'apis': {
+                    'opencitations': {
+                        'base_url': 'https://opencitations.net/index/api/v1',
+                        'timeout': 30,
+                        'rate_limit': 5,
+                        'quality_threshold': 0.5
+                    }
+                }
+            }
+        }
         
         self.logger = Mock()
         self.mock_logger_instance = Mock()

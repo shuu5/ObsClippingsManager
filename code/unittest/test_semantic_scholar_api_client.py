@@ -30,15 +30,17 @@ class TestSemanticScholarAPIClient(unittest.TestCase):
             }
         }
         
-        # _get_api_configメソッドで使用されるgetメソッドを設定
-        self.mock_config_manager.get.return_value = {
-            'apis': {
-                'semantic_scholar': {
-                    'base_url': 'https://api.semanticscholar.org',
-                    'rate_limit': 1,
-                    'timeout': 30,
-                    'retry_count': 3,
-                    'api_key_env': 'SEMANTIC_SCHOLAR_API_KEY'
+        # 正しいConfigManager APIモック設定
+        self.mock_config_manager.get_config.return_value = {
+            'citation_fetcher': {
+                'apis': {
+                    'semantic_scholar': {
+                        'base_url': 'https://api.semanticscholar.org',
+                        'rate_limit': 1,
+                        'timeout': 30,
+                        'retry_count': 3,
+                        'api_key_env': 'SEMANTIC_SCHOLAR_API_KEY'
+                    }
                 }
             }
         }
@@ -103,15 +105,17 @@ class TestSemanticScholarAPIClient(unittest.TestCase):
             }
         }
         
-        # _get_api_configメソッドで使用されるgetメソッドを設定
-        mock_config_manager.get.return_value = {
-            'apis': {
-                'semantic_scholar': {
-                    'base_url': 'https://api.semanticscholar.org',
-                    'rate_limit': 1,
-                    'timeout': 30,
-                    'retry_count': 3,
-                    'api_key_env': 'SEMANTIC_SCHOLAR_API_KEY'
+        # 正しいConfigManager APIモック設定  
+        mock_config_manager.get_config.return_value = {
+            'citation_fetcher': {
+                'apis': {
+                    'semantic_scholar': {
+                        'base_url': 'https://api.semanticscholar.org',
+                        'rate_limit': 1,
+                        'timeout': 30,
+                        'retry_count': 3,
+                        'api_key_env': 'SEMANTIC_SCHOLAR_API_KEY'
+                    }
                 }
             }
         }
