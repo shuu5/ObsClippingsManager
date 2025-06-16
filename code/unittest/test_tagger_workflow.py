@@ -59,6 +59,182 @@ class TestTaggerWorkflowBasic(unittest.TestCase):
         self.logger.get_logger.assert_called_with('TaggerWorkflow')
 
 
+class TestTaggerWorkflowContentExtraction(unittest.TestCase):
+    """TaggerWorkflowの論文コンテンツ抽出機能テスト（title機能含む）"""
+    
+    def setUp(self):
+        """テストのセットアップ"""
+        self.config_manager = Mock(spec=ConfigManager)
+        self.logger = Mock(spec=IntegratedLogger)
+        self.logger.get_logger.return_value = Mock()
+        
+        # テスト用一時ディレクトリ
+        self.temp_dir = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, self.temp_dir)
+        
+        # デフォルト設定をモック
+        self.config_manager.get_ai_setting.side_effect = lambda *keys, default=None: {
+            ('tagger', 'enabled'): True,
+            ('tagger', 'batch_size'): 8,
+            ('tagger', 'tag_count_range'): [10, 20],
+        }.get(keys, default)
+    
+    def test_extract_paper_content_with_title(self):
+        """論文コンテンツ抽出テスト（title付き）"""
+        from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
+        
+        # テスト用Markdownファイル作成（title付き）
+        test_content = """---
+citation_key: test2023paper
+title: "Novel Biomarker Discovery in Cancer Research using Machine Learning"
+paper_structure:
+  sections:
+    - title: "Introduction"
+      section_type: "introduction"
+      start_line: 1
+      end_line: 3
+    - title: "Results"
+      section_type: "results"
+      start_line: 4
+      end_line: 6
+    - title: "Discussion"
+      section_type: "discussion"
+      start_line: 7
+      end_line: 9
+---
+
+## Introduction
+This paper introduces a new biomarker detection method.
+
+## Results
+We found significant correlation between EGFR and treatment response.
+
+## Discussion
+These findings suggest novel therapeutic targets in cancer treatment.
+"""
+        
+        test_file = Path(self.temp_dir) / "test_paper.md"
+        test_file.write_text(test_content, encoding='utf-8')
+        
+        workflow = TaggerWorkflow(self.config_manager, self.logger)
+        content = workflow.extract_paper_content(str(test_file))
+        
+        # titleが先頭に追加されているかチェック
+        self.assertIn("Novel Biomarker Discovery in Cancer Research using Machine Learning", content)
+        # title section として追加されているかチェック
+        self.assertTrue(content.startswith("# Novel Biomarker Discovery in Cancer Research using Machine Learning"))
+        # 通常のセクションも含まれているかチェック
+        self.assertIn("biomarker detection method", content)
+        self.assertIn("EGFR and treatment response", content)
+        self.assertIn("therapeutic targets", content)
+        # YAMLヘッダーは除外されているかチェック
+        self.assertNotIn("citation_key:", content)
+    
+    def test_extract_paper_content_without_title(self):
+        """論文コンテンツ抽出テスト（title無し）"""
+        from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
+        
+        # テスト用Markdownファイル作成（title無し）
+        test_content = """---
+citation_key: test2023paper
+paper_structure:
+  sections:
+    - title: "Introduction"
+      section_type: "introduction"
+      start_line: 1
+      end_line: 3
+    - title: "Results"
+      section_type: "results"
+      start_line: 4
+      end_line: 6
+---
+
+## Introduction
+This paper introduces a new biomarker detection method.
+
+## Results
+We found significant correlation between markers.
+"""
+        
+        test_file = Path(self.temp_dir) / "test_paper.md"
+        test_file.write_text(test_content, encoding='utf-8')
+        
+        workflow = TaggerWorkflow(self.config_manager, self.logger)
+        content = workflow.extract_paper_content(str(test_file))
+        
+        # title section が追加されていないかチェック（通常のセクション##で始まる）
+        self.assertTrue(content.startswith("##"))  # 通常のセクションで始まる
+        self.assertFalse(content.startswith("# "))  # titleセクション（single #）は含まれない
+        # 通常のセクションは含まれているかチェック
+        self.assertIn("biomarker detection method", content)
+        self.assertIn("correlation between markers", content)
+    
+    def test_extract_paper_content_with_empty_title(self):
+        """論文コンテンツ抽出テスト（空のtitle）"""
+        from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
+        
+        # テスト用Markdownファイル作成（空のtitle）
+        test_content = """---
+citation_key: test2023paper
+title: ""
+paper_structure:
+  sections:
+    - title: "Introduction"
+      section_type: "introduction"
+      start_line: 1
+      end_line: 3
+---
+
+## Introduction
+This paper introduces a new biomarker detection method.
+"""
+        
+        test_file = Path(self.temp_dir) / "test_paper.md"
+        test_file.write_text(test_content, encoding='utf-8')
+        
+        workflow = TaggerWorkflow(self.config_manager, self.logger)
+        content = workflow.extract_paper_content(str(test_file))
+        
+        # 空titleは追加されないかチェック（通常のセクション##で始まる）
+        self.assertTrue(content.startswith("##"))  # 通常のセクションで始まる
+        self.assertFalse(content.startswith("# "))  # titleセクション（single #）は含まれない
+        # 通常のセクションは含まれているかチェック
+        self.assertIn("biomarker detection method", content)
+    
+    def test_extract_paper_content_with_list_title(self):
+        """論文コンテンツ抽出テスト（リスト形式のtitle）"""
+        from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
+        
+        # テスト用Markdownファイル作成（リスト形式のtitle）
+        test_content = """---
+citation_key: test2023paper
+title: 
+  - "Cancer Research"
+  - "Biomarker Discovery"
+paper_structure:
+  sections:
+    - title: "Introduction"
+      section_type: "introduction"  
+      start_line: 1
+      end_line: 3
+---
+
+## Introduction
+This paper introduces a new biomarker detection method.
+"""
+        
+        test_file = Path(self.temp_dir) / "test_paper.md"
+        test_file.write_text(test_content, encoding='utf-8')
+        
+        workflow = TaggerWorkflow(self.config_manager, self.logger)
+        content = workflow.extract_paper_content(str(test_file))
+        
+        # リスト形式titleは適切に処理されるかチェック
+        self.assertTrue(content.startswith("# Cancer Research - Biomarker Discovery"))
+        # 通常のセクションも含まれているかチェック
+        self.assertIn("biomarker detection method", content)
+
+
 class TestTaggerWorkflowTagGeneration(unittest.TestCase):
     """TaggerWorkflowのタグ生成機能テスト"""
     

@@ -169,18 +169,21 @@ class TaggerWorkflow:
     
     def extract_paper_content(self, paper_path: str) -> str:
         """
-        paper_structure を使用してintroduction, results, discussionセクションを抽出
+        YAMLヘッダーのtitleと paper_structure を使用してintroduction, results, discussionセクションを抽出
         
         Args:
             paper_path: 論文ファイルパス
             
         Returns:
-            str: 抽出されたセクションコンテンツ（全文）
+            str: タイトル + 抽出されたセクションコンテンツ（全文）
         """
         try:
             # YAMLヘッダー解析
             processor = YAMLHeaderProcessor(self.config_manager, self.integrated_logger)
             yaml_data, markdown_content = processor.parse_yaml_header(Path(paper_path))
+            
+            # title取得・処理
+            title_section = self._extract_title_section(yaml_data)
             
             # paper_structure 取得
             paper_structure = yaml_data.get('paper_structure', {})
@@ -188,6 +191,9 @@ class TaggerWorkflow:
             
             if not sections:
                 self.logger.warning(f"No paper_structure found in {paper_path}, falling back to full content")
+                # titleがある場合は先頭に追加してから全文を返す
+                if title_section:
+                    return f"{title_section}\n\n{markdown_content}"
                 return markdown_content
             
             # 対象セクション（introduction, results, discussion）の抽出
@@ -211,10 +217,19 @@ class TaggerWorkflow:
             
             if not extracted_sections:
                 self.logger.warning(f"No target sections found in {paper_path}, falling back to full content")
+                # titleがある場合は先頭に追加してから全文を返す
+                if title_section:
+                    return f"{title_section}\n\n{markdown_content}"
                 return markdown_content
             
-            result = '\n\n'.join(extracted_sections)
-            self.logger.info(f"Extracted {len(extracted_sections)} sections for tagging from {Path(paper_path).name}")
+            # titleセクションがある場合は先頭に追加
+            if title_section:
+                all_sections = [title_section] + extracted_sections
+                result = '\n\n'.join(all_sections)
+                self.logger.info(f"Extracted title + {len(extracted_sections)} sections for tagging from {Path(paper_path).name}")
+            else:
+                result = '\n\n'.join(extracted_sections)
+                self.logger.info(f"Extracted {len(extracted_sections)} sections for tagging from {Path(paper_path).name}")
             
             return result
             
@@ -225,6 +240,53 @@ class TaggerWorkflow:
                 error_code="CONTENT_EXTRACTION_FAILED",
                 context={"paper_path": paper_path}
             ) from e
+    
+    def _extract_title_section(self, yaml_data: dict) -> str:
+        """
+        YAMLヘッダーからtitleを抽出してMarkdownセクションとして作成
+        
+        Args:
+            yaml_data: YAMLヘッダーデータ
+            
+        Returns:
+            str: title section（空文字列の場合はtitleなし）
+        """
+        title = yaml_data.get('title')
+        
+        if not title:
+            return ""
+        
+        # titleが文字列の場合
+        if isinstance(title, str):
+            title = title.strip()
+            if not title:  # 空文字列の場合
+                return ""
+            # クォートを除去
+            title = title.strip('"').strip("'")
+            return f"# {title}"
+        
+        # titleがリストの場合
+        elif isinstance(title, list):
+            # 空でない文字列のみを抽出
+            title_parts = []
+            for part in title:
+                if isinstance(part, str):
+                    part = part.strip().strip('"').strip("'")
+                    if part:
+                        title_parts.append(part)
+            
+            if title_parts:
+                combined_title = " - ".join(title_parts)
+                return f"# {combined_title}"
+            else:
+                return ""
+        
+        # その他の形式の場合
+        else:
+            title_str = str(title).strip()
+            if title_str and title_str.lower() not in ['none', 'null', '']:
+                return f"# {title_str}"
+            return ""
     
     def _build_tagging_prompt(self, paper_content: str) -> str:
         """
@@ -285,7 +347,7 @@ class TaggerWorkflow:
 - **Level 5 - 分析・解析:** statistical_analysis, bioinformatics, pathway_analysis
 
 **Step 4: 品質制御**
-1. 遺伝子シンボル形式の検証（大文字・数字のみ確認）
+1. 遺伝子・タンパク質シンボル形式の検証（prefix付き、大文字・数字のみ確認）
 2. 重複タグの除去と統合
 3. 重要度スコアによる優先順位付け
 4. タグ数制限（{min_tags}-{max_tags}個）の遵守

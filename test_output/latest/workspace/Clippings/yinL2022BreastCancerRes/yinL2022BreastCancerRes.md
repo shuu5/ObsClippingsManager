@@ -1,7 +1,7 @@
 ---
 citation_key: yinL2022BreastCancerRes
 citation_metadata:
-  last_updated: '2025-06-16T11:18:09.914360'
+  last_updated: '2025-06-16T11:41:08.869432'
   mapping_version: '2.0'
   references_bib_path: test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib
   source_bibtex: references.bib
@@ -468,9 +468,9 @@ citations:
     year: '2008'
 created: 2025-06-09
 doi: 10.1186/s13058-022-01502-6
-last_updated: '2025-06-16T11:18:19.385115'
+last_updated: '2025-06-16T11:41:17.889169'
 paper_structure:
-  parsed_at: '2025-06-16T11:18:09.761446'
+  parsed_at: '2025-06-16T11:41:08.696942'
   section_types_found:
   - abstract
   - introduction
@@ -731,34 +731,36 @@ processing_status:
 source: https://breast-cancer-research.biomedcentral.com/articles/10.1186/s13058-022-01502-6
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-16T11:18:08.782129'
+  checked_at: '2025-06-16T11:41:05.807424'
   consistency_status: validated
   corrections_applied: []
   issues_detected: 0
 tag_quality:
-  content_relevance: 0.6333333333333334
-  evaluation_timestamp: '2025-06-16T11:18:19.347937'
+  content_relevance: 0.6777777777777778
+  evaluation_timestamp: '2025-06-16T11:41:17.854913'
   format_compliance: 1.0
   has_suggestions: true
-  quality_score: 0.8533333333333333
-  tag_count: 16
+  quality_score: 0.8711111111111112
+  tag_count: 18
 tags:
 - gene_KRT13
 - protein_KRT13
-- breast_cancer
 - oncology
+- breast_cancer
 - molecular_biology
-- cancer_metastasis
-- protein_plakoglobin
-- cell_line_mcf7
-- epithelial_mesenchymal_transition
+- gene_MYC
+- protein_MYC
 - cancer_stem_cells
-- cell_proliferation
-- protein_desmoplakin
-- tumor_progression
-- gene_CD44
+- epithelial_mesenchymal_transition
+- cell_migration
+- metastasis
 - pathway_analysis
+- cell_proliferation
+- protein_plakoglobin
+- gene_plakoglobin
+- tumor_progression
 - immunohistochemistry
+- cancer_signaling
 title: KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobin/c-Myc
   signaling pathway
 workflow_version: '3.2'

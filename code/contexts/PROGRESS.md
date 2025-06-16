@@ -577,6 +577,38 @@ code/py/modules/
   - ✅ **prefix付きタグ正常動作**: gene_*・protein_*形式のシンボル部大文字保護機能確認済み
   - ✅ **仕様書準拠**: AI タグ生成におけるprefix付き生物学的命名規則対応完了
 
+- [完了] 2.6.10 **論文タイトル統合機能実装・TDD完了**
+  **実装完了詳細**:
+  - ✅ **TDD実装**: 4個の新規テストケース先行作成（TestTaggerWorkflowContentExtraction）
+  - ✅ **機能実装**: `extract_paper_content()`メソッドへのtitle統合機能追加
+  - ✅ **ヘルパーメソッド**: `_extract_title_section()`メソッド実装（文字列・リスト・null対応）
+  - ✅ **形式サポート**: title文字列・リスト形式・空値・null値の適切な処理
+  - ✅ **統合確認**: ユニットテスト全成功（22/22 PASS）・全システムテスト成功・統合テスト成功
+  
+  **機能仕様**:
+  ```python
+  # YAMLヘッダーtitle処理パターン
+  title: "Research Title"           → "# Research Title"（先頭追加）
+  title: ["Title1", "Title2"]       → "# Title1 - Title2"（結合形式）
+  title: ""                         → 追加されない（空title）
+  title: null/なし                   → 追加されない（title無し）
+  ```
+  
+  **統合テスト成功結果**:
+  ```bash
+  # 統合テスト実行・title機能動作確認
+  cd /home/user/proj/ObsClippingsManager
+  uv run python code/scripts/run_integrated_test.py
+  
+  # ログ出力でtitle機能確認
+  [INFO] TaggerWorkflow: Extracted title + 3 sections for tagging from yinL2022BreastCancerRes.md
+  [INFO] TaggerWorkflow: Extracted title + 3 sections for tagging from takenakaW2023J.Radiat.Res.Tokyo.md
+  ```
+  - ✅ **title + セクション**: 論文タイトルが最初に追加されてから通常セクション抽出
+  - ✅ **タグ生成品質**: 18タグ（品質0.871）・18タグ（品質0.856）高品質生成確認
+  - ✅ **統合ワークフロー**: 6機能完全動作（organize→sync→fetch→section_parsing→ai_citation_support→enhanced-tagger）
+  - ✅ **仕様書準拠**: AIタグ生成における論文タイトル重視によるコンテキスト強化実現
+
 #### 2.7 ステップ7: enhanced-translate（要約翻訳）
 - [ ] 2.7.1 AITaggingTranslationクラス翻訳機能拡張
 - [ ] 2.7.2 要約翻訳機能実装（バッチサイズ: 5）
