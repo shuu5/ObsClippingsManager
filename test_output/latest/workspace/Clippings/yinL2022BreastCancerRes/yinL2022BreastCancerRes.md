@@ -1,7 +1,26 @@
 ---
+ai_content:
+  abstract_japanese:
+    content: '背景
+
+      ケラチン（KRT）は、複数の調節タンパク質と相互作用し、シグナルカスケードを開始する中間径フィラメントタンパク質である。ケラチン13（KRT13）は乳癌の進展と転移において重要な役割を果たす。本研究の目的は、KRT13が乳癌の増殖と転移を促進するメカニズムを解明することである。
+
+      方法
+
+      KRT13の乳癌進展と転移における機能とメカニズムは、過剰発現およびノックダウン後、乳癌細胞の挙動変化と、マウス乳腺脂肪体における異種移植腫瘍形成によって評価した。ヒト乳癌検体は免疫組織化学染色および多重量子ドットラベル解析によって検証し、KRT13発現と乳癌の進展および転移との相関を調べた。
+
+      結果
+
+      KRT13を過剰発現したMCF7細胞は、増殖、浸潤、遊走、生体内腫瘍増殖、および骨ならびに肺への転移が増加した。対照的に、HCC1954細胞でのKRT13ノックダウンは、これらの攻撃的な挙動を抑制した。分子レベルでは、KRT13はプラコグロビン（PG、γ-カテニン）と直接相互作用し、デスモプラキン（DSP）と複合体を形成した。この複合体はPGの発現と核内移行を阻害し、PGによるc-Myc発現抑制を無効化した。さらに、KRT13/PG/c-Mycシグナル経路は上皮間葉転換と幹細胞様表現型を増加させた。58のヒト乳癌組織において、KRT13発現は特に浸潤部先端と転移検体（12/18）で上方制御されていた（*p*
+      < 0.05）。原発性乳癌におけるKRT13の上方制御は、患者の全生存期間の短縮と関連していた。
+
+      結論
+
+      本研究は、KRT13がプラコグロビン/c-Myc経路を介して乳癌細胞の増殖と転移を促進することを明らかにした。我々の知見は、乳癌の進展と転移を標的とする潜在的な新規経路を示している。'
+    generated_at: '2025-06-16T16:25:37.548129'
 citation_key: yinL2022BreastCancerRes
 citation_metadata:
-  last_updated: '2025-06-16T13:47:31.030702'
+  last_updated: '2025-06-16T16:25:05.833539'
   mapping_version: '2.0'
   references_bib_path: test_output/latest/workspace/Clippings/yinL2022BreastCancerRes/references.bib
   source_bibtex: references.bib
@@ -468,9 +487,9 @@ citations:
     year: '2008'
 created: 2025-06-09
 doi: 10.1186/s13058-022-01502-6
-last_updated: '2025-06-16T13:47:30.902087'
+last_updated: '2025-06-16T16:25:37.548142'
 paper_structure:
-  parsed_at: '2025-06-16T13:47:30.899414'
+  parsed_at: '2025-06-16T16:25:05.737354'
   section_types_found:
   - abstract
   - introduction
@@ -727,15 +746,27 @@ processing_status:
   organize: completed
   section_parsing: completed
   sync: completed
+  translate_abstract: completed
 source: https://breast-cancer-research.biomedcentral.com/articles/10.1186/s13058-022-01502-6
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-16T13:47:29.883086'
+  checked_at: '2025-06-16T16:25:04.764373'
   consistency_status: validated
   corrections_applied: []
   issues_detected: 0
 title: KRT13 promotes stemness and drives metastasis in breast cancer through a plakoglobin/c-Myc
   signaling pathway
+translation_quality:
+  accuracy_score: 1.0
+  completeness_score: 0.48697916666666663
+  consistency_score: 0.4
+  evaluation_timestamp: '2025-06-16T16:25:37.504839'
+  fluency_score: 1.0
+  has_suggestions: true
+  length_ratio: 0.38958333333333334
+  original_length: 1920
+  quality_score: 0.69609375
+  translation_length: 748
 workflow_version: '3.2'
 ---
 

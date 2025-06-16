@@ -8,6 +8,7 @@ import os
 import time
 import json
 from typing import List, Optional, Any
+from pathlib import Path
 
 try:
     import anthropic
@@ -17,6 +18,23 @@ except ImportError:
 from ..shared_modules.exceptions import APIError
 from ..shared_modules.config_manager import ConfigManager
 from ..shared_modules.integrated_logger import IntegratedLogger
+
+# .envファイル読み込み（python-dotenvが利用可能な場合）
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # dotenvが利用できない場合は手動で.envを読み込み
+    env_file = Path(__file__).parents[4] / '.env'
+    if env_file.exists():
+        with open(env_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, value = line.split('=', 1)
+                    key = key.strip()
+                    value = value.strip().strip('"\'')
+                    os.environ[key] = value
 
 
 class ClaudeAPIClient:

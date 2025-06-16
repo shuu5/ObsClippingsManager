@@ -398,22 +398,23 @@ class SimpleIntegratedTestRunner:
             else:
                 self.logger.info("Enhanced-tagger機能は無効化されています（API利用料金削減）")
             
-            # enhanced-translate機能 - AI機能制御対応（未実装）
+            # enhanced-translate機能 - AI機能制御対応
             if self.ai_controller.is_translate_enabled():
                 try:
-                    self.logger.info("Attempting to import TranslationWorkflow")
-                    from code.py.modules.ai_tagging_translation.translation_workflow import TranslationWorkflow
-                    self.logger.info("TranslationWorkflow imported successfully")
+                    self.logger.info("Attempting to import TranslateWorkflow")
+                    from code.py.modules.ai_tagging_translation.translate_workflow import TranslateWorkflow
+                    self.logger.info("TranslateWorkflow imported successfully")
                     
-                    translation_workflow = TranslationWorkflow(self.config_manager, self.integrated_logger)
-                    self.logger.info("TranslationWorkflow initialized")
+                    translate_workflow = TranslateWorkflow(self.config_manager, self.integrated_logger)
+                    self.logger.info("TranslateWorkflow initialized")
                     
                     self.logger.info("Starting enhanced-translate workflow")
-                    # TODO: enhanced-translate機能実装時に実装
+                    translate_result = translate_workflow.process_items(str(workspace_path), target_papers)
+                    self.logger.info(f"Enhanced-translate processing completed: {translate_result}")
                     modules_executed.append('enhanced-translate')
                     
                 except ImportError as e:
-                    self.logger.warning(f"TranslationWorkflow ImportError (未実装): {e}")
+                    self.logger.warning(f"TranslateWorkflow ImportError: {e}")
                 except Exception as e:
                     self.logger.error(f"Error in enhanced-translate processing: {e}")
                     import traceback
