@@ -337,6 +337,50 @@ class SimpleIntegratedTestRunner:
                 import traceback
                 self.logger.error(traceback.format_exc())
             
+            # enhanced-tagger機能 (ai_tagging_translation)
+            try:
+                self.logger.info("Attempting to import TaggerWorkflow")
+                from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
+                self.logger.info("TaggerWorkflow imported successfully")
+                
+                tagger_workflow = TaggerWorkflow(self.config_manager, self.integrated_logger)
+                self.logger.info("TaggerWorkflow initialized")
+                
+                self.logger.info("Starting enhanced-tagger workflow")
+                # 処理対象のmarkdownファイルを取得してenhanced-tagger処理実行
+                clippings_dir = workspace_path / "Clippings"
+                if clippings_dir.exists():
+                    # サブディレクトリ内のmarkdownファイルを対象とする
+                    target_papers = []
+                    for subdir in clippings_dir.iterdir():
+                        if subdir.is_dir():
+                            # サブディレクトリ名をtarget_papersに追加
+                            target_papers.append(subdir.name)
+                    
+                    if target_papers:
+                        self.logger.info(f"Processing enhanced-tagger for {len(target_papers)} papers")
+                        tagger_result = tagger_workflow.process_items(str(clippings_dir), target_papers)
+                        
+                        processed_papers = tagger_result.get('processed_papers', 0)
+                        skipped_papers = tagger_result.get('skipped_papers', 0)
+                        failed_papers = tagger_result.get('failed_papers', 0)
+                        
+                        self.logger.info(f"Enhanced-tagger completed: {processed_papers} papers processed, "
+                                       f"{skipped_papers} skipped, {failed_papers} failed")
+                        
+                        modules_executed.append('enhanced-tagger')
+                    else:
+                        self.logger.warning("No organized papers found for enhanced-tagger")
+                else:
+                    self.logger.warning("Clippings directory not found for enhanced-tagger")
+                    
+            except ImportError as e:
+                self.logger.warning(f"TaggerWorkflow ImportError: {e}")
+            except Exception as e:
+                self.logger.error(f"Error in enhanced-tagger processing: {e}")
+                import traceback
+                self.logger.error(traceback.format_exc())
+            
             # TODO: 新しいモジュールが実装されたら追加
             
             return {

@@ -1,472 +1,472 @@
 ---
 citation_key: takenakaW2023J.Radiat.Res.Tokyo
 citation_metadata:
-  last_updated: '2025-06-15T14:13:46.905542'
+  last_updated: '2025-06-16T06:58:05.537806'
   mapping_version: '2.0'
   references_bib_path: test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib
   source_bibtex: references.bib
   total_citations: 52
 citations:
-  '1':
+  1:
     authors: Pan
     citation_key: pan2010
     doi: 10.1371/journal.pone.0013298
     journal: PLoS One
-    number: '1'
+    number: 1
     title: 26S proteasome activity is down-regulated in lung cancer stem-like cells
       propagated in vitro
     year: '2010'
-  '10':
-    authors: Cui
-    citation_key: cui2011
-    doi: 10.1158/0008-5472.CAN-10-2926
-    journal: Cancer Res
-    number: '10'
-    title: Effects of carbon ion beam on putative colon cancer stem cells and its
-      comparison with x-rays
-    year: '2011'
-  '11':
-    authors: Nguyen
-    citation_key: nguyen2021
-    doi: 10.1007/s11626-020-00542-6
-    journal: In Vitro Cell Dev Biol Anim
-    number: '11'
-    title: Enhanced KRT13 gene expression bestows radiation resistance in squamous
-      cell carcinoma cells
-    year: '2021'
-  '12':
-    authors: Naganuma
-    citation_key: naganuma2014
-    doi: 10.1186/1471-2407-14-988
-    journal: BMC Cancer
-    number: '12'
-    title: Epigenetic alterations of the keratin 13 gene in oral squamous cell carcinoma
-    year: '2014'
-  '13':
-    authors: Malecha
-    citation_key: malecha1991
-    doi: 10.1007/BF01606063
-    journal: Virchows Arch A Pathol Anat Histopathol
-    number: '13'
-    title: Expression of keratin 13 in human epithelial neoplasms
-    year: '1991'
-  '14':
-    authors: Wang
-    citation_key: wang2022
-    doi: 10.3892/ijo.2022.5303
-    journal: Int J Oncol
-    number: '14'
-    title: Functional assessment of miR-1291 in colon cancer cells
-    year: '2022'
-  '15':
-    authors: Sung
-    citation_key: sung2021
-    doi: 10.3322/caac.21660
-    journal: CA Cancer J Clin
-    number: '15'
-    title: 'Global cancer statistics 2020: GLOBOCAN estimates of incidence and mortality
-      worldwide for 36 cancers in 185 countries'
-    year: '2021'
-  '16':
-    authors: Tamari
-    citation_key: tamari2014
-    doi: 10.3892/ijo.2014.2671
-    journal: Int J Oncol
-    number: '16'
-    title: Identification of chemoradiation-resistant osteosarcoma stem cells using
-      an imaging system for proteasome activity
-    year: '2014'
-  '17':
-    authors: Marsit
-    citation_key: marsit2010
-    doi: 10.1371/journal.pone.0012334
-    journal: PLoS One
-    number: '17'
-    title: Identification of methylated genes associated with aggressive bladder cancer
-    year: '2010'
-  '18':
-    authors: Adikrisna
-    citation_key: adikrisna2012
-    doi: 10.1053/j.gastro.2012.03.054
-    journal: Gastroenterology
-    number: '18'
-    title: Identification of pancreatic cancer stem cells and selective toxicity of
-      chemotherapeutic agents
-    year: '2012'
-  '19':
-    authors: Adikrisna
-    citation_key: adikrisna2012
-    doi: 10.1053/j.gastro.2012.03.054
-    journal: Gastroenterology
-    number: '19'
-    title: Identification of pancreatic cancer stem cells and selective toxicity of
-      chemotherapeutic agents
-    year: '2012'
-  '2':
+  2:
     authors: Inoue
     citation_key: inoue2018
     doi: 10.1158/1535-7163.MCT-17-0850
     journal: Mol Cancer Ther
-    number: '2'
+    number: 2
     title: A miR-29b byproduct sequence exhibits potent tumor-suppressive activities
       via inhibition of nf-kb signaling in kras-mutant colon cancer cells
     year: '2018'
-  '20':
-    authors: Vlashi
-    citation_key: vlashi2009
-    doi: 10.1093/jnci/djn509
-    journal: J Natl Cancer Inst
-    number: '20'
-    title: In vivo imaging, tracking, and targeting of cancer stem cells
-    year: '2009'
-  '21':
-    authors: Wu
-    citation_key: wu2015
-    doi: 10.1371/journal.pone.0116022
-    journal: PLoS One
-    number: '21'
-    title: Innovative delivery of siRNA to solid tumors by super carbonate apatite
-    year: '2015'
-  '22':
-    authors: Li
-    citation_key: li2016
-    doi: 10.18632/oncotarget.13175
-    journal: Oncotarget
-    number: '22'
-    title: Keratin 13 expression reprograms bone and brain metastases of human prostate
-      cancer cells
-    year: '2016'
-  '23':
-    authors: Liu
-    citation_key: liu2016
-    doi: 10.1371/journal.pone.0163232
-    journal: PLoS One
-    number: '23'
-    title: Keratin 13 is enriched in prostate tubule-initiating cells and may identify
-      primary prostate tumors that metastasize to the bone
-    year: '2016'
-  '24':
-    authors: Kawai
-    citation_key: kawai2015
-    doi: 10.1158/1078-0432.CCR-14-1936
-    journal: Clin Cancer Res
-    number: '24'
-    title: Keratin 19, a cancer stem cell marker in human hepatocellular carcinoma
-    year: '2015'
-  '25':
-    authors: Escobar-hoyos
-    citation_key: escobarhoyos2015
-    doi: 10.1158/0008-5472.CAN-15-0293
-    journal: Cancer Res
-    number: '25'
-    title: Keratin-17 promotes p27 KIP1 nuclear export and degradation and offers
-      potential prognostic utility
-    year: '2015'
-  '26':
-    authors: Arumugam
-    citation_key: arumugam2014
-    doi: 10.1016/j.bbrc.2014.07.129
-    journal: Biochem Biophys Res Commun
-    number: '26'
-    title: Keratin-6 driven ODC expression to hair follicle keratinocytes enhances
-      stemness and tumorigenesis by negatively regulating notch
-    year: '2014'
-  '27':
-    authors: Carrilho
-    citation_key: carrilho2004
-    doi: 10.1016/j.humpath.2004.01.021
-    journal: Hum Pathol
-    number: '27'
-    title: Keratins 8, 10, 13, and 17 are useful markers in the diagnosis of human
-      cervix carcinomas
-    year: '2004'
-  '28':
-    authors: Karantza
-    citation_key: karantza2011
-    doi: 10.1038/onc.2010.456
-    journal: Oncogene
-    number: '28'
-    title: 'Keratins in health and cancer: more than mere epithelial cell markers'
-    year: '2011'
-  '29':
-    authors: Yin
-    citation_key: yin2022
-    doi: 10.1186/s13058-022-01502-6
-    journal: Breast Cancer Res
-    number: '29'
-    title: KRT13 promotes stemness and drives metastasis in breast cancer through
-      a plakoglobin/c-Myc signaling pathway
-    year: '2022'
-  '3':
+  3:
     authors: Wallrapp
     citation_key: wallrapp2000
     doi: ''
     journal: Cancer Res
-    number: '3'
+    number: 3
     title: A novel transmembrane serine protease (TMPRSS3) overexpressed in pancreatic
       cancer
     year: '2000'
-  '30':
-    authors: Asfaha
-    citation_key: asfaha2015
-    doi: 10.1016/j.stem.2015.04.013
-    journal: Cell Stem Cell
-    number: '30'
-    title: KRT19(+)/Lgr5(−) cells are Radioresistant cancer-initiating stem cells
-      in the colon and intestine
-    year: '2015'
-  '31':
-    authors: Yang
-    citation_key: yang2020
-    doi: 10.1177/1533033820921248
-    journal: Technol Cancer Res Treat
-    number: '31'
-    title: KRT6A promotes EMT and cancer stem cell transformation in lung adenocarcinoma
-    year: '2020'
-  '32':
-    authors: Ida-yonemochi
-    citation_key: idayonemochi2012
-    doi: 10.1038/modpathol.2011.218
-    journal: Mod Pathol
-    number: '32'
-    title: 'Loss of keratin 13 in oral carcinoma in situ: a comparative study of protein
-      and gene expression levels using paraffin sections'
-    year: '2012'
-  '33':
-    authors: Alam
-    citation_key: alam2011
-    doi: 10.1242/jcs.073585
-    journal: J Cell Sci
-    number: '33'
-    title: Loss of keratins 8 and 18 leads to alterations in α6β4-integrin-mediated
-      signalling and decreased neoplastic progression in an oral-tumour-derived cell
-      line
-    year: '2011'
-  '34':
-    authors: Gzil
-    citation_key: gzil2019
-    doi: 10.1007/s11033-019-05058-1
-    journal: Mol Biol Rep
-    number: '34'
-    title: Markers of pancreatic cancer stem cells and their clinical and therapeutic
-      implications
-    year: '2019'
-  '35':
-    authors: Morimoto
-    citation_key: morimoto2020
-    doi: 10.1038/s41416-020-0758-1
-    journal: Br J Cancer
-    number: '35'
-    title: miR-4711-5p regulates cancer stemness and cell cycle progression via KLF5,
-      MDM2 and TFDP1 in colon cancer cells
-    year: '2020'
-  '36':
-    authors: Anaya
-    citation_key: anaya2016
-    doi: 10.7717/peerj-cs.67
-    journal: PeerJ Comput Sci
-    number: '36'
-    title: 'OncoLnc: linking TCGA survival data to mRNAs, miRNAs, and lncRNAs'
-    year: '2016'
-  '37':
-    authors: Saha
-    citation_key: saha2019
-    doi: 10.3390/cancers11010099
-    journal: Cancers (Basel)
-    number: '37'
-    title: Opposing regulation of cancer properties via KRT19-mediated differential
-      modulation of Wnt/β-catenin/notch Signaling in breast and colon cancers
-    year: '2019'
-  '38':
-    authors: Manasanch
-    citation_key: manasanch2017
-    doi: 10.1038/nrclinonc.2016.206
-    journal: Nat Rev Clin Oncol
-    number: '38'
-    title: Proteasome inhibitors in cancer therapy
-    year: '2017'
-  '39':
-    authors: Smith
-    citation_key: smith2009
-    doi: 10.1593/neo.09902
-    journal: Neoplasia
-    number: '39'
-    title: 'Proteomic identification of putative biomarkers of radiotherapy resistance:
-      a possible role for the 26S proteasome?'
-    year: '2009'
-  '4':
+  4:
     authors: Boyle
     citation_key: boyle2015
     doi: ''
     journal: J Gastrointest Oncol
-    number: '4'
+    number: 4
     title: 'Adjuvant radiation therapy for pancreatic cancer: a review of the old
       and the new'
     year: '2015'
-  '40':
-    authors: Hall
-    citation_key: hall2019
-    doi: 10.1186/s13014-019-1277-1
-    journal: Radiat Oncol
-    number: '40'
-    title: Radiation therapy for pancreatic adenocarcinoma, a treatment option that
-      must be considered in the management of a devastating malignancy
-    year: '2019'
-  '41':
-    authors: Della
-    citation_key: della2012
-    doi: 10.1002/pros.21489
-    journal: Prostate
-    number: '41'
-    title: Radioresistance of prostate cancer cells with low proteasome activity
-    year: '2012'
-  '42':
-    authors: Khan
-    citation_key: khan2020
-    doi: 10.1016/j.coph.2020.09.012
-    journal: Curr Opin Pharmacol
-    number: '42'
-    title: Recent developments in unraveling signaling mechanisms underlying drug
-      resistance due to cancer stem-like cells
-    year: '2020'
-  '43':
-    authors: Vlashi
-    citation_key: vlashi2013
-    doi: 10.1007/s10549-013-2688-6
-    journal: Breast Cancer Res Treat
-    number: '43'
-    title: Targeted elimination of breast cancer cells with low proteasome activity
-      is sufficient for tumor regression
-    year: '2013'
-  '44':
-    authors: Yang
-    citation_key: yang2020
-    doi: 10.1038/s41392-020-0110-5
-    journal: Signal Transduct Target Ther
-    number: '44'
-    title: Targeting cancer stem cell pathways for cancer therapy
-    year: '2020'
-  '45':
-    authors: Wu
-    citation_key: wu2017
-    doi: 10.1111/febs.14162
-    journal: FEBS J
-    number: '45'
-    title: TGF-β1-induced CK17 enhances cancer stem cell-like properties rather than
-      EMT in promoting cervical cancer metastasis via the ERK1/2-MZF1 signaling pathway
-    year: '2017'
-  '46':
-    authors: Moll
-    citation_key: moll2008
-    doi: 10.1007/s00418-008-0435-6
-    journal: Histochem Cell Biol
-    number: '46'
-    title: 'The human keratins: biology and pathology'
-    year: '2008'
-  '47':
-    authors: Zhang
-    citation_key: zhang2013
-    doi: 10.1097/JTO.0b013e3182a5fdcb
-    journal: J Thorac Oncol
-    number: '47'
-    title: Therapy-resistant cancer stem cells have differing sensitivity to photon
-      versus proton beam radiation
-    year: '2013'
-  '48':
-    authors: Barcellos-Hoff
-    citation_key: barcelloshoff1994
-    doi: 10.1172/JCI117045
-    journal: J Clin Invest
-    number: '48'
-    title: Transforming growth factor-beta activation in irradiated murine mammary
-      gland
-    year: '1994'
-  '49':
-    authors: Lagadec
-    citation_key: lagadec2014
-    doi: 10.1186/1471-2407-14-152
-    journal: BMC Cancer
-    number: '49'
-    title: Tumor cells with low proteasome subunit expression predict overall survival
-      in head and neck cancer patients
-    year: '2014'
-  '5':
+  5:
     authors: Diehn
     citation_key: diehn2009
     doi: 10.1038/nature07733
     journal: Nature
-    number: '5'
+    number: 5
     title: Association of reactive oxygen species levels and radioresistance in cancer
       stem cells
     year: '2009'
-  '50':
-    authors: Tewari
-    citation_key: tewari2014
-    doi: 10.1038/jid.2014.173
-    journal: J Invest Dermatol
-    number: '50'
-    title: 'Upregulation of MMP12 and its activity by UVA1 in human skin: potential
-      implications for photoaging'
-    year: '2014'
-  '51':
-    authors: Wen
-    citation_key: wen2022
-    doi: 10.2217/bmm-2021-0649
-    journal: Biomark Med
-    number: '51'
-    title: Upregulation of the transmembrane protease serine 3 mRNA level in radioresistant
-      colorectal cancer tissues
-    year: '2022'
-  '52':
-    authors: Hayashi
-    citation_key: hayashi2014
-    doi: 10.3892/ijo.2014.2670
-    journal: Int J Oncol
-    number: '52'
-    title: Visualization and characterization of cancer stem-like cells in cervical
-      cancer
-    year: '2014'
-  '6':
+  6:
     authors: Baek
     citation_key: baek2015
     doi: 10.3892/or.2015.4236
     journal: Oncol Rep
-    number: '6'
+    number: 6
     title: 'Cancer stem cells: the potential of carbon ion beam radiation and new
       radiosensitizers (review)'
     year: '2015'
-  '7':
+  7:
     authors: Munakata
     citation_key: munakata2016
     doi: 10.1158/1078-0432.CCR-15-1945
     journal: Clin Cancer Res
-    number: '7'
+    number: 7
     title: Cancer stem-like properties in colorectal cancer cells with low proteasome
       activity
     year: '2016'
-  '8':
+  8:
     authors: Hiraki
     citation_key: hiraki2015
     doi: 10.1038/mtna.2015.5
     journal: Mol Ther Nucleic Acids
-    number: '8'
+    number: 8
     title: Concurrent targeting of KRAS and AKT by MiR-4689 is a novel treatment against
       mutant KRAS colorectal cancer
     year: '2015'
-  '9':
+  9:
     authors: Saha
     citation_key: saha2018
     doi: 10.3390/ijms19051423
     journal: Int J Mol Sci
-    number: '9'
+    number: 9
     title: Cytokeratin 19 (KRT19) has a role in the reprogramming of cancer stem cell-like
       cells to less aggressive and more drug-sensitive cells
     year: '2018'
+  10:
+    authors: Cui
+    citation_key: cui2011
+    doi: 10.1158/0008-5472.CAN-10-2926
+    journal: Cancer Res
+    number: 10
+    title: Effects of carbon ion beam on putative colon cancer stem cells and its
+      comparison with x-rays
+    year: '2011'
+  11:
+    authors: Nguyen
+    citation_key: nguyen2021
+    doi: 10.1007/s11626-020-00542-6
+    journal: In Vitro Cell Dev Biol Anim
+    number: 11
+    title: Enhanced KRT13 gene expression bestows radiation resistance in squamous
+      cell carcinoma cells
+    year: '2021'
+  12:
+    authors: Naganuma
+    citation_key: naganuma2014
+    doi: 10.1186/1471-2407-14-988
+    journal: BMC Cancer
+    number: 12
+    title: Epigenetic alterations of the keratin 13 gene in oral squamous cell carcinoma
+    year: '2014'
+  13:
+    authors: Malecha
+    citation_key: malecha1991
+    doi: 10.1007/BF01606063
+    journal: Virchows Arch A Pathol Anat Histopathol
+    number: 13
+    title: Expression of keratin 13 in human epithelial neoplasms
+    year: '1991'
+  14:
+    authors: Wang
+    citation_key: wang2022
+    doi: 10.3892/ijo.2022.5303
+    journal: Int J Oncol
+    number: 14
+    title: Functional assessment of miR-1291 in colon cancer cells
+    year: '2022'
+  15:
+    authors: Sung
+    citation_key: sung2021
+    doi: 10.3322/caac.21660
+    journal: CA Cancer J Clin
+    number: 15
+    title: 'Global cancer statistics 2020: GLOBOCAN estimates of incidence and mortality
+      worldwide for 36 cancers in 185 countries'
+    year: '2021'
+  16:
+    authors: Tamari
+    citation_key: tamari2014
+    doi: 10.3892/ijo.2014.2671
+    journal: Int J Oncol
+    number: 16
+    title: Identification of chemoradiation-resistant osteosarcoma stem cells using
+      an imaging system for proteasome activity
+    year: '2014'
+  17:
+    authors: Marsit
+    citation_key: marsit2010
+    doi: 10.1371/journal.pone.0012334
+    journal: PLoS One
+    number: 17
+    title: Identification of methylated genes associated with aggressive bladder cancer
+    year: '2010'
+  18:
+    authors: Adikrisna
+    citation_key: adikrisna2012
+    doi: 10.1053/j.gastro.2012.03.054
+    journal: Gastroenterology
+    number: 18
+    title: Identification of pancreatic cancer stem cells and selective toxicity of
+      chemotherapeutic agents
+    year: '2012'
+  19:
+    authors: Adikrisna
+    citation_key: adikrisna2012
+    doi: 10.1053/j.gastro.2012.03.054
+    journal: Gastroenterology
+    number: 19
+    title: Identification of pancreatic cancer stem cells and selective toxicity of
+      chemotherapeutic agents
+    year: '2012'
+  20:
+    authors: Vlashi
+    citation_key: vlashi2009
+    doi: 10.1093/jnci/djn509
+    journal: J Natl Cancer Inst
+    number: 20
+    title: In vivo imaging, tracking, and targeting of cancer stem cells
+    year: '2009'
+  21:
+    authors: Wu
+    citation_key: wu2015
+    doi: 10.1371/journal.pone.0116022
+    journal: PLoS One
+    number: 21
+    title: Innovative delivery of siRNA to solid tumors by super carbonate apatite
+    year: '2015'
+  22:
+    authors: Li
+    citation_key: li2016
+    doi: 10.18632/oncotarget.13175
+    journal: Oncotarget
+    number: 22
+    title: Keratin 13 expression reprograms bone and brain metastases of human prostate
+      cancer cells
+    year: '2016'
+  23:
+    authors: Liu
+    citation_key: liu2016
+    doi: 10.1371/journal.pone.0163232
+    journal: PLoS One
+    number: 23
+    title: Keratin 13 is enriched in prostate tubule-initiating cells and may identify
+      primary prostate tumors that metastasize to the bone
+    year: '2016'
+  24:
+    authors: Kawai
+    citation_key: kawai2015
+    doi: 10.1158/1078-0432.CCR-14-1936
+    journal: Clin Cancer Res
+    number: 24
+    title: Keratin 19, a cancer stem cell marker in human hepatocellular carcinoma
+    year: '2015'
+  25:
+    authors: Escobar-hoyos
+    citation_key: escobarhoyos2015
+    doi: 10.1158/0008-5472.CAN-15-0293
+    journal: Cancer Res
+    number: 25
+    title: Keratin-17 promotes p27 KIP1 nuclear export and degradation and offers
+      potential prognostic utility
+    year: '2015'
+  26:
+    authors: Arumugam
+    citation_key: arumugam2014
+    doi: 10.1016/j.bbrc.2014.07.129
+    journal: Biochem Biophys Res Commun
+    number: 26
+    title: Keratin-6 driven ODC expression to hair follicle keratinocytes enhances
+      stemness and tumorigenesis by negatively regulating notch
+    year: '2014'
+  27:
+    authors: Carrilho
+    citation_key: carrilho2004
+    doi: 10.1016/j.humpath.2004.01.021
+    journal: Hum Pathol
+    number: 27
+    title: Keratins 8, 10, 13, and 17 are useful markers in the diagnosis of human
+      cervix carcinomas
+    year: '2004'
+  28:
+    authors: Karantza
+    citation_key: karantza2011
+    doi: 10.1038/onc.2010.456
+    journal: Oncogene
+    number: 28
+    title: 'Keratins in health and cancer: more than mere epithelial cell markers'
+    year: '2011'
+  29:
+    authors: Yin
+    citation_key: yin2022
+    doi: 10.1186/s13058-022-01502-6
+    journal: Breast Cancer Res
+    number: 29
+    title: KRT13 promotes stemness and drives metastasis in breast cancer through
+      a plakoglobin/c-Myc signaling pathway
+    year: '2022'
+  30:
+    authors: Asfaha
+    citation_key: asfaha2015
+    doi: 10.1016/j.stem.2015.04.013
+    journal: Cell Stem Cell
+    number: 30
+    title: KRT19(+)/Lgr5(−) cells are Radioresistant cancer-initiating stem cells
+      in the colon and intestine
+    year: '2015'
+  31:
+    authors: Yang
+    citation_key: yang2020
+    doi: 10.1177/1533033820921248
+    journal: Technol Cancer Res Treat
+    number: 31
+    title: KRT6A promotes EMT and cancer stem cell transformation in lung adenocarcinoma
+    year: '2020'
+  32:
+    authors: Ida-yonemochi
+    citation_key: idayonemochi2012
+    doi: 10.1038/modpathol.2011.218
+    journal: Mod Pathol
+    number: 32
+    title: 'Loss of keratin 13 in oral carcinoma in situ: a comparative study of protein
+      and gene expression levels using paraffin sections'
+    year: '2012'
+  33:
+    authors: Alam
+    citation_key: alam2011
+    doi: 10.1242/jcs.073585
+    journal: J Cell Sci
+    number: 33
+    title: Loss of keratins 8 and 18 leads to alterations in α6β4-integrin-mediated
+      signalling and decreased neoplastic progression in an oral-tumour-derived cell
+      line
+    year: '2011'
+  34:
+    authors: Gzil
+    citation_key: gzil2019
+    doi: 10.1007/s11033-019-05058-1
+    journal: Mol Biol Rep
+    number: 34
+    title: Markers of pancreatic cancer stem cells and their clinical and therapeutic
+      implications
+    year: '2019'
+  35:
+    authors: Morimoto
+    citation_key: morimoto2020
+    doi: 10.1038/s41416-020-0758-1
+    journal: Br J Cancer
+    number: 35
+    title: miR-4711-5p regulates cancer stemness and cell cycle progression via KLF5,
+      MDM2 and TFDP1 in colon cancer cells
+    year: '2020'
+  36:
+    authors: Anaya
+    citation_key: anaya2016
+    doi: 10.7717/peerj-cs.67
+    journal: PeerJ Comput Sci
+    number: 36
+    title: 'OncoLnc: linking TCGA survival data to mRNAs, miRNAs, and lncRNAs'
+    year: '2016'
+  37:
+    authors: Saha
+    citation_key: saha2019
+    doi: 10.3390/cancers11010099
+    journal: Cancers (Basel)
+    number: 37
+    title: Opposing regulation of cancer properties via KRT19-mediated differential
+      modulation of Wnt/β-catenin/notch Signaling in breast and colon cancers
+    year: '2019'
+  38:
+    authors: Manasanch
+    citation_key: manasanch2017
+    doi: 10.1038/nrclinonc.2016.206
+    journal: Nat Rev Clin Oncol
+    number: 38
+    title: Proteasome inhibitors in cancer therapy
+    year: '2017'
+  39:
+    authors: Smith
+    citation_key: smith2009
+    doi: 10.1593/neo.09902
+    journal: Neoplasia
+    number: 39
+    title: 'Proteomic identification of putative biomarkers of radiotherapy resistance:
+      a possible role for the 26S proteasome?'
+    year: '2009'
+  40:
+    authors: Hall
+    citation_key: hall2019
+    doi: 10.1186/s13014-019-1277-1
+    journal: Radiat Oncol
+    number: 40
+    title: Radiation therapy for pancreatic adenocarcinoma, a treatment option that
+      must be considered in the management of a devastating malignancy
+    year: '2019'
+  41:
+    authors: Della
+    citation_key: della2012
+    doi: 10.1002/pros.21489
+    journal: Prostate
+    number: 41
+    title: Radioresistance of prostate cancer cells with low proteasome activity
+    year: '2012'
+  42:
+    authors: Khan
+    citation_key: khan2020
+    doi: 10.1016/j.coph.2020.09.012
+    journal: Curr Opin Pharmacol
+    number: 42
+    title: Recent developments in unraveling signaling mechanisms underlying drug
+      resistance due to cancer stem-like cells
+    year: '2020'
+  43:
+    authors: Vlashi
+    citation_key: vlashi2013
+    doi: 10.1007/s10549-013-2688-6
+    journal: Breast Cancer Res Treat
+    number: 43
+    title: Targeted elimination of breast cancer cells with low proteasome activity
+      is sufficient for tumor regression
+    year: '2013'
+  44:
+    authors: Yang
+    citation_key: yang2020
+    doi: 10.1038/s41392-020-0110-5
+    journal: Signal Transduct Target Ther
+    number: 44
+    title: Targeting cancer stem cell pathways for cancer therapy
+    year: '2020'
+  45:
+    authors: Wu
+    citation_key: wu2017
+    doi: 10.1111/febs.14162
+    journal: FEBS J
+    number: 45
+    title: TGF-β1-induced CK17 enhances cancer stem cell-like properties rather than
+      EMT in promoting cervical cancer metastasis via the ERK1/2-MZF1 signaling pathway
+    year: '2017'
+  46:
+    authors: Moll
+    citation_key: moll2008
+    doi: 10.1007/s00418-008-0435-6
+    journal: Histochem Cell Biol
+    number: 46
+    title: 'The human keratins: biology and pathology'
+    year: '2008'
+  47:
+    authors: Zhang
+    citation_key: zhang2013
+    doi: 10.1097/JTO.0b013e3182a5fdcb
+    journal: J Thorac Oncol
+    number: 47
+    title: Therapy-resistant cancer stem cells have differing sensitivity to photon
+      versus proton beam radiation
+    year: '2013'
+  48:
+    authors: Barcellos-Hoff
+    citation_key: barcelloshoff1994
+    doi: 10.1172/JCI117045
+    journal: J Clin Invest
+    number: 48
+    title: Transforming growth factor-beta activation in irradiated murine mammary
+      gland
+    year: '1994'
+  49:
+    authors: Lagadec
+    citation_key: lagadec2014
+    doi: 10.1186/1471-2407-14-152
+    journal: BMC Cancer
+    number: 49
+    title: Tumor cells with low proteasome subunit expression predict overall survival
+      in head and neck cancer patients
+    year: '2014'
+  50:
+    authors: Tewari
+    citation_key: tewari2014
+    doi: 10.1038/jid.2014.173
+    journal: J Invest Dermatol
+    number: 50
+    title: 'Upregulation of MMP12 and its activity by UVA1 in human skin: potential
+      implications for photoaging'
+    year: '2014'
+  51:
+    authors: Wen
+    citation_key: wen2022
+    doi: 10.2217/bmm-2021-0649
+    journal: Biomark Med
+    number: 51
+    title: Upregulation of the transmembrane protease serine 3 mRNA level in radioresistant
+      colorectal cancer tissues
+    year: '2022'
+  52:
+    authors: Hayashi
+    citation_key: hayashi2014
+    doi: 10.3892/ijo.2014.2670
+    journal: Int J Oncol
+    number: 52
+    title: Visualization and characterization of cancer stem-like cells in cervical
+      cancer
+    year: '2014'
 created: 2025-06-09
 doi: 10.1093/jrr/rrac091
-last_updated: '2025-06-15T14:13:46.644810'
+last_updated: '2025-06-16T06:58:05.269655'
 paper_structure:
-  parsed_at: '2025-06-15T14:13:46.641831'
+  parsed_at: '2025-06-16T06:58:05.266944'
   section_types_found:
   - abstract
   - introduction
@@ -625,7 +625,7 @@ processing_status:
 source: https://academic.oup.com/jrr/article/64/2/284/6968637
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-15T14:13:45.628860'
+  checked_at: '2025-06-16T06:58:04.000878'
   consistency_status: inconsistent
   corrections_applied: []
   issues_detected: 1
