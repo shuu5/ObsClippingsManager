@@ -20,6 +20,29 @@ ai_generation:
   default_model: "claude-3-5-haiku-20241022"
   api_key_env: "ANTHROPIC_API_KEY"  # Read from .env file
 
+# Enhanced Tagger Settings
+enhanced_tagger:
+  enabled: true
+  batch_size: 8
+  retry_attempts: 3
+  request_delay: 1.0
+
+# Enhanced Translate Settings
+enhanced_translate:
+  enabled: true
+  batch_size: 5
+  retry_attempts: 3
+  request_delay: 1.0
+
+# Ochiai Format Settings
+ochiai_format:
+  enabled: true
+  batch_size: 3
+  retry_attempts: 3
+  request_delay: 1.0
+  max_content_length: 10000
+  enable_section_integration: true
+
 # Logging Settings
 logging:
   log_file: "logs/obsclippings.log"

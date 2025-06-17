@@ -1,13 +1,39 @@
 ---
 ai_content:
-  abstract_japanese:
-    content: 膵臓癌は世界で最も悪性度の高いがんの一つであり、がん関連死因の第7位を占めている。放射線療法は抗がん剤と共に補助療法として実施されている。がん幹細胞（CSCs）は放射線抵抗性であり、再発や転移の原因と考えられているため、その特性を理解することは新規治療戦略の開発に不可欠である。本研究では、プロテアソーム活性の低い膵臓がん幹細胞モデルであるdegron
-      (++)細胞を用いて、がん幹細胞の特性を調査した。Degron (++)細胞は対照群細胞と比較して放射線抵抗性を示した。RNA配列解析により、放射線抵抗性に責任を持つ候補遺伝子として*KRT13*を同定することに成功した。*KRT13*のノックダウンにより、degron
-      (++)細胞の放射線感受性が増加した。さらに、データベース検索の結果、*KRT13*が膵臓がん細胞株で上方制御されており、その高発現が予後不良と関連していることが明らかとなった。これらの結果は、*KRT13*ノックダウンと放射線療法の併用が膵臓がんに対する治療の可能性を示唆している。
-    generated_at: '2025-06-16T16:25:46.478677'
+  ochiai_format:
+    generated_at: '2025-06-17T09:38:32.836020'
+    questions: !!python/object/apply:collections.OrderedDict
+    - - - what_is_this
+        - 膵臓がん幹細胞における放射線抵抗性に関連するKRT13遺伝子の機能を解析した研究。低プロテアソーム活性を持つ細胞集団を用いて、放射線抵抗性のメカニズムを探求している。
+      - - what_is_superior
+        - 従来の細胞表面マーカーによる幹細胞分離法とは異なり、プロテアソーム活性に基づく新しい細胞分離システムを使用。これにより、より汎用性が高く、正確な幹細胞の同定が可能となった。
+      - - technical_key
+        - ZsGreen-ODCデグロンフュージョンレポーターシステムを用いて、低プロテアソーム活性を持つ膵臓がん幹細胞様細胞を分離し、RNA配列解析によってKRT13遺伝子を同定した点。
+      - - validation_method
+        - '1. FACS（蛍光活性細胞選別）による細胞分離
+
+          2. RNA配列解析
+
+          3. KRT13遺伝子のノックダウン実験
+
+          4. 放射線感受性試験
+
+          5. データベース解析による臨床的意義の検証'
+      - - discussion_points
+        - '1. KRT13遺伝子の放射線抵抗性メカニズムの詳細なメカニズムは未解明
+
+          2. 他のシグナル経路（PI3K/AKTなど）との関連性の更なる研究が必要
+
+          3. 臨床応用に向けた追加検証が求められる'
+      - - next_papers
+        - '1. KRT13遺伝子の詳細な機能メカニズム研究
+
+          2. 膵臓がん幹細胞の放射線抵抗性に関する追加研究
+
+          3. がん幹細胞の分離・同定に関する新技術開発の論文'
 citation_key: takenakaW2023J.Radiat.Res.Tokyo
 citation_metadata:
-  last_updated: '2025-06-16T16:25:05.922781'
+  last_updated: '2025-06-17T09:38:07.721113'
   mapping_version: '2.0'
   references_bib_path: test_output/latest/workspace/Clippings/takenakaW2023J.Radiat.Res.Tokyo/references.bib
   source_bibtex: references.bib
@@ -470,9 +496,9 @@ citations:
     year: '2014'
 created: 2025-06-09
 doi: 10.1093/jrr/rrac091
-last_updated: '2025-06-16T16:25:46.478695'
+last_updated: '2025-06-17T09:38:07.547170'
 paper_structure:
-  parsed_at: '2025-06-16T16:25:05.748418'
+  parsed_at: '2025-06-17T09:38:07.545728'
   section_types_found:
   - abstract
   - introduction
@@ -628,27 +654,15 @@ processing_status:
   organize: completed
   section_parsing: completed
   sync: failed
-  translate_abstract: completed
 source: https://academic.oup.com/jrr/article/64/2/284/6968637
 sync_metadata:
   auto_corrections_applied: 0
-  checked_at: '2025-06-16T16:25:04.763866'
+  checked_at: '2025-06-17T09:38:06.439173'
   consistency_status: inconsistent
   corrections_applied: []
   issues_detected: 1
 title: KRT13 is upregulated in pancreatic cancer stem-like cells and associated with
   radioresistance
-translation_quality:
-  accuracy_score: 0.875
-  completeness_score: 0.49114853195164077
-  consistency_score: 0.4
-  evaluation_timestamp: '2025-06-16T16:25:46.453734'
-  fluency_score: 1.0
-  has_suggestions: true
-  length_ratio: 0.39291882556131263
-  original_length: 1158
-  quality_score: 0.6723445595854922
-  translation_length: 455
 workflow_version: '3.2'
 ---
 

@@ -3,11 +3,11 @@ test_execution:
     api_cost_savings: true
     disabled_features:
     - enhanced-tagger
-    - ochiai-format
-    enabled_features:
     - enhanced-translate
+    enabled_features:
+    - ochiai-format
     mode: development
-    summary: 'AI機能: enhanced-translate のみ有効'
+    summary: 'AI機能: ochiai-format のみ有効'
   basic_checks:
     backup_exists: true
     clippings_processed: true
@@ -20,7 +20,7 @@ test_execution:
     - citation_fetcher
     - section_parsing
     - ai_citation_support
-    - enhanced-translate
+    - ochiai-format
     status: success
   status: success
-  timestamp: '2025-06-16T16:25:46.499764'
+  timestamp: '2025-06-17T09:38:33.885016'

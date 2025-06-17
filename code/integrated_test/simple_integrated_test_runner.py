@@ -426,15 +426,39 @@ class SimpleIntegratedTestRunner:
             if self.ai_controller.is_ochiai_enabled():
                 try:
                     self.logger.info("Attempting to import OchiaiFormatWorkflow")
-                    from code.py.modules.ochiai_format.ochiai_format_workflow import OchiaiFormatWorkflow
+                    from code.py.modules.ai_tagging_translation.ochiai_format_workflow import OchiaiFormatWorkflow
                     self.logger.info("OchiaiFormatWorkflow imported successfully")
                     
                     ochiai_workflow = OchiaiFormatWorkflow(self.config_manager, self.integrated_logger)
                     self.logger.info("OchiaiFormatWorkflow initialized")
                     
                     self.logger.info("Starting ochiai-format workflow")
-                    # TODO: ochiai-format機能実装時に実装
-                    modules_executed.append('ochiai-format')
+                    # 処理対象のmarkdownファイルを取得してochiai-format処理実行
+                    clippings_dir = workspace_path / "Clippings"
+                    if clippings_dir.exists():
+                        # サブディレクトリ内のmarkdownファイルを対象とする
+                        target_papers = []
+                        for subdir in clippings_dir.iterdir():
+                            if subdir.is_dir():
+                                # サブディレクトリ名をtarget_papersに追加
+                                target_papers.append(subdir.name)
+                        
+                        if target_papers:
+                            self.logger.info(f"Processing ochiai-format for {len(target_papers)} papers")
+                            ochiai_result = ochiai_workflow.process_items(str(clippings_dir), target_papers)
+                            
+                            processed_papers = ochiai_result.get('processed', 0)
+                            skipped_papers = ochiai_result.get('skipped', 0)
+                            failed_papers = ochiai_result.get('failed', 0)
+                            
+                            self.logger.info(f"Ochiai-format completed: {processed_papers} papers processed, "
+                                           f"{skipped_papers} skipped, {failed_papers} failed")
+                            
+                            modules_executed.append('ochiai-format')
+                        else:
+                            self.logger.warning("No organized papers found for ochiai-format")
+                    else:
+                        self.logger.warning("Clippings directory not found for ochiai-format")
                     
                 except ImportError as e:
                     self.logger.warning(f"OchiaiFormatWorkflow ImportError (未実装): {e}")
