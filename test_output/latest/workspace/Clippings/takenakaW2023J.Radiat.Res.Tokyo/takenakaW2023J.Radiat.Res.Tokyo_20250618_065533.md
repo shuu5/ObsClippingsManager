@@ -1,9 +1,318 @@
 ---
-title: "KRT13 is upregulated in pancreatic cancer stem-like cells and associated with radioresistance"
-doi: "10.1093/jrr/rrac091"
-source: "https://academic.oup.com/jrr/article/64/2/284/6968637"
+citation_key: takenakaW2023J.Radiat.Res.Tokyo
+citation_normalization:
+  generated_at: '2025-06-18T06:55:34.280407'
+  parser_used: oxford_academic_parser
+  patterns_normalized:
+  - normalized: '[50–52]'
+    original: '[50–52]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 37221
+  - normalized: '[36]'
+    original: '[36]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 36145
+  - normalized: '[49]'
+    original: '[49]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 35954
+  - normalized: '[48]'
+    original: '[48]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 35820
+  - normalized: '[46,47]'
+    original: '[46,47]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 35616
+  - normalized: '[44,45]'
+    original: '[44,45]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 35484
+  - normalized: '[43]'
+    original: '[43]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 35328
+  - normalized: '[41,42]'
+    original: '[41,42]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 35074
+  - normalized: '[27,28]'
+    original: '[27,28]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 34900
+  - normalized: '[40]'
+    original: '[40]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 34749
+  - normalized: '[39]'
+    original: '[39]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 34681
+  - normalized: '[37,38]'
+    original: '[37,38]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 34344
+  - normalized: '[35,36]'
+    original: '[35,36]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 34107
+  - normalized: '[26–28,34]'
+    original: '[26–28,34]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 33670
+  - normalized: '[33]'
+    original: '[33]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 33372
+  - normalized: '[32]'
+    original: '[32]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 33290
+  - normalized: '[31]'
+    original: '[31]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 33035
+  - normalized: '[30]'
+    original: '[30]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 32836
+  - normalized: '[23]'
+    original: '[23]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 29460
+  - normalized: '[22]'
+    original: '[22]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 29294
+  - normalized: '[12]'
+    original: '[12]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 28829
+  - normalized: '[26–29]'
+    original: '[26–29]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 19148
+  - normalized: '[25]'
+    original: '[25]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 10539
+  - normalized: '[24]'
+    original: '[24]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 8993
+  - normalized: '[23]'
+    original: '[23]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 7764
+  - normalized: '[22,23]'
+    original: '[22,23]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 4550
+  - normalized: '[14–21]'
+    original: '[14–21]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 3707
+  - normalized: '[12,13]'
+    original: '[12,13]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 3092
+  - normalized: '[11]'
+    original: '[11]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 2948
+  - normalized: '[10]'
+    original: '[10]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 2596
+  - normalized: '[9]'
+    original: '[9]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 2277
+  - normalized: '[4–8]'
+    original: '[4–8]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 1987
+  - normalized: '[2,3]'
+    original: '[2,3]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 1450
+  - normalized: '[1]'
+    original: '[1]'
+    pattern_description: 既存角括弧形式（変換不要）
+    position: 1376
+  publisher_detected: oxford_academic
+  total_citations_normalized: 34
 created: 2025-06-09
+doi: 10.1093/jrr/rrac091
+last_updated: '2025-06-18T06:55:33.966553'
+paper_structure:
+  parsed_at: '2025-06-18T06:55:23.952150'
+  section_types_found:
+  - abstract
+  - introduction
+  - methods
+  - results
+  - discussion
+  - unknown
+  - references
+  sections:
+  - end_line: 9
+    level: 2
+    section_type: abstract
+    start_line: 6
+    subsections: []
+    title: Abstract
+    word_count: 164
+  - end_line: 21
+    level: 2
+    section_type: introduction
+    start_line: 10
+    subsections: []
+    title: INTRODUCTION
+    word_count: 467
+  - end_line: 23
+    level: 2
+    section_type: methods
+    start_line: 22
+    subsections:
+    - end_line: 27
+      level: 3
+      start_line: 24
+      title: Generation of a pancreatic CSC model
+      word_count: 215
+    - end_line: 31
+      level: 3
+      start_line: 28
+      title: Irradiation
+      word_count: 28
+    - end_line: 35
+      level: 3
+      start_line: 32
+      title: Colony formation assay
+      word_count: 48
+    - end_line: 39
+      level: 3
+      start_line: 36
+      title: Flow cytometry analysis
+      word_count: 113
+    - end_line: 43
+      level: 3
+      start_line: 40
+      title: Sphere formation assay
+      word_count: 134
+    - end_line: 53
+      level: 3
+      start_line: 44
+      title: Reverse transcription quantitative PCR analysis
+      word_count: 102
+    - end_line: 57
+      level: 3
+      start_line: 54
+      title: RNA sequence data
+      word_count: 131
+    - end_line: 61
+      level: 3
+      start_line: 58
+      title: siRNA transfection
+      word_count: 46
+    - end_line: 65
+      level: 3
+      start_line: 62
+      title: Data analysis
+      word_count: 43
+    - end_line: 69
+      level: 3
+      start_line: 66
+      title: Statistics
+      word_count: 36
+    title: MATERIALS AND METHODS
+    word_count: 4
+  - end_line: 71
+    level: 2
+    section_type: results
+    start_line: 70
+    subsections:
+    - end_line: 83
+      level: 3
+      start_line: 72
+      title: Generation of the pancreatic CSC model
+      word_count: 493
+    - end_line: 95
+      level: 3
+      start_line: 84
+      title: Degron (++) cells displayed higher radioresistance
+      word_count: 310
+    - end_line: 107
+      level: 3
+      start_line: 96
+      title: KRT13 gene expression was upregulated in degron (++) cells
+      word_count: 151
+    - end_line: 119
+      level: 3
+      start_line: 108
+      title: KRT13 knockdown decreased radioresistance and stem-like cell property
+        in degron (++) cells
+      word_count: 522
+    - end_line: 131
+      level: 3
+      start_line: 120
+      title: KRT13 is upregulated in pancreatic cancer and associated with poor prognosis
+      word_count: 202
+    title: RESULTS
+    word_count: 2
+  - end_line: 145
+    level: 2
+    section_type: discussion
+    start_line: 132
+    subsections: []
+    title: DISCUSSION
+    word_count: 1049
+  - end_line: 149
+    level: 2
+    section_type: unknown
+    start_line: 146
+    subsections: []
+    title: CONFLICT OF INTEREST
+    word_count: 12
+  - end_line: 153
+    level: 2
+    section_type: unknown
+    start_line: 150
+    subsections: []
+    title: FUNDING
+    word_count: 24
+  - end_line: 2069
+    level: 2
+    section_type: references
+    start_line: 154
+    subsections: []
+    title: References
+    word_count: 1137
+  - end_line: 2082
+    level: 2
+    section_type: unknown
+    start_line: 2070
+    subsections: []
+    title: Supplementary data
+    word_count: 25
+  total_sections: 9
+processing_status:
+  citation_pattern_normalizer: completed
+  organize: completed
+  section_parsing: completed
+  sync: failed
+source: https://academic.oup.com/jrr/article/64/2/284/6968637
+sync_metadata:
+  auto_corrections_applied: 0
+  checked_at: '2025-06-18T06:55:24.169096'
+  consistency_status: inconsistent
+  corrections_applied: []
+  issues_detected: 1
+title: KRT13 is upregulated in pancreatic cancer stem-like cells and associated with
+  radioresistance
+workflow_version: '3.2'
 ---
+
 [Skip to Main Content](https://academic.oup.com/jrr/article/64/2/284/#skipNav)
 
 Journal Article
@@ -14,13 +323,13 @@ Pancreatic cancer is one of the most aggressive cancers and the seventh leading 
 
 ## INTRODUCTION
 
-Pancreatic cancer is one of the most aggressive cancers and its prognosis is extremely poor worldwide \[[1](https://academic.oup.com/jrr/article/64/2/284/)\]. Radiotherapy is an option for adjuvant therapy for pancreatic cancer \[[2](https://academic.oup.com/jrr/article/64/2/284/), [3](https://academic.oup.com/jrr/article/64/2/284/)\]. Although several irradiation methods with high accuracy, such as intensity-modulated radiation therapy, equipment and treatment planning systems have been developed, some patients still experience recurrence.
+Pancreatic cancer is one of the most aggressive cancers and its prognosis is extremely poor worldwide [1]. Radiotherapy is an option for adjuvant therapy for pancreatic cancer [2,3]. Although several irradiation methods with high accuracy, such as intensity-modulated radiation therapy, equipment and treatment planning systems have been developed, some patients still experience recurrence.
 
-One possible reason for this problem is the existence of cancer stem-like cells (CSCs). Many studies have shown that CSCs constitute a small population existing in the tumor and have the capacity for self-renewal, high tumorigenicity and resistance to conventional cancer therapies such as radiotherapy and chemotherapy \[[4–8](https://academic.oup.com/jrr/article/64/2/284/)\]. The CSC population is therefore considered to be the source of recurrence and metastasis. Although a number of studies have been conducted to elucidate the properties of CSCs and establish a new treatment strategy for targeting them, as yet no therapeutic targeting CSC is available \[[9](https://academic.oup.com/jrr/article/64/2/284/)\].
+One possible reason for this problem is the existence of cancer stem-like cells (CSCs). Many studies have shown that CSCs constitute a small population existing in the tumor and have the capacity for self-renewal, high tumorigenicity and resistance to conventional cancer therapies such as radiotherapy and chemotherapy [4–8]. The CSC population is therefore considered to be the source of recurrence and metastasis. Although a number of studies have been conducted to elucidate the properties of CSCs and establish a new treatment strategy for targeting them, as yet no therapeutic targeting CSC is available [9].
 
-One difficulty in analyzing the properties of CSCs is the isolation of the CSC population from tumors. To acquire the CSC population, cell surface markers are often used. In pancreatic cancer, several cell surface markers, such as CD133, CD24, CD44 and epithelial specific antigen, are reported to be CSC markers \[[10](https://academic.oup.com/jrr/article/64/2/284/)\]. In addition to the cell surface markers, low proteasome activity is reportedly a hallmark of CSCs. The proteasome is an enzymatic protein complex that degrades unnecessary or damaged proteins. Cancer cells have high proteasome activity; therefore, proteasome inhibitors such as bortezomib and carfilzomib are used clinically as anti-cancer drugs \[[11](https://academic.oup.com/jrr/article/64/2/284/)\]. On the other hand, it has been demonstrated that cancer cells with low proteasome activity have CSC properties, including radioresistance \[[12](https://academic.oup.com/jrr/article/64/2/284/), [13](https://academic.oup.com/jrr/article/64/2/284/)\]. CSCs can thus be purified on the basis of this difference in proteasome activity.
+One difficulty in analyzing the properties of CSCs is the isolation of the CSC population from tumors. To acquire the CSC population, cell surface markers are often used. In pancreatic cancer, several cell surface markers, such as CD133, CD24, CD44 and epithelial specific antigen, are reported to be CSC markers [10]. In addition to the cell surface markers, low proteasome activity is reportedly a hallmark of CSCs. The proteasome is an enzymatic protein complex that degrades unnecessary or damaged proteins. Cancer cells have high proteasome activity; therefore, proteasome inhibitors such as bortezomib and carfilzomib are used clinically as anti-cancer drugs [11]. On the other hand, it has been demonstrated that cancer cells with low proteasome activity have CSC properties, including radioresistance [12,13]. CSCs can thus be purified on the basis of this difference in proteasome activity.
 
-To assess their proteasome activity, cells are engineered to stably express green fluorescent protein (ZsGreen) fused to the degron sequence of ornithine decarboxylase (ODC), which is directly recognized by the proteasome. Because ZsGreen accumulates in cells such as CSCs that have low proteasome activity, this degron system enables real-time monitoring and cell sorting of CSCs without any treatment. In addition, this system is useful for multiple cancer types because proteasome activity is a common biologic property \[[14–21](https://academic.oup.com/jrr/article/64/2/284/)\]. Collectively, this method is better than cell surface marker methods, which depend on cancer type and require staining.
+To assess their proteasome activity, cells are engineered to stably express green fluorescent protein (ZsGreen) fused to the degron sequence of ornithine decarboxylase (ODC), which is directly recognized by the proteasome. Because ZsGreen accumulates in cells such as CSCs that have low proteasome activity, this degron system enables real-time monitoring and cell sorting of CSCs without any treatment. In addition, this system is useful for multiple cancer types because proteasome activity is a common biologic property [14–21]. Collectively, this method is better than cell surface marker methods, which depend on cancer type and require staining.
 
 In this study, we generated PANC-1 cells stably expressing ZsGreen fused to the ODC degron to isolate the CSC population and identify the genes responsible for radioresistance. We found that *KRT13* is upregulated in pancreatic CSCs and associated with radioresistance. Database analysis revealed that *KRT13* is highly expressed in pancreatic cancer cell lines and that high expression of *KRT13* is associated with poorer prognosis. Taken together, these results suggest that *KRT13* knockdown in combination with radiotherapy could be a new strategy for treating pancreatic cancer.
 
@@ -28,7 +337,7 @@ In this study, we generated PANC-1 cells stably expressing ZsGreen fused to the 
 
 ### Generation of a pancreatic CSC model
 
-Pancreatic CSC model was generated as described previously \[[22](https://academic.oup.com/jrr/article/64/2/284/), [23](https://academic.oup.com/jrr/article/64/2/284/)\]. Briefly, the retroviral expression vector pQCXIN-ZsGreen-cODC, which contains ZsGreen gene fused to the carboxyl-terminal degron sequence of ODC was transfected into Platinum retroviral packaging cells and the retrovirus collected from the supernatant was infected to human pancreatic cancer cell line PANC-1. pQCXIN-ZsGreen-cODC was kindly provided by Dr Frank Pajonk (Jonsson Comprehensive Cancer Center, UCLA, CA, USA). We defined this infected PANC-1 cell line as degron (−). Because degron (−) contains few ZsGreen-positive cells (<1%), ZsGreen-positive degron (−) cells could be repeatedly sorted out by using an SH800Z cell sorter (SONY, Tokyo, Japan) and cultured. This allowed us to obtain a concentrated cell population containing more than 40% ZsGreen-positive cells (degron (+)). For the *in vitro* experiment, the 50% of cells that were the most ZsGreen positive in this population were used as a CSC model, defined as degron (++). All assays (irradiation, small interfering RNA (siRNA) transfection) were performed 48 hours after cell sorting in order to reduce cell damage. Cells were cultured in Dulbecco’s Modified Eagle’s Medium (Sigma-Aldrich, St. Louis, MO, USA) with low glucose, 10% fetal bovine serum (Sigma-Aldrich) and G418 (Roche, Basel, Switzerland) for selection at 37°C in a humidified atmosphere of 5% CO <sub>2</sub>.
+Pancreatic CSC model was generated as described previously [22,23]. Briefly, the retroviral expression vector pQCXIN-ZsGreen-cODC, which contains ZsGreen gene fused to the carboxyl-terminal degron sequence of ODC was transfected into Platinum retroviral packaging cells and the retrovirus collected from the supernatant was infected to human pancreatic cancer cell line PANC-1. pQCXIN-ZsGreen-cODC was kindly provided by Dr Frank Pajonk (Jonsson Comprehensive Cancer Center, UCLA, CA, USA). We defined this infected PANC-1 cell line as degron (−). Because degron (−) contains few ZsGreen-positive cells (<1%), ZsGreen-positive degron (−) cells could be repeatedly sorted out by using an SH800Z cell sorter (SONY, Tokyo, Japan) and cultured. This allowed us to obtain a concentrated cell population containing more than 40% ZsGreen-positive cells (degron (+)). For the *in vitro* experiment, the 50% of cells that were the most ZsGreen positive in this population were used as a CSC model, defined as degron (++). All assays (irradiation, small interfering RNA (siRNA) transfection) were performed 48 hours after cell sorting in order to reduce cell damage. Cells were cultured in Dulbecco’s Modified Eagle’s Medium (Sigma-Aldrich, St. Louis, MO, USA) with low glucose, 10% fetal bovine serum (Sigma-Aldrich) and G418 (Roche, Basel, Switzerland) for selection at 37°C in a humidified atmosphere of 5% CO <sub>2</sub>.
 
 ### Irradiation
 
@@ -44,7 +353,7 @@ Apoptotic cells were detected by using a GFP-Certified Apoptosis/Necrosis Detect
 
 ### Sphere formation assay
 
-Cells were seeded in 96-Well Clear Ultra Low Attachment Microplates (Corning, Inc., Corning, NY, USA) at a density of 500 cells per well. For siRNA experiment, cells were seeded after 48 hours of siRNA treatment. The cells were cultured in DMEM serum-free medium (Thermo Fisher Scientific, Waltham, MA, USA) supplemented with 20 ng/ml epithelial growth factor, 10 ng/ml basic fibroblast growth factor-2 (PeproTech, Inc., Cranbury, NJ, USA), 100 U/ml penicillin and 100 μg/ml streptomycin, following our previous article \[[23](https://academic.oup.com/jrr/article/64/2/284/)\]. Cells were cultured in a humidified incubator at 37°C and 5% CO <sub>2</sub>. Images were captured by a bright field light microscope (CKX53; Olympus Corporation, Tokyo, Japan) with Visualix camera (Visualix, Kobe, Japan). The number of spheroids was counted larger than 100 μm in size manually on days 5 after seeding.
+Cells were seeded in 96-Well Clear Ultra Low Attachment Microplates (Corning, Inc., Corning, NY, USA) at a density of 500 cells per well. For siRNA experiment, cells were seeded after 48 hours of siRNA treatment. The cells were cultured in DMEM serum-free medium (Thermo Fisher Scientific, Waltham, MA, USA) supplemented with 20 ng/ml epithelial growth factor, 10 ng/ml basic fibroblast growth factor-2 (PeproTech, Inc., Cranbury, NJ, USA), 100 U/ml penicillin and 100 μg/ml streptomycin, following our previous article [23]. Cells were cultured in a humidified incubator at 37°C and 5% CO <sub>2</sub>. Images were captured by a bright field light microscope (CKX53; Olympus Corporation, Tokyo, Japan) with Visualix camera (Visualix, Kobe, Japan). The number of spheroids was counted larger than 100 μm in size manually on days 5 after seeding.
 
 ### Reverse transcription quantitative PCR analysis
 
@@ -58,7 +367,7 @@ KRT13 F \[5′- CCCCAGGCATTGACCTGAC\], R \[5′- GTGTTGGTAGACACCTCCTTG\].
 
 ### RNA sequence data
 
-To identify candidate radioresistance genes, RNA sequence analysis was performed as previously described \[[24](https://academic.oup.com/jrr/article/64/2/284/)\]. Gene expression data were analyzed using fold change and fragments per kilobase of exon per million reads mapped (FPKM). Fold change means the ratio of gene expression between degron (−) and degron (++) cells. FPKM means the absolute value of gene expression used in RNA sequence analysis. The raw data were deposited in the NCBI Gene Expression Omnibus database under accession number GSE212883. For gene enrichment analysis, we used KEGG pathway database ([https://www.genome.jp/kegg/pathway.html](https://www.genome.jp/kegg/pathway.html)). In addition, we performed GSEA with PreRank option to input the whole list of genes. We used the gene sets from the Broad Institute’s Molecular Signature Database. False discovery rate (FDR) q-value <0.05 was considered as the threshold for significance.
+To identify candidate radioresistance genes, RNA sequence analysis was performed as previously described [24]. Gene expression data were analyzed using fold change and fragments per kilobase of exon per million reads mapped (FPKM). Fold change means the ratio of gene expression between degron (−) and degron (++) cells. FPKM means the absolute value of gene expression used in RNA sequence analysis. The raw data were deposited in the NCBI Gene Expression Omnibus database under accession number GSE212883. For gene enrichment analysis, we used KEGG pathway database ([https://www.genome.jp/kegg/pathway.html](https://www.genome.jp/kegg/pathway.html)). In addition, we performed GSEA with PreRank option to input the whole list of genes. We used the gene sets from the Broad Institute’s Molecular Signature Database. False discovery rate (FDR) q-value <0.05 was considered as the threshold for significance.
 
 ### siRNA transfection
 
@@ -66,7 +375,7 @@ Cells were transfected with siRNA against *KRT13* (si *KRT13*) (FlexiTube siRNA,
 
 ### Data analysis
 
-The Cancer Cell Line Encyclopedia (CCLE) database ([https://portals.broadinstitute.org/ccle](https://portals.broadinstitute.org/ccle)) was used for the analysis of mRNA expression in the multiple cancer cell lines. The survival analysis was performed with the cancer genome atlas (TCGA) database and the Oncolnc tool ([http://www.oncolnc.org/](http://www.oncolnc.org/)) \[[25](https://academic.oup.com/jrr/article/64/2/284/)\].
+The Cancer Cell Line Encyclopedia (CCLE) database ([https://portals.broadinstitute.org/ccle](https://portals.broadinstitute.org/ccle)) was used for the analysis of mRNA expression in the multiple cancer cell lines. The survival analysis was performed with the cancer genome atlas (TCGA) database and the Oncolnc tool ([http://www.oncolnc.org/](http://www.oncolnc.org/)) [25].
 
 ### Statistics
 
@@ -100,7 +409,7 @@ Radioresistance was higher in degron (++) cells than in degron (−) cells. A. F
 
 ### KRT13 gene expression was upregulated in degron (++) cells
 
-To identify candidate genes associated with radioresistance in degron (++) cells, RNA sequence analysis was performed to compare gene expression in degron (++) cells with that in degron (−) cells. Among over 20 000 genes analyzed, the top 10 most upregulated genes in degron (++) cells are shown in [Table 1](https://academic.oup.com/jrr/article/64/2/284/). We focused on *KRT13* as a candidate gene responsible for radioresistance in pancreatic CSC because an association of some KRT family genes, such as *KRT19*, with the stemness of normal and cancer cells has been reported \[[26–29](https://academic.oup.com/jrr/article/64/2/284/)\].
+To identify candidate genes associated with radioresistance in degron (++) cells, RNA sequence analysis was performed to compare gene expression in degron (++) cells with that in degron (−) cells. Among over 20 000 genes analyzed, the top 10 most upregulated genes in degron (++) cells are shown in [Table 1](https://academic.oup.com/jrr/article/64/2/284/). We focused on *KRT13* as a candidate gene responsible for radioresistance in pancreatic CSC because an association of some KRT family genes, such as *KRT19*, with the stemness of normal and cancer cells has been reported [26–29].
 
 Table 1
 
@@ -136,17 +445,17 @@ Fig. 4
 
 ## DISCUSSION
 
-In this study, we aimed to discover the gene responsible for radioresistance in pancreatic CSCs. To achieve this purpose, we used a ZsGreen-ODC degron fusion reporter system \[[12](https://academic.oup.com/jrr/article/64/2/284/)\]. This system enables the visualization of cells with low proteasome activity, which has been considered a property of CSCs, so that the CSC population can be sorted and concentrated by FACS. Adikrisna *et al.* revealed that ZsGreen highly positive PANC-1 cell population showed the increased sphere formation, chemoresistance, asymmetric cell division and *in vivo* tumorigenesis, which represent the stem-like characteristics, compared with the control cells \[[22](https://academic.oup.com/jrr/article/64/2/284/)\]. In addition, we previously showed that ZsGreen highly positive PANC-1 cell population were resistant to several microRNA treatments compared with control cells \[[23](https://academic.oup.com/jrr/article/64/2/284/)\]. Using this approach, we acquired the degron (+) cell line and confirmed that the further concentrated degron (++) cells displayed greater radioresistance and increased expression of the cell surface CSC markers (CD44v9 and CD133) and the number of spheroids compared with the non-concentrated degron (−) cells (<1% ZsGreen-positive cells). This indicates that we successfully generated a CSC model for pancreatic cancer.
+In this study, we aimed to discover the gene responsible for radioresistance in pancreatic CSCs. To achieve this purpose, we used a ZsGreen-ODC degron fusion reporter system [12]. This system enables the visualization of cells with low proteasome activity, which has been considered a property of CSCs, so that the CSC population can be sorted and concentrated by FACS. Adikrisna *et al.* revealed that ZsGreen highly positive PANC-1 cell population showed the increased sphere formation, chemoresistance, asymmetric cell division and *in vivo* tumorigenesis, which represent the stem-like characteristics, compared with the control cells [22]. In addition, we previously showed that ZsGreen highly positive PANC-1 cell population were resistant to several microRNA treatments compared with control cells [23]. Using this approach, we acquired the degron (+) cell line and confirmed that the further concentrated degron (++) cells displayed greater radioresistance and increased expression of the cell surface CSC markers (CD44v9 and CD133) and the number of spheroids compared with the non-concentrated degron (−) cells (<1% ZsGreen-positive cells). This indicates that we successfully generated a CSC model for pancreatic cancer.
 
 We performed RNA sequence analysis to identify the gene responsible for radioresistance in pancreatic CSCs. In addition to identify the gene responsible for radioresistance, we performed gene enrichment analysis by using public database, Kyoto Encyclopedia of Genes and Genomes (KEGG) and Gene Set Enrichment Analysis (GSEA). Gene enrichment analysis using KEGG pathway database showed that 421 upregulated genes (Fold change >5 and *P*  < 0.01) in degron (++) cells compared with degron (−) cells were enriched in Axon guidance, ECM-receptor interaction and PI3K/AKT signaling pathway ([Supplementary Table 1](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/jrr/64/2/10.1093_jrr_rrac091/1/supplementary_table1_rrac091.xlsx?Expires=1752233129&Signature=Rr~EVikVESB4d1jR9rcCd86ZrvAmzY-HX4AG3tMnu55YTEo5L6GziDYsTA55bV6ccesXA-B9JWpzNG1OYrB90R~TuEmuIKcc~LJ0tqRG3gc-eotGqHWd0HVJ-E3eucQcMZcyx7WLk~U~TktWTxp91VlqoeqpJP2aT5A1N3CMdSay0tmDw3gsjHz88H-BXn1InehCrdVkiCFhpCmZ8zNLICx0YdqFsoeSyrolCbyFC8zCTN4xb1lj6TSuMQmh3UgJqBtP9axSFe1l4Z74Tn7mAmIvGJOaEsDvlM07iu1mvdQ1B-Mkxwhr0x3imlE8z5uST06d-YYtB1tbn-epWfDn6Q__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)). On the other hand, we found the significant enrichment with 44 gene sets including KRAS dependency signature in degron (++) cells by GSEA ([Supplementary Table 2](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/jrr/64/2/10.1093_jrr_rrac091/1/supplementary_table2_rrac091.xlsx?Expires=1752233129&Signature=DUnYgpezRkkeba9oboAXIvrtA7xs97-tOWeAk3TbIfwp-GynR4FH1nG3Cr0e698ujR4O8qFCUEqDWwlxCTKvkifED71S63VOY9n~uSzg-LmQdOhDIpXkma4wX7QM-PQvfq8G92A~HtX9A1iBAMHASM98P0w9wbmk42d2gboX71Wx57EZpik3m44877TLv9PmZgfM8uTgjR4o9iHQ7aeX3J7NLvswnKiHnOeOB65JP69lQdWvRfPpYN3ZfzD5sfk-XkxPgLB8MfYjMaRexSU1sYWsRabzIFcVzK6kzeWZIq1D8GTXfuOtjMUH43MPscINGCnecElDNQwmpr~IkbXKFg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA), [Supplementary Fig. 2](https://oup.silverchair-cdn.com/oup/backfile/Content_public/Journal/jrr/64/2/10.1093_jrr_rrac091/1/supplementary_fig_2_rrac091.jpeg?Expires=1752233129&Signature=3WE30gAWX6DnCq5bI2TzRe5YJZENqwXYw9A21WD6csI59mrzAUmU1iZOyx-rAqlCpNvBUzESivzBcPgt07llfg0cMyzijDpBmjOwXvhRJZrLj2CpuKUqevacLqnJKUIWl6jb5BkyR1F5rnWkNF3Y2k7ibLuQwhjRWMFEIATIj-FjVTIjYAKRJiP~2dCG2DZFP7kYFx-Iqve~pRV1sqkRHPksTrroweyqnMT8ophObS2InkhbO6Kl4NyHY9kikvYjdUKFh00S8kxFyKUaJDauWWaShCYgRQfjF5oHd~DsUPdS0bpbfe~G7piP70maii~KEJdL4gkD7G9ozJhBx35EUg__&Key-Pair-Id=APKAIE5G5CRDK6RD3PGA)). Further investigation is needed to clarify whether these pathways are related to the radioresistance and stemness in pancreatic cancer cells.
 
-As a result of RNA sequence analysis, several genes were identified whose expression in degron (++) cells was much higher than in degron (−) cells. These included matrix metalloproteinase-12 (*MMP12*), Collagen Type IV Alpha 4 Chain (*COL4A4*) and Transmembrane protease serine 3 (*TMPRSS3*). It is reported that MMP12 is upregulated by ultra violet (UV) irradiation in human skin \[[30](https://academic.oup.com/jrr/article/64/2/284/)\]. COL4A4 is one of the components of type IV collagen. There are no reports of a direct relationship between radiation and this gene. However, it is known that radiation induced TGF-β activation \[[31](https://academic.oup.com/jrr/article/64/2/284/)\]. And there is a positive correlation between TGF-β expression and enhanced collagen production. TMPRSS3 is a membrane-bound serine protease overexpressed in pancreatic cancer. This proteinase is of importance for processes involved in tumor invasion \[[32](https://academic.oup.com/jrr/article/64/2/284/)\]. It also reported in another article that it is related with radioresistance \[[33](https://academic.oup.com/jrr/article/64/2/284/)\]. In the present study, we focused on *KRT13* as a candidate radioresistance gene because certain keratins (KRTs) are reportedly shown to have cancer stem-like properties, including *KRT19* in hepatocellular carcinoma and colorectal cancer, *KRT6* in lung cancer and *KRT17* in cervical cancer \[[26–28](https://academic.oup.com/jrr/article/64/2/284/), [34](https://academic.oup.com/jrr/article/64/2/284/)\]. Accordingly, we took notice of *KRT13* among several candidates listed in [Table 1](https://academic.oup.com/jrr/article/64/2/284/). During preparation of this manuscript, other investigators reported that *KRT13* promotes the stemness of breast cancer cells and *KRT13* is associated with radioresistance and stemness in squamous cell carcinoma cells, which further emphasized the importance of *KRT13* in cancer stem cells \[[35](https://academic.oup.com/jrr/article/64/2/284/), [36](https://academic.oup.com/jrr/article/64/2/284/)\].
+As a result of RNA sequence analysis, several genes were identified whose expression in degron (++) cells was much higher than in degron (−) cells. These included matrix metalloproteinase-12 (*MMP12*), Collagen Type IV Alpha 4 Chain (*COL4A4*) and Transmembrane protease serine 3 (*TMPRSS3*). It is reported that MMP12 is upregulated by ultra violet (UV) irradiation in human skin [30]. COL4A4 is one of the components of type IV collagen. There are no reports of a direct relationship between radiation and this gene. However, it is known that radiation induced TGF-β activation [31]. And there is a positive correlation between TGF-β expression and enhanced collagen production. TMPRSS3 is a membrane-bound serine protease overexpressed in pancreatic cancer. This proteinase is of importance for processes involved in tumor invasion [32]. It also reported in another article that it is related with radioresistance [33]. In the present study, we focused on *KRT13* as a candidate radioresistance gene because certain keratins (KRTs) are reportedly shown to have cancer stem-like properties, including *KRT19* in hepatocellular carcinoma and colorectal cancer, *KRT6* in lung cancer and *KRT17* in cervical cancer [26–28,34]. Accordingly, we took notice of *KRT13* among several candidates listed in [Table 1](https://academic.oup.com/jrr/article/64/2/284/). During preparation of this manuscript, other investigators reported that *KRT13* promotes the stemness of breast cancer cells and *KRT13* is associated with radioresistance and stemness in squamous cell carcinoma cells, which further emphasized the importance of *KRT13* in cancer stem cells [35,36].
 
-The KRTs are a family of intermediate filament proteins that constitute the cytoskeleton of epithelial cells. KRTs are often used in histopathology to determine cancer cell origins and aid the prognosis of several malignancies \[[37](https://academic.oup.com/jrr/article/64/2/284/), [38](https://academic.oup.com/jrr/article/64/2/284/)\]. Although the maintenance of cellular structure is well-known function of KRTs, recent studies have suggested that KRTs are involved in functions such as apoptosis, cell growth and cell motility in cancer. For example, abnormal expression of *KRT8* and *KRT18* is related to tumor progression and invasion in squamous carcinomas \[[39](https://academic.oup.com/jrr/article/64/2/284/)\]. *KRT17* has been identified as an oncogene in cervical cancer \[[40](https://academic.oup.com/jrr/article/64/2/284/)\]. Regarding CSCs, high *KRT19* expression is correlated with cancer stemness and radioresistance in hepatocellular carcinoma and colorectal cancer \[[27](https://academic.oup.com/jrr/article/64/2/284/), [28](https://academic.oup.com/jrr/article/64/2/284/)\]. In contrast, cells expressing lower levels of *KRT19* displayed increased level of stem cell markers, colony-formation activity and drug resistance in breast cancer \[[41](https://academic.oup.com/jrr/article/64/2/284/), [42](https://academic.oup.com/jrr/article/64/2/284/)\]. In our study, *KRT19* expression was not increased in degron (++) cells (data not shown).
+The KRTs are a family of intermediate filament proteins that constitute the cytoskeleton of epithelial cells. KRTs are often used in histopathology to determine cancer cell origins and aid the prognosis of several malignancies [37,38]. Although the maintenance of cellular structure is well-known function of KRTs, recent studies have suggested that KRTs are involved in functions such as apoptosis, cell growth and cell motility in cancer. For example, abnormal expression of *KRT8* and *KRT18* is related to tumor progression and invasion in squamous carcinomas [39]. *KRT17* has been identified as an oncogene in cervical cancer [40]. Regarding CSCs, high *KRT19* expression is correlated with cancer stemness and radioresistance in hepatocellular carcinoma and colorectal cancer [27,28]. In contrast, cells expressing lower levels of *KRT19* displayed increased level of stem cell markers, colony-formation activity and drug resistance in breast cancer [41,42]. In our study, *KRT19* expression was not increased in degron (++) cells (data not shown).
 
-*KRT13* is a type I keratin expressed in the suprabasal layers of noncornified squamous epithelia such as those of the oral cavity, tonsils and esophagus \[[43](https://academic.oup.com/jrr/article/64/2/284/)\]. In cancer, diverse clinical relevance and functions of *KRT13* have been reported. *KRT13* expression is decreased in oral and cervical cancer tissue \[[44](https://academic.oup.com/jrr/article/64/2/284/), [45](https://academic.oup.com/jrr/article/64/2/284/)\], and the gene is epigenetically silenced in an oral squamous cell carcinoma cell line and in invasive bladder cancer tissue \[[46](https://academic.oup.com/jrr/article/64/2/284/), [47](https://academic.oup.com/jrr/article/64/2/284/)\]. On the other hand, *KRT13* -overexpressing prostate cancer cell lines are reported to be highly migratory, with high expression of genes related to the epithelial-mesenchymal transition and CSCs \[[48](https://academic.oup.com/jrr/article/64/2/284/)\]. Another study showed that *KRT13* expression is increased in the tumor zone with a higher degree of stemness in prostate cancer \[[49](https://academic.oup.com/jrr/article/64/2/284/)\]. Notably, a recent study showed that enhanced *KRT13* expression is associated with radioresistance in squamous carcinoma cells, consistent with our current finding in pancreatic cancer \[[36](https://academic.oup.com/jrr/article/64/2/284/)\]. We showed that si *KRT13* treatment significantly enhanced the radiosensitivity of degron (++) cells after irradiation at 4 Gy, but not enhanced at 8 Gy. One possible reason for this result is that 8 Gy irradiation is lethal to cancer cells, even CSCs. To our knowledge, this is the first study to demonstrate the function and clinical relevance of *KRT13* in pancreatic cancer.
+*KRT13* is a type I keratin expressed in the suprabasal layers of noncornified squamous epithelia such as those of the oral cavity, tonsils and esophagus [43]. In cancer, diverse clinical relevance and functions of *KRT13* have been reported. *KRT13* expression is decreased in oral and cervical cancer tissue [44,45], and the gene is epigenetically silenced in an oral squamous cell carcinoma cell line and in invasive bladder cancer tissue [46,47]. On the other hand, *KRT13* -overexpressing prostate cancer cell lines are reported to be highly migratory, with high expression of genes related to the epithelial-mesenchymal transition and CSCs [48]. Another study showed that *KRT13* expression is increased in the tumor zone with a higher degree of stemness in prostate cancer [49]. Notably, a recent study showed that enhanced *KRT13* expression is associated with radioresistance in squamous carcinoma cells, consistent with our current finding in pancreatic cancer [36]. We showed that si *KRT13* treatment significantly enhanced the radiosensitivity of degron (++) cells after irradiation at 4 Gy, but not enhanced at 8 Gy. One possible reason for this result is that 8 Gy irradiation is lethal to cancer cells, even CSCs. To our knowledge, this is the first study to demonstrate the function and clinical relevance of *KRT13* in pancreatic cancer.
 
-Our results indicate that a combination therapy of *KRT13* knockdown and radiation could be an effective strategy in pancreatic cancer. Nucleic acid–based medicines such as antisense oligonucleotides, siRNAs and miRNAs are anticipated as next-generation therapeutics. However, there are several clinical challenges. For example, nucleic acids are unstable in the blood stream and accumulate in the liver and kidney. Effective tumor targeting thus requires a drug delivery system. We developed the super carbonate apatite (sCA) nanoparticle, a pH-sensitive drug delivery system, and showed that siRNA and miRNA can be stably and efficiently transferred to tumors by sCA without any toxicity \[[50–52](https://academic.oup.com/jrr/article/64/2/284/)\]. Although further investigation is required, the combination therapy of sCA-siRNA for *KRT13* and radiation may be a promising therapeutic approach in pancreatic cancer.
+Our results indicate that a combination therapy of *KRT13* knockdown and radiation could be an effective strategy in pancreatic cancer. Nucleic acid–based medicines such as antisense oligonucleotides, siRNAs and miRNAs are anticipated as next-generation therapeutics. However, there are several clinical challenges. For example, nucleic acids are unstable in the blood stream and accumulate in the liver and kidney. Effective tumor targeting thus requires a drug delivery system. We developed the super carbonate apatite (sCA) nanoparticle, a pH-sensitive drug delivery system, and showed that siRNA and miRNA can be stably and efficiently transferred to tumors by sCA without any toxicity [50–52]. Although further investigation is required, the combination therapy of sCA-siRNA for *KRT13* and radiation may be a promising therapeutic approach in pancreatic cancer.
 
 ## CONFLICT OF INTEREST
 

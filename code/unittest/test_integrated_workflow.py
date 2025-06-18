@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch, MagicMock
 from pathlib import Path
 
 # テスト対象
-from modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
+from code.py.modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
 
 
 class TestIntegratedWorkflow(unittest.TestCase):

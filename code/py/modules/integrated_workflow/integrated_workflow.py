@@ -11,26 +11,26 @@ import glob
 from pathlib import Path
 from datetime import datetime
 
-from modules.shared_modules.config_manager import ConfigManager
-from modules.shared_modules.integrated_logger import IntegratedLogger
-from modules.shared_modules.exceptions import (
+from code.py.modules.shared_modules.config_manager import ConfigManager
+from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
+from code.py.modules.shared_modules.exceptions import (
     ObsClippingsManagerError, ProcessingError, APIError, ValidationError, ConfigurationError
 )
 
 # 個別ワークフローモジュールのインポート
-from modules.file_organizer.file_organizer import FileOrganizer
-from modules.sync_checker.sync_checker import SyncChecker
-from modules.citation_fetcher.citation_fetcher_workflow import CitationFetcherWorkflow
-from modules.section_parsing.section_parsing_workflow import SectionParsingWorkflow
-from modules.ai_citation_support.ai_citation_support_workflow import AICitationSupportWorkflow
-from modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
-from modules.ai_tagging_translation.translate_workflow import TranslateWorkflow
-from modules.ai_tagging_translation.ochiai_format_workflow import OchiaiFormatWorkflow
-from modules.citation_pattern_normalizer.citation_pattern_normalizer_workflow import CitationPatternNormalizerWorkflow
+from code.py.modules.file_organizer.file_organizer import FileOrganizer
+from code.py.modules.sync_checker.sync_checker import SyncChecker
+from code.py.modules.citation_fetcher.citation_fetcher_workflow import CitationFetcherWorkflow
+from code.py.modules.section_parsing.section_parsing_workflow import SectionParsingWorkflow
+from code.py.modules.ai_citation_support.ai_citation_support_workflow import AICitationSupportWorkflow
+from code.py.modules.ai_tagging_translation.tagger_workflow import TaggerWorkflow
+from code.py.modules.ai_tagging_translation.translate_workflow import TranslateWorkflow
+from code.py.modules.ai_tagging_translation.ochiai_format_workflow import OchiaiFormatWorkflow
+from code.py.modules.citation_pattern_normalizer.citation_pattern_normalizer_workflow import CitationPatternNormalizerWorkflow
 
 # 状態管理・ユーティリティ
-from modules.status_management_yaml.status_manager import StatusManager
-from modules.shared_modules.bibtex_parser import BibTeXParser
+from code.py.modules.status_management_yaml.status_manager import StatusManager
+from code.py.modules.shared_modules.bibtex_parser import BibTeXParser
 
 
 class IntegratedWorkflow:
@@ -46,6 +46,8 @@ class IntegratedWorkflow:
         """
         self.config_manager = config_manager
         self.logger = logger.get_logger('IntegratedWorkflow')
+        # IntegratedLoggerインスタンスを保存（個別モジュール初期化で使用）
+        self._original_logger = logger
         
         # AI機能制御（デフォルトは全機能有効）
         if ai_feature_controller is None:
@@ -99,24 +101,26 @@ class IntegratedWorkflow:
             bibtex_file = workspace_path / "CurrentManuscript.bib"
             clippings_dir = workspace_path / "Clippings"
             
-            # 2. エッジケース検出と処理対象論文決定
-            valid_papers, edge_cases = self._detect_edge_cases_and_get_valid_papers(
+            # 2. 初期エッジケース検出（参考情報のみ）
+            initial_valid_papers, initial_edge_cases = self._detect_edge_cases_and_get_valid_papers(
                 bibtex_file, clippings_dir
             )
-            execution_results['edge_cases'] = edge_cases
-            execution_results['total_papers_processed'] = len(valid_papers)
             
             if options.get('show_plan'):
-                self._show_execution_plan(valid_papers, self.ai_feature_controller)
+                self._show_execution_plan(initial_valid_papers, self.ai_feature_controller)
                 return execution_results
             
             if options.get('dry_run'):
                 self.logger.info("Dry-run mode: Simulating workflow execution")
-                execution_results['status'] = 'dry_run_completed'
+                execution_results['status'] = 'completed'
+                execution_results['processed'] = len(initial_valid_papers)
+                execution_results['failed'] = 0
+                execution_results['steps_completed'] = [step[0] for step in self._get_workflow_steps()]
                 return execution_results
             
             # 3. 順次ワークフロー実行
             workflow_steps = self._get_workflow_steps()
+            valid_papers = []  # organizeステップ後に更新される
             
             # 各ステップを順次実行
             for step_name, workflow_method in workflow_steps:
@@ -125,8 +129,22 @@ class IntegratedWorkflow:
                 try:
                     self.logger.info(f"Starting step: {step_name}")
                     
+                    # 進捗コールバック呼び出し
+                    if 'progress_callback' in options:
+                        options['progress_callback'](step_name, 'started')
+                    
                     # ステップ実行
                     step_result = workflow_method(workspace_path, valid_papers, **options)
+                    
+                    # organizeステップ完了後、有効論文リストを更新
+                    if step_name == 'organize':
+                        self.logger.info("Re-detecting valid papers after organize step")
+                        valid_papers, edge_cases = self._detect_edge_cases_and_get_valid_papers(
+                            bibtex_file, clippings_dir
+                        )
+                        execution_results['edge_cases'] = edge_cases
+                        execution_results['total_papers_processed'] = len(valid_papers)
+                        self.logger.info(f"Updated valid papers list: {len(valid_papers)} papers found")
                     
                     step_execution_time = time.time() - step_start_time
                     execution_results['executed_steps'].append({
@@ -137,6 +155,10 @@ class IntegratedWorkflow:
                     })
                     
                     self.logger.info(f"Step {step_name} completed successfully ({step_execution_time:.2f}s)")
+                    
+                    # 進捗コールバック呼び出し
+                    if 'progress_callback' in options:
+                        options['progress_callback'](step_name, 'completed')
                     
                 except (ProcessingError, APIError, ValidationError) as e:
                     # 既知のエラー：標準的な処理
@@ -150,6 +172,10 @@ class IntegratedWorkflow:
                         'error_code': getattr(e, 'error_code', None),
                         'execution_time': step_execution_time
                     })
+                    
+                    # 進捗コールバック呼び出し
+                    if 'progress_callback' in options:
+                        options['progress_callback'](step_name, 'failed')
                     
                     # 重要でないエラーは継続、重要なエラーは中断
                     if isinstance(e, (APIError, ConfigurationError)):
@@ -222,14 +248,18 @@ class IntegratedWorkflow:
             # BibTeXエントリー取得
             bibtex_entries = self.bibtex_parser.parse_file(str(bibtex_file))
             bibtex_keys = set(bibtex_entries.keys())
+            self.logger.info(f"BibTeX keys found: {bibtex_keys}")
             
             # Clippingsディレクトリの論文取得
             clippings_keys = set()
             if clippings_dir.exists():
                 for md_file in clippings_dir.rglob("*.md"):
                     citation_key = self._extract_citation_key_from_path(md_file)
+                    self.logger.debug(f"MD file: {md_file}, extracted key: {citation_key}")
                     if citation_key:
                         clippings_keys.add(citation_key)
+            
+            self.logger.info(f"Clippings keys found: {clippings_keys}")
             
             # エッジケース検出
             missing_in_clippings = bibtex_keys - clippings_keys
@@ -243,6 +273,7 @@ class IntegratedWorkflow:
             
             self.logger.info(f"Edge case analysis: {len(valid_papers)} valid papers, "
                            f"{len(missing_in_clippings)} missing, {len(orphaned_in_clippings)} orphaned")
+            self.logger.info(f"Valid papers: {list(valid_papers)}")
             
             return list(valid_papers), edge_cases
             
@@ -360,12 +391,17 @@ class IntegratedWorkflow:
     def _get_workflow_module(self, module_name: str, module_class):
         """ワークフローモジュールの遅延初期化"""
         if module_name not in self._workflow_modules:
-            # IntegratedLoggerを初期化で受け取ったloggerから取得
-            logger_to_pass = self.logger.parent if hasattr(self.logger, 'parent') else self.config_manager
+            # CitationFetcherWorkflowは特別処理が必要
+            if module_class.__name__ == 'CitationFetcherWorkflow':
+                # IntegratedLoggerインスタンスを渡す
+                logger_instance = self._original_logger
+            else:
+                # その他のモジュールは通常のロガーを渡す
+                logger_instance = self._original_logger
                 
             self._workflow_modules[module_name] = module_class(
                 self.config_manager, 
-                logger_to_pass
+                logger_instance
             )
         return self._workflow_modules[module_name]
     

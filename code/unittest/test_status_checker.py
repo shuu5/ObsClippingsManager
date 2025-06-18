@@ -19,11 +19,11 @@ from unittest.mock import patch, MagicMock
 # テスト対象モジュールのパス追加
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from py.modules.status_management_yaml.status_checker import StatusChecker
-from py.modules.status_management_yaml.processing_status import ProcessingStatus
-from py.modules.shared_modules.config_manager import ConfigManager
-from py.modules.shared_modules.integrated_logger import IntegratedLogger
-from py.modules.shared_modules.exceptions import ProcessingError, ValidationError
+from code.py.modules.status_management_yaml.status_checker import StatusChecker
+from code.py.modules.status_management_yaml.processing_status import ProcessingStatus
+from code.py.modules.shared_modules.config_manager import ConfigManager
+from code.py.modules.shared_modules.integrated_logger import IntegratedLogger
+from code.py.modules.shared_modules.exceptions import ProcessingError, ValidationError
 
 
 class TestStatusChecker(unittest.TestCase):
@@ -85,7 +85,7 @@ class TestStatusChecker(unittest.TestCase):
 
     def test_status_checker_import(self):
         """StatusCheckerクラスのインポートテスト"""
-        from py.modules.status_management_yaml.status_checker import StatusChecker
+        from code.py.modules.status_management_yaml.status_checker import StatusChecker
         self.assertTrue(hasattr(StatusChecker, '__init__'))
 
     def test_status_checker_initialization(self):

@@ -13,8 +13,8 @@ import os
 # テスト対象モジュールのパス追加
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from py.modules.status_management_yaml.processing_status import ProcessingStatus
-from py.modules.shared_modules.exceptions import ValidationError
+from code.py.modules.status_management_yaml.processing_status import ProcessingStatus
+from code.py.modules.shared_modules.exceptions import ValidationError
 
 
 class TestProcessingStatus(unittest.TestCase):

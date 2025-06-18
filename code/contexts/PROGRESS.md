@@ -939,16 +939,43 @@ code/py/modules/
   **CLI実装準備完了**: 3.2でのCLIインターフェース実装に必要な本格的統合エンジン基盤完成
 
 #### 3.2 コマンドライン界面
-- [ ] 3.2.1 CLIインターフェース設計・テスト作成
-- [ ] 3.2.2 main.py実装（Click使用）
-- [ ] 3.2.3 オプション管理実装（--dry-run, --force, --show-plan等）
-- [ ] 3.2.4 プログレス表示機能実装
-- [ ] 3.2.5 実行計画生成機能実装
-- [ ] 3.2.6 ドライラン機能実装
-- [ ] 3.2.7 エラー時の回復機能実装
-- [ ] 3.2.8 実行結果レポート機能実装
-- [ ] 3.2.9 ユニットテスト実行・全テスト成功確認
-- [ ] 3.2.10 **CLI機能統合テスト実行**
+- [完了] 3.2.1 CLIインターフェース設計・テスト作成
+- [完了] 3.2.2 main.py実装（Click使用）
+- [完了] 3.2.3 オプション管理実装（--dry-run, --force, --show-plan等）
+- [完了] 3.2.4 プログレス表示機能実装
+- [完了] 3.2.5 実行計画生成機能実装
+- [完了] 3.2.6 ドライラン機能実装
+- [完了] 3.2.7 エラー時の回復機能実装
+- [完了] 3.2.8 実行結果レポート機能実装
+- [完了] 3.2.9 ユニットテスト実行・全テスト成功確認
+- [完了] 3.2.10 **CLI機能統合テスト実行**
+  **実装完了詳細**:
+  - ✅ **CLIインターフェース完成**: main.py および code/py/cli.py 実装
+  - ✅ **Click フレームワーク採用**: 堅牢なコマンドライン引数処理
+  - ✅ **全オプション実装**: --dry-run, --force, --show-plan, --disable-ai 等
+  - ✅ **進捗表示機能**: リアルタイムステップ実行表示（[開始]→[完了]）
+  - ✅ **実行計画表示**: --show-plan で10ステップの詳細表示
+  - ✅ **AI機能制御統合**: AIFeatureController連携実装
+  - ✅ **エラーハンドリング**: 適切な終了コード（0:成功, 1:部分エラー, 2:失敗, 3:例外）
+  - ✅ **16個のCLIテスト**: 全テスト成功確認
+  
+  **CLI使用例**:
+  ```bash
+  # 基本実行
+  uv run python main.py --workspace-path /path/to/workspace
+  
+  # 実行計画表示
+  uv run python main.py --show-plan --workspace-path /path/to/workspace
+  
+  # ドライラン（シミュレーション）
+  uv run python main.py --dry-run --workspace-path /path/to/workspace
+  
+  # AI機能無効化（開発用）
+  uv run python main.py --disable-ai --workspace-path /path/to/workspace
+  
+  # ヘルプ表示
+  uv run python main.py --help
+  ```
   ```bash
   # CLI機能完成：全機能統合テスト（本番準備）
   cd /home/user/proj/ObsClippingsManager
