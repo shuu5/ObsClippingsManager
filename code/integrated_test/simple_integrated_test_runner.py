@@ -96,19 +96,21 @@ class SimpleIntegratedTestRunner:
         
         try:
             # IntegratedWorkflowクラスが実装されている場合は、それを使用
-            from code.py.modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
+            import sys
+            sys.path.insert(0, 'code/py')
+            from modules.integrated_workflow.integrated_workflow import IntegratedWorkflow
             
             workflow = IntegratedWorkflow(
                 config_manager=self.config_manager, 
-                logger=self.logger,
+                logger=self.integrated_logger,  # IntegratedLoggerインスタンスを渡す
                 ai_feature_controller=self.ai_controller  # AI機能制御を渡す
             )
-            result = workflow.execute(workspace_path)
+            result = workflow.execute(str(workspace_path))
             
             return {
                 'status': 'success',
-                'modules_executed': result.get('modules_executed', []),
-                'files_processed': result.get('files_processed', 0),
+                'modules_executed': [step['name'] for step in result.get('executed_steps', [])],
+                'files_processed': result.get('total_papers_processed', 0),
                 'ai_features_used': result.get('ai_features_used', [])
             }
             
@@ -469,7 +471,88 @@ class SimpleIntegratedTestRunner:
             else:
                 self.logger.info("Ochiai-format機能は無効化されています（API利用料金削減）")
             
-            # TODO: 新しいモジュールが実装されたら追加
+            # citation_pattern_normalizer機能（非AI機能）
+            try:
+                self.logger.info("Attempting to import CitationPatternNormalizerWorkflow")
+                from code.py.modules.citation_pattern_normalizer.citation_pattern_normalizer_workflow import CitationPatternNormalizerWorkflow
+                self.logger.info("CitationPatternNormalizerWorkflow imported successfully")
+                
+                citation_normalizer = CitationPatternNormalizerWorkflow(self.config_manager, self.integrated_logger)
+                self.logger.info("CitationPatternNormalizerWorkflow initialized")
+                
+                self.logger.info("Starting citation pattern normalizer workflow")
+                # 処理対象のmarkdownファイルを取得してcitation_pattern_normalizer処理実行
+                clippings_dir = workspace_path / "Clippings"
+                if clippings_dir.exists():
+                    # サブディレクトリ内のmarkdownファイルを対象とする
+                    target_papers = []
+                    for subdir in clippings_dir.iterdir():
+                        if subdir.is_dir():
+                            # サブディレクトリ名をtarget_papersに追加
+                            target_papers.append(subdir.name)
+                    
+                    if target_papers:
+                        self.logger.info(f"Processing citation pattern normalizer for {len(target_papers)} papers")
+                        normalizer_result = citation_normalizer.process_items(str(clippings_dir), target_papers)
+                        
+                        processed_papers = normalizer_result.get('processed', 0)
+                        skipped_papers = normalizer_result.get('skipped', 0)
+                        failed_papers = normalizer_result.get('failed', 0)
+                        
+                        self.logger.info(f"Citation pattern normalizer completed: {processed_papers} papers processed, "
+                                       f"{skipped_papers} skipped, {failed_papers} failed")
+                        
+                        modules_executed.append('citation_pattern_normalizer')
+                    else:
+                        self.logger.warning("No organized papers found for citation pattern normalizer")
+                else:
+                    self.logger.warning("Clippings directory not found for citation pattern normalizer")
+                
+            except ImportError as e:
+                self.logger.warning(f"CitationPatternNormalizerWorkflow ImportError: {e}")
+            except Exception as e:
+                self.logger.error(f"Error in citation_pattern_normalizer processing: {e}")
+                import traceback
+                self.logger.error(traceback.format_exc())
+            
+            # final-sync機能（sync機能をそのまま流用して最終同期）
+            try:
+                self.logger.info("Starting final-sync workflow (re-running sync)")
+                
+                # SyncCheckerを再利用してfinal-sync実行
+                final_sync_checker = SyncChecker(self.config_manager, self.integrated_logger)
+                self.logger.info("Final-sync (SyncChecker) initialized")
+                
+                # 最終同期処理を実行
+                bibtex_file = workspace_path / "CurrentManuscript.bib"
+                clippings_dir = workspace_path / "Clippings"
+                
+                final_sync_result = final_sync_checker.check_workspace_consistency(
+                    str(workspace_path), 
+                    str(bibtex_file), 
+                    str(clippings_dir)
+                )
+                self.logger.info(f"Final-sync completed: {final_sync_result.get('consistency_status', 'unknown')}")
+                
+                # 最終同期結果の詳細ログ
+                if final_sync_result.get('consistency_status') == 'validated':
+                    self.logger.info("Final-sync: All data is consistent and validated")
+                elif final_sync_result.get('consistency_status') == 'issues_detected':
+                    missing_files = final_sync_result.get('missing_markdown_files', [])
+                    orphaned_files = final_sync_result.get('orphaned_markdown_files', [])
+                    self.logger.warning(f"Final-sync: Issues detected - {len(missing_files)} missing, {len(orphaned_files)} orphaned files")
+                    
+                    # DOIリンク表示（最終レポート）
+                    if missing_files or orphaned_files:
+                        self.logger.info("Final-sync: Displaying final DOI links report")
+                        final_sync_checker.display_doi_links(missing_files, orphaned_files)
+                
+                modules_executed.append('final-sync')
+                
+            except Exception as e:
+                self.logger.error(f"Error in final-sync processing: {e}")
+                import traceback
+                self.logger.error(traceback.format_exc())
             
             return {
                 'status': 'success',

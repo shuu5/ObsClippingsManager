@@ -132,6 +132,7 @@ integrated_execution_summary:
     - tagger
     - translate_abstract
     - ochiai_format
+    - citation_pattern_normalizer
     - final_sync
     
   steps_summary:
@@ -179,6 +180,13 @@ integrated_execution_summary:
       execution_time: 51.3
       ai_requests: 3
       summaries_generated: 3
+    citation_pattern_normalizer:
+      status: completed
+      papers_processed: 3
+      execution_time: 8.5
+      citations_normalized: 45
+      patterns_detected: 12
+      parser_success_rate: 0.96
     final_sync:
       status: completed
       papers_processed: 3
@@ -238,6 +246,7 @@ class IntegratedWorkflow:
         self.tagger_workflow = TaggerWorkflow(config_manager, logger)
         self.translate_workflow = TranslateAbstractWorkflow(config_manager, logger)
         self.ochiai_workflow = OchiaiFormatWorkflow(config_manager, logger)
+        self.citation_normalizer_workflow = CitationPatternNormalizerWorkflow(config_manager, logger)
         
     def execute_integrated_workflow(self, force_reprocess=False, disable_ai_features=False, 
                                   target_papers=None, show_plan=False):
@@ -287,6 +296,9 @@ class IntegratedWorkflow:
                     ('ochiai_format', self.ochiai_workflow),
                 ]
                 workflow_steps.extend(ai_steps)
+            
+            # 引用文献正規化ステップ（AI機能後）
+            workflow_steps.append(('citation_pattern_normalizer', self.citation_normalizer_workflow))
             
             # 最終同期
             workflow_steps.append(('final-sync', self.sync_workflow))
@@ -427,7 +439,7 @@ integrated_workflow:
 
 ### 処理フロー
 ```
-organize → sync → fetch → section_parsing → ai_citation_support → enhanced-tagger → enhanced-translate → ochiai-format → final-sync
+organize → sync → fetch → section_parsing → ai_citation_support → enhanced-tagger → enhanced-translate → ochiai-format → citation_pattern_normalizer → final-sync
 ```
 
 ### メタデータ自動補完システム

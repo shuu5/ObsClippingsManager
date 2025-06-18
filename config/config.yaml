@@ -43,6 +43,18 @@ ochiai_format:
   max_content_length: 10000
   enable_section_integration: true
 
+# Citation Pattern Normalizer Settings
+citation_pattern_normalizer:
+  enabled: true
+  batch_size: 20
+  retry_attempts: 3
+  publisher_detection:
+    auto_detect: true
+    fallback_parser: "generic"
+  notification:
+    unsupported_pattern_alert: true
+    new_parser_suggestion: true
+
 # Logging Settings
 logging:
   log_file: "logs/obsclippings.log"

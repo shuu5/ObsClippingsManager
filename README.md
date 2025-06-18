@@ -45,6 +45,7 @@ code/py/
 - **[AI理解支援引用文献パーサー](code/contexts/enhanced_citation_parser_specification.md)** - 引用文献統合機能
 - **[AI タグ・翻訳](code/contexts/ai_tagging_translation_specification.md)** - 自動タグ生成・要約翻訳
 - **[落合フォーマット要約](code/contexts/ochiai_format_specification.md)** - 6項目構造化要約
+- **[引用文献表記統一](code/contexts/citation_pattern_normalizer_specification.md)** - 出版社別引用文献パターン正規化
 
 
 

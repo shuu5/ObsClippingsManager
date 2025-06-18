@@ -1,26 +1,24 @@
 test_execution:
   ai_feature_control:
-    api_cost_savings: true
-    disabled_features:
+    api_cost_savings: false
+    disabled_features: []
+    enabled_features:
     - enhanced-tagger
     - enhanced-translate
-    enabled_features:
     - ochiai-format
-    mode: development
-    summary: 'AI機能: ochiai-format のみ有効'
+    mode: production
+    summary: 'AI機能: すべて有効（デフォルト動作）'
   basic_checks:
     backup_exists: true
-    clippings_processed: true
+    clippings_processed: false
     workspace_exists: true
   execution_result:
-    files_processed: 2
-    modules_executed:
-    - file_organizer
-    - sync_checker
-    - citation_fetcher
-    - section_parsing
-    - ai_citation_support
+    ai_features_used:
+    - enhanced-tagger
+    - enhanced-translate
     - ochiai-format
+    files_processed: 0
+    modules_executed: []
     status: success
   status: success
-  timestamp: '2025-06-17T09:38:33.885016'
+  timestamp: '2025-06-18T05:00:13.413928'

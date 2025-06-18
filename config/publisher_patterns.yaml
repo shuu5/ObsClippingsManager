@@ -1,0 +1,81 @@
+# 出版社別引用文献パターン定義
+parsers:
+  oxford_academic:
+    detection:
+      doi_prefixes: ["10.1093"]
+      journal_keywords: ["Oxford", "OUP", "Oxford Academic", "Oxford University Press"]
+    patterns:
+      - regex: "\\[(\\d+(?:[–-]\\d+)?(?:,\\s*\\d+(?:[–-]\\d+)?)*)\\]"
+        replacement: "[{numbers}]"
+        description: "既存角括弧形式（変換不要）"
+      - regex: "([¹²³⁴⁵⁶⁷⁸⁹⁰]+(?:,?[¹²³⁴⁵⁶⁷⁸⁹⁰]+)*)"
+        replacement: "[{numbers}]"
+        description: "上付き数字カンマ区切り"
+      - regex: "([¹²³⁴⁵⁶⁷⁸⁹⁰]+)"
+        replacement: "[{numbers}]"
+        description: "上付き数字単体"
+      - regex: "\\((\\d+(?:,\\s*\\d+)*)\\)"
+        replacement: "[{numbers}]"
+        description: "括弧内数字リスト"
+  
+  elsevier:
+    detection:
+      doi_prefixes: ["10.1016"]
+      journal_keywords: ["Elsevier", "ScienceDirect"]
+    patterns:
+      - regex: "\\((\\d+(?:,\\s*\\d+)*)\\)"
+        replacement: "[{numbers}]"
+        description: "括弧付きカンマ区切り数字リスト"
+      - regex: "\\((\\d+)\\)"
+        replacement: "[{number}]"
+        description: "括弧付き単体数字"
+      - regex: "\\[(\\d+(?:,\\s*\\d+)*)\\]"
+        replacement: "[{numbers}]"
+        description: "既に角括弧の数字リスト"
+  
+  nature:
+    detection:
+      doi_prefixes: ["10.1038"]
+      journal_keywords: ["Nature", "Nature Publishing", "NPG"]
+    patterns:
+      - regex: "(?<!\\[)(\\d+(?:,\\s*\\d+)+)(?!\\])"
+        replacement: "[{numbers}]"
+        description: "カンマ区切り数字リスト（既存括弧外）"
+      - regex: "(?<!\\[)\\b(\\d+)\\b(?!\\])"
+        replacement: "[{number}]"
+        description: "単体数字（既存括弧外）"
+  
+  ieee:
+    detection:
+      doi_prefixes: ["10.1109"]
+      journal_keywords: ["IEEE", "Institute of Electrical"]
+    patterns:
+      - regex: "\\[(\\d+(?:,\\s*\\d+)*)\\]"
+        replacement: "[{numbers}]"
+        description: "IEEE標準角括弧形式"
+      - regex: "\\[(\\d+)\\]"
+        replacement: "[{number}]"
+        description: "IEEE標準単体角括弧"
+  
+  springer:
+    detection:
+      doi_prefixes: ["10.1007"]
+      journal_keywords: ["Springer", "SpringerLink"]
+    patterns:
+      - regex: "\\b(\\d+)\\b"
+        replacement: "[{number}]"
+        description: "数字のみ形式"
+      - regex: "(\\d+(?:,\\s*\\d+)*)"
+        replacement: "[{numbers}]"
+        description: "カンマ区切り数字"
+  
+  generic:
+    detection:
+      fallback: true
+    patterns:
+      - regex: "\\[(\\d+(?:,\\s*\\d+)*)\\]"
+        replacement: "[{numbers}]"
+        description: "既存角括弧形式（変換不要）"
+      - regex: "\\((\\d+(?:,\\s*\\d+)*)\\)"
+        replacement: "[{numbers}]"
+        description: "括弧形式"
